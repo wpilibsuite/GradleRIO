@@ -1,2 +1,2 @@
 # GradleRIO
-A gradle plugi for the RoboRIO for FRC
+A gradle plugin for the RoboRIO for FRC
