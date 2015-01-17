@@ -1,8 +1,18 @@
 apply plugin: 'groovy'
+apply plugin: BuildGradle
 
 dependencies {
   compile gradleApi()
   compile localGroovy()
 }
 
-version = "0.1.0"
+class BuildGradle implements Plugin<Project> {
+  void apply(Project project) {
+    project.task('release', dependsOn: 'build') << {
+      File dest = new File("release/gradle/GradleRIO.jar")
+      dest << new File("build/libs/GradleRIO.jar")
+      ant.zip(destfile: "releases/GradleRIO.zip",
+        basedir: "release")
+    }
+  }
+}

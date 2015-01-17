@@ -93,13 +93,18 @@ class GradleRIO implements Plugin<Project> {
   }
 
   String rioIP(Project project) {
-    String team = team(project)
-    int length = team.length();
-    if (length < 4)
-    for (int i = 0; i < 4 - length; i++)
-    team = "0" + team;
+    String get = project.gradlerio.rioIP
+    if (get == "{DEFAULT}") {
+      String team = team(project)
+      int length = team.length();
+      if (length < 4)
+      for (int i = 0; i < 4 - length; i++)
+      team = "0" + team;
 
-    return "10." + team.substring(0, 2) + "." + team.substring(2, 4) + ".20"
+      return "10." + team.substring(0, 2) + "." + team.substring(2, 4) + ".20"
+    } else {
+      return get
+    }
   }
 
   String rioHost(Project project) {
@@ -114,4 +119,5 @@ class GradleRIO implements Plugin<Project> {
 
 class GradleRIOExtensions {
   String team = "0000";
+  String rioIP = "{DEFAULT}";
 }

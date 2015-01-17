@@ -1,0 +1,6 @@
+Credits for GradleRIO:
+  -Jaci (@JacisNonsense): coding the plugin
+  -WPILib Team: providing WPILib and the eclipse plugin
+  -FIRST Robotics: For the awesome competition and Kit of Parts
+
+<3

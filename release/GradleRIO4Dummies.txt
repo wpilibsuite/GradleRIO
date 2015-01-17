@@ -1,0 +1,43 @@
+HOW TO GRADLERIO:
+  Note: Make sure your terminal/command prompt is in the
+  same directory as the gradlew/gradlew.bat files...
+
+  1) To run gradle, type:
+    gradlew               (Windows)
+    ./gradlew             (Mac/Linux/UNIX)
+
+    Not working? Try gradlew.bat for Windows.
+
+  2) To setup WPILib, run:
+    gradlew       wpi     (Windows)
+    ./gradlew     wpi     (Mac/Linux/UNIX)
+
+  3) To setup your workspace, do the following:
+    -for IntelliJ IDEA:
+      gradlew     idea    (Windows)
+      ./gradlew   idea    (Mac/Linux/UNIX)
+
+      Open the .ipr file in IntelliJ, or double click to open it
+    -for Eclipse:
+      gradlew     eclipse (Windows)
+      ./gradlew   eclipse (Mac/Linux/UNIX)
+
+      Point your eclipse workspace to this directory
+
+    Dependencies aren't loaded?
+      Dependencies are located in ${USERHOME}/wpilib/extracted/library/
+      Try adding them manually.
+
+  4) To deploy code to the RoboRIO, do the following:
+    -Check all settings in build.gradle are accurate
+    -Make sure you are connected to the same network as the RIO
+    -Run the following command
+      gradlew     deploy  (Windows)
+      ./gradlew   deploy  (Mac/Linux/UNIX)
+
+    Not working?
+      The plugin most likely can't find the RIO. Try running 'gradlew deployIP'
+      instead if the RIO is connected with the included Wireless bridge.
+      If this still doesn't work, uncomment the lines in the build.gradle that
+      allow you to specify the IP address of the RIO, and then run 'gradlew deployIP'
+      again

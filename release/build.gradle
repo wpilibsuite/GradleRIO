@@ -1,0 +1,20 @@
+/**
+  Template file for classes using GradleRIO
+  @author Jaci
+*/
+
+apply from: "gradle/GradleRIO.jar"                        //Apply the GradleRIO plugin
+apply plugin: 'java'
+
+gradlerio.robotClass = "org.usfirst.frc.team0000.Robot"   //The class for the main Robot Class. Used in manifest
+gradlerio.team = "5333"                                   //Your FRC team number (e.g. 5333 for team 'Can't C#', or 47 for Chief Delphi)
+//gradlerio.rioIP = "10.53.33.20"                         //Uncomment to specify the IP address of the RIO
+
+def robotManifest = {
+  attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+  attributes 'Robot-Class': gradlerio.robotClass
+}
+
+jar {
+  manifest commonManifest
+}
