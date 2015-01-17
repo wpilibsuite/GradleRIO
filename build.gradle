@@ -9,8 +9,9 @@ dependencies {
 class BuildGradle implements Plugin<Project> {
   void apply(Project project) {
     project.task('release', dependsOn: 'build') << {
-      File dest = new File("release/gradle/GradleRIO.jar")
-      dest << new File("build/libs/GradleRIO.jar")
+      ant.copy(file:"build/libs/GradleRIO.jar",
+        todir: "release/gradle/libs")
+
       ant.zip(destfile: "releases/GradleRIO.zip",
         basedir: "release")
     }

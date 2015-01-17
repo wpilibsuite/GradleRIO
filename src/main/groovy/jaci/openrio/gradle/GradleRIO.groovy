@@ -1,3 +1,5 @@
+package jaci.openrio.gradle;
+
 import org.gradle.api.*;
 
 class GradleRIO implements Plugin<Project> {
@@ -120,4 +122,5 @@ class GradleRIO implements Plugin<Project> {
 class GradleRIOExtensions {
   String team = "0000";
   String rioIP = "{DEFAULT}";
+  String robotClass = "org.usfirst.frc.team0000.Robot"
 }
