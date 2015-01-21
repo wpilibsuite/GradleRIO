@@ -30,3 +30,12 @@ jar {
   from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   manifest robotManifest
 }
+
+task genJavadoc(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives genJavadoc
+}

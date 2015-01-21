@@ -19,10 +19,10 @@ class GradleRIO implements Plugin<Project> {
 
     project.repositories.add(project.repositories.mavenCentral())
 
-    def compileConfig = project.getConfigurations().create('compile')
-    project.dependencies.add(compileConfig.name, project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
+    project.getConfigurations().maybeCreate('compile')
+    project.dependencies.add('compile', project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
 
-    def sshAntTask = project.getConfigurations().create('sshAntTask')
+    def sshAntTask = project.getConfigurations().maybeCreate('sshAntTask')
     project.dependencies.add(sshAntTask.name, 'org.apache.ant:ant-jsch:1.7.1')
     project.dependencies.add(sshAntTask.name, 'jsch:jsch:0.1.29')
 
