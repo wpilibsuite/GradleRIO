@@ -30,6 +30,10 @@ class GradleRIO implements Plugin<Project> {
     classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
     classpath: sshAntTask.asPath)
 
+    project.ant.taskdef(name: 'sshexec',
+     classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+     classpath: sshAntTask.asPath)
+
     def wpiTask = project.task('wpi') << {
       println "Downloading WPILib..."
       String pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
@@ -50,33 +54,47 @@ class GradleRIO implements Plugin<Project> {
     }
 
     def deployTask = project.task('deploy') << {
-      String roboRIO = rioHost(project)
-      println "Attempting to send new code to RoboRIO..."
-
-      ant.scp(file: "build/libs/${project.name}",
-      todir:"lvuser@${roboRIO}:FRCUserProgram.jar",
-      password:"",
-      port:22,
-      trust:true)
-
-      println "Deploy Successful!"
+      deploy(rioHost(project))
     }
     deployTask.dependsOn 'build'
 
     def deployIP = project.task('deployIP') << {
-      println "Attempting to send new code to RoboRIO using absolute IP..."
-      String ip = rioIP(project)
-      println "${project.name}"
-
-      ant.scp(file: "build/libs/${project.name}.jar",
-      todir:"lvuser@${ip}:FRCUserProgram.jar",
-      password:"",
-      port:22,
-      trust:true)
-
-      println "Deploy Successful!"
+      deploy(rioIP(project))
     }
     deployIP.dependsOn 'build'
+
+    def cleanRemote = project.task('cleanRIO') << {
+      clean(rioHost(project))
+    }
+
+    def cleanRemoteIP = project.task('cleanIP') << {
+      clean(rioIP(project))
+    }
+  }
+
+  void deploy(String host) {
+    println "Attempting to send new code to RoboRIO..."
+    println "${project.name}"
+
+    ant.scp(file: "build/libs/${project.name}.jar",
+    todir:"lvuser@${host}:FRCUserProgram.jar",
+    password:"",
+    port:22,
+    trust:true)
+
+    println "Deploy Successful!"
+  }
+
+  void clean(String host) {
+    println "Attempting to clean RoboRIO code..."
+    ant.sshexec(host: "${host}",
+    username:"lvuser",
+    port:22,
+    trust:true,
+    password:"",
+    command:"rm -f FRCUserProgram.jar"
+    )
+    println "Clean Successful!"
   }
 
   void download(String dest, String from, String name) {
