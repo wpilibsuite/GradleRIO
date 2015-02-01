@@ -4,7 +4,10 @@ import org.gradle.api.*;
 
 class GradleRIO implements Plugin<Project> {
 
+  def project
+
   void apply(Project project) {
+    this.project = project
     project.extensions.create("gradlerio", GradleRIOExtensions)
 
     String apiDest = System.getProperty("user.home") + "/wpilib/java/extracted/library/"
@@ -54,7 +57,12 @@ class GradleRIO implements Plugin<Project> {
     }
 
     def deployTask = project.task('deploy') << {
-      deploy(rioHost(project))
+      try {
+        deploy(rioHost(project))
+      } catch (Exception e) {
+        println "RoboRIO not available... Falling back to IP..."
+        deploy(rioIP(project))
+      }
     }
     deployTask.dependsOn 'build'
 
@@ -64,19 +72,69 @@ class GradleRIO implements Plugin<Project> {
     deployIP.dependsOn 'build'
 
     def cleanRemote = project.task('cleanRIO') << {
-      clean(rioHost(project))
+      try {
+        clean(rioHost(project))
+      } catch (Exception e) {
+        println "RoboRIO not available... Falling back to IP..."
+        clean(rioIP(project))
+      }
     }
 
     def cleanRemoteIP = project.task('cleanIP') << {
       clean(rioIP(project))
     }
+
+    def reboot = project.task('reboot') << {
+      try {
+        reboot(rioHost(project))
+      } catch (Exception e) {
+        println "RoboRIO not available... Falling back to IP..."
+        reboot(rioIP(project))
+      }
+    }
+
+    def restartCode = project.task('restart') << {
+      try {
+        restartCode(rioHost(project))
+      } catch (Exception e) {
+        println "RoboRIO not available... Falling back to IP..."
+        restartCode(rioIP(project))
+      }
+    } //TODO Do it after deploy
+
+    def restartCodeIP = project.task('robotIP') << {
+      restartCode(rioIP(project))
+    }
+  }
+
+  void restartCode(String host) {
+    println "Attempting to restart the RoboRIO code..."
+    project.ant.sshexec(host: "${host}",
+    username:"lvuser",
+    port:22,
+    trust:true,
+    password:"",
+    command:"/etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+    )
+    println "Robot Code is restarting..."
+  }
+
+  void reboot(String host) {
+    println "Attempting to reboot RoboRIO..."
+    project.ant.sshexec(host: "${host}",
+    username:"admin",
+    port:22,
+    trust:true,
+    password:"",
+    command:"reboot"
+    )
+    println "RoboRIO is rebooting..."
   }
 
   void deploy(String host) {
     println "Attempting to send new code to RoboRIO..."
-    println "${project.name}"
 
-    ant.scp(file: "build/libs/${project.name}.jar",
+    project.ant.scp(file: "build/libs/${project.name}.jar",
     todir:"lvuser@${host}:FRCUserProgram.jar",
     password:"",
     port:22,
@@ -87,7 +145,7 @@ class GradleRIO implements Plugin<Project> {
 
   void clean(String host) {
     println "Attempting to clean RoboRIO code..."
-    ant.sshexec(host: "${host}",
+    project.ant.sshexec(host: "${host}",
     username:"lvuser",
     port:22,
     trust:true,
