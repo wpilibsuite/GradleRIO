@@ -5,14 +5,18 @@ Template file for classes using GradleRIO
 
 buildscript {
   repositories {
-    flatDir name: 'libs', dirs: 'gradle/libs'
+	mavenCentral()
+	maven {
+		name = "GradleRIO"
+		url = "http://dev.sourcecoded.info/jaci/maven"
+	}
   }
   dependencies {
-    classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '0.1.0'
+    classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '1.0.1'			//Change this line if you wish to Update GradleRIO
   }
 }
 
-apply plugin: "GradleRIO"                                 //Apply the GradleRIO plugin
+apply plugin: 'GradleRIO'                                 //Apply the GradleRIO plugin
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'

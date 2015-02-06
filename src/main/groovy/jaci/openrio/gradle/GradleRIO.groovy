@@ -40,7 +40,7 @@ class GradleRIO implements Plugin<Project> {
     def wpiTask = project.task('wpi') << {
       println "Downloading WPILib..."
       String pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
-      String from = "http://first.wpi.edu/FRC/roborio/release/eclipse/plugins/edu.wpi.first.wpilib.plugins.java_0.1.0.201501011639.jar"
+      String from = "http://first.wpi.edu/FRC/roborio/release/eclipse/plugins/edu.wpi.first.wpilib.plugins.java_0.1.0.201501221609.jar"
       download(pluginDest, from, "plugin.jar")
       println "Extracting WPILib..."
 
@@ -59,9 +59,11 @@ class GradleRIO implements Plugin<Project> {
     def deployTask = project.task('deploy') << {
       try {
         deploy(rioHost(project))
+        restartCode(rioHost(project))
       } catch (Exception e) {
         println "RoboRIO not available... Falling back to IP..."
         deploy(rioIP(project))
+        restartCode(rioIP(project))
       }
     }
     deployTask.dependsOn 'build'
