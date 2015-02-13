@@ -14,13 +14,13 @@ repositories {
 dependencies {
   compile gradleApi()
   compile localGroovy()
-  
+
   deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "1.0.1"
+version = "1.1.2"
 
 ext.mavenProps = file "../maven.properties"
 mavenProps.withReader {
@@ -29,17 +29,13 @@ mavenProps.withReader {
 	project.ext.mavenProps = new ConfigSlurper().parse prop
 }
 
-processResources {
-	ant.replace(file: 'release/build.gradle', token: "{GRADLERIO_VERSION}", value: version)
-}
-
 uploadArchives {
 	repositories.mavenDeployer {
 		configuration = configurations.deployerJars
 		repository(url: mavenProps.jaci.url) {
 			authentication(userName: mavenProps.jaci.user, password: mavenProps.jaci.auth)
 		}
-		
+
 		pom {
 			groupId = project.group
             version = project.version

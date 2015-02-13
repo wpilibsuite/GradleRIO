@@ -136,8 +136,8 @@ class GradleRIO implements Plugin<Project> {
   void deploy(String host) {
     println "Attempting to send new code to RoboRIO..."
 
-    project.ant.scp(file: "build/libs/${project.name}.jar",
-    todir:"lvuser@${host}:FRCUserProgram.jar",
+    project.ant.scp(file: "${project.jar.archivePath}",
+    todir:"lvuser@${host}:${project.gradlerio.deployFile}",
     password:"",
     port:22,
     trust:true)
@@ -152,7 +152,7 @@ class GradleRIO implements Plugin<Project> {
     port:22,
     trust:true,
     password:"",
-    command:"rm -f FRCUserProgram.jar"
+    command:"rm -f ${project.gradlerio.deployFile}"
     )
     println "Clean Successful!"
   }
@@ -201,4 +201,5 @@ class GradleRIOExtensions {
   String team = "0000";
   String rioIP = "{DEFAULT}";
   String robotClass = "org.usfirst.frc.team0000.Robot"
+  String deployFile = "FRCUserProgram.jar"
 }
