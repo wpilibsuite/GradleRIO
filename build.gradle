@@ -20,7 +20,25 @@ dependencies {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "1.1.2"
+version = "1.1.5"
+
+jar {
+  manifest {
+    attributes "GradleRIO-Flavour": 'GRADLERIO'
+  }
+}
+
+task toast(type: Jar) {
+  manifest {
+    attributes 'GradleRIO-Flavour': 'TOAST'
+  }
+  classifier "Toast"
+  from sourceSets.main.output
+}
+
+artifacts {
+  archives toast
+}
 
 ext.mavenProps = file "../maven.properties"
 mavenProps.withReader {
@@ -43,7 +61,7 @@ uploadArchives {
             project {
                 name project.archivesBaseName
                 packaging 'jar'
-                description 'GradleRIO Build Plugin '
+                description 'Build Plugin'
             }
 		}
 	}

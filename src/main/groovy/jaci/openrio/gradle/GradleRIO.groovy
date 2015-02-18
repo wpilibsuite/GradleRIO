@@ -5,6 +5,7 @@ import org.gradle.api.*;
 class GradleRIO implements Plugin<Project> {
 
   def project
+  String pluginDest
 
   void apply(Project project) {
     this.project = project
@@ -23,7 +24,7 @@ class GradleRIO implements Plugin<Project> {
     project.repositories.add(project.repositories.mavenCentral())
 
     project.getConfigurations().maybeCreate('compile')
-    project.dependencies.add('compile', project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
+    WPIProvider.doDeps(project, apiDest)
 
     def sshAntTask = project.getConfigurations().maybeCreate('sshAntTask')
     project.dependencies.add(sshAntTask.name, 'org.apache.ant:ant-jsch:1.7.1')
@@ -37,9 +38,10 @@ class GradleRIO implements Plugin<Project> {
      classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
      classpath: sshAntTask.asPath)
 
+    pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
+
     def wpiTask = project.task('wpi') << {
       println "Downloading WPILib..."
-      String pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
       String from = "http://first.wpi.edu/FRC/roborio/release/eclipse/plugins/edu.wpi.first.wpilib.plugins.java_0.1.0.201501221609.jar"
       download(pluginDest, from, "plugin.jar")
       println "Extracting WPILib..."
@@ -102,11 +104,64 @@ class GradleRIO implements Plugin<Project> {
         println "RoboRIO not available... Falling back to IP..."
         restartCode(rioIP(project))
       }
-    } //TODO Do it after deploy
+    }
 
     def restartCodeIP = project.task('robotIP') << {
       restartCode(rioIP(project))
     }
+
+    def setDebug = project.task('rioModeDebug') << {
+      switchConfiguration('Debug', 'robotDebugCommand')
+    }
+
+    def setRun = project.task('rioModeRun') << {
+      switchConfiguration('Run', 'robotCommand')
+    }
+
+    def setDebugNoHalt = project.task('rioModeHybrid') << {
+      switchConfiguration('Debug (no halt)', 'robotDebugCommandNoHalt')
+    }
+  }
+
+  void switchConfiguration(String filename, String type) {
+    exportCaches()
+    String host = rioHost(project)
+    println "Switching the RoboRIO to ${type} Configuration..."
+    try {
+      project.ant.scp(file: "build/caches/GradleRIO/${filename}",
+        todir:"lvuser@${host}:robotCommand",
+        password:"",
+        port:22,
+        trust:true)
+    } catch (Exception e) {
+      println "RoboRIO not available... Falling back to IP..."
+      host = rioIP(project)
+      project.ant.scp(file: "build/caches/GradleRIO/${filename}",
+        todir:"lvuser@${host}:robotCommand",
+        password:"",
+        port:22,
+        trust:true)
+    }
+    println "RoboRIO Changed To ${type} Mode. Restarting Code Now..."
+    restartCode(host)
+    println "RoboRIO Code is Restarting..."
+  }
+
+  void exportCaches() {
+    exportToCache("robotCommand", "robotCommand")
+    exportToCache("robotDebugCommand", "robotDebugCommand")
+    exportToCache("robotDebugCommandNoHalt", "robotDebugCommandNoHalt")
+  }
+
+  void exportToCache(String resource, String filename) {
+    def instream = getClass().getClassLoader().getResourceAsStream("launch/" + resource)
+    File dest = new File("build/caches/GradleRIO")
+    dest.mkdirs()
+    File file = new File(dest, filename)
+    def fos = new FileOutputStream(file)
+    def out = new BufferedOutputStream(fos)
+    out << instream
+    out.close()
   }
 
   void restartCode(String host) {
@@ -142,7 +197,7 @@ class GradleRIO implements Plugin<Project> {
     port:22,
     trust:true)
 
-    println "Deploy Successful!"
+    println "Deploy Successful! Loaded in: ${project.gradlerio.deployFile}"
   }
 
   void clean(String host) {

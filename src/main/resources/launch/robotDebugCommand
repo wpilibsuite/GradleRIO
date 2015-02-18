@@ -1,0 +1,1 @@
+env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host /usr/local/frc/JRE/bin/java -XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=5810,server=y,suspend=y -jar /home/lvuser/FRCUserProgram.jar
