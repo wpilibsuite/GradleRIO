@@ -1,6 +1,7 @@
 package jaci.openrio.gradle;
 
 import org.gradle.api.*;
+import groovy.util.*;
 
 class GradleRIO implements Plugin<Project> {
 
@@ -41,15 +42,53 @@ class GradleRIO implements Plugin<Project> {
     pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
 
     def wpiTask = project.task('wpi') << {
+      String extractedDest = System.getProperty("user.home") + "/wpilib/java/extracted/current/"
+      String urlBase = "http://first.wpi.edu/FRC/roborio/release/eclipse/"
+      String wpiVersion = "java_0.1.0.201501221609"
+      println "Checking WPILib Version..."
+
+      String wpiInstalledVersion = ""
+      try {
+        def versionXML=new XmlSlurper().parse(pluginDest+"content/content.xml")
+        def vNode = versionXML.depthFirst().find{it.@id == 'edu.wpi.first.wpilib.plugins.java'}
+        wpiInstalledVersion = vNode.@version
+        println "Currently Installed WPILib Version: ${wpiInstalledVersion}"
+      } catch (Exception e) {  }
+
+      try {
+        download(pluginDest, urlBase+"content.jar", "content.jar")
+        ant.unzip(src: pluginDest+"content.jar",
+          dest: pluginDest+"content",
+          overwrite:"true")
+
+        def xml=new XmlSlurper().parse(pluginDest+"content/content.xml")
+        def node = xml.depthFirst().find{it.@id == 'edu.wpi.first.wpilib.plugins.java'}
+        String wpiVersionLatest = node.@version
+        println "WPILib Latest Version: ${wpiVersionLatest}"
+
+        if (wpiInstalledVersion != wpiVersionLatest) {
+          println "WPILib Version Mismatch... Updating..."
+          wpiVersion = "java_${wpiVersionLatest}"
+        } else {
+          println "WPILib Version Match. Skipping Update..."
+          return;
+        }
+
+        println "Deleting WPILib Caches..."
+        ant.delete(dir: extractedDest)
+      } catch (Exception e) {
+        println "Could not check WPI Version..."
+        e.printStackTrace()
+      }
+
+      String from = urlBase + "plugins/edu.wpi.first.wpilib.plugins.${wpiVersion}.jar"
       println "Downloading WPILib..."
-      String from = "http://first.wpi.edu/FRC/roborio/release/eclipse/plugins/edu.wpi.first.wpilib.plugins.java_0.1.0.201501221609.jar"
       download(pluginDest, from, "plugin.jar")
       println "Extracting WPILib..."
 
-      String extractedDest = System.getProperty("user.home") + "/wpilib/java/extracted/current/"
-      ant.unzip(  src:pluginDest+"plugin.jar",
-      dest:extractedDest,
-      overwrite:"false")
+      ant.unzip(src:pluginDest+"plugin.jar",
+        dest:extractedDest,
+        overwrite:"false")
       println "WPILib Extracted..."
       println "Extracting API Resources..."
       ant.unzip(  src:extractedDest+"resources/java.zip",
@@ -214,17 +253,12 @@ class GradleRIO implements Plugin<Project> {
 
   void download(String dest, String from, String name) {
     File output = new File(dest, name)
-    if (output.exists()) {
-      println "WPILib already downloaded, skipping download..."
-      return
-    }
     File f = new File(dest)
     f.mkdirs()
     def file = new FileOutputStream(output)
     def out = new BufferedOutputStream(file)
     out << new URL(from).openStream()
     out.close()
-    println "WPILib download complete..."
   }
 
   String rioIP(Project project) {
