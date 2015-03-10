@@ -40,11 +40,15 @@ artifacts {
   archives toast
 }
 
-ext.mavenProps = file "../maven.properties"
-mavenProps.withReader {
-	def prop = new Properties()
-	prop.load(it)
-	project.ext.mavenProps = new ConfigSlurper().parse prop
+try {
+  ext.mavenProps = file "../maven.properties"
+  mavenProps.withReader {
+  	def prop = new Properties()
+  	prop.load(it)
+  	project.ext.mavenProps = new ConfigSlurper().parse prop
+  }
+} catch (Exception e) {
+  println "Could not load Maven Properties... You are not a developer!"
 }
 
 uploadArchives {
