@@ -8,7 +8,7 @@ buildscript {
 	mavenCentral()
 	maven {
 		name = "GradleRIO"
-		url = "http://dev.sourcecoded.info/jaci/maven"
+		url = "http://dev.imjac.in/maven"
 	}
   }
   dependencies {
