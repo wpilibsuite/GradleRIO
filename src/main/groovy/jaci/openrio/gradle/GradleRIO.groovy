@@ -25,7 +25,6 @@ class GradleRIO implements Plugin<Project> {
     project.repositories.add(project.repositories.mavenCentral())
 
     project.getConfigurations().maybeCreate('compile')
-    WPIProvider.doDeps(project, apiDest)
 
     def sshAntTask = project.getConfigurations().maybeCreate('sshAntTask')
     project.dependencies.add(sshAntTask.name, 'org.apache.ant:ant-jsch:1.7.1')
@@ -38,6 +37,8 @@ class GradleRIO implements Plugin<Project> {
     project.ant.taskdef(name: 'sshexec',
      classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
      classpath: sshAntTask.asPath)
+
+    WPIProvider.doDeps(project, apiDest)
 
     pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
 

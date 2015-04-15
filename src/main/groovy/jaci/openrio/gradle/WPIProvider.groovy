@@ -12,6 +12,8 @@ public class WPIProvider {
     readManifest()
     if (flavour == "GRADLERIO") {
       project.dependencies.add('compile', project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
+    } else if (flavour == "TOAST") {
+      Toast.init(project)
     }
   }
 
