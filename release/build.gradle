@@ -16,10 +16,10 @@ buildscript {
   }
 }
 
-apply plugin: 'GradleRIO'                                 //Apply the GradleRIO plugin
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'GradleRIO'                                 //Apply the GradleRIO plugin
 
 gradlerio.robotClass = "org.usfirst.frc.team0000.Robot"   //The class for the main Robot Class. Used in manifest
 gradlerio.team = "5333"                                   //Your FRC team number (e.g. 5333 for team 'Can't C#', or 47 for Chief Delphi)
