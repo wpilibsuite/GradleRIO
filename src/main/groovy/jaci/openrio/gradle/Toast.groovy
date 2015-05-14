@@ -6,6 +6,7 @@ import org.gradle.api.tasks.*;
 public class Toast {
 
   static void init(Project project) {
+    ToastIDE.init(project)
     project.getConfigurations().maybeCreate('verify')
 
     def verifyTask = project.task('verify') << {

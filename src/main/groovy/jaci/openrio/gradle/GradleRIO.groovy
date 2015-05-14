@@ -79,7 +79,7 @@ class GradleRIO implements Plugin<Project> {
         ant.delete(dir: extractedDest)
       } catch (Exception e) {
         println "Could not check WPI Version..."
-        e.printStackTrace()
+        return
       }
 
       String from = urlBase + "plugins/edu.wpi.first.wpilib.plugins.${wpiVersion}.jar"
