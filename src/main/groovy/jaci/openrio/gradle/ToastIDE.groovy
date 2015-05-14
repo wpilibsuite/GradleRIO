@@ -33,7 +33,7 @@ public class ToastIDE {
       def node = provider.node
       node.depthFirst().each {
 				if (it.name() == "component" && it.attribute("name") == "RunManager") {
-          def config = it.appendNode("configuration", [default: false, factoryName: "Application", type: "Application", name: "${project.archivesBaseName}-${name}", folder: "Launch"])
+          def config = it.appendNode("configuration", [default: false, factoryName: "Application", type: "Application", name: "${project.archivesBaseName}-${name}", folderName: "Launch"])
           config.appendNode("option", [name: "MAIN_CLASS_NAME", value: "jaci.openrio.toast.core.ToastBootstrap"])
 					config.appendNode("option", [name: "WORKING_DIRECTORY", value: "file://\$PROJECT_DIR\$/run"])
           config.appendNode("option", [name: "PROGRAM_PARAMETERS", value: params])
