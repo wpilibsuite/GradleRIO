@@ -51,25 +51,27 @@ try {
   println "Could not load Maven Properties... You are not a developer!"
 }
 
-uploadArchives {
-	repositories.mavenDeployer {
-		configuration = configurations.deployerJars
-		repository(url: mavenProps.jaci.url) {
-			authentication(userName: mavenProps.jaci.user, password: mavenProps.jaci.auth)
-		}
+try {
+  uploadArchives {
+  	repositories.mavenDeployer {
+  		configuration = configurations.deployerJars
+  		repository(url: mavenProps.jaci.url) {
+  			authentication(userName: mavenProps.jaci.user, password: mavenProps.jaci.auth)
+  		}
 
-		pom {
-			groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName
-            project {
-                name project.archivesBaseName
-                packaging 'jar'
-                description 'Build Plugin'
-            }
-		}
-	}
-}
+  		pom {
+  			groupId = project.group
+              version = project.version
+              artifactId = project.archivesBaseName
+              project {
+                  name project.archivesBaseName
+                  packaging 'jar'
+                  description 'Build Plugin'
+              }
+  		}
+  	}
+  }
+} catch (Exception e) {}
 
 class BuildGradle implements Plugin<Project> {
   void apply(Project project) {

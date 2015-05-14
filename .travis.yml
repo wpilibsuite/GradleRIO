@@ -1,7 +1,7 @@
 language: groovy
 
 jdk:
-- oraclejdk7
+- oraclejdk8
 
 notifications:
   email: false
