@@ -14,6 +14,7 @@ deploy your code to the RoboRIO without using eclipse.
 * Robot Code or the RoboRIO can be restarted using 'gradlew robot' or 'gradlew reboot'
 * Robot Code can be removed from the RoboRIO using 'gradlew cleanRIO'
 
+*If you're using the ToastAPI, we'll also generate the Run Configurations for you!*
 
 ## Download
 To get GradleRIO, simply head to the [releases page](http://github.com/Open-RIO/GradleRIO/releases) and download the .zip file containing the archive. Extract it to your working directory and get coding!
