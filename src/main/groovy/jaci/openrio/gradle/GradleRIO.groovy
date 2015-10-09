@@ -163,7 +163,7 @@ class GradleRIO implements Plugin<Project> {
     }
   }
 
-  void switchConfiguration(String filename, String type) {
+  void switchConfiguration(String type, String filename) {
     exportCaches()
     String host = rioHost(project)
     println "Switching the RoboRIO to ${type} Configuration..."

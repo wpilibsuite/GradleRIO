@@ -8,15 +8,15 @@ public class ToastIDE {
 
   static void init(Project project) {
     project.task('intelliJLaunchConfig') << {
-      intelliJ_run_config(project, "Sim", "-sim --search")
-      intelliJ_run_config(project, "Verify", "-verify -sim --search")
+      intelliJ_run_config(project, "Sim", "-sim --search -ide IDEA")
+      intelliJ_run_config(project, "Verify", "-verify -sim --search -ide IDEA")
       intelliJ_remote_config(project, "Remote", "roborio-${project.gradlerio.team}.local")
       intelliJ_gradle_config(project, "Deploy", "deploy")
     }
 
     project.task('eclipseLaunchConfig') << {
-      eclipse_run_config(project, "Sim", "-sim --search")
-      eclipse_run_config(project, "Verify", "-verify -sim --search")
+      eclipse_run_config(project, "Sim", "-sim --search --no-color -ide ECLIPSE")
+      eclipse_run_config(project, "Verify", "-verify -sim --search --no-color -ide ECLIPSE")
       eclipse_remote_config(project, "Remote", "roborio-${project.gradlerio.team}.local")
     }
 
