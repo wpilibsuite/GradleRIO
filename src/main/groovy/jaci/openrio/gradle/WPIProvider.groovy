@@ -14,6 +14,7 @@ public class WPIProvider {
       project.dependencies.add('compile', project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
     } else if (flavour == "TOAST") {
       Toast.init(project)
+      ToastDeploy.init(project)
     }
   }
 

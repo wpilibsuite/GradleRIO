@@ -12,12 +12,16 @@ public class ToastIDE {
       intelliJ_run_config(project, "Verify", "-verify -sim --search -ide IDEA")
       intelliJ_remote_config(project, "Remote", "roborio-${project.gradlerio.team}.local")
       intelliJ_gradle_config(project, "Deploy", "deploy")
+
+      new File("run").mkdirs()
     }
 
     project.task('eclipseLaunchConfig') << {
       eclipse_run_config(project, "Sim", "-sim --search --no-color -ide ECLIPSE")
       eclipse_run_config(project, "Verify", "-verify -sim --search --no-color -ide ECLIPSE")
       eclipse_remote_config(project, "Remote", "roborio-${project.gradlerio.team}.local")
+
+      new File("run").mkdirs()
     }
 
     for (def task : project.getTasksByName('eclipseClasspath', false)) {

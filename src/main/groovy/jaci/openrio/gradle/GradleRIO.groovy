@@ -99,13 +99,9 @@ class GradleRIO implements Plugin<Project> {
     }
 
     def deployTask = project.task('deploy') << {
-      try {
-        deploy(rioHost(project))
-        restartCode(rioHost(project))
-      } catch (Exception e) {
-        println "RoboRIO not available... Falling back to IP..."
-        deploy(rioIP(project))
-        restartCode(rioIP(project))
+      tryOnAll(project) {
+        deploy(it)
+        restartCode(it)
       }
     }
     deployTask.dependsOn 'build'
@@ -116,11 +112,8 @@ class GradleRIO implements Plugin<Project> {
     deployIP.dependsOn 'build'
 
     def cleanRemote = project.task('cleanRIO') << {
-      try {
-        clean(rioHost(project))
-      } catch (Exception e) {
-        println "RoboRIO not available... Falling back to IP..."
-        clean(rioIP(project))
+      tryOnAll(project) {
+        clean(it)
       }
     }
 
@@ -129,20 +122,14 @@ class GradleRIO implements Plugin<Project> {
     }
 
     def reboot = project.task('reboot') << {
-      try {
-        reboot(rioHost(project))
-      } catch (Exception e) {
-        println "RoboRIO not available... Falling back to IP..."
-        reboot(rioIP(project))
+      tryOnAll(project) {
+        reboot(it)
       }
     }
 
     def restartCode = project.task('restart') << {
-      try {
-        restartCode(rioHost(project))
-      } catch (Exception e) {
-        println "RoboRIO not available... Falling back to IP..."
-        restartCode(rioIP(project))
+      tryOnAll(project) {
+        restartCode(it)
       }
     }
 
@@ -167,34 +154,29 @@ class GradleRIO implements Plugin<Project> {
     exportCaches()
     String host = rioHost(project)
     println "Switching the RoboRIO to ${type} Configuration..."
-    try {
+
+    tryOnAll(project) {
       project.ant.scp(file: "build/caches/GradleRIO/${filename}",
-        todir:"lvuser@${host}:robotCommand",
-        password:"",
-        port:22,
-        trust:true)
-    } catch (Exception e) {
-      println "RoboRIO not available... Falling back to IP..."
-      host = rioIP(project)
-      project.ant.scp(file: "build/caches/GradleRIO/${filename}",
-        todir:"lvuser@${host}:robotCommand",
+        todir:"lvuser@${it}:robotCommand",
         password:"",
         port:22,
         trust:true)
     }
+
     println "RoboRIO Changed To ${type} Mode. Restarting Code Now..."
     restartCode(host)
     println "RoboRIO Code is Restarting..."
   }
 
-  void exportCaches() {
-    exportToCache("robotCommand", "robotCommand")
-    exportToCache("robotDebugCommand", "robotDebugCommand")
-    exportToCache("robotDebugCommandNoHalt", "robotDebugCommandNoHalt")
+  static void exportCaches() {
+    exportToCache("launch/robotCommand", "robotCommand")
+    exportToCache("launch/robotDebugCommand", "robotDebugCommand")
+    exportToCache("launch/robotDebugCommandNoHalt", "robotDebugCommandNoHalt")
+    exportToCache("toast/nashorn.jar", "nashorn.jar")
   }
 
-  void exportToCache(String resource, String filename) {
-    def instream = getClass().getClassLoader().getResourceAsStream("launch/" + resource)
+  static void exportToCache(String resource, String filename) {
+    def instream = GradleRIO.class.getClassLoader().getResourceAsStream(resource)
     File dest = new File("build/caches/GradleRIO")
     dest.mkdirs()
     File file = new File(dest, filename)
@@ -262,7 +244,28 @@ class GradleRIO implements Plugin<Project> {
     out.close()
   }
 
-  String rioIP(Project project) {
+  static void tryOnAll(Project project, Closure action) {
+    try {
+      println "Trying on USB Interface..."
+      action.call(rioUSB(project))
+    } catch (Exception e1) {
+      try {
+        def host = rioHost(project)
+        println "USB Failed. Attempting via Hostname ${host}..."
+        action.call(host)
+      } catch (Exception e2) {
+        def ip = rioIP(project)
+        println "Hostname failed. Attempting via IP ${ip}..."
+        action.call(ip)
+      }
+    }
+  }
+
+  static String rioUSB(Project project) {
+    return "172.22.11.2"
+  }
+
+  static String rioIP(Project project) {
     String get = project.gradlerio.rioIP
     if (get == "{DEFAULT}") {
       String team = team(project)
@@ -277,11 +280,11 @@ class GradleRIO implements Plugin<Project> {
     }
   }
 
-  String rioHost(Project project) {
+  static String rioHost(Project project) {
     return "roboRIO-${project.gradlerio.team}.local"
   }
 
-  String team(Project project) {
+  static String team(Project project) {
     return project.gradlerio.team
   }
 
