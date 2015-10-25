@@ -52,6 +52,9 @@ public class Toast {
 
     def simTask = project.task('simulation') << {
       File rundir = new File('run/gradle/simulation')
+      if (rundir.exists()) {
+        project.ant.delete(dir: rundir.getAbsolutePath())
+      }
       rundir.mkdirs()
       File modules_dir = new File(rundir, "toast/modules")
       modules_dir.mkdirs()
