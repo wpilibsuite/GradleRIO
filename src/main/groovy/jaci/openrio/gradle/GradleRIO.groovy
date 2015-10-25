@@ -14,13 +14,14 @@ class GradleRIO implements Plugin<Project> {
 
     String apiDest = System.getProperty("user.home") + "/wpilib/java/extracted/library/"
 
-    project.task('roboRIO') << {
+    def riotask = project.task('roboRIO') << {
       String roboRIO = rioHost(project);
       String rioIP = rioIP(project)
 
       println "Host: ${roboRIO}"
       println "IP: ${rioIP}"
     }
+    riotask.setDescription "Get details about the RoboRIO's IP Address and Hostname"
 
     project.repositories.add(project.repositories.mavenCentral())
 
@@ -97,6 +98,7 @@ class GradleRIO implements Plugin<Project> {
       overwrite:"false")
       println "API Resources extracted..."
     }
+    wpiTask.setDescription "Download and Extract the latest version of WPILib"
 
     def deployTask = project.task('deploy') << {
       tryOnAll(project) {
@@ -105,49 +107,43 @@ class GradleRIO implements Plugin<Project> {
       }
     }
     deployTask.dependsOn 'build'
-
-    def deployIP = project.task('deployIP') << {
-      deploy(rioIP(project))
-    }
-    deployIP.dependsOn 'build'
+    deployTask.setDescription "Build and Deploy this code to the RoboRIO and restart the robot code."
 
     def cleanRemote = project.task('cleanRIO') << {
       tryOnAll(project) {
         clean(it)
       }
     }
-
-    def cleanRemoteIP = project.task('cleanIP') << {
-      clean(rioIP(project))
-    }
+    cleanRemote.setDescription "Remove your code from the RoboRIO"
 
     def reboot = project.task('reboot') << {
       tryOnAll(project) {
         reboot(it)
       }
     }
+    reboot.setDescription "Reboot the RoboRIO"
 
     def restartCode = project.task('restart') << {
       tryOnAll(project) {
         restartCode(it)
       }
     }
-
-    def restartCodeIP = project.task('robotIP') << {
-      restartCode(rioIP(project))
-    }
+    restartCode.setDescription "Restart the RoboRIO's Robot Code"
 
     def setDebug = project.task('rioModeDebug') << {
       switchConfiguration('Debug', 'robotDebugCommand')
     }
+    setDebug.setDescription "Change the RoboRIO's Run Configuration to Debug Mode (must attach remote debugger to start code)"
 
     def setRun = project.task('rioModeRun') << {
       switchConfiguration('Run', 'robotCommand')
     }
+    setRun.setDescription "Change the RoboRIO's Run Configuration to Run Mode (default)"
 
     def setDebugNoHalt = project.task('rioModeHybrid') << {
       switchConfiguration('Debug (no halt)', 'robotDebugCommandNoHalt')
     }
+    setDebugNoHalt.setDescription "Change the RoboRIO's Run Configuration to Hybrid Mode (debugger accessible, but not required)"
   }
 
   void switchConfiguration(String type, String filename) {

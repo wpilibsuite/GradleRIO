@@ -16,6 +16,7 @@ public class ToastDeploy {
         scp(project, it, toast_resource, nashorn)
       }
     }
+    deploy_task.setDescription "Deploy Toast to the RoboRIO"
   }
 
   static scp(Project project, String host, File toast, File nashorn) {
@@ -31,7 +32,7 @@ public class ToastDeploy {
       trust:true)
   }
 
-  static File getToastResource(Project project) {
+  public static File getToastResource(Project project) {
     def comp = project.getConfigurations().compile
     def toast_dep = comp.getDependencies().find {
       it.getName() == "Toast" && it.getGroup() == "jaci.openrio.toast"
