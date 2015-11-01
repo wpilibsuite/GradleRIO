@@ -11,11 +11,19 @@ public class WPIProvider {
   public static void doDeps(Project project, String apiDest) {
     readManifest()
     if (flavour == "GRADLERIO") {
-      project.dependencies.add('compile', project.fileTree(dir: apiDest + "lib", include: "*.jar", exclude: "*-sources.jar"))
+      addWPILibraries(project, apiDest)
     } else if (flavour == "TOAST") {
       Toast.init(project)
       ToastDeploy.init(project)
     }
+  }
+
+  public static void addWPILibraries(Project project, String apidest) {
+    project.repositories.flatDir() {
+      dirs "${apidest}/lib"
+    }
+    project.dependencies.add('compile', ":WPILib")
+    project.dependencies.add('compile', ":NetworkTables")
   }
 
   public static void readManifest() {
