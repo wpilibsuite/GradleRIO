@@ -7,6 +7,9 @@ import java.io.File;
 public class ToastDeploy {
 
   static void init(Project project) {
+    project.getConfigurations().maybeCreate('toastLibrary')
+    project.getConfigurations().maybeCreate('toastModule')
+
     def deploy_task = project.task('toastDeploy') << {
       def toast_resource = getToastResource(project)
       def nashorn = new File("build/caches/GradleRIO/nashorn.jar")
@@ -30,6 +33,26 @@ public class ToastDeploy {
       password:"",
       port:22,
       trust:true)
+  }
+
+  public static void mapToastDeps(Project project) {
+    def lib_config = project.getConfigurations().toastLibrary
+    def libraries = lib_config.dependencies.collect {
+      [file: lib_config.files(it)[0], name: it.getName()]
+    }
+
+    def mod_config = project.getConfigurations().toastModule
+    def modules = mod_config.dependencies.collect {
+      [file: mod_config.files(it)[0], name: it.getName()]
+    }
+
+    libraries.each {
+      project.gradlerio.deployers += [ to: "/home/lvuser/toast/libs/${it.name}.jar", from: it.file ]
+    }
+
+    modules.each {
+      project.gradlerio.deployers += [ to: "/home/lvuser/toast/modules/${it.name}.jar", from: it.file ]
+    }
   }
 
   public static File getToastResource(Project project) {

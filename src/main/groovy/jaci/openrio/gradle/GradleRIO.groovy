@@ -5,26 +5,18 @@ import groovy.util.*;
 
 class GradleRIO implements Plugin<Project> {
 
-  def project
-  String pluginDest
+  public static def project
+  public static String pluginDest
+  public static String apiDest
 
   void apply(Project project) {
-    this.project = project
+    GradleRIO.project = project
     project.extensions.create("gradlerio", GradleRIOExtensions)
 
-    String apiDest = System.getProperty("user.home") + "/wpilib/java/extracted/library/"
-
-    def riotask = project.task('roboRIO') << {
-      String roboRIO = rioHost(project);
-      String rioIP = rioIP(project)
-
-      println "Host: ${roboRIO}"
-      println "IP: ${rioIP}"
-    }
-    riotask.setDescription "Get details about the RoboRIO's IP Address and Hostname"
+    apiDest     = System.getProperty("user.home") + "/wpilib/java/extracted/library/"
+    pluginDest  = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
 
     project.repositories.add(project.repositories.mavenCentral())
-
     project.getConfigurations().maybeCreate('compile')
 
     def sshAntTask = project.getConfigurations().maybeCreate('sshAntTask')
@@ -39,64 +31,10 @@ class GradleRIO implements Plugin<Project> {
      classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
      classpath: sshAntTask.asPath)
 
-    WPIProvider.doDeps(project, apiDest)
-
-    pluginDest = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
+    WPIProvider.init(project, apiDest)
 
     def wpiTask = project.task('wpi') << {
-      String extractedDest = System.getProperty("user.home") + "/wpilib/java/extracted/current/"
-      String urlBase = "http://first.wpi.edu/FRC/roborio/release/eclipse/"
-      String wpiVersion = "java_0.1.0.201501221609"
-      println "Checking WPILib Version..."
-
-      String wpiInstalledVersion = ""
-      try {
-        def versionXML=new XmlSlurper().parse(pluginDest+"content/content.xml")
-        def vNode = versionXML.depthFirst().find{it.@id == 'edu.wpi.first.wpilib.plugins.java'}
-        wpiInstalledVersion = vNode.@version
-        println "Currently Installed WPILib Version: ${wpiInstalledVersion}"
-      } catch (Exception e) {  }
-
-      try {
-        download(pluginDest, urlBase+"content.jar", "content.jar")
-        ant.unzip(src: pluginDest+"content.jar",
-          dest: pluginDest+"content",
-          overwrite:"true")
-
-        def xml=new XmlSlurper().parse(pluginDest+"content/content.xml")
-        def node = xml.depthFirst().find{it.@id == 'edu.wpi.first.wpilib.plugins.java'}
-        String wpiVersionLatest = node.@version
-        println "WPILib Latest Version: ${wpiVersionLatest}"
-
-        if (wpiInstalledVersion != wpiVersionLatest) {
-          println "WPILib Version Mismatch... Updating..."
-          wpiVersion = "java_${wpiVersionLatest}"
-        } else {
-          println "WPILib Version Match. Skipping Update..."
-          return;
-        }
-
-        println "Deleting WPILib Caches..."
-        ant.delete(dir: extractedDest)
-      } catch (Exception e) {
-        println "Could not check WPI Version..."
-        return
-      }
-
-      String from = urlBase + "plugins/edu.wpi.first.wpilib.plugins.${wpiVersion}.jar"
-      println "Downloading WPILib..."
-      download(pluginDest, from, "plugin.jar")
-      println "Extracting WPILib..."
-
-      ant.unzip(src:pluginDest+"plugin.jar",
-        dest:extractedDest,
-        overwrite:"false")
-      println "WPILib Extracted..."
-      println "Extracting API Resources..."
-      ant.unzip(  src:extractedDest+"resources/java.zip",
-      dest:apiDest,
-      overwrite:"false")
-      println "API Resources extracted..."
+      WPIProvider.update(project)
     }
     wpiTask.setDescription "Download and Extract the latest version of WPILib"
 
@@ -209,11 +147,24 @@ class GradleRIO implements Plugin<Project> {
   void deploy(String host) {
     println "Attempting to send new code to RoboRIO..."
 
+    if (WPIProvider.isToast()) ToastDeploy.mapToastDeps(project)
+
     project.ant.scp(file: "${project.jar.archivePath}",
-    todir:"lvuser@${host}:${project.gradlerio.deployFile}",
-    password:"",
-    port:22,
-    trust:true)
+      todir:"lvuser@${host}:${project.gradlerio.deployFile}",
+      password:"",
+      port:22,
+      trust:true)
+
+    for (def deployer : project.gradlerio.deployers) {
+      def from = deployer.from
+      def to = deployer.to
+      def user = deployer.elevated == null ? "lvuser" : "admin"
+      project.ant.scp(file: from,
+        todir: "${user}@${host}:${to}",
+        password: "",
+        port:22,
+        trust:true)
+    }
 
     println "Deploy Successful! Loaded in: ${project.gradlerio.deployFile}"
   }
@@ -284,11 +235,4 @@ class GradleRIO implements Plugin<Project> {
     return project.gradlerio.team
   }
 
-}
-
-class GradleRIOExtensions {
-  String team = "0000";
-  String rioIP = "{DEFAULT}";
-  String robotClass = "org.usfirst.frc.team0000.Robot"
-  String deployFile = "FRCUserProgram.jar"
 }
