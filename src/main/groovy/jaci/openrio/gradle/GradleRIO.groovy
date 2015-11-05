@@ -181,7 +181,7 @@ class GradleRIO implements Plugin<Project> {
     println "Clean Successful!"
   }
 
-  void download(String dest, String from, String name) {
+  public static void download(String dest, String from, String name) {
     File output = new File(dest, name)
     File f = new File(dest)
     f.mkdirs()

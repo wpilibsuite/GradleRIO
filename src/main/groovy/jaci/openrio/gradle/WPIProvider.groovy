@@ -62,7 +62,7 @@ public class WPIProvider {
     } catch (Exception e) {  }
 
     try {
-      download(GradleRIO.pluginDest, urlBase+"content.jar", "content.jar")
+      GradleRIO.download(GradleRIO.pluginDest, urlBase+"content.jar", "content.jar")
       project.ant.unzip(src: GradleRIO.pluginDest+"content.jar",
         dest: GradleRIO.pluginDest+"content",
         overwrite:"true")
@@ -84,12 +84,13 @@ public class WPIProvider {
       project.ant.delete(dir: extractedDest)
     } catch (Exception e) {
       println "Could not check WPI Version..."
+      println e
       return
     }
 
     String from = urlBase + "plugins/edu.wpi.first.wpilib.plugins.${wpiVersion}.jar"
     println "Downloading WPILib..."
-    download(GradleRIO.pluginDest, from, "plugin.jar")
+    GradleRIO.download(GradleRIO.pluginDest, from, "plugin.jar")
     println "Extracting WPILib..."
 
     project.ant.unzip(src:GradleRIO.pluginDest+"plugin.jar",
