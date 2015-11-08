@@ -4,6 +4,10 @@ import org.gradle.api.*;
 import java.util.jar.*;
 import java.io.*;
 
+import org.gradle.logging.StyledTextOutput;
+import org.gradle.logging.StyledTextOutputFactory;
+import static org.gradle.logging.StyledTextOutput.Style;
+
 public class WPIProvider {
 
   public static def flavour = "GRADLERIO"
@@ -22,12 +26,24 @@ public class WPIProvider {
     return flavour == "TOAST"
   }
 
-  public static void addWPILibraries(Project project, String apidest) {
-    project.repositories.flatDir() {
-      dirs "${apidest}/lib"
+  public static boolean checkWPILibs(Project project, String apidest) {
+    File xist = new File("${apidest}/lib")
+    if (!xist.exists()) {
+      System.setProperty('org.gradle.color.error', 'RED')
+      def out = project.services.get(StyledTextOutputFactory).create("WPIProvider")
+      out.withStyle(Style.Error).println("WARN: WPI Libraries are not installed on your system. You must run 'gradlew wpi' in order to download them!")
     }
-    project.dependencies.add('compile', ":WPILib")
-    project.dependencies.add('compile', ":NetworkTables")
+    return xist.exists()
+  }
+
+  public static void addWPILibraries(Project project, String apidest) {
+    if (checkWPILibs(project, apidest)) {
+      project.repositories.flatDir() {
+        dirs "${apidest}/lib"
+      }
+      project.dependencies.add('compile', ":WPILib")
+      project.dependencies.add('compile', ":NetworkTables")
+    }
   }
 
   public static void readManifest() {
