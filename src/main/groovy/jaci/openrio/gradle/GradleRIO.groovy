@@ -193,13 +193,13 @@ class GradleRIO implements Plugin<Project> {
 
   static void tryOnAll(Project project, Closure action) {
     try {
-      println "Trying on USB Interface..."
-      action.call(rioUSB(project))
+      def host = rioHost(project)
+      println "Attempting via Hostname ${host}..."
+      action.call(host)
     } catch (Exception e1) {
       try {
-        def host = rioHost(project)
-        println "USB Failed. Attempting via Hostname ${host}..."
-        action.call(host)
+        println "Hostname failed. Trying on USB Interface..."
+        action.call(rioUSB(project))
       } catch (Exception e2) {
         def ip = rioIP(project)
         println "Hostname failed. Attempting via IP ${ip}..."
