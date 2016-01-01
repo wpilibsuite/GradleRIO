@@ -37,12 +37,42 @@ public class WPIProvider {
   }
 
   public static void addWPILibraries(Project project, String apidest) {
-    if (checkWPILibs(project, apidest)) {
-      project.repositories.flatDir() {
+    def custom_wpi = "$System.env.WPI_BUILD_DIR"
+    def custom_nt = "$System.env.NT_BUILD_DIR"
+    
+    def wpi_name = "$System.env.WPI_BUILD_ARTIFACT"
+    def nt_name = "$System.env.NT_BUILD_ARTIFACT"
+    
+    if (wpi_name == "null") wpi_name = ":WPILib"
+    if (nt_name == "null") nt_name = ":NetworkTables"
+    
+    checkWPILibs(project, apidest)
+    
+    if (custom_wpi != null) {
+        project.repositories.flatDir() {
+            dirs custom_wpi
+        }
+    }
+    
+    if (custom_nt != null) {
+        project.repositories.flatDir() {
+            dirs custom_nt
+        }
+    }
+    
+    project.repositories.flatDir() {
         dirs "${apidest}/lib"
-      }
-      project.dependencies.add('compile', ":WPILib")
-      project.dependencies.add('compile', ":NetworkTables")
+    }
+    
+    println("WPI Artifact ID: $wpi_name")
+    println("NT Artifact ID: $nt_name")
+    
+    try {
+        project.dependencies.add('compile', wpi_name)
+        project.dependencies.add('compile', nt_name)
+    } catch (Throwable t) {
+        def out = project.services.get(StyledTextOutputFactory).create("WPIProvider")
+        out.withStyle(Style.Error).println("No WPI Libraries could not be found!")
     }
   }
 
