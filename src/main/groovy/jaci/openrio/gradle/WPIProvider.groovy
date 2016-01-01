@@ -69,7 +69,8 @@ public class WPIProvider {
     
     try {
         project.dependencies.add('compile', wpi_name)
-        project.dependencies.add('compile', nt_name)
+        if ("$System.env.NT_BUILD_INCLUDE" != "OFF")
+            project.dependencies.add('compile', nt_name)
     } catch (Throwable t) {
         def out = project.services.get(StyledTextOutputFactory).create("WPIProvider")
         out.withStyle(Style.Error).println("No WPI Libraries could not be found!")
