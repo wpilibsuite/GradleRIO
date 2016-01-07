@@ -28,12 +28,17 @@ public class WPIProvider {
       it.url = "http://first.wpi.edu/FRC/roborio/maven/development"
     }
     
+    project.getConfigurations().maybeCreate("wpi_source")
+    
     def deps = project.dependencies
     
     deps.add("compile", 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop')
     deps.add("compile", 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:arm')
     
     deps.add("compile", 'edu.wpi.first.wpilibj:wpilibJavaFinal:+')
+    
+    deps.add("wpi_source", 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:sources')
+    deps.add("wpi_source", 'edu.wpi.first.wpilibj:wpilibJavaFinal:+:sources')
   }
 
   public static boolean isToast() {
