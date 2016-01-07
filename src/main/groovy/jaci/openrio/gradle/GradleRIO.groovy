@@ -6,15 +6,10 @@ import groovy.util.*;
 class GradleRIO implements Plugin<Project> {
 
   public static def project
-  public static String pluginDest
-  public static String apiDest
 
   void apply(Project project) {
     GradleRIO.project = project
     project.extensions.create("gradlerio", GradleRIOExtensions)
-
-    apiDest     = System.getProperty("user.home") + "/wpilib/java/extracted/library/"
-    pluginDest  = System.getProperty("user.home") + "/wpilib/java/plugin/current/"
 
     project.repositories.add(project.repositories.mavenCentral())
     project.getConfigurations().maybeCreate('compile')
@@ -31,12 +26,7 @@ class GradleRIO implements Plugin<Project> {
      classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
      classpath: sshAntTask.asPath)
 
-    WPIProvider.init(project, apiDest)
-
-    def wpiTask = project.task('wpi') << {
-      WPIProvider.update(project)
-    }
-    wpiTask.setDescription "Download and Extract the latest version of WPILib"
+    WPIProvider.init(project)
 
     def deployTask = project.task('deploy') << {
       tryOnAll(project) {
