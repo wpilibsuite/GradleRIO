@@ -8,7 +8,6 @@ use it with Eclipse, IntelliJ IDEA or any IDE of your choice. GradleRIO also all
 deploy your code to the RoboRIO from the command-line, or through the IDE.
 
 ## Basic Commands
-- ```gradlew wpi``` will download and extract the latest version of WPILib directly from WPI's servers
 - ```gradlew idea``` / ```gradlew eclipse``` will generate all the necessary files for your Development Environment workspace
 - ```gradlew build``` will build your Robot Code
 - ```gradlew deploy``` will build and deploy your code to the RoboRIO
