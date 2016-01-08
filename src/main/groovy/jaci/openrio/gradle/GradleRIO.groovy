@@ -218,7 +218,7 @@ class GradleRIO implements Plugin<Project> {
   }
 
   static String rioHost(Project project) {
-    return "roboRIO-${project.gradlerio.team}.local"
+    return "roboRIO-${project.gradlerio.team}-frc.local"
   }
 
   static String team(Project project) {
