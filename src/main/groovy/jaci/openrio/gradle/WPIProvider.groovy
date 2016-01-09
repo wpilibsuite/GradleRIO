@@ -25,7 +25,7 @@ public class WPIProvider {
   public static void addWPILibraries(Project project) {
     project.repositories.maven {
       it.name = "WPI"
-      it.url = "http://first.wpi.edu/FRC/roborio/maven/development"
+      it.url = "http://first.wpi.edu/FRC/roborio/maven/release"
     }
     
     project.getConfigurations().maybeCreate("wpi_source")
