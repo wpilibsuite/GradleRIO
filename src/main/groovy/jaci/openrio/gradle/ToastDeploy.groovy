@@ -20,6 +20,7 @@ public class ToastDeploy {
       }
     }
     deploy_task.setDescription "Deploy Toast to the RoboRIO"
+    deploy_task.finalizedBy 'rioModeRun'
   }
 
   static scp(Project project, String host, File toast, File nashorn) {

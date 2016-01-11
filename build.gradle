@@ -20,7 +20,7 @@ dependencies {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "4.0.2"
+version = "4.0.3"
 
 jar {
   manifest {

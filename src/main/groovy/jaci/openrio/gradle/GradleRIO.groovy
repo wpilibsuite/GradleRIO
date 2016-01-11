@@ -35,6 +35,7 @@ class GradleRIO implements Plugin<Project> {
       }
     }
     deployTask.dependsOn 'build'
+    deployTask.dependsOn 'rioModeRun'
     deployTask.setDescription "Build and Deploy this code to the RoboRIO and restart the robot code."
 
     def cleanRemote = project.task('cleanRIO') << {
@@ -80,11 +81,20 @@ class GradleRIO implements Plugin<Project> {
     println "Switching the RoboRIO to ${type} Configuration..."
 
     tryOnAll(project) {
+      host = it
       project.ant.scp(file: "build/caches/GradleRIO/${filename}",
         todir:"lvuser@${it}:robotCommand",
         password:"",
         port:22,
         trust:true)
+        
+      project.ant.sshexec(host: "${it}",
+        username:"lvuser",
+        port:22,
+        trust:true,
+        password:"",
+        command:"chmod +x /home/lvuser/robotCommand"
+      )
     }
 
     println "RoboRIO Changed To ${type} Mode. Restarting Code Now..."
@@ -113,11 +123,11 @@ class GradleRIO implements Plugin<Project> {
   void restartCode(String host) {
     println "Attempting to restart the RoboRIO code..."
     project.ant.sshexec(host: "${host}",
-    username:"lvuser",
-    port:22,
-    trust:true,
-    password:"",
-    command:"/etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+      username:"lvuser",
+      port:22,
+      trust:true,
+      password:"",
+      command:"killall java"
     )
     println "Robot Code is restarting..."
   }
@@ -186,11 +196,11 @@ class GradleRIO implements Plugin<Project> {
       def host = rioHost(project)
       println "Attempting via Hostname ${host}..."
       action.call(host)
-    } catch (Exception e1) {
+    } catch (Throwable e1) {
       try {
         println "Hostname failed. Trying on USB Interface..."
         action.call(rioUSB(project))
-      } catch (Exception e2) {
+      } catch (Throwable e2) {
         def ip = rioIP(project)
         println "Hostname failed. Attempting via IP ${ip}..."
         action.call(ip)
