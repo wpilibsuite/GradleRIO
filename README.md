@@ -14,6 +14,7 @@ deploy your code to the RoboRIO from the command-line, or through the IDE.
 
 ### Toast-Specific commands
 - ```gradlew toastDeploy``` will export Toast to your RoboRIO
+- ```gradlew toastConsole``` will connect to your RoboRIO Remote Console
 
 ## Features
 ### Dependency Management

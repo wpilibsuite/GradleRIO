@@ -7,6 +7,7 @@ public class Toast {
 
   static void init(Project project) {
     ToastIDE.init(project)
+    ToastConsole.init(project)
     project.getConfigurations().maybeCreate('verify')
     project.getConfigurations().maybeCreate('simulation')
 
