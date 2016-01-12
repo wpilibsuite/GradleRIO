@@ -127,19 +127,37 @@ class GradleRIO implements Plugin<Project> {
       port:22,
       trust:true,
       password:"",
-      command:"killall java"
+      failonerror:false,
+      command:"killall -q netconsole-host || :"
+    )
+    
+    project.ant.sshexec(host: "${host}",
+      username:"lvuser",
+      port:22,
+      trust:true,
+      password:"",
+      failonerror:false,
+      command:". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+    )
+    
+    project.ant.sshexec(host: "${host}",
+      username:"lvuser",
+      port:22,
+      trust:true,
+      password:"",
+      command:"sync"
     )
     println "Robot Code is restarting..."
   }
 
   void reboot(String host) {
     println "Attempting to reboot RoboRIO..."
-    project.ant.sshexec(host: "${host}",
-    username:"admin",
-    port:22,
-    trust:true,
-    password:"",
-    command:"reboot"
+      project.ant.sshexec(host: "${host}",
+      username:"admin",
+      port:22,
+      trust:true,
+      password:"",
+      command:"reboot"
     )
     println "RoboRIO is rebooting..."
   }
