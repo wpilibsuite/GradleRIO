@@ -28,12 +28,15 @@ class GradleRIO implements Plugin<Project> {
 
     WPIProvider.init(project)
 
-    def deployTask = project.task('deploy') << {
+    def deployTask = project.task('deploy') << { }
+    
+    deployTask.doFirst {
       tryOnAll(project) {
-        deploy(it)
+        deploy(it, project.jar.archivePath, project.gradlerio.deployFile)
         restartCode(it)
       }
     }
+    
     deployTask.dependsOn 'build'
     deployTask.dependsOn 'rioModeRun'
     deployTask.setDescription "Build and Deploy this code to the RoboRIO and restart the robot code."
@@ -76,13 +79,13 @@ class GradleRIO implements Plugin<Project> {
   }
 
   void switchConfiguration(String type, String filename) {
-    exportCaches()
+    String file_main = exportCaches()
     String host = rioHost(project)
     println "Switching the RoboRIO to ${type} Configuration..."
 
     tryOnAll(project) {
       host = it
-      project.ant.scp(file: "build/caches/GradleRIO/${filename}",
+      project.ant.scp(file: "${file_main}/${filename}",
         todir:"lvuser@${it}:robotCommand",
         password:"",
         port:22,
@@ -102,11 +105,12 @@ class GradleRIO implements Plugin<Project> {
     println "RoboRIO Code is Restarting..."
   }
 
-  static void exportCaches() {
+  static String exportCaches() {
     exportToCache("launch/robotCommand", "robotCommand")
     exportToCache("launch/robotDebugCommand", "robotDebugCommand")
     exportToCache("launch/robotDebugCommandNoHalt", "robotDebugCommandNoHalt")
     exportToCache("toast/nashorn.jar", "nashorn.jar")
+    return new File("build/caches/GradleRIO").getAbsolutePath();
   }
 
   static void exportToCache(String resource, String filename) {
@@ -162,13 +166,13 @@ class GradleRIO implements Plugin<Project> {
     println "RoboRIO is rebooting..."
   }
 
-  void deploy(String host) {
+  void deploy(String host, File inFile, String outFile) {
     println "Attempting to send new code to RoboRIO..."
 
     if (WPIProvider.isToast()) ToastDeploy.mapToastDeps(project)
 
-    project.ant.scp(file: "${project.jar.archivePath}",
-      todir:"lvuser@${host}:${project.gradlerio.deployFile}",
+    project.ant.scp(file: inFile.getAbsolutePath(),
+      todir:"lvuser@${host}:${outFile}",
       password:"",
       port:22,
       trust:true)
@@ -184,7 +188,7 @@ class GradleRIO implements Plugin<Project> {
         trust:true)
     }
 
-    println "Deploy Successful! Loaded in: ${project.gradlerio.deployFile}"
+    println "Deploy Successful! Loaded in: ${outFile}"
   }
 
   void clean(String host) {
