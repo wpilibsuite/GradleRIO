@@ -33,12 +33,13 @@ class GradleRIO implements Plugin<Project> {
     deployTask.doFirst {
       tryOnAll(project) {
         deploy(it, project.jar.archivePath, project.gradlerio.deployFile)
+        switchConfiguration(it, 'Run', 'robotCommand')
         restartCode(it)
+        sanityCheck(it)
       }
     }
     
     deployTask.dependsOn 'build'
-    deployTask.dependsOn 'rioModeRun'
     deployTask.setDescription "Build and Deploy this code to the RoboRIO and restart the robot code."
 
     def cleanRemote = project.task('cleanRIO') << {
@@ -77,32 +78,49 @@ class GradleRIO implements Plugin<Project> {
     }
     setDebugNoHalt.setDescription "Change the RoboRIO's Run Configuration to Hybrid Mode (debugger accessible, but not required)"
   }
-
-  void switchConfiguration(String type, String filename) {
-    String file_main = exportCaches()
-    String host = rioHost(project)
-    println "Switching the RoboRIO to ${type} Configuration..."
-
-    tryOnAll(project) {
-      host = it
-      project.ant.scp(file: "${file_main}/${filename}",
-        todir:"lvuser@${it}:robotCommand",
-        password:"",
-        port:22,
-        trust:true)
-        
+  
+  void sanityCheck(String host) {
+    try {
       project.ant.sshexec(host: "${it}",
         username:"lvuser",
         port:22,
         trust:true,
         password:"",
-        command:"chmod +x /home/lvuser/robotCommand"
+        command:"/usr/local/frc/JRE/bin/java -version"
       )
+    } catch (Throwable t) {
+      println "==== WARNING: Java is not installed on the RoboRIO! The files have been deployed successfully, but will not be able to be launched until Java is installed! ===="
+    }
+  }
+
+  void switchConfiguration(String type, String filename) {
+    println "Switching the RoboRIO to ${type} Configuration..."
+
+    tryOnAll(project) {
+      host = it
+      switchConfiguration(host, type, filename)
     }
 
     println "RoboRIO Changed To ${type} Mode. Restarting Code Now..."
     restartCode(host)
     println "RoboRIO Code is Restarting..."
+  }
+  
+  void switchConfiguration(String host, String type, String filename) {
+    String file_main = exportCaches()
+    project.ant.scp(file: "${file_main}/${filename}",
+      todir:"lvuser@${it}:robotCommand",
+      password:"",
+      port:22,
+      trust:true)
+        
+    project.ant.sshexec(host: "${it}",
+      username:"lvuser",
+      port:22,
+      trust:true,
+      password:"",
+      command:"chmod +x /home/lvuser/robotCommand"
+    )
   }
 
   static String exportCaches() {
