@@ -79,6 +79,22 @@ public class Toast {
       }
     }
     simTask.setDescription "Run a Toast Simulation on the module"
+    
+    def fetchTask = project.task('fetch') << {
+      GradleRIO.tryOnAll(project) {
+        def date = new Date()
+        def formattedDate = date.format('yyyyMMddHHmmss')
+        File remote = new File('remote/')
+        remote.mkdirs()
+        
+        project.ant.scp(file:"lvuser@${host}:toast/*",
+            todir:project.file('remote/${host}-${formattedDate}'),
+            password:"",
+            port:22,
+            trust:true)
+      }
+    }
+    fetchTask.setDescription "Copy all resources under '/home/lvuser/toast/' on the RoboRIO to the 'remote' directory in the project root"
   }
 
 }
