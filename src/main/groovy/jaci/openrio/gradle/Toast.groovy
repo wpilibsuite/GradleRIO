@@ -19,7 +19,9 @@ public class Toast {
 
       toast_dir.mkdirs()
       File modules_dir = new File(toast_dir, "toast/modules")
+      File libraries_dir = new File(toast_dir, "toast/libs")
       modules_dir.mkdirs()
+      libraries_dir.mkdirs()
 
       File toast = new File(toast_dir, "Toast.jar")
       println "Copying Assets..."
@@ -37,6 +39,19 @@ public class Toast {
         File toFile = new File(modules_dir, file.getName())
         project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
       }
+      
+      project.getConfigurations().toastLibrary.resolve().each {
+        File file = it
+        File toFile = new File(libraries_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
+      project.getConfigurations().toastModule.resolve().each {
+        File file = it
+        File toFile = new File(modules_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
       String archive = project.jar.archivePath
       File archiveTo = new File(modules_dir, new File(archive).getName())
       project.ant.copy(tofile: archiveTo.getAbsolutePath(), file: archive)
@@ -58,7 +73,9 @@ public class Toast {
       }
       rundir.mkdirs()
       File modules_dir = new File(rundir, "toast/modules")
+      File libraries_dir = new File(rundir, "toast/libs")
       modules_dir.mkdirs()
+      libraries_dir.mkdirs()
 
       File toast_file = ToastDeploy.getToastResource(project)
       println "Copying Simulation Modules..."
@@ -67,6 +84,19 @@ public class Toast {
         File toFile = new File(modules_dir, file.getName())
         project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
       }
+      
+      project.getConfigurations().toastLibrary.resolve().each {
+        File file = it
+        File toFile = new File(libraries_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
+      project.getConfigurations().toastModule.resolve().each {
+        File file = it
+        File toFile = new File(modules_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
       String archive = project.jar.archivePath
       File archiveTo = new File(modules_dir, new File(archive).getName())
       project.ant.copy(tofile: archiveTo.getAbsolutePath(), file: archive)
