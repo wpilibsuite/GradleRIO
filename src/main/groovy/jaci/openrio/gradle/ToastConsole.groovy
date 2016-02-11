@@ -51,6 +51,7 @@ public class ToastConsole {
                         String line = scanner.nextLine();
                         if (line.trim().equalsIgnoreCase("--exit"))
                             System.exit(0);
+                        commands_out.writeBytes(line + "\n")
                     }
                 } catch (Exception e) {
                     System.err.println("Client Disconnected")
