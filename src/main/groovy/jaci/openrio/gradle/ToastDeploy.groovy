@@ -10,6 +10,8 @@ public class ToastDeploy {
     project.getConfigurations().maybeCreate('toastLibrary')
     project.getConfigurations().maybeCreate('toastModule')
 
+    prepareManualLibraries(project);
+
     def deploy_task = project.task('toastDeploy') << {
       def toast_resource = getToastResource(project)
       def nashorn = new File("build/caches/GradleRIO/nashorn.jar")
@@ -21,6 +23,14 @@ public class ToastDeploy {
     }
     deploy_task.setDescription "Deploy Toast to the RoboRIO"
     deploy_task.finalizedBy 'rioModeRun'
+  }
+
+  static prepareManualLibraries(Project project) {
+      def deps = project.dependencies
+      deps.add("compile", fileTree(dir: 'libs', include: '*.jar'))
+      deps.add("compile", fileTree(dir: 'modules', include: '*.jar'))
+      deps.add("toastLibrary", fileTree(dir: 'libs', include: '*.jar'))
+      deps.add("toastModule", fileTree(dir: 'modules', include: '*.jar'))
   }
 
   static scp(Project project, String host, File toast, File nashorn) {
