@@ -19,7 +19,9 @@ public class Toast {
 
       toast_dir.mkdirs()
       File modules_dir = new File(toast_dir, "toast/modules")
+      File libraries_dir = new File(toast_dir, "toast/libs")
       modules_dir.mkdirs()
+      libraries_dir.mkdirs()
 
       File toast = new File(toast_dir, "Toast.jar")
       println "Copying Assets..."
@@ -37,6 +39,19 @@ public class Toast {
         File toFile = new File(modules_dir, file.getName())
         project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
       }
+      
+      project.getConfigurations().toastLibrary.resolve().each {
+        File file = it
+        File toFile = new File(libraries_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
+      project.getConfigurations().toastModule.resolve().each {
+        File file = it
+        File toFile = new File(modules_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
       String archive = project.jar.archivePath
       File archiveTo = new File(modules_dir, new File(archive).getName())
       project.ant.copy(tofile: archiveTo.getAbsolutePath(), file: archive)
@@ -53,12 +68,11 @@ public class Toast {
 
     def simTask = project.task('simulation') << {
       File rundir = new File('run/gradle/simulation')
-      if (rundir.exists()) {
-        project.ant.delete(dir: rundir.getAbsolutePath())
-      }
       rundir.mkdirs()
       File modules_dir = new File(rundir, "toast/modules")
+      File libraries_dir = new File(rundir, "toast/libs")
       modules_dir.mkdirs()
+      libraries_dir.mkdirs()
 
       File toast_file = ToastDeploy.getToastResource(project)
       println "Copying Simulation Modules..."
@@ -67,6 +81,19 @@ public class Toast {
         File toFile = new File(modules_dir, file.getName())
         project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
       }
+      
+      project.getConfigurations().toastLibrary.resolve().each {
+        File file = it
+        File toFile = new File(libraries_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
+      project.getConfigurations().toastModule.resolve().each {
+        File file = it
+        File toFile = new File(modules_dir, file.getName())
+        project.ant.copy(tofile: toFile.getAbsolutePath(), file: file.getAbsolutePath())
+      }
+      
       String archive = project.jar.archivePath
       File archiveTo = new File(modules_dir, new File(archive).getName())
       project.ant.copy(tofile: archiveTo.getAbsolutePath(), file: archive)
@@ -79,6 +106,22 @@ public class Toast {
       }
     }
     simTask.setDescription "Run a Toast Simulation on the module"
+    
+    def fetchTask = project.task('fetch') << {
+      GradleRIO.tryOnAll(project) {
+        def date = new Date()
+        def formattedDate = date.format('yyyyMMddHHmmss')
+        File remote = new File('remote/')
+        remote.mkdirs()
+        
+        project.ant.scp(file:"lvuser@${host}:toast/*",
+            todir:project.file('remote/${host}-${formattedDate}'),
+            password:"",
+            port:22,
+            trust:true)
+      }
+    }
+    fetchTask.setDescription "Copy all resources under '/home/lvuser/toast/' on the RoboRIO to the 'remote' directory in the project root"
   }
 
 }

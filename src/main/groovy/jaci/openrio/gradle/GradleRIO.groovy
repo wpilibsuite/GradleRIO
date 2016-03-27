@@ -81,7 +81,7 @@ class GradleRIO implements Plugin<Project> {
   
   void sanityCheck(String host) {
     try {
-      project.ant.sshexec(host: "${it}",
+      project.ant.sshexec(host: "${host}",
         username:"lvuser",
         port:22,
         trust:true,
@@ -94,6 +94,7 @@ class GradleRIO implements Plugin<Project> {
   }
 
   void switchConfiguration(String type, String filename) {
+    String host = ""
     println "Switching the RoboRIO to ${type} Configuration..."
 
     tryOnAll(project) {
@@ -109,12 +110,12 @@ class GradleRIO implements Plugin<Project> {
   void switchConfiguration(String host, String type, String filename) {
     String file_main = exportCaches()
     project.ant.scp(file: "${file_main}/${filename}",
-      todir:"lvuser@${it}:robotCommand",
+      todir:"lvuser@${host}:robotCommand",
       password:"",
       port:22,
       trust:true)
         
-    project.ant.sshexec(host: "${it}",
+    project.ant.sshexec(host: "${host}",
       username:"lvuser",
       port:22,
       trust:true,

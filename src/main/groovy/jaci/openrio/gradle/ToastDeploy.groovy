@@ -49,12 +49,16 @@ public class ToastDeploy {
   public static void mapToastDeps(Project project) {
     def lib_config = project.getConfigurations().toastLibrary
     def libraries = lib_config.dependencies.collect {
-      [file: lib_config.files(it)[0], name: it.getName()]
+      def name = it.getName()
+      if (name == 'unspecified') name = lib_config.files(it)[0].getName()
+      [file: lib_config.files(it)[0], name: name]
     }
 
     def mod_config = project.getConfigurations().toastModule
     def modules = mod_config.dependencies.collect {
-      [file: mod_config.files(it)[0], name: it.getName()]
+      def name = it.getName()
+      if (name == 'unspecified') name = lib_config.files(it)[0].getName()		
+      [file: mod_config.files(it)[0], name: name]
     }
 
     libraries.each {
