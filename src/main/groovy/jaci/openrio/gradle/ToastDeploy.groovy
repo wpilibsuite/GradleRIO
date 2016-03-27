@@ -10,7 +10,7 @@ public class ToastDeploy {
     project.getConfigurations().maybeCreate('toastLibrary')
     project.getConfigurations().maybeCreate('toastModule')
 
-    prepareManualLibraries(project);
+    prepareManualLibraries(project)
 
     def deploy_task = project.task('toastDeploy') << {
       def toast_resource = getToastResource(project)
@@ -26,11 +26,12 @@ public class ToastDeploy {
   }
 
   static prepareManualLibraries(Project project) {
-      def deps = project.dependencies
-      deps.add("compile", fileTree(dir: 'libs', include: '*.jar'))
-      deps.add("compile", fileTree(dir: 'modules', include: '*.jar'))
-      deps.add("toastLibrary", fileTree(dir: 'libs', include: '*.jar'))
-      deps.add("toastModule", fileTree(dir: 'modules', include: '*.jar'))
+      def l = project.file('libs').absolutePath
+      def m = project.file('modules').absolutePath
+      project.dependencies.add("compile", project.fileTree(dir: l, include: '*.jar'))
+      project.dependencies.add("compile", project.fileTree(dir: m, include: '*.jar'))
+      project.dependencies.add("toastLibrary", project.fileTree(dir: l, include: '*.jar'))
+      project.dependencies.add("toastModule", project.fileTree(dir: m, include: '*.jar'))
   }
 
   static scp(Project project, String host, File toast, File nashorn) {

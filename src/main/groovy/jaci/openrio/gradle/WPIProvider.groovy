@@ -18,7 +18,6 @@ public class WPIProvider {
       addWPILibraries(project)
     } else if (flavour == "TOAST") {
       Toast.init(project)
-      ToastDeploy.init(project)
     }
   }
 
