@@ -51,22 +51,30 @@ public class ToastDeploy {
     def lib_config = project.getConfigurations().toastLibrary
     def libraries = lib_config.dependencies.findAll { it != null }.collect {
       def name = it.getName()
-      if (name == 'unspecified') name = lib_config.files(it)[0].getName()
+      if (name == 'unspecified') {
+          def t = lib_config.files(it)[0]
+          if (t == null) name = null;
+          else name = t.getName();
+      }
       [file: lib_config.files(it)[0], name: name]
     }
 
     def mod_config = project.getConfigurations().toastModule
     def modules = mod_config.dependencies.findAll { it != null }.collect {
       def name = it.getName()
-      if (name == 'unspecified') name = lib_config.files(it)[0].getName()		
+      if (name == 'unspecified') {
+          def t = mod_config.files(it)[0]
+          if (t == null) name = null;
+          else name = t.getName();
+      }	
       [file: mod_config.files(it)[0], name: name]
     }
 
-    libraries.each {
+    libraries.findAll { it.file != null && it.name != null }.each {
       project.gradlerio.deployers += [ to: "/home/lvuser/toast/libs/${it.name}.jar", from: it.file ]
     }
 
-    modules.each {
+    modules.findAll { it.file != null && it.name != null }.each {
       project.gradlerio.deployers += [ to: "/home/lvuser/toast/modules/${it.name}.jar", from: it.file ]
     }
   }
