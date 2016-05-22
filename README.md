@@ -43,3 +43,6 @@ IntelliJ IDEA and the latest releases of Eclipse have Gradle support built in, a
 To get GradleRIO, head to the [Releases Page](https://github.com/Open-RIO/GradleRIO/releases) and download the zip archive of the latest release. 
 
 *Note: Toast users should follow the guide on the [Toast Wiki](https://github.com/Open-RIO/ToastAPI/wiki) to get the Toasted version*
+
+## Quick-Start
+Jamie Sinn has written a comprehensive guide for using GradleRIO and IntelliJ IDEA for Robot Code and Development. You can find the guide [here](http://wat.sinnpi.com/dl/FRC%20Getting%20Started%20-%20IntelliJ%20IDEA.pdf)
