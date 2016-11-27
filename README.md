@@ -46,3 +46,22 @@ To get GradleRIO, head to the [Releases Page](https://github.com/Open-RIO/Gradle
 
 ## Quick-Start
 Jamie Sinn has written a comprehensive guide for using GradleRIO and IntelliJ IDEA for Robot Code and Development. You can find the guide [here](http://wat.sinnpi.com/dl/FRC%20Getting%20Started%20-%20IntelliJ%20IDEA.pdf)
+
+## Implementation Details
+If you want to see specifically what you can change about what GradleRIO does, the following properties are added to your project. Access them by `gradlerio.<property>`, where `<property>` is one of the field names below, e.g.
+`gradlerio.team = '5333'`
+```groovy
+class GradleRIOExtensions {
+  String team = "0000"
+  String rioIP = "{DEFAULT}"    // Automatically Calculated
+  String robotClass = "org.usfirst.frc.team0000.Robot"
+  String deployFile = "FRCUserProgram.jar"
+
+  String wpilib_version = "+"   // Change this to specify WPILibJ version
+  String ntcore_version = "+"   // Change this to specify NetworkTables-Core version
+  String wpi_branch = "release" // Change this to 'development' if you want beta / incubating versions
+
+  def deployers = []            // Special deployment instructions, see source files for implementation
+}
+
+```
