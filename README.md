@@ -59,7 +59,7 @@ class GradleRIOExtensions {
 
   String wpilib_version = "+"   // Change this to specify WPILibJ version
   String ntcore_version = "+"   // Change this to specify NetworkTables-Core version
-  String wpi_branch = "release" // Change this to 'development' if you want beta / incubating versions
+  String wpi_branch = "release" // Change this to 'development' if you want internal versions, else use 'release' for more stable, public versions.
 
   def deployers = []            // Special deployment instructions, see source files for implementation
 }
