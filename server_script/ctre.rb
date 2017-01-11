@@ -25,11 +25,13 @@ if FETCH_NEW
     FileUtils.rm_rf(TMPDIR) if File.exists?(TMPDIR)
     FileUtils.mkdir_p(TMPDIR)
 
+    puts "Fetching CTRE Release..."
     tmp = open(zip_file, "wb")
     open(URL, "rb") do |readfile|
         tmp.write(readfile.read)
     end
     tmp.close
+    puts "CTRE Release Fetched!"
 end
 
 artifacts = [ [ARTIFACT_ZIP, zip_file] ]
@@ -57,6 +59,7 @@ end
 
 artifacts.each do |a|
     artifact_id = a[0]
+    puts "Populating Maven Artifact #{artifact_id}..."
     artifact_tmp = a[1]
     base_dir = "#{BASEPATH}/#{artifact_id}"
     vers_dir = "#{base_dir}/#{vers}"
@@ -99,4 +102,5 @@ artifacts.each do |a|
     File.write meta_file, metadata
     File.write "#{meta_file}.md5", Digest::MD5.hexdigest(metadata)
     File.write "#{meta_file}.sha1", Digest::SHA1.hexdigest(metadata)
+    puts "Artifact Populated!"
 end
