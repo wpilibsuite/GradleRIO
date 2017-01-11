@@ -6,6 +6,7 @@ require 'digest'
 
 # Nightly Script that runs on my server to download CTRE Toolsuite and make it available
 # as a maven download
+# Requires gem rubyzip
 
 # All new releases seem to be at this address, with no archiving for non-installer versions
 URL = "http://www.ctr-electronics.com/downloads/lib/CTRE_FRCLibs_NON-WINDOWS.zip"
