@@ -17,7 +17,23 @@ class WPIPlugin implements Plugin<Project> {
             url = "http://dev.imjac.in/maven/"
         }
 
-        project.configurations.maybeCreate("native")
+        // This is needed because Gradle will not download dependencies
+        // until they are referenced, so we need to do this before build
+        // as otherwise deploy will not work (will try to download while
+        // not connected to the internet)
+        project.task("resolveNativeDeps") {
+            group "GradleRIO"
+            description "Resolve Dependencies from Maven"
+            project.tasks.getByName("build").dependsOn it
+            doLast {
+                def conf = [project.configurations.native, project.configurations.nativeJar, project.configurations.nativeZip]
+                conf.each { c -> 
+                    c.dependencies.findAll { it != null }.collect {
+                        def libfile = c.files(it)[0]
+                    }
+                }
+            }
+        }
 
         apply_wpi_dependencies(project);
         apply_third_party_drivers(project);
@@ -39,7 +55,7 @@ class WPIPlugin implements Plugin<Project> {
         }
 
         project.dependencies.ext.wpilib = {
-            project.dependencies.add("native", project.dependencies.ext.wpilibNative())
+            project.dependencies.add("nativeJar", project.dependencies.ext.wpilibNative())
             ["edu.wpi.first.wpilibj:athena:${project.wpi.wpilibVersion}",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:arm",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:desktop"]
@@ -62,11 +78,11 @@ class WPIPlugin implements Plugin<Project> {
         // }
 
         project.dependencies.ext.talonSrxJni = {
-            "thirdparty.frc.ctre:Toolsuite-JNI:${project.wpi.talonSrxVersion}"
+            "thirdparty.frc.ctre:Toolsuite-Zip:${project.wpi.talonSrxVersion}@zip"
         }
 
         project.dependencies.ext.talonSrx = {
-            project.dependencies.add("native", project.dependencies.ext.talonSrxJni())
+            project.dependencies.add("nativeZip", project.dependencies.ext.talonSrxJni())
             ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.talonSrxVersion}"]
         }
     }

@@ -8,7 +8,6 @@ apply plugin: 'maven-publish'
 dependencies {
   compile gradleApi()
   compile localGroovy()
-  compile 'org.ajoberstar:grgit:1.6.0'
   compile('org.hidetake:groovy-ssh:2.7.0') {
       exclude module: 'groovy-all'
   }
@@ -42,6 +41,30 @@ publishing {
             artifact jar
         }
     }
+}
+
+task deleteQuickstart() {
+    doLast {
+        def f = new File("Quickstart.zip")
+        if (f.exists()) f.delete()
+    }
+}
+
+task zipQuickstart(type: Zip) {
+    dependsOn deleteQuickstart
+    from('quickstart')
+    include '**/*.cpp', '**/*.hpp', 'gradle/**/*', 'build.gradle', 'settings.gradle', 'gradlew', 'gradlew.bat', '.gitignore'
+    exclude '.vscode', '.gradle'
+    destinationDir projectDir
+    archiveName 'Quickstart.zip'
+}
+
+build.dependsOn zipQuickstart
+
+// Release both plugin and build other projects
+task fullRelease() {
+    dependsOn publishPlugins
+    dependsOn zipQuickstart
 }
 
 task wrapper(type: Wrapper) {
