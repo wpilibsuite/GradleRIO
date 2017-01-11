@@ -1,12 +1,7 @@
 package jaci.openrio.gradle;
 
-import org.gradle.api.*;
-import java.util.jar.*;
-import java.io.*;
-
-import org.gradle.logging.StyledTextOutput;
-import org.gradle.logging.StyledTextOutputFactory;
-import static org.gradle.logging.StyledTextOutput.Style;
+import org.gradle.api.Project
+import java.util.jar.Manifest
 
 public class WPIProvider {
 
@@ -15,7 +10,7 @@ public class WPIProvider {
   public static void init(Project project) {
     readManifest()
     if (flavour == "GRADLERIO") {
-      addWPILibraries(project)
+//      addWPILibraries(project)
     } else if (flavour == "TOAST") {
       Toast.init(project)
     }
