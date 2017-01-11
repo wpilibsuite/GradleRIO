@@ -15,8 +15,8 @@ class GradleRIO implements Plugin<Project> {
     project.getConfigurations().maybeCreate('compile')
 
     def sshAntTask = project.getConfigurations().maybeCreate('sshAntTask')
-    project.dependencies.add(sshAntTask.name, 'org.apache.ant:ant-jsch:1.7.1')
-    project.dependencies.add(sshAntTask.name, 'jsch:jsch:0.1.29')
+    project.dependencies.add(sshAntTask.name, 'org.apache.ant:ant-jsch:1.9.7')
+    project.dependencies.add(sshAntTask.name, 'com.jcraft:jsch:0.1.54')
 
     project.ant.taskdef(name: 'scp',
     classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
