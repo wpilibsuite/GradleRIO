@@ -68,21 +68,6 @@ class DeployPlugin implements Plugin<Project> {
                             put from: libfile, into: "/usr/local/frc/lib"
                         }
 
-                        def confJar = project.configurations.nativeJar
-                        confJar.dependencies.findAll { it != null }.collect {
-                            def jarfile = confJar.files(it)[0]
-                            def jarlocal = new File(project.buildDir, "depUnzip/${jarfile.name}")
-                            project.ant.unzip(src: jarfile,
-                                dest: jarlocal,
-                                overwrite: "true")
-                            project.fileTree(new File(jarlocal, "lib")).include("**/*.so").visit { vis ->
-                                put from: vis.file, into: "/usr/local/frc/lib"
-                            }
-                            project.fileTree(new File(jarlocal, "java/lib")).include("**/*.so").visit { vis ->
-                                put from: vis.file, into: "/usr/local/frc/lib"
-                            }
-                        }
-
                         def confZip = project.configurations.nativeZip
                         confZip.dependencies.findAll { it != null }.collect {
                             def zipfile = confZip.files(it)[0]
@@ -90,10 +75,13 @@ class DeployPlugin implements Plugin<Project> {
                             project.ant.unzip(src: zipfile,
                                 dest: ziplocal,
                                 overwrite: "true")
-                            project.fileTree(new File(ziplocal, "lib")).include("**/*.so").visit { vis ->
+                            project.fileTree(ziplocal).include("*.so").visit { vis ->
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
-                            project.fileTree(new File(ziplocal, "java/lib")).include("**/*.so").visit { vis ->
+                            project.fileTree(new File(ziplocal, "lib")).include("*.so").visit { vis ->
+                                put from: vis.file, into: "/usr/local/frc/lib"
+                            }
+                            project.fileTree(new File(ziplocal, "java/lib")).include("*.so").visit { vis ->
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
                         }

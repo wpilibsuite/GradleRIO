@@ -26,7 +26,7 @@ class WPIPlugin implements Plugin<Project> {
             description "Resolve Dependencies from Maven"
             project.tasks.getByName("build").dependsOn it
             doLast {
-                def conf = [project.configurations.native, project.configurations.nativeJar, project.configurations.nativeZip]
+                def conf = [project.configurations.native, project.configurations.nativeZip]
                 conf.each { c -> 
                     c.dependencies.findAll { it != null }.collect {
                         def libfile = c.files(it)[0]
@@ -51,14 +51,21 @@ class WPIPlugin implements Plugin<Project> {
         // }
 
         project.dependencies.ext.wpilibNative = {
-            "edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}"
+            ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}",
+             "org.opencv:opencv-jni:${project.wpi.cscoreVersion}:linux-arm",
+             "edu.wpi.first.wpilib:athena-runtime:${project.wpi.wpilibVersion}@zip",
+             "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:athena-uberzip@zip"]
         }
 
         project.dependencies.ext.wpilib = {
-            project.dependencies.add("nativeJar", project.dependencies.ext.wpilibNative())
+            project.dependencies.ext.wpilibNative().each {
+                project.dependencies.add("nativeZip", it)
+            }
             ["edu.wpi.first.wpilibj:athena:${project.wpi.wpilibVersion}",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:arm",
-             "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:desktop"]
+             "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:desktop",
+             "org.opencv:opencv-java:${project.wpi.opencvVersion}",
+             "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}"]
         }
 
         project.dependencies.ext.wpilibSource = {

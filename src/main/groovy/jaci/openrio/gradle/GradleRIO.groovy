@@ -9,7 +9,6 @@ import jaci.openrio.gradle.frc.WPIPlugin;
 class GradleRIO implements Plugin<Project> {
     void apply(Project project) {
         project.configurations.maybeCreate("native")
-        project.configurations.maybeCreate("nativeJar")
         project.configurations.maybeCreate("nativeZip")
         
         project.with {
