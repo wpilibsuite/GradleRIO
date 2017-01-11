@@ -16,7 +16,7 @@ ARTIFACT_JNI = "Toolsuite-JNI"
 ARTIFACT_ZIP = "Toolsuite-Zip"
 BASEPATH = "maven/#{GROUP.gsub('.', '/')}"
 TMPDIR = "tmp"
-FETCH_NEW = false
+FETCH_NEW = true
 
 zip_file = "#{TMPDIR}/ctre_toolsuite.zip"
 vers = "0.0.0"
