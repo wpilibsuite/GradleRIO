@@ -63,8 +63,8 @@ artifacts.each do |a|
     artifact_tmp = a[1]
     base_dir = "#{BASEPATH}/#{artifact_id}"
     vers_dir = "#{base_dir}/#{vers}"
-    artifact_file = "#{vers_dir}/#{File.basename a[1]}"
-    pom_file = "#{vers_dir}/#{File.basename(a[1], ".*")}.pom"
+    artifact_file = "#{vers_dir}/#{artifact_id}-#{vers}#{File.extname(a[1])}"
+    pom_file = "#{vers_dir}/#{File.basename(artifact_file, ".*")}.pom"
     meta_file = "#{base_dir}/maven_metadata.xml"
 
     FileUtils.mkdir_p vers_dir
@@ -93,7 +93,7 @@ artifacts.each do |a|
         "   <versioning>",
         "       <release>#{vers}</release>",
         "       <versions>",
-        [Dir.glob("#{base_dir}/*").map { |f| "           <version>#{File.basename f}</version>" }],
+        [Dir.glob("#{base_dir}/*").reject { |x| x.include? "maven_metadata" }.map { |f| "           <version>#{File.basename f}</version>" }],
         "       </versions>",
         "       <lastUpdated>#{DateTime.now.new_offset(0).strftime("%Y%m%d%H%M%S")}</lastUpdated>",
         "   </versioning>",

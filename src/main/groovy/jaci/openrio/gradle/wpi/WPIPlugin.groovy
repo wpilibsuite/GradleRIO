@@ -35,11 +35,11 @@ class WPIPlugin implements Plugin<Project> {
         // }
 
         project.dependencies.ext.wpilibNative = {
-            ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}"]
+            "edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}"
         }
 
         project.dependencies.ext.wpilib = {
-            project.dependencies.add("native", wpilibNative())
+            project.dependencies.add("native", project.dependencies.ext.wpilibNative())
             ["edu.wpi.first.wpilibj:athena:${project.wpi.wpilibVersion}",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:arm",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:desktop"]
@@ -54,15 +54,19 @@ class WPIPlugin implements Plugin<Project> {
     void apply_third_party_drivers(Project project) {
 
         // dependencies {
-        //     compile deviceLibraries()        // This will include myLibrary above
+        //     compile talonSrx()
+        //     
+        //     // Use this to include a device library we don't provide, from your file system.
+        //     compile fileTree(dir: 'libs', include: '**/*.jar')
+        //     native  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
         project.dependencies.ext.talonSrxJni = {
-            ["thirdparty.frc.ctre:Toolsuite-JNI:${project.wpi.talonSrxVersion}"]
+            "thirdparty.frc.ctre:Toolsuite-JNI:${project.wpi.talonSrxVersion}"
         }
 
         project.dependencies.ext.talonSrx = {
-            project.dependencies.add("native", talonSrxJni())
+            project.dependencies.add("native", project.dependencies.ext.talonSrxJni())
             ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.talonSrxVersion}"]
         }
     }
