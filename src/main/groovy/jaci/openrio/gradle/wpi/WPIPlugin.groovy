@@ -58,7 +58,7 @@ class WPIPlugin implements Plugin<Project> {
 
         project.dependencies.ext.wpilibNative = {
             ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}",
-             "org.opencv:opencv-jni:${project.wpi.cscoreVersion}:linux-arm",
+             "org.opencv:opencv-jni:${project.wpi.opencvVersion}:linux-arm",
              "edu.wpi.first.wpilib:athena-runtime:${project.wpi.wpilibVersion}@zip",
              "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:athena-uberzip@zip"]
         }
@@ -71,7 +71,7 @@ class WPIPlugin implements Plugin<Project> {
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:arm",
              "edu.wpi.first.wpilib.networktables.java:NetworkTables:${project.wpi.ntcoreVersion}:desktop",
              "org.opencv:opencv-java:${project.wpi.opencvVersion}",
-             "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}"]
+             "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:arm"]
         }
 
         project.dependencies.ext.wpilibSource = {
