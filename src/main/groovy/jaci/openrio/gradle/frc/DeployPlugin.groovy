@@ -85,6 +85,7 @@ class DeployPlugin implements Plugin<Project> {
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
                         }
+                        execute "ldconfig"
                     }
                     session(host: project.frc._active_robot_address, user: 'lvuser', timeoutSec: project.frc.deployTimeout, knownHosts: AllowAnyHosts.instance) {
                         execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t", ignoreError: true // Just in case
