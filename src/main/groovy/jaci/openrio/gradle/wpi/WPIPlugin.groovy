@@ -24,7 +24,7 @@ class WPIPlugin implements Plugin<Project> {
         project.task("resolveNativeDeps") {
             group "GradleRIO"
             description "Resolve Dependencies from Maven"
-            project.tasks.getByName("build").dependsOn it
+            //project.tasks.getByName("build").dependsOn it
             doLast {
                 def conf = [project.configurations.native, project.configurations.nativeZip]
                 conf.each { c -> 
@@ -32,6 +32,12 @@ class WPIPlugin implements Plugin<Project> {
                         def libfile = c.files(it)[0]
                     }
                 }
+            }
+        }
+
+        project.with {
+            afterEvaluate {
+                build.dependsOn resolveNativeDeps
             }
         }
 
