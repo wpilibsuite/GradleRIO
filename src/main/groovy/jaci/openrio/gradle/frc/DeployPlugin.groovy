@@ -85,6 +85,12 @@ class DeployPlugin implements Plugin<Project> {
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
                         }
+                        def instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host")
+                        put from: instream, into: "/usr/local/frc/bin/netconsole-host"
+                        instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host.properties")
+                        put from: instream, into: "/usr/local/frc/bin/netconsole-host.properties"
+                        execute "chmod +x /usr/local/frc/bin/netconsole-host /usr/local/frc/bin/netconsole-host.properties"
+                        
                         execute "ldconfig"
                     }
                     session(host: project.frc._active_robot_address, user: 'lvuser', timeoutSec: project.frc.deployTimeout, knownHosts: AllowAnyHosts.instance) {
