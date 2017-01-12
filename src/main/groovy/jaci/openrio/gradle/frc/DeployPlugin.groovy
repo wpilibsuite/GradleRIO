@@ -75,13 +75,13 @@ class DeployPlugin implements Plugin<Project> {
                             project.ant.unzip(src: zipfile,
                                 dest: ziplocal,
                                 overwrite: "true")
-                            project.fileTree(ziplocal).include("*.so").visit { vis ->
+                            project.fileTree(ziplocal).include("*.so*").visit { vis ->
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
-                            project.fileTree(new File(ziplocal, "lib")).include("*.so").visit { vis ->
+                            project.fileTree(new File(ziplocal, "lib")).include("*.so*").visit { vis ->
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
-                            project.fileTree(new File(ziplocal, "java/lib")).include("*.so").visit { vis ->
+                            project.fileTree(new File(ziplocal, "java/lib")).include("*.so*").visit { vis ->
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
                         }
