@@ -85,8 +85,8 @@ class DeployPlugin implements Plugin<Project> {
                                 put from: vis.file, into: "/usr/local/frc/lib"
                             }
                         }
-                        
-                        execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t", ignoreError: true        // Kill user code
+
+                        execute "killall -q netconsole-host 2> /dev/null || :", ignoreError: true       // Kill netconsole
                         def instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host")
                         put from: instream, into: "/usr/local/frc/bin/netconsole-host"
                         instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host.properties")
@@ -96,6 +96,7 @@ class DeployPlugin implements Plugin<Project> {
                         execute "ldconfig"
                     }
                     session(host: project.frc._active_robot_address, user: 'lvuser', timeoutSec: project.frc.deployTimeout, knownHosts: AllowAnyHosts.instance) {
+                        execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null", ignoreError: true        // Kill user code
                         execute "mkdir -p ${project.frc.deployDirectory}"
                         put from: file, into: project.frc.deployDirectory
                         def binname = "${project.frc.deployDirectory}/${file.name}"
