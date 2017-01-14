@@ -1,7 +1,6 @@
 .gradle
 build
 .idea
-quickstart/
 quickstart/gradle/libs/
 server_script/maven/
 server_script/tmp/
