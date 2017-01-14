@@ -1,6 +1,9 @@
 .gradle
 build
 .idea
+*.ipr
+*.iml
+*.iws
 quickstart/gradle/libs/
 server_script/maven/
 server_script/tmp/

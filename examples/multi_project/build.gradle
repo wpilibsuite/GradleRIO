@@ -1,0 +1,57 @@
+plugins {
+    id "jaci.openrio.gradle.GradleRIO" version "latest-version" apply false
+}
+
+// The allprojects {} block is executed for all projects, both root and subprojects
+allprojects {
+    apply plugin: "java"
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "jaci.openrio.gradle.GradleRIO"
+
+    // Don't deploy our subprojects, instead, build them into the main jar.
+    frc {
+        team = "5333"
+
+        deploy = false
+    }
+}
+
+// These are your projects. 
+// The NonFrcLibrary is not dependent on WPILib
+project(":NonFrcLibrary") { }
+
+// The Library is dependent on WPILib
+project(":Library") {
+    dependencies {
+        compile project(path: ":NonFrcLibrary")
+        
+        compile wpilib()
+        compile talonSrx()
+    }
+}
+
+// Everything from this point on is only for the root project
+frc {
+    deploy = true
+    robotClass = "test.frc.TestRobot"
+}
+
+dependencies {
+    // Depend on Library, which in turn, will depend on NonFrcLibrary
+    compile project(path: ':Library')
+}
+
+def robotManifest = {
+    attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+    attributes 'Robot-Class': frc.robotClass
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest robotManifest
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
+}

@@ -42,6 +42,7 @@ frc {
     team = "5333"                         // Your team number. Required
     robotClass = "org.usfirst.myteam"     // Your robot main class (where you implement RobotBase / IterativeRobot)
     
+    deploy = true                         // Whether to deploy to the RoboRIO or not. By default, this is true.
     deployTimeout = 3                     // The time (in seconds) to wait before timing out on an SSH connection
     deployDirectory = "/home/lvuser"      // The directory to deploy your jar to
     rioIP = "10.53.33.2"                  // The IP Address of your RoboRIO. Automatically calculated from team number if not set
@@ -49,6 +50,7 @@ frc {
 
     robotCommand = "./something_else"     // The command to run when starting your robot program. This is calculated by default, with runArguments
     runArguments = "--hello"              // The command-line arguments to launch your jar with. By default, there are none. Not used if robotCommand set
+    jvmArguments = "-Xmx90m"              // The arguments to give to the JVM. By default, there are none. Not used if robotCommand is set.
     useDebugCommand = true                // Set to true if you want to use a remote debugger with your robot program. Not used if robotCommand is set.
 }
 
