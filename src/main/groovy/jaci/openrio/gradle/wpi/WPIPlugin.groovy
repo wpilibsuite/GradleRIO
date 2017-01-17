@@ -26,7 +26,7 @@ class WPIPlugin implements Plugin<Project> {
             description "Resolve Dependencies from Maven"
             //project.tasks.getByName("build").dependsOn it
             doLast {
-                def conf = [project.configurations.native, project.configurations.nativeZip]
+                def conf = [project.configurations.nativeLib, project.configurations.nativeZip]
                 conf.each { c -> 
                     c.dependencies.findAll { it != null }.collect {
                         def libfile = c.files(it)[0]
@@ -87,7 +87,7 @@ class WPIPlugin implements Plugin<Project> {
         //     
         //     // Use this to include a device library we don't provide, from your file system.
         //     compile fileTree(dir: 'libs', include: '**/*.jar')
-        //     native  fileTree(dir: 'libs', include: '**/*.so')
+        //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
         project.dependencies.ext.talonSrxJni = {

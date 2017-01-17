@@ -63,7 +63,7 @@ class DeployPlugin implements Plugin<Project> {
                     def file = project.jar.archivePath
                     project.deploy_ssh.run {
                         session(host: project.frc._active_robot_address, user: 'admin', timeoutSec: project.frc.deployTimeout, knownHosts: AllowAnyHosts.instance) {
-                            def conf = project.configurations.native
+                            def conf = project.configurations.nativeLib
                             conf.dependencies.findAll { it != null }.collect {
                                 def libfile = conf.files(it)[0]
                                 put from: libfile, into: "/usr/local/frc/lib"

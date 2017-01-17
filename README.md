@@ -69,6 +69,6 @@ dependencies {
 
     // Use these to link your own third-party device libraries (e.g. navX)
     compile fileTree(dir: 'libs', include: '**/*.jar')
-    native  fileTree(dir: 'libs', include: '**/*.so')
+    nativeLib  fileTree(dir: 'libs', include: '**/*.so')
 }
 ```
