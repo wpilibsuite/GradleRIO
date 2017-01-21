@@ -12,6 +12,8 @@ deploy your code to the RoboRIO from the command-line, or through the IDE.
 - ```gradlew build``` will build your Robot Code
 - ```gradlew build deploy``` will build and deploy your code to the RoboRIO
 
+**At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
+
 ## Download
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory. Update the version in the `build.gradle` file with the [latest plugin version](https://plugins.gradle.org/plugin/jaci.openrio.gradle.GradleRIO) and you're good to go!
 Please note that your java files must be in `src/main/java`, not just `src/`.
