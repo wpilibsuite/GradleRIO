@@ -8,8 +8,8 @@ require 'digest'
 # as a maven download
 # Requires gem rubyzip
 
-# All new releases seem to be at this address, with no archiving for non-installer versions
-URL = "http://www.ctr-electronics.com/downloads/lib/CTRE_FRCLibs_NON-WINDOWS.zip"
+URL = "http://www.ctr-electronics.com/downloads/lib/"
+LIBREGEX = /href=\"(CTRE_FRCLibs_NON-WINDOWS(_[a-zA-Z0-9\.]+)?\.zip)\"/
 GROUP = "thirdparty.frc.ctre"
 ARTIFACT_JAVA = "Toolsuite-Java"
 ARTIFACT_JNI = "Toolsuite-JNI"
@@ -28,7 +28,10 @@ if FETCH_NEW
     puts "Fetching CTRE Release..."
     tmp = open(zip_file, "wb")
     open(URL, "rb") do |readfile|
-        tmp.write(readfile.read)
+		lib = readfile.read.scan(LIBREGEX).last.first	# Read HTML, parse releases, get the latest, get the full name (regex group 1)
+		open("#{URL}#{lib}", "rb") do |readfile_zip|
+			tmp.write(readfile_zip.read)
+		end
     end
     tmp.close
     puts "CTRE Release Fetched!"
@@ -40,6 +43,7 @@ Zip::File.open(zip_file) do |zip|
     entry = zip.select { |x| x.name.include? "VERSION_NOTES" }.first
     vers_content = entry.get_input_stream.read
     vers = vers_content.match(/CTRE Toolsuite: ([0-9\.a-zA-Z]*)/)[1]
+	puts "CTRE Version: #{vers}"
 
     libs = zip.select { |x| x.name.include? "java/lib/" }
     jar = libs.select { |x| x.name.include? ".jar" }.first
