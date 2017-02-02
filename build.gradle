@@ -22,8 +22,8 @@ archivesBaseName = "GradleRIO"
 version = "2017.1.1"
 
 pluginBundle {
-    website = 'https://github.com/Open-RIO/GradleRIO-C'
-    vcsUrl = 'https://github.com/Open-RIO/GradleRIO-C'
+    website = 'https://github.com/Open-RIO/GradleRIO'
+    vcsUrl = 'https://github.com/Open-RIO/GradleRIO'
     description = 'Managing FRC Java projects, the Gradle way'
     tags = ['frc', 'wpilib', 'toast', 'openrio', 'gradlerio']
 
