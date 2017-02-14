@@ -7,7 +7,7 @@ plugins {
 
 frc {
     team = "5333"
-    robotClass = "org.usfirst.frc.team0000.Robot"
+    robotClass = "org.usfirst.frc.team0000.robot.Robot"
 }
 
 dependencies {
