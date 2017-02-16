@@ -15,14 +15,14 @@ def populate_artifacts artifacts, vers
         File.write "#{artifact_file}.sha1", Digest::SHA1.file(artifact_file).hexdigest
 
         pom = <<-POM
-    <?xml version="1.0" encoding="UTF-8"?>
-    <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <modelVersion>4.0.0</modelVersion>
-        <groupId>#{GROUP}</groupId>
-        <artifactId>#{artifact_id}</artifactId>
-        <version>#{vers}</version>
-    </project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>#{GROUP}</groupId>
+    <artifactId>#{artifact_id}</artifactId>
+    <version>#{vers}</version>
+</project>
         POM
         File.write pom_file, pom
         File.write "#{pom_file}.md5", Digest::MD5.hexdigest(pom)
