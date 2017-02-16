@@ -63,11 +63,13 @@ wpi {
     cscoreVersion = "+"                   // The CSCore version to use
 
     talonSrxVersion = "+"                 // The CTRE Toolsuite (Talon SRX) version to use.
+    navxVersion = "+"                     // The NavX Library version to use.
 }
 
 dependencies {
     compile wpilib()                    // Compile with WPILib and it's dependencies (ntcore, opencv, cscore)
     compile talonSrx()                  // Compile with the Talon SRX Library
+    compile navx()                      // Compile with the KauaiLab's NavX-MXP or NavX-Micro library
 
     // Use these to link your own third-party device libraries (e.g. navX)
     compile fileTree(dir: 'libs', include: '**/*.jar')

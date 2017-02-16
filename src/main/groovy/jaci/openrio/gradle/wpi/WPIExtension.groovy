@@ -8,6 +8,7 @@ class WPIExtension {
     String cscoreVersion = "+"
 
     String talonSrxVersion = "+"
+    String navxVersion = "+"
 
     WPIExtension(Project project) { }
 }

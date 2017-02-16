@@ -84,6 +84,7 @@ class WPIPlugin implements Plugin<Project> {
 
         // dependencies {
         //     compile talonSrx()
+        //     compile navx()
         //     
         //     // Use this to include a device library we don't provide, from your file system.
         //     compile fileTree(dir: 'libs', include: '**/*.jar')
@@ -97,6 +98,10 @@ class WPIPlugin implements Plugin<Project> {
         project.dependencies.ext.talonSrx = {
             project.dependencies.add("nativeZip", project.dependencies.ext.talonSrxJni())
             ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.talonSrxVersion}"]
+        }
+
+        project.dependencies.ext.navx = {
+            ["thirdparty.frc.kauai:Navx-Java:${project.wpi.navxVersion}"]
         }
     }
 }
