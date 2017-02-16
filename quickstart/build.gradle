@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "latest-version"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.1.2"
 }
 
 frc {
