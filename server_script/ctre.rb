@@ -11,6 +11,7 @@ require_relative 'common'
 
 URL = "http://www.ctr-electronics.com/downloads/lib/"
 LIBREGEX = /href=\"(CTRE_FRCLibs_NON-WINDOWS(_[a-zA-Z0-9\.]+)?\.zip)\"/
+NUMREGEX = /[0-9]+/
 GROUP = "thirdparty.frc.ctre"
 ARTIFACT_JAVA = "Toolsuite-Java"
 ARTIFACT_JNI = "Toolsuite-JNI"
@@ -29,7 +30,9 @@ if FETCH_NEW
     puts "Fetching CTRE Release..."
     tmp = open(zip_file, "wb")
     open(URL, "rb") do |readfile|
-		lib = readfile.read.scan(LIBREGEX).last.first	# Read HTML, parse releases, get the latest, get the full name (regex group 1)
+        libs = readfile.read.scan(LIBREGEX).select { |x| x.last != nil }
+        libs.sort_by! { |x| tot=1; x.last.scan(NUMREGEX).reverse.map { |y| tot *= 100; y.to_i * tot }.inject(0){|sum,x| sum + x } }
+        lib = libs.last.first	# Read HTML, parse releases, get the latest, get the full name (regex group 1)
 		open("#{URL}#{lib}", "rb") do |readfile_zip|
 			tmp.write(readfile_zip.read)
 		end
