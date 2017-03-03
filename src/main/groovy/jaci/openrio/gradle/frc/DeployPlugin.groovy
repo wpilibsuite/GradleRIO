@@ -64,9 +64,19 @@ class DeployPlugin implements Plugin<Project> {
                     project.deploy_ssh.run {
                         session(host: project.frc._active_robot_address, user: 'admin', timeoutSec: project.frc.deployTimeout, knownHosts: AllowAnyHosts.instance) {
                             def conf = project.configurations.nativeLib
+                            execute "mkdir -p /usr/local/frc/lib/_gradlerio"
+
                             conf.dependencies.findAll { it != null }.collect {
                                 def libfile = conf.files(it)[0]
-                                put from: libfile, into: "/usr/local/frc/lib"
+                                project.ant.checksum(file: libfile)
+                                def check = new File("${libfile.absolutePath}.MD5").text.trim();
+                                def riocheck = execute "cat /usr/local/frc/lib/_gradlerio/${libfile.name}.MD5 2> /dev/null || echo 'none'", ignoreError: true
+                                
+                                if (check != riocheck.trim()) {
+                                    println "RoboRIO Library ${libfile.name} out of date! Updating Library"
+                                    put from: libfile, into: "/usr/local/frc/lib"
+                                    put from: "${libfile.path}.MD5", into: "/usr/local/frc/lib/_gradlerio"
+                                }
                             }
 
                             def confZip = project.configurations.nativeZip
@@ -77,13 +87,37 @@ class DeployPlugin implements Plugin<Project> {
                                     dest: ziplocal,
                                     overwrite: "true")
                                 project.fileTree(ziplocal).include("*.so*").visit { vis ->
-                                    put from: vis.file, into: "/usr/local/frc/lib"
+                                    project.ant.checksum(file: vis.file)
+                                    def check = new File("${vis.file.absolutePath}.MD5").text.trim();
+                                    def riocheck = execute "cat /usr/local/frc/lib/_gradlerio/${vis.file.name}.MD5 2> /dev/null || echo 'none'", ignoreError: true
+                                    
+                                    if (check != riocheck.trim()) {
+                                        println "RoboRIO Library ${vis.file.name} out of date! Updating Library"
+                                        put from: vis.file, into: "/usr/local/frc/lib"
+                                        put from: "${vis.file.path}.MD5", into: "/usr/local/frc/lib/_gradlerio"
+                                    }
                                 }
                                 project.fileTree(new File(ziplocal, "lib")).include("*.so*").visit { vis ->
-                                    put from: vis.file, into: "/usr/local/frc/lib"
+                                    project.ant.checksum(file: vis.file)
+                                    def check = new File("${vis.file.absolutePath}.MD5").text.trim();
+                                    def riocheck = execute "cat /usr/local/frc/lib/_gradlerio/${vis.file.name}.MD5 2> /dev/null || echo 'none'", ignoreError: true
+                                    
+                                    if (check != riocheck.trim()) {
+                                        println "RoboRIO Library ${vis.file.name} out of date! Updating Library"
+                                        put from: vis.file, into: "/usr/local/frc/lib"
+                                        put from: "${vis.file.path}.MD5", into: "/usr/local/frc/lib/_gradlerio"
+                                    }
                                 }
                                 project.fileTree(new File(ziplocal, "java/lib")).include("*.so*").visit { vis ->
-                                    put from: vis.file, into: "/usr/local/frc/lib"
+                                    project.ant.checksum(file: vis.file)
+                                    def check = new File("${vis.file.absolutePath}.MD5").text.trim();
+                                    def riocheck = execute "cat /usr/local/frc/lib/_gradlerio/${vis.file.name}.MD5 2> /dev/null || echo 'none'", ignoreError: true
+                                    
+                                    if (check != riocheck.trim()) {
+                                        println "RoboRIO Library ${vis.file.name} out of date! Updating Library"
+                                        put from: vis.file, into: "/usr/local/frc/lib"
+                                        put from: "${vis.file.path}.MD5", into: "/usr/local/frc/lib/_gradlerio"
+                                    }
                                 }
                             }
 
