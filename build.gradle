@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.plugin-publish" version "0.9.5"
+    id "com.gradle.plugin-publish" version "0.9.7"
 }
 
 apply plugin: 'groovy'
@@ -19,7 +19,7 @@ repositories {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2017.1.5"
+version = "2017.2.3"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'

@@ -58,7 +58,7 @@ class WPIPlugin implements Plugin<Project> {
 
         project.dependencies.ext.wpilibNative = {
             ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}",
-             "org.opencv:opencv-jni:${project.wpi.opencvVersion}:linux-arm",
+             "org.opencv:opencv-jni:${project.wpi.opencvVersion}:linuxathena",
              "edu.wpi.first.wpilib:athena-runtime:${project.wpi.wpilibVersion}@zip",
              "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:athena-uberzip@zip"]
         }
