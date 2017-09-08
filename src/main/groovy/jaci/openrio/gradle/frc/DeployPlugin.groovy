@@ -132,8 +132,6 @@ class DeployPlugin implements Plugin<Project> {
                             execute "killall -q netconsole-host 2> /dev/null || :", ignoreError: true       // Kill netconsole
                             def instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host")
                             put from: instream, into: "/usr/local/frc/bin/netconsole-host"
-                            instream = DeployPlugin.class.getClassLoader().getResourceAsStream("netconsole/netconsole-host.properties")
-                            put from: instream, into: "/usr/local/frc/bin/netconsole-host.properties"
                             execute "chmod +x /usr/local/frc/bin/netconsole-host /usr/local/frc/bin/netconsole-host.properties"
                             
                             execute "ldconfig"

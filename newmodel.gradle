@@ -1,0 +1,77 @@
+// Java
+plugins {
+    id "java"
+    id "eclipse"
+    id "idea"
+    id "jaci.openrio.gradle.GradleRIO" version "..."
+}
+
+model {
+    frc {
+        team = "5333"
+        java {
+            robotClass = "myRobotClass"
+        }
+    }
+
+    deploy {
+        FRCJavaTarget()
+    }
+}
+
+dependencies {
+    compile wpilib()
+    compile talonSrx()
+    compile navx()
+}
+
+// C++
+plugins {
+    id "cpp"
+    id "jaci.openrio.gradle.GradleRIO" version "..."
+}
+
+model {
+    frc {
+        team = "5333"
+    }
+
+    targets {
+        FRCCppTarget()
+    }
+
+    components {
+        my_program(FRCUserProgram) {
+            targetPlatform "roborio-arm"
+            target "roborio"
+
+            sources.cpp {
+                sources.srcDirs "src"
+                exportedHeaders.srcDirs "include"
+                lib library: "wpilib", linkage: "static"        // TODO: maybe just wpilib()
+                lib library: "talonSrx", linkage: "static"
+                lib library: "navx", linkage: "static"
+            }
+        }
+    }
+}
+
+// Vision
+plugins {
+    id "cpp"
+    id "jaci.openrio.gradle.GradleRIO" version "..."
+}
+
+model {
+    targets {
+        vision {
+            target "10.99.99.123"
+            target "vision-9999.local"
+            directory "/home/user/folder"
+            timeout 3
+        }
+    }
+    deployers {
+        
+    }
+}
