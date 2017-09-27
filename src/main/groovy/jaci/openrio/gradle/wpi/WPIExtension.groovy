@@ -1,5 +1,7 @@
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
+package jaci.openrio.gradle.wpi
+
+import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.Project
 
 class WPIExtension {
     String wpilibVersion = "+"
@@ -7,7 +9,7 @@ class WPIExtension {
     String opencvVersion = "+"
     String cscoreVersion = "+"
 
-    String talonSrxVersion = "+"
+    String ctreVersion = "+"
     String navxVersion = "+"
 
     WPIExtension(Project project) { }

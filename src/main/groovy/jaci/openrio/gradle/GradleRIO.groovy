@@ -1,24 +1,23 @@
 package jaci.openrio.gradle
 
-import org.gradle.api.*;
-import groovy.util.*;
+import org.gradle.api.*
+import groovy.util.*
 
-import jaci.openrio.gradle.frc.DeployPlugin;
-import jaci.openrio.gradle.frc.WPIPlugin;
+import jaci.openrio.gradle.deploy.DeployPlugin;
+import jaci.openrio.gradle.wpi.WPIPlugin;
 
 class GradleRIO implements Plugin<Project> {
     void apply(Project project) {
         project.configurations.maybeCreate("nativeLib")
         project.configurations.maybeCreate("nativeZip")
         
-        project.with {
-            apply plugin: DeployPlugin
-            apply plugin: WPIPlugin
-        }
+        project.pluginManager.apply('jaci.gradle.EmbeddedTools')
+        project.pluginManager.apply(DeployPlugin)
+        project.pluginManager.apply(WPIPlugin)
     }
 
     // ~/.gradle
     static File getGlobalDirectory() {
-        return new File("${System.getProperty('user.home')}/.gradle", "gradlerioc")
+        return new File("${System.getProperty('user.home')}/.gradle", "gradlerio")
     }
 }

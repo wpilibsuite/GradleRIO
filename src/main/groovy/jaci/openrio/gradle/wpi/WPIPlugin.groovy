@@ -1,7 +1,11 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.wpi
 
-import org.gradle.api.*;
-import groovy.util.*;
+import jaci.openrio.gradle.GradleRIO
+
+import org.gradle.api.*
+import groovy.util.*
+
+import java.security.MessageDigest
 
 class WPIPlugin implements Plugin<Project> {
     void apply(Project project) {
@@ -35,9 +39,59 @@ class WPIPlugin implements Plugin<Project> {
             }
         }
 
+        project.task("wpiVersions") {
+            group "GradleRIO"
+            description "Print all versions of things in the wpi block"
+            doLast {
+                println "WPILib: ${project.wpi.wpilibVersion}"
+                println "NTCore: ${project.wpi.ntcoreVersion}"
+                println "OpenCV: ${project.wpi.opencvVersion}"
+                println "CSCore: ${project.wpi.cscoreVersion}"
+                println "CTRE: ${project.wpi.ctreVersion}"
+                println "NavX: ${project.wpi.navxVersion}"
+            }
+        }
+
         project.with {
             afterEvaluate {
                 build.dependsOn resolveNativeDeps
+            }
+        }
+
+        project.wpi.ext.recommended = { year ->
+            def md5 = MessageDigest.getInstance("MD5")
+            md5.update(year.bytes)
+            def cachename = md5.digest().encodeHex().toString()
+            def cachefolder = new File(GradleRIO.getGlobalDirectory(), "cache/recommended")
+            cachefolder.mkdirs()
+            def cachefile = new File(cachefolder, cachename)
+
+            def versions = null
+
+            if (project.gradle.startParameter.isOffline()) {
+                // Access Cache
+                println "Using offline recommended version cache..."
+                versions = cachefile.text
+            } else {
+                try {
+                    versions = "http://openrio.imjac.in/gradlerio/recommended".toURL().text
+                    cachefile.text = versions
+                } catch (all) {
+                    println "Using offline recommended version cache..."
+                    versions = cachefile.text
+                }
+            }
+
+            versions = new groovy.json.JsonSlurper().parseText(versions)[year]
+            project.with {
+                wpi {
+                    wpilibVersion versions["wpilib"] ?: "+"
+                    ntcoreVersion versions["ntcore"] ?: "+"
+                    opencvVersion versions["opencv"] ?: "+"
+                    cscoreVersion versions["cscore"] ?: "+"
+                    ctreVersion versions["ctre"] ?: "+"
+                    navxVersion versions["navx"] ?: "+"
+                }
             }
         }
 
@@ -83,7 +137,7 @@ class WPIPlugin implements Plugin<Project> {
     void apply_third_party_drivers(Project project) {
 
         // dependencies {
-        //     compile talonSrx()
+        //     compile ctre()
         //     compile navx()
         //     
         //     // Use this to include a device library we don't provide, from your file system.
@@ -91,13 +145,13 @@ class WPIPlugin implements Plugin<Project> {
         //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
-        project.dependencies.ext.talonSrxJni = {
-            "thirdparty.frc.ctre:Toolsuite-Zip:${project.wpi.talonSrxVersion}@zip"
+        project.dependencies.ext.ctreJni = {
+            "thirdparty.frc.ctre:Toolsuite-Zip:${project.wpi.ctreVersion}@zip"
         }
 
-        project.dependencies.ext.talonSrx = {
-            project.dependencies.add("nativeZip", project.dependencies.ext.talonSrxJni())
-            ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.talonSrxVersion}"]
+        project.dependencies.ext.ctre = {
+            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
+            ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.ctreVersion}"]
         }
 
         project.dependencies.ext.navx = {
