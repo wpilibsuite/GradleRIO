@@ -1,6 +1,5 @@
 package jaci.openrio.gradle.wpi
 
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 
 class WPIExtension {

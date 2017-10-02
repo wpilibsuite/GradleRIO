@@ -1,9 +1,7 @@
 package jaci.openrio.gradle.wpi
 
-import jaci.openrio.gradle.GradleRIO
-
-import org.gradle.api.*
-import groovy.util.*
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 import java.security.MessageDigest
 
