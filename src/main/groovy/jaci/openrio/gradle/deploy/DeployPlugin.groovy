@@ -2,21 +2,14 @@ package jaci.openrio.gradle.deploy
 
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
-import jaci.gradle.deployers.Deployer
-import jaci.gradle.deployers.DeployersSpec
-import jaci.gradle.deployers.FileArtifact
-import jaci.gradle.deployers.FileSetArtifact
-import jaci.gradle.deployers.JavaArtifact
+import jaci.gradle.deployers.*
 import jaci.gradle.targets.TargetsSpec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Copy
-import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
-import org.gradle.model.Validate
 
 class DeployPlugin implements Plugin<Project> {
 
