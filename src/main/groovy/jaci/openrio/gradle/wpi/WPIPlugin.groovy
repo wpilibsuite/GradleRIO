@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi
 
+import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -23,11 +24,11 @@ class WPIPlugin implements Plugin<Project> {
             }
         }
 
-        project.wpi.ext.recommended = { year ->
+        project.wpi.ext.recommended = { String year ->
             def md5 = MessageDigest.getInstance("MD5")
             md5.update(year.bytes)
             def cachename = md5.digest().encodeHex().toString()
-            def cachefolder = new File(GradleRIO.getGlobalDirectory(), "cache/recommended")
+            def cachefolder = new File(GradleRIOPlugin.getGlobalDirectory(), "cache/recommended")
             cachefolder.mkdirs()
             def cachefile = new File(cachefolder, cachename)
 
