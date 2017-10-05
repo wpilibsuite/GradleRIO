@@ -53,7 +53,7 @@ class WPIDependencies {
 
         project.dependencies.ext.wpilibNative = {
             ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}",
-             "org.opencv:opencv-jni:${project.wpi.opencvVersion}:linuxathena",
+             "org.opencv:opencv-jni:${project.wpi.opencvVersion}:${project.wpi.opencvVersion == "3.1.0" ? "linux-arm" : "linuxathena"}",
              "edu.wpi.first.wpilib:athena-runtime:${project.wpi.wpilibVersion}@zip",
              "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:athena-uberzip@zip"]
         }
