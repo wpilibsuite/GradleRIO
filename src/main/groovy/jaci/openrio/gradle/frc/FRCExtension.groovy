@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.deploy
+package jaci.openrio.gradle.frc
 
 import org.gradle.api.NamedDomainObjectContainer
 
@@ -19,11 +19,11 @@ public class FRCExtension {
         roborio.configure(config)
     }
 
-    def javaDeploy(final Closure config) {
+    def java(final Closure config) {
         java.configure(config)
     }
 
-    def nativeDeploy(final Closure config) {
+    def nativeplatform(final Closure config) {
         nativ.configure(config)
     }
 }

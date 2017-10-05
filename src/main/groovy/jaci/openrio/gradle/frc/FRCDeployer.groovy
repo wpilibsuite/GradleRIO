@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.deploy
+package jaci.openrio.gradle.frc
 
 import jaci.gradle.deployers.Deployer
 

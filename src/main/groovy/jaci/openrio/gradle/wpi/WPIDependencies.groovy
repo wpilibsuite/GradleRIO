@@ -19,7 +19,7 @@ class WPIDependencies {
 
         // This is needed because Gradle will not download dependencies
         // until they are referenced, so we need to do this before build
-        // as otherwise deploy will not work (will try to download while
+        // as otherwise frc will not work (will try to download while
         // not connected to the internet)
         def resolveDepsTask = project.task("resolveNativeDeps") { Task task ->
             task.group = "GradleRIO"

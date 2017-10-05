@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.deploy
+package jaci.openrio.gradle.frc
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -14,7 +14,7 @@ class ExportFileResourceTask extends DefaultTask {
 
     @TaskAction
     def doExport() {
-        def instream = DeployPlugin.class.getClassLoader().getResourceAsStream(resource)
+        def instream = FRCPlugin.class.getClassLoader().getResourceAsStream(resource)
         outfile.parentFile.mkdirs()
         outfile << instream
 

@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.deploy
+package jaci.openrio.gradle.frc
 
 import jaci.gradle.deployers.NativeArtifact
 
@@ -9,7 +9,7 @@ class FRCNative extends FRCDeployer {
         super(name)
     }
 
-    public void artifact(Closure<NativeArtifact> artifact) {
+    def artifact(Closure<NativeArtifact> artifact) {
         this.artifact = artifact
     }
 }

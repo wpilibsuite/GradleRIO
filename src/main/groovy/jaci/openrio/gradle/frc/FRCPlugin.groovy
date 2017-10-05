@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.deploy
+package jaci.openrio.gradle.frc
 
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
@@ -8,10 +8,11 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 
-class DeployPlugin implements Plugin<Project> {
+class FRCPlugin implements Plugin<Project> {
 
     // Necessary to have access to project.configurations and such in the RuleSource
     @TupleConstructor
@@ -26,6 +27,28 @@ class DeployPlugin implements Plugin<Project> {
 
         def frc = new FRCExtension(project.container(RoboRIO), project.container(FRCJava), project.container(FRCNative))
         project.extensions.add('frc', frc)
+
+        project.afterEvaluate {
+            project.tasks.withType(Jar).each { Jar task ->
+                frc.java.each { jconfig ->
+                    if (jconfig.jarTask == task.name) {
+                        if (jconfig.configureFatJar)
+                            task.from project.configurations.compile.collect {
+                                it.isDirectory() ? it : project.zipTree(it)
+                            }
+
+                        if (jconfig.addManifest) {
+                            def mfest = { mf ->
+                                mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+                                mf.attributes 'Robot-Class': jconfig.robotMainClass
+                                jconfig.extraManifest.forEach { c -> mf.with(c) }
+                            }
+                            task.manifest(mfest)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     static class DeployRules extends RuleSource {
@@ -52,7 +75,7 @@ class DeployPlugin implements Plugin<Project> {
                     if (roborio.remote != null) {
                         roborio.remote.resolveStrategy = DELEGATE_FIRST
                         roborio.remote.delegate = target
-                        roborio.remote(target)
+                        roborio.remote.call(target)
                     }
                 }
             }
@@ -88,7 +111,7 @@ class DeployPlugin implements Plugin<Project> {
                 }
 
                 // Add netconsolehost export task dependency for this deployer
-                project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { t -> t.dependsOn netconsolehost_task }
+                project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { t -> t.dependsOn netconsolehost_task }
 
                 // Add native libs (single .so)
                 def nativeLibs = project.configurations.nativeLib
@@ -121,8 +144,8 @@ class DeployPlugin implements Plugin<Project> {
                     }
                 }
 
-                // Add unzip tasks as dependencies to the main deploy task for this deployer
-                project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
+                // Add unzip tasks as dependencies to the main frc task for this deployer
+                project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
                     zips.collect { z -> z[1] }.forEach { zt -> task.dependsOn zt }
                 }
 
@@ -164,7 +187,7 @@ class DeployPlugin implements Plugin<Project> {
                         }
 
                         // Add RobotCommand task
-                        project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
+                        project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
                             task.dependsOn robotCommandTask
                         }
                     }
