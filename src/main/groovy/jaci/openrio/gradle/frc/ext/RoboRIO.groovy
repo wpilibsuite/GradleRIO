@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.frc.ext
 
 import jaci.gradle.targets.RemoteTarget
 

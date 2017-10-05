@@ -1,8 +1,8 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.frc.ext
 
 import jaci.gradle.deployers.NativeArtifact
 
-class FRCNative extends FRCDeployer {
+class FRCNative extends FRCExtConfig {
     public Closure<NativeArtifact> artifact
 
     public FRCNative(String name) {

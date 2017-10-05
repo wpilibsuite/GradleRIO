@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.frc.ext
 
 import org.gradle.api.NamedDomainObjectContainer
 
@@ -23,7 +23,7 @@ public class FRCExtension {
         java.configure(config)
     }
 
-    def nativeplatform(final Closure config) {
+    def nativePlatform(final Closure config) {
         nativ.configure(config)
     }
 }

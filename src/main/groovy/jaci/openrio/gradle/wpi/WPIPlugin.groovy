@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi
 
+import groovy.json.JsonSlurper
 import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,12 +20,12 @@ class WPIPlugin implements Plugin<Project> {
             task.description = "Print all versions of the wpi block"
             task.doLast {
                 wpiExtension.versions().forEach { key, tup ->
-                    println "${tup.first()}: ${tup.last()} (${key})"
+                    println "${tup.first()}: ${tup[1]} (${key})"
                 }
             }
         }
 
-        project.wpi.ext.recommended = { String year ->
+        wpiExtension.ext.recommended = { String year ->
             def md5 = MessageDigest.getInstance("MD5")
             md5.update(year.bytes)
             def cachename = md5.digest().encodeHex().toString()
@@ -35,7 +36,6 @@ class WPIPlugin implements Plugin<Project> {
             def versions = null
 
             if (project.gradle.startParameter.isOffline()) {
-                // Access Cache
                 println "Using offline recommended version cache..."
                 versions = cachefile.text
             } else {
@@ -48,20 +48,9 @@ class WPIPlugin implements Plugin<Project> {
                 }
             }
 
-            versions = new groovy.json.JsonSlurper().parseText(versions)[year]
-            wpiExtension.with {
-                wpilibMaven = versions["maven"] ?: "release"
-
-                wpilibVersion = versions["wpilib"] ?: "+"
-                ntcoreVersion = versions["ntcore"] ?: "+"
-                opencvVersion = versions["opencv"] ?: "+"
-                cscoreVersion = versions["cscore"] ?: "+"
-
-                ctreVersion = versions["ctre"] ?: "+"
-                navxVersion = versions["navx"] ?: "+"
-
-                smartDashboardVersion = versions["smartDashboard"] ?: "+"
-                javaInstallerVersion = versions["javaInstaller"] ?: "+"
+            versions = new JsonSlurper().parseText(versions)[year]
+            wpiExtension.versions().forEach { property, tuple ->
+                wpiExtension.setProperty(property, versions[tuple.last()] ?: wpiExtension.getProperty(property))
             }
         }
     }

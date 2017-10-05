@@ -1,8 +1,8 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.frc.ext
 
 import jaci.gradle.deployers.JavaArtifact
 
-class FRCJava extends FRCDeployer {
+class FRCJava extends FRCExtConfig {
     public String jarTask
     public Closure<JavaArtifact> artifact
 

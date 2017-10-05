@@ -5,7 +5,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-class ExportFileResourceTask extends DefaultTask {
+class ExportJarResourceTask extends DefaultTask {
     @Input
     String resource
 
@@ -17,6 +17,5 @@ class ExportFileResourceTask extends DefaultTask {
         def instream = FRCPlugin.class.getClassLoader().getResourceAsStream(resource)
         outfile.parentFile.mkdirs()
         outfile << instream
-
     }
 }

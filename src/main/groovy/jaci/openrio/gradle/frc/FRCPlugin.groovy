@@ -4,11 +4,15 @@ import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deployers.*
 import jaci.gradle.targets.TargetsSpec
+import jaci.openrio.gradle.frc.ext.FRCExtConfig
+import jaci.openrio.gradle.frc.ext.FRCExtension
+import jaci.openrio.gradle.frc.ext.FRCJava
+import jaci.openrio.gradle.frc.ext.FRCNative
+import jaci.openrio.gradle.frc.ext.RoboRIO
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 
@@ -28,27 +32,8 @@ class FRCPlugin implements Plugin<Project> {
         def frc = new FRCExtension(project.container(RoboRIO), project.container(FRCJava), project.container(FRCNative))
         project.extensions.add('frc', frc)
 
-        project.afterEvaluate {
-            project.tasks.withType(Jar).each { Jar task ->
-                frc.java.each { jconfig ->
-                    if (jconfig.jarTask == task.name) {
-                        if (jconfig.configureFatJar)
-                            task.from project.configurations.compile.collect {
-                                it.isDirectory() ? it : project.zipTree(it)
-                            }
-
-                        if (jconfig.addManifest) {
-                            def mfest = { mf ->
-                                mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
-                                mf.attributes 'Robot-Class': jconfig.robotMainClass
-                                jconfig.extraManifest.forEach { c -> mf.with(c) }
-                            }
-                            task.manifest(mfest)
-                        }
-                    }
-                }
-            }
-        }
+        project.pluginManager.apply(FRCJavaPlugin)
+        project.pluginManager.apply(FRCNativePlugin)
     }
 
     static class DeployRules extends RuleSource {
@@ -86,7 +71,7 @@ class FRCPlugin implements Plugin<Project> {
             FRCExtension frcExt = extensions.getByName('frc')
             Project project = extensions.getByName('projectWrapper').project
 
-            ExportFileResourceTask netconsolehost_task = project.tasks.create('exportNetconsoleHost', ExportFileResourceTask) { task ->
+            ExportJarResourceTask netconsolehost_task = project.tasks.create('exportNetconsoleHost', ExportJarResourceTask) { task ->
                 task.resource = "netconsole/netconsole-host"
                 task.outfile = new File(project.buildDir, "gradlerio/resource/${task.resource}")
             }
@@ -99,7 +84,7 @@ class FRCPlugin implements Plugin<Project> {
                 }]
             }
 
-            def createBaseDeployer = { Deployer deployer, FRCDeployer ext ->
+            def createBaseDeployer = { Deployer deployer, FRCExtConfig ext ->
                 deployer.predeploy << "whoami"
                 // ARTIFACT: Netconsole
                 deployer.artifacts.create("netconsolehost", FileArtifact) { artifact ->
@@ -156,52 +141,14 @@ class FRCPlugin implements Plugin<Project> {
             frcExt.java.each { FRCJava java ->
                 deployers.create(java.name) { deployer ->
                     createBaseDeployer(deployer, java)
-                    // ARTIFACT: User Java
-                    JavaArtifact usercode = deployer.artifacts.create(java.jarTask, JavaArtifact) { artifact ->
-                        artifact.predeploy << ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null"
-                        artifact.order = 100
-                        artifact.filename = 'FRCUserProgram.jar'
-                        artifact.postdeploy << "chmod +x ${artifact.filename} && chown lvuser ${artifact.filename}".toString()
-                        artifact.postdeploy << "mkdir -p /usr/local/gradlerio/indexes/java" << "echo \$(pwd)/${artifact.filename} > /usr/local/gradlerio/indexes/java/${java.name}.index".toString()
-
-                        if (java.artifact != null)
-                            java.artifact.call(artifact)
-                    }
-
-                    // ARTIFACT: RobotCommand
-                    if (java.robotCommand != null) {
-                        def cmd = java.robotCommand.call().toString().replace('<<BINARY>>', "\$(cat /usr/local/gradlerio/indexes/java/${java.name}.index)".toString())
-                        def cmdFile = new File(project.buildDir, "gradlerio/robotCommand")
-                        def robotCommandTask = project.tasks.create("robotCommand${java.name.capitalize()}") { task ->
-                            task.doLast {
-                                cmdFile.parentFile.mkdirs()
-                                cmdFile.text = cmd
-                            }
-                        }
-
-                        deployer.artifacts.create("robotCommand", FileArtifact) { artifact ->
-                            artifact.file = cmdFile
-                            artifact.filename = "robotCommand"
-                            artifact.directory = "/home/lvuser"
-                            artifact.postdeploy << "chmod +x /home/lvuser/robotCommand && chown lvuser /home/lvuser/robotCommand"
-                        }
-
-                        // Add RobotCommand task
-                        project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
-                            task.dependsOn robotCommandTask
-                        }
-                    }
-
-
-                    if (java.deployer != null)
-                        java.deployer.call(deployer)
+                    project.plugins.getPlugin(FRCJavaPlugin).configureDeployer(project, deployer, java)
                 }
             }
 
             frcExt.nativ.each { FRCNative nativ ->
                 deployers.create(nativ.name) { deployer ->
                     createBaseDeployer(deployer, nativ)
-                    // TODO: Native
+                    project.plugins.getPlugin(FRCNativePlugin).configureDeployer(project, deployer, nativ)
                 }
             }
         }

@@ -3,13 +3,14 @@ package jaci.openrio.gradle.wpi
 import org.gradle.api.Project
 
 class WPIExtension {
-    String wpilibMaven = "release"
-
-    // WPILib (first.wpi.edu/FRC/roborio/maven) libs
+    // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
     String wpilibVersion = "+"
     String ntcoreVersion = "+"
     String opencvVersion = "+"
     String cscoreVersion = "+"
+
+    // WPILib C++ Only libs (Note: HAL assumed same version as wpilib)
+    String wpiutilVersion = "+"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     String ctreVersion = "+"
@@ -22,19 +23,21 @@ class WPIExtension {
     WPIExtension(Project project) { }
 
     Map<String, Tuple> versions() {
+        // Format:
+        // property: [ PrettyName, Version, RecommendedKey ]
         return [
-                "wpilibMaven" : new Tuple("WPI Maven", wpilibMaven),
+                "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
+                "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion, "ntcore"),
+                "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
+                "cscoreVersion" : new Tuple("CSCore", cscoreVersion, "cscore"),
 
-                "wpilibVersion" : new Tuple("WPILib", wpilibVersion),
-                "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion),
-                "opencvVersion" : new Tuple("OpenCV", opencvVersion),
-                "cscoreVersion" : new Tuple("CSCore", cscoreVersion),
+                "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
-                "ctreVersion" : new Tuple("CTRE", ctreVersion),
-                "navxVersion" : new Tuple("NavX", navxVersion),
+                "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
+                "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
-                "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion),
-                "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion)
+                "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
+                "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller")
         ]
     }
 }

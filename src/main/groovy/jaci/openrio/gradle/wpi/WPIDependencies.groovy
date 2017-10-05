@@ -41,10 +41,6 @@ class WPIDependencies {
 
 
     void apply_wpi_dependencies(Project project) {
-        project.repositories.maven {
-            name = "WPI"
-            url = "http://first.wpi.edu/FRC/roborio/maven/release"
-        }
 
         // Add WPILib to your project:
         // dependencies {

@@ -1,8 +1,8 @@
-package jaci.openrio.gradle.frc
+package jaci.openrio.gradle.frc.ext
 
 import jaci.gradle.deployers.Deployer
 
-class FRCDeployer {
+class FRCExtConfig {
 
     public String name
     public Closure<Deployer> deployer
@@ -10,7 +10,7 @@ class FRCDeployer {
 
     public Closure robotCommand
 
-    public FRCDeployer(String name) {
+    public FRCExtConfig(String name) {
         this.name = name
     }
 
