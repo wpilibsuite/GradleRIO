@@ -22,8 +22,6 @@ class WPIDependencies {
         // as otherwise frc will not work (will try to download while
         // not connected to the internet)
         def resolveDepsTask = project.task("resolveNativeDeps") { Task task ->
-            task.group = "GradleRIO"
-            task.description = "Resolve Dependencies from Maven"
             task.doLast {
                 def conf = [project.configurations.nativeLib, project.configurations.nativeZip]
                 conf.each { c ->

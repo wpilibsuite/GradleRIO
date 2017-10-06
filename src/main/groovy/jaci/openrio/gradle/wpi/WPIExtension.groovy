@@ -20,6 +20,9 @@ class WPIExtension {
     String smartDashboardVersion = "+"
     String javaInstallerVersion = "+"
 
+    // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
+    String toolchainVersion = "2017-4.9.3"
+
     WPIExtension(Project project) { }
 
     Map<String, Tuple> versions() {
@@ -37,7 +40,9 @@ class WPIExtension {
                 "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
                 "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
-                "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller")
+                "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller"),
+
+                "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain")
         ]
     }
 }
