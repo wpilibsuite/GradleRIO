@@ -3,11 +3,9 @@ package jaci.openrio.gradle.wpi.toolchain.install
 import jaci.openrio.gradle.wpi.WPIExtension
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.internal.impldep.org.apache.maven.toolchain.Toolchain
 import org.gradle.internal.os.OperatingSystem
 
-class MacOSToolchainInstallerTask extends AbstractToolchainInstallerTask {
+class MacOSToolchainInstaller extends AbstractToolchainInstaller {
 
     @Override
     void install(Project project) {
@@ -38,14 +36,24 @@ class MacOSToolchainInstallerTask extends AbstractToolchainInstallerTask {
             archiveFile.withOutputStream { o -> o << i }
         }
 
-        File installDir = new File(WPIToolchainPlugin.toolchainInstallDirectory(), "macOS")
-        if (installDir.exists()) installDir.deleteDir()
-        installDir.mkdirs()
+        File paxDir = new File(extrDir, "unpack")
+        if (paxDir.exists()) paxDir.deleteDir()
+        paxDir.mkdirs()
 
         project.exec { e ->
             e.commandLine('pax')
-            e.workingDir(installDir)
+            e.workingDir(paxDir)
             e.args('-r', '-f', archiveFile.absolutePath)
+        }
+
+        println "Copying..."
+        File installDir = WPIToolchainPlugin.toolchainInstallDirectory()
+        if (installDir.exists()) installDir.deleteDir()
+        installDir.mkdirs()
+
+        project.copy { c ->
+            c.from(new File(paxDir, "usr/local"))
+            c.into(installDir)
         }
 
         println "Done!"
@@ -57,7 +65,7 @@ class MacOSToolchainInstallerTask extends AbstractToolchainInstallerTask {
     }
 
     @Override
-    File toolchainRoot() {
-        return new File(WPIToolchainPlugin.toolchainInstallDirectory(), "macOS/usr/local")
+    String installerPlatform() {
+        return "MacOS"
     }
 }

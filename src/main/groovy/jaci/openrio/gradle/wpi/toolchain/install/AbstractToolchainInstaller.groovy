@@ -6,21 +6,17 @@ import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
 
-abstract class AbstractToolchainInstallerTask extends DefaultTask {
+abstract class AbstractToolchainInstaller {
     abstract void install(Project project)
     abstract boolean targets(OperatingSystem os)
-    abstract File toolchainRoot()
+    abstract String installerPlatform()
 
     boolean installable() {
         return targets(OperatingSystem.current())
     }
 
-    @TaskAction
-    void installToolchain() {
-        if (!installable()) {
-            throw new StopExecutionException()
-        }
-        println("Installing FRC Toolchain for platform ${OperatingSystem.current().name}...")
+    void installToolchain(Project project) {
+        println("Installing FRC Toolchain for platform ${installerPlatform()}...")
         install(project)
     }
 }

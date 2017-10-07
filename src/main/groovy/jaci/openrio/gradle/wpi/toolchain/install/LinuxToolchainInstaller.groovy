@@ -3,7 +3,7 @@ package jaci.openrio.gradle.wpi.toolchain.install
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 
-class LinuxToolchainInstallerTask extends AbstractToolchainInstallerTask {
+class LinuxToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
         try {
@@ -30,7 +30,7 @@ class LinuxToolchainInstallerTask extends AbstractToolchainInstallerTask {
     }
 
     @Override
-    File toolchainRoot() {
-        return null     // Assume toolchain is on PATH
+    String installerPlatform() {
+        return "Linux"
     }
 }

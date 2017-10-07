@@ -5,7 +5,7 @@ import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 
-class WindowsToolchainInstallerTask extends AbstractToolchainInstallerTask {
+class WindowsToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
         List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-")
@@ -21,13 +21,23 @@ class WindowsToolchainInstallerTask extends AbstractToolchainInstallerTask {
         }
 
         println "Extracting..."
-        File extrDir = new File(WPIToolchainPlugin.toolchainInstallDirectory(), "win")
+        File extrDir = new File(WPIToolchainPlugin.toolchainExtractDirectory(), "win")
         if (extrDir.exists()) extrDir.deleteDir()
         extrDir.mkdirs()
 
         project.copy { c ->
             c.from(project.zipTree(dst))
             c.into(extrDir)
+        }
+
+        println "Copying..."
+        File installDir = WPIToolchainPlugin.toolchainInstallDirectory()
+        if (installDir.exists()) installDir.deleteDir()
+        installDir.mkdirs()
+
+        project.copy { c ->
+            c.from(new File(extrDir, "frc"))
+            c.into(installDir)
         }
 
         println "Done!"
@@ -39,7 +49,7 @@ class WindowsToolchainInstallerTask extends AbstractToolchainInstallerTask {
     }
 
     @Override
-    File toolchainRoot() {
-        return new File(WPIToolchainPlugin.toolchainInstallDirectory(), "win/frc")
+    String installerPlatform() {
+        return "Windows"
     }
 }
