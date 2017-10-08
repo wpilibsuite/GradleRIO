@@ -5,6 +5,9 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.internal.jvm.Jvm
+import org.gradle.internal.os.OperatingSystem
+
+import java.util.concurrent.Executors
 
 class WPITools implements Plugin<Project> {
 
@@ -25,10 +28,19 @@ class WPITools implements Plugin<Project> {
             task.doLast {
                 def config = project.configurations.getByName("wpiTools")
                 Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "SmartDashboard" })
-                ProcessBuilder builder = new ProcessBuilder(
+                ProcessBuilder builder
+                if (OperatingSystem.current().isWindows()) {
+                    builder = new ProcessBuilder(
+                        "cmd", "/c", "start",
+                        "java", "-jar", "${jarfiles.first().absolutePath}".toString()
+                    )
+                } else {
+                    builder = new ProcessBuilder(
                         Jvm.current().getExecutable("java").absolutePath,
                         "-jar",
-                        jarfiles.first().absolutePath)
+                        jarfiles.first().absolutePath
+                    )
+                }
 
                 builder.directory(smartDashboardDirectory())
                 builder.start()
@@ -42,13 +54,23 @@ class WPITools implements Plugin<Project> {
             task.doLast {
                 def config = project.configurations.getByName("wpiTools")
                 Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "java-installer" })
-                ProcessBuilder builder = new ProcessBuilder(
+                ProcessBuilder builder
+                if (OperatingSystem.current().isWindows()) {
+                    builder = new ProcessBuilder(
+                        "cmd", "/c", "start",
+                        "java", "-jar", "${jarfiles.first().absolutePath}".toString()
+                    )
+                } else {
+                    builder = new ProcessBuilder(
                         Jvm.current().getExecutable("java").absolutePath,
                         "-jar",
-                        jarfiles.first().absolutePath)
+                        jarfiles.first().absolutePath
+                    )
+                }
+
 
                 builder.directory(javaInstallerDirectory())
-                builder.start()
+                builder.start().waitFor()
             }
         }
     }

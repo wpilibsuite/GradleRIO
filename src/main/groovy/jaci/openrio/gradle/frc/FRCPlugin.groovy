@@ -44,7 +44,7 @@ class FRCPlugin implements Plugin<Project> {
                 targets.create(roborio.name) { target ->
                     target.addresses << '172.22.11.2'
                     target.addresses << "roborio-${roborio.team}-frc.local".toString()
-                    target.addresses << "10.${((int)roborio.team)/100}.${((int)roborio.team)%100}.2".toString()
+                    target.addresses << "10.${(int)(roborio.team/100)}.${((int)roborio.team)%100}.2".toString()
                     target.asyncFind = true
 
                     target.user = 'admin'
