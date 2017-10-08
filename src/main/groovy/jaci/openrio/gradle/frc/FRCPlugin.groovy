@@ -2,13 +2,12 @@ package jaci.openrio.gradle.frc
 
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
-import jaci.gradle.deployers.*
+import jaci.gradle.deployers.Deployer
+import jaci.gradle.deployers.DeployersSpec
+import jaci.gradle.deployers.FileArtifact
+import jaci.gradle.deployers.FileSetArtifact
 import jaci.gradle.targets.TargetsSpec
-import jaci.openrio.gradle.frc.ext.FRCExtConfig
-import jaci.openrio.gradle.frc.ext.FRCExtension
-import jaci.openrio.gradle.frc.ext.FRCJava
-import jaci.openrio.gradle.frc.ext.FRCNative
-import jaci.openrio.gradle.frc.ext.RoboRIO
+import jaci.openrio.gradle.frc.ext.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer

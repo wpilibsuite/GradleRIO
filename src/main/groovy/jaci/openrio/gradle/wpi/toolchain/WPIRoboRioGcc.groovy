@@ -22,7 +22,7 @@ class WPIRoboRioGcc extends CrossGcc {
                 fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory,
                 metaDataProviderFactory, workerLeaseService)
 
-        target("roborio", new Action<GccPlatformToolChain>() {
+        target('roborio', new Action<GccPlatformToolChain>() {
             @Override
             void execute(GccPlatformToolChain target) {
                 String gccPrefix = "arm-frc-linux-gnueabi-"
@@ -35,10 +35,31 @@ class WPIRoboRioGcc extends CrossGcc {
                 target.linker.executable =              gccPrefix + "g++" + gccSuffix
                 target.assembler.executable =           gccPrefix + "as"  + gccSuffix
                 target.staticLibArchiver.executable =   gccPrefix + "ar"  + gccSuffix
+
+                // Sysroot is usually /frc, but since we're overriding the default install directory,
+                // we can modify the sysroot in order to support the location. This is the base for system libs
+                // and such.
+                def sysroot = WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
+                target.cCompiler.withArguments { a ->
+                    a << '--sysroot' << sysroot
+                }
+                target.cppCompiler.withArguments { a ->
+                    a << '-std=c++1y'
+                    a << '--sysroot' << sysroot
+                }
+                target.linker.withArguments { a ->
+                    a << '--sysroot' << sysroot
+                }
+                target.assembler.withArguments { a ->
+                    a << '--sysroot' << sysroot
+                }
+                target.staticLibArchiver.withArguments { a ->
+                    a << '--sysroot' << sysroot
+                }
             }
         })
         
-        path(WPIToolchainPlugin.toolchainInstallDirectory())
+        path(new File(WPIToolchainPlugin.toolchainInstallDirectory(), 'bin'))
     }
 
     @Override

@@ -29,20 +29,20 @@ class WPIExtension {
         // Format:
         // property: [ PrettyName, Version, RecommendedKey ]
         return [
-                "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
-                "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion, "ntcore"),
-                "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
-                "cscoreVersion" : new Tuple("CSCore", cscoreVersion, "cscore"),
+            "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
+            "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion, "ntcore"),
+            "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
+            "cscoreVersion" : new Tuple("CSCore", cscoreVersion, "cscore"),
 
-                "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
+            "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
-                "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
-                "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
+            "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
+            "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
-                "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
-                "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller"),
+            "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
+            "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller"),
 
-                "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain")
+            "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain")
         ]
     }
 }

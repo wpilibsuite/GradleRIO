@@ -3,8 +3,6 @@ package jaci.openrio.gradle.wpi
 import org.gradle.api.Project
 import org.gradle.api.Task
 
-import java.security.MessageDigest
-
 class WPIDependencies {
     void apply(Project project) {
         project.repositories.maven { repo ->

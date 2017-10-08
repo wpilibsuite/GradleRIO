@@ -1,9 +1,6 @@
 package jaci.openrio.gradle.wpi.toolchain.install
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.tasks.StopExecutionException
-import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
 
 abstract class AbstractToolchainInstaller {
