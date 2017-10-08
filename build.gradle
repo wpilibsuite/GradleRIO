@@ -8,10 +8,10 @@ apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile 'jaci.gradle:EmbeddedTools:2017.10.04'
-//   compile 'org.jetbrains.kotlin:kotlin-stdlib'
+    compile gradleApi()
+    compile localGroovy()
+    compile 'jaci.gradle:EmbeddedTools:2017.10.04'
+    compile 'de.undercouch:gradle-download-task:3.3.0'
 }
 
 repositories {

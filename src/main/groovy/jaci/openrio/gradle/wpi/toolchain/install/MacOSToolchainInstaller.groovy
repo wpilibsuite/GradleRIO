@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi.toolchain.install
 
+import de.undercouch.gradle.tasks.download.DownloadAction
 import jaci.openrio.gradle.wpi.WPIExtension
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
@@ -14,11 +15,18 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
         File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.pkg.tar.gz")
         dst.parentFile.mkdirs()
 
-        if (!dst.exists()) {
-            println "Downloading..."
-            src.withInputStream { i -> dst.withOutputStream { o -> o << i } }
-        } else {
-            println "Already downloaded!"
+
+        println "Downloading..."
+        def da = new DownloadAction(project)
+        da.with { d ->
+            d.src src
+            d.dest dst
+            d.overwrite false
+            d.onlyIfModified true
+        }
+        da.execute()
+        if (da.upToDate) {
+            println "Already Downloaded!"
         }
 
         println "Extracting..."

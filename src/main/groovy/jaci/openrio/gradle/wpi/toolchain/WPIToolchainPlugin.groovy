@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi.toolchain
 
+import de.undercouch.gradle.tasks.download.DownloadTaskPlugin
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
