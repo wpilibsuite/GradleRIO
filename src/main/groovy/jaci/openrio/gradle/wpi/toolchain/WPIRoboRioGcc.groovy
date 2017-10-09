@@ -1,6 +1,8 @@
 package jaci.openrio.gradle.wpi.toolchain
 
 import jaci.gradle.toolchains.CrossGcc
+import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
+import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
 import org.gradle.api.Action
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.operations.BuildOperationExecutor
@@ -22,6 +24,11 @@ class WPIRoboRioGcc extends CrossGcc {
                 fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory,
                 metaDataProviderFactory, workerLeaseService)
 
+        AbstractToolchainInstaller activeInstaller = WPIToolchainPlugin.getActiveInstaller()
+        // On Linux, we can't specify the install location of the apt-get package, so instead we
+        // assume it's on the system path
+        boolean customPath = !(activeInstaller instanceof LinuxToolchainInstaller)
+
         target('roborio', new Action<GccPlatformToolChain>() {
             @Override
             void execute(GccPlatformToolChain target) {
@@ -36,30 +43,37 @@ class WPIRoboRioGcc extends CrossGcc {
                 target.assembler.executable =           gccPrefix + "as"  + gccSuffix
                 target.staticLibArchiver.executable =   gccPrefix + "ar"  + gccSuffix
 
-                // Sysroot is usually /frc, but since we're overriding the default install directory,
-                // we can modify the sysroot in order to support the location. This is the base for system libs
-                // and such.
-                def sysroot = WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
-                target.cCompiler.withArguments { a ->
-                    a << '--sysroot' << sysroot
+
+                if (customPath) {
+                    // Sysroot is usually /frc, but since we're overriding the default install directory,
+                    // we can modify the sysroot in order to support the location. This is the base for system libs
+                    // and such.
+                    def sysroot = WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
+                    target.cCompiler.withArguments { a ->
+                        a << '--sysroot' << sysroot
+                    }
+                    target.cppCompiler.withArguments { a ->
+                        a << '--sysroot' << sysroot
+                    }
+                    target.linker.withArguments { a ->
+                        a << '--sysroot' << sysroot
+                    }
+                    target.assembler.withArguments { a ->
+                        a << '--sysroot' << sysroot
+                    }
+                    target.staticLibArchiver.withArguments { a ->
+                        a << '--sysroot' << sysroot
+                    }
                 }
+
                 target.cppCompiler.withArguments { a ->
                     a << '-std=c++1y'
-                    a << '--sysroot' << sysroot
-                }
-                target.linker.withArguments { a ->
-                    a << '--sysroot' << sysroot
-                }
-                target.assembler.withArguments { a ->
-                    a << '--sysroot' << sysroot
-                }
-                target.staticLibArchiver.withArguments { a ->
-                    a << '--sysroot' << sysroot
                 }
             }
         })
-        
-        path(new File(WPIToolchainPlugin.toolchainInstallDirectory(), 'bin'))
+
+        if (customPath)
+            path(new File(WPIToolchainPlugin.toolchainInstallDirectory(), 'bin'))
     }
 
     @Override

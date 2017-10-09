@@ -21,31 +21,36 @@ import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.internal.ExecActionFactory
 
 class WPIToolchainPlugin implements Plugin<Project> {
+    static List<AbstractToolchainInstaller> toolchainInstallers = [
+        new WindowsToolchainInstaller(),
+        new MacOSToolchainInstaller(),
+        new LinuxToolchainInstaller()
+    ]
+
     @Override
     void apply(Project project) {
-        List<AbstractToolchainInstaller> toolchainInstallers = []
-        project.extensions.add("toolchainInstallers", toolchainInstallers)
-
-        toolchainInstallers.add(new WindowsToolchainInstaller())
-        toolchainInstallers.add(new MacOSToolchainInstaller())
-        toolchainInstallers.add(new LinuxToolchainInstaller())
-
         def rootInstallTask = project.task("installToolchain") { Task task ->
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
 
             task.doLast {
-                def toolchains = toolchainInstallers.findAll { t ->
-                    return t.installable()
-                }
+                AbstractToolchainInstaller installer = getActiveInstaller()
 
-                if (toolchains.empty) {
+                if (installer == null) {
                     throw new NoToolchainInstallersException("Cannot install Toolchain! (No Installers for this Platform)")
                 } else {
-                    toolchains.first().installToolchain(task.project)
+                    installer.installToolchain(task.project)
                 }
             }
         }
+    }
+
+    public static AbstractToolchainInstaller getActiveInstaller() {
+        def toolchains = toolchainInstallers.findAll { t ->
+            return t.installable()
+        }
+        if (toolchains.empty) return null;
+        return toolchains.first()
     }
 
     public static URL toolchainDownloadURL(String file) {
