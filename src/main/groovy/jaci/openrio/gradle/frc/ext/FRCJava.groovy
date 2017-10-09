@@ -10,7 +10,7 @@ class FRCJava extends FRCExtConfig {
     public List<String> arguments
     public boolean debug
 
-    public String robotMainClass
+    public String robotClass
     public List<Closure> extraManifest
     public boolean addManifest
 
@@ -26,7 +26,7 @@ class FRCJava extends FRCExtConfig {
             "/usr/local/frc/bin/netconsole-host /usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib/ ${jvmargs.join(" ")} ${debug ? debugflags : ""} -jar <<BINARY>> ${arguments.join(" ")}"
         }
 
-        this.robotMainClass = "Robot"
+        this.robotClass = "Robot"
         this.extraManifest = []
         this.addManifest = true
         this.configureFatJar = true // Fat jar includes manifest + all linked libs. This is almost always true
@@ -42,6 +42,10 @@ class FRCJava extends FRCExtConfig {
 
     def argument(String argument) {
         this.arguments << argument
+    }
+
+    def withArguments(Closure<List<String>> args) {
+        arguments.with(args)
     }
 
     def jvmarg(String jvmarg) {
@@ -62,7 +66,7 @@ class FRCJava extends FRCExtConfig {
     }
 
     def robotClass(String mainClass) {
-        this.robotMainClass = mainClass
+        this.robotClass = mainClass
     }
     
     def fatJar(boolean toConfigureJarFat) {

@@ -2,6 +2,7 @@ package jaci.openrio.gradle.frc
 
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
+import jaci.gradle.deployers.CacheMethod
 import jaci.gradle.deployers.Deployer
 import jaci.gradle.deployers.DeployersSpec
 import jaci.gradle.deployers.FileArtifact
@@ -83,64 +84,80 @@ class FRCPlugin implements Plugin<Project> {
                 }]
             }
 
+            // Create the "Java Libraries" deployer. This avoids deploying libraries more than once.
+            if (frcExt.java.size() > 0) {
+                deployers.create('javaLibraries') { deployer ->
+                    deployer.targets += frcExt.java.collectMany { j -> j.targets }
+                    deployer.predeploy << "echo 'Deploying Java Libraries'"
+                    deployer.order = 1
+                    // ARTIFACT: Netconsole
+                    deployer.artifacts.create("netconsolehost", FileArtifact) { artifact ->
+                        artifact.predeploy << "killall -q netconsole-host 2> /dev/null || :"
+                        artifact.file = netconsolehost_task.outputs.files.first()
+                        artifact.directory = '/usr/local/frc/bin'
+                        artifact.filename = 'netconsole-host'
+                        artifact.postdeploy << 'chmod +x netconsole-host'
+                    }
+
+                    // Add netconsolehost export task dependency for this deployer
+                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { t ->
+                        t.dependsOn netconsolehost_task
+                        println(t)
+                    }
+
+                    // Add native libs (single .so)
+                    def nativeLibs = project.configurations.nativeLib
+                    nativeLibs.dependencies.findAll { dep -> dep != null && nativeLibs.files(dep).size() > 0 }.forEach { dep ->
+                        def libfile = nativeLibs.files(dep).first()
+                        // ARTIFACT: Native Libs
+                        deployer.artifacts.create("nativeLib${dep.name.capitalize()}", FileArtifact) { artifact ->
+                            artifact.file = libfile
+                            artifact.directory = '/usr/local/frc/lib'
+                            artifact.cacheMethod = CacheMethod.MD5_FILE
+                        }
+                    }
+
+                    // Add native zips (from wpilib etc)
+                    zips.forEach { zipentry ->
+                        def zipdep = zipentry.first()
+                        def unziptask = zipentry.last()
+                        if (unziptask.outputs.files.size() == 0) return;
+
+                        def unzipdir = unziptask.outputs.files.first()
+                        def nativelibs = [ "", "lib", "java/lib", "linux/athena" ].collectMany { dirext ->
+                            def ft = project.fileTree(new File(unzipdir, dirext))
+                            ft.include("*.so*")
+                            ft.getFiles()
+                        }
+
+                        // ARTIFACT: Native Zips
+                        deployer.artifacts.create("nativeZip${zipdep.name.capitalize()}", FileSetArtifact) { artifact ->
+                            artifact.files = nativelibs
+                            artifact.directory = '/usr/local/frc/lib'
+                            artifact.cacheMethod = CacheMethod.MD5_FILE
+                        }
+                    }
+
+                    // Add unzip tasks as dependencies to the main deploy task for this deployer
+                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
+                        zips.collect { z -> z[1] }.forEach { zt -> task.dependsOn zt }
+                    }
+                }
+            }
+
             def createBaseDeployer = { Deployer deployer, FRCExtConfig ext ->
-                deployer.predeploy << "whoami"
-                // ARTIFACT: Netconsole
-                deployer.artifacts.create("netconsolehost", FileArtifact) { artifact ->
-                    artifact.predeploy << "killall -q netconsole-host 2> /dev/null || :"
-                    artifact.file = netconsolehost_task.outputs.files.first()
-                    artifact.directory = '/usr/local/frc/bin'
-                    artifact.filename = 'netconsole-host'
-                    artifact.postdeploy << 'chmod +x netconsole-host'
-                }
-
-                // Add netconsolehost export task dependency for this deployer
-                project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { t -> t.dependsOn netconsolehost_task }
-
-                // Add native libs (single .so)
-                def nativeLibs = project.configurations.nativeLib
-                nativeLibs.dependencies.findAll { dep -> dep != null && nativeLibs.files(dep).size() > 0 }.forEach { dep ->
-                    def libfile = nativeLibs.files(dep).first()
-                    // ARTIFACT: Native Libs
-                    deployer.artifacts.create("nativeLib${dep.name.capitalize()}", FileArtifact) { artifact ->
-                        artifact.file = libfile
-                        artifact.directory = '/usr/local/frc/lib'
-                    }
-                }
-
-                // Add native zips (from wpilib etc)
-                zips.forEach { zipentry ->
-                    def zipdep = zipentry.first()
-                    def unziptask = zipentry.last()
-                    if (unziptask.outputs.files.size() == 0) return;
-
-                    def unzipdir = unziptask.outputs.files.first()
-                    def nativelibs = [ "", "lib", "java/lib", "linux/athena" ].collectMany { dirext ->
-                        def ft = project.fileTree(new File(unzipdir, dirext))
-                        ft.include("*.so*")
-                        ft.getFiles()
-                    }
-
-                    // ARTIFACT: Native Zips
-                    deployer.artifacts.create("nativeZip${zipdep.name.capitalize()}", FileSetArtifact) { artifact ->
-                        artifact.files = nativelibs
-                        artifact.directory = '/usr/local/frc/lib'
-                    }
-                }
-
-                // Add unzip tasks as dependencies to the main frc task for this deployer
-                project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
-                    zips.collect { z -> z[1] }.forEach { zt -> task.dependsOn zt }
-                }
-
-                deployer.postdeploy << "ldconfig" << "sync" << ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r || true"
                 deployer.targets += ext.targets
+                deployer.predeploy << "whoami"
+                deployer.postdeploy << "ldconfig" << "sync" << ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r || true"
             }
 
             frcExt.java.each { FRCJava java ->
                 deployers.create(java.name) { deployer ->
                     createBaseDeployer(deployer, java)
                     project.plugins.getPlugin(FRCJavaPlugin).configureDeployer(project, deployer, java)
+                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
+                        task.dependsOn('deployJavaLibraries')
+                    }
                 }
             }
 

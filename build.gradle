@@ -1,16 +1,23 @@
 plugins {
     id "com.gradle.plugin-publish" version "0.9.7"
-    // id "org.jetbrains.kotlin.jvm" version "1.1.50"
     id "idea"
 }
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
+repositories {
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'jaci.gradle:EmbeddedTools:2017.10.04'
+    compile ('gradle.plugin.jaci.gradle:DeployTools:2017.10.10') {
+        exclude module: 'groovy-all'
+    }
     compile 'de.undercouch:gradle-download-task:3.3.0'
 }
 
@@ -27,7 +34,7 @@ pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'
     vcsUrl = 'https://github.com/Open-RIO/GradleRIO'
     description = 'Managing FRC Java projects, the Gradle way'
-    tags = ['frc', 'wpilib', 'toast', 'openrio', 'gradlerio']
+    tags = ['frc', 'wpilib', 'openrio', 'gradlerio']
 
     plugins {
         gradleRio {

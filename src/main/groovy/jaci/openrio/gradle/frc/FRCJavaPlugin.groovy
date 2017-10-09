@@ -26,7 +26,7 @@ class FRCJavaPlugin implements Plugin<Project> {
                         if (jconfig.addManifest) {
                             def mfest = { mf ->
                                 mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
-                                mf.attributes 'Robot-Class': jconfig.robotMainClass
+                                mf.attributes 'Robot-Class': jconfig.robotClass
                                 jconfig.extraManifest.forEach { c -> mf.with(c) }
                             }
                             task.manifest(mfest)
@@ -51,7 +51,10 @@ class FRCJavaPlugin implements Plugin<Project> {
 
         // ARTIFACT: RobotCommand
         if (java.robotCommand != null) {
-            def cmd = java.robotCommand.call().toString().replace('<<BINARY>>', "\$(cat /usr/local/gradlerio/indexes/java/${java.name}.index)".toString())
+            def indexcat = "\$(cat /usr/local/gradlerio/indexes/java/${java.name}.index)".toString()
+            def cmd = java.robotCommand.call().toString().replace('<<BINARY>>', indexcat)
+            cmd = [ "pushd \$(dirname ${indexcat})", cmd, "popd" ].join("\n")
+
             def cmdFile = new File(project.buildDir, "gradlerio/robotCommand")
             def robotCommandTask = project.tasks.create("robotCommand${java.name.capitalize()}") { task ->
                 task.doLast {
@@ -68,7 +71,7 @@ class FRCJavaPlugin implements Plugin<Project> {
             }
 
             // Add RobotCommand task
-            project.tasks.matching { t -> t.name == "frc${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
+            project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
                 task.dependsOn robotCommandTask
             }
         }
