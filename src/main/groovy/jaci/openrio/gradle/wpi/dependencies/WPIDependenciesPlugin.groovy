@@ -1,9 +1,9 @@
-package jaci.openrio.gradle.wpi
+package jaci.openrio.gradle.wpi.dependencies
 
 import org.gradle.api.Project
 import org.gradle.api.Task
 
-class WPIDependencies {
+class WPIDependenciesPlugin {
     void apply(Project project) {
         project.repositories.maven { repo ->
             repo.name = "WPI"
@@ -39,11 +39,22 @@ class WPIDependencies {
     void apply_wpi_dependencies(Project project) {
 
         // Add WPILib to your project:
+        // Java:
         // dependencies {
         //     compile wpilib()
         // }
 
-        project.dependencies.ext.wpilibNative = {
+        // C++ Libraries will need special consideration since they aren't automatically fetched, unzipped and linked in
+        // a component spec. We'll have to put in our own facets for this.
+//        project.dependencies.ext.wpilibNative = {
+//            ["edu.wpi.first.wpilibc:athena:${project.wpi.wpilibVersion}",
+//            "edu.wpi.first.wpilib:hal:${project.wpi.wpilibVersion}",
+//            "edu.wpi.first.wpilib:wpiutil:${project.wpi.wpiutilVersion}:arm@zip",
+//            "edu.wpi.first.wpilib.networktables.cpp:NetworkTables:${project.wpi.ntcoreVersion}:arm@zip",
+//            "edu.wpi.cscore.java:cscore:${project.wpi.cscoreVersion}:athena-uberzip@zip"]
+//        }
+
+        project.dependencies.ext.wpilibJni = {
             ["edu.wpi.first.wpilibj:athena-jni:${project.wpi.wpilibVersion}",
              "org.opencv:opencv-jni:${project.wpi.opencvVersion}:${project.wpi.opencvVersion == "3.1.0" ? "linux-arm" : "linuxathena"}",
              "edu.wpi.first.wpilib:athena-runtime:${project.wpi.wpilibVersion}@zip",
@@ -51,7 +62,7 @@ class WPIDependencies {
         }
 
         project.dependencies.ext.wpilib = {
-            project.dependencies.ext.wpilibNative().each {
+            project.dependencies.ext.wpilibJni().each {
                 project.dependencies.add("nativeZip", it)
             }
             ["edu.wpi.first.wpilibj:athena:${project.wpi.wpilibVersion}",
@@ -69,6 +80,7 @@ class WPIDependencies {
 
     void apply_third_party_drivers(Project project) {
 
+        // Java:
         // dependencies {
         //     compile ctre()
         //     compile navx()
@@ -78,6 +90,10 @@ class WPIDependencies {
         //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
+//        project.dependencies.ext.ctreNative = {
+//            "thirdparty.frc.ctre:Toolsuite-Zip:${project.wpi.ctreVersion}@zip"
+//        }
+
         project.dependencies.ext.ctreJni = {
             "thirdparty.frc.ctre:Toolsuite-Zip:${project.wpi.ctreVersion}@zip"
         }
@@ -86,6 +102,10 @@ class WPIDependencies {
             project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
             ["thirdparty.frc.ctre:Toolsuite-Java:${project.wpi.ctreVersion}"]
         }
+
+//        project.dependencies.ext.navxNative = {
+//            "thirdparty.frc.kauai:Navx-Zip:${project.wpi.navxVersion}@zip"
+//        }
 
         project.dependencies.ext.navx = {
             ["thirdparty.frc.kauai:Navx-Java:${project.wpi.navxVersion}"]

@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.wpi
+package jaci.openrio.gradle.wpi.dependencies
 
 import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
@@ -9,7 +9,7 @@ import org.gradle.internal.os.OperatingSystem
 
 import java.util.concurrent.Executors
 
-class WPITools implements Plugin<Project> {
+class WPIToolsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {

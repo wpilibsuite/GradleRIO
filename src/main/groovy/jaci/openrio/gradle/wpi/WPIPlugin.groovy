@@ -2,6 +2,8 @@ package jaci.openrio.gradle.wpi
 
 import groovy.json.JsonSlurper
 import jaci.openrio.gradle.GradleRIOPlugin
+import jaci.openrio.gradle.wpi.dependencies.WPIDependenciesPlugin
+import jaci.openrio.gradle.wpi.dependencies.WPIToolsPlugin
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,9 +15,9 @@ class WPIPlugin implements Plugin<Project> {
     void apply(Project project) {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)
 
-        project.pluginManager.apply(WPITools)
+        project.pluginManager.apply(WPIToolsPlugin)
         project.pluginManager.apply(WPIToolchainPlugin)
-        new WPIDependencies().apply(project)
+        new WPIDependenciesPlugin().apply(project)
 
         project.task("wpi") { Task task ->
             task.group = "GradleRIO"
