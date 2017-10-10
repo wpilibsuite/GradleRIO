@@ -3,6 +3,7 @@ package jaci.openrio.gradle.wpi.toolchain
 import jaci.gradle.toolchains.CrossGcc
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
+import jaci.openrio.gradle.wpi.toolchain.install.MacOSToolchainInstaller
 import org.gradle.api.Action
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.operations.BuildOperationExecutor
@@ -49,6 +50,10 @@ class WPIRoboRioGcc extends CrossGcc {
                     // we can modify the sysroot in order to support the location. This is the base for system libs
                     // and such.
                     def sysroot = WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
+
+                    // For some reason mac buries required libs one level deeper than windows
+                    if (activeInstaller instanceof MacOSToolchainInstaller)
+                        sysroot = new File(sysroot, "arm-frc-linux-gnueabi").absolutePath
                     target.cCompiler.withArguments { a ->
                         a << '--sysroot' << sysroot
                     }
