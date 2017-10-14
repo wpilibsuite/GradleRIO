@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.frc.ext
 
+import groovy.transform.CompileStatic
 import jaci.gradle.targets.RemoteTarget
 
+@CompileStatic
 class RoboRIO {
     public String name
     public int team

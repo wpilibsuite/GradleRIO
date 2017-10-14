@@ -1,22 +1,25 @@
 package jaci.openrio.gradle.wpi.toolchain.install
 
 import de.undercouch.gradle.tasks.download.DownloadAction
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.wpi.WPIExtension
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
+import org.gradle.api.file.CopySpec
 import org.gradle.internal.os.OperatingSystem
 
+@CompileStatic
 class WindowsToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
-        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-")
+        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-") as List<String>
         URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-Windows-Toolchain-${desiredVersion.last()}.zip")
         File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "win-${desiredVersion.join("-")}.zip")
         dst.parentFile.mkdirs()
 
         println "Downloading..."
         def da = new DownloadAction(project)
-        da.with { d ->
+        da.with { DownloadAction d ->
             d.src src
             d.dest dst
             d.overwrite false
@@ -32,7 +35,7 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
         if (extrDir.exists()) extrDir.deleteDir()
         extrDir.mkdirs()
 
-        project.copy { c ->
+        project.copy { CopySpec c ->
             c.from(project.zipTree(dst))
             c.into(extrDir)
         }
@@ -42,7 +45,7 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
         if (installDir.exists()) installDir.deleteDir()
         installDir.mkdirs()
 
-        project.copy { c ->
+        project.copy { CopySpec c ->
             c.from(new File(extrDir, "frc"))
             c.into(installDir)
         }

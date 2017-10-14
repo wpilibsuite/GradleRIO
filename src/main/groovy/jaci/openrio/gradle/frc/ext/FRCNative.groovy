@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.frc.ext
 
+import groovy.transform.CompileStatic
 import jaci.gradle.deployers.NativeArtifact
 
+@CompileStatic
 class FRCNative extends FRCExtConfig {
     public String component
     public Closure<NativeArtifact> artifact

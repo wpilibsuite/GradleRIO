@@ -1,16 +1,20 @@
 package jaci.openrio.gradle.wpi.toolchain.install
 
 import de.undercouch.gradle.tasks.download.DownloadAction
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.wpi.WPIExtension
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
+import org.gradle.api.file.CopySpec
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.process.ExecSpec
 
+@CompileStatic
 class MacOSToolchainInstaller extends AbstractToolchainInstaller {
 
     @Override
     void install(Project project) {
-        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-")
+        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-") as List<String>
         URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-OSX-Toolchain-${desiredVersion.last()}.pkg.tar.gz")
         File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.pkg.tar.gz")
         dst.parentFile.mkdirs()
@@ -18,7 +22,7 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
 
         println "Downloading..."
         def da = new DownloadAction(project)
-        da.with { d ->
+        da.with { DownloadAction d ->
             d.src src
             d.dest dst
             d.overwrite false
@@ -34,7 +38,7 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
         if (extrDir.exists()) extrDir.deleteDir()
         extrDir.mkdirs()
 
-        project.copy { c ->
+        project.copy { CopySpec c ->
             c.from(project.tarTree(project.resources.gzip(dst)))
             c.into(extrDir)
         }
@@ -48,7 +52,7 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
         if (paxDir.exists()) paxDir.deleteDir()
         paxDir.mkdirs()
 
-        project.exec { e ->
+        project.exec { ExecSpec e ->
             e.commandLine('pax')
             e.workingDir(paxDir)
             e.args('-r', '-f', archiveFile.absolutePath)
@@ -59,7 +63,7 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
         if (installDir.exists()) installDir.deleteDir()
         installDir.mkdirs()
 
-        project.copy { c ->
+        project.copy { CopySpec c ->
             c.from(new File(paxDir, "usr/local"))
             c.into(installDir)
         }

@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.frc
 
+import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deployers.CacheMethod
@@ -19,8 +20,8 @@ import org.gradle.api.tasks.Copy
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 
+// TODO: Make @CompileStatic
 class FRCPlugin implements Plugin<Project> {
-
     void apply(Project project) {
         project.pluginManager.apply(EmbeddedTools)
 

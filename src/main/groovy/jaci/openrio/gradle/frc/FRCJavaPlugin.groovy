@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.frc
 
+import groovy.transform.CompileStatic
 import jaci.gradle.deployers.Deployer
 import jaci.gradle.deployers.FileArtifact
 import jaci.gradle.deployers.JavaArtifact
@@ -9,8 +10,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
 
+// TODO: Make @CompileStatic
 class FRCJavaPlugin implements Plugin<Project> {
-
     @Override
     void apply(Project project) {
         project.afterEvaluate {

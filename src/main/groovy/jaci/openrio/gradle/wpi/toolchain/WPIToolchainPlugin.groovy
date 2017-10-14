@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi.toolchain
 
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.gradle.api.Plugin
@@ -20,6 +21,7 @@ import org.gradle.nativeplatform.toolchain.internal.gcc.version.CompilerMetaData
 import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.internal.ExecActionFactory
 
+@CompileStatic
 class WPIToolchainPlugin implements Plugin<Project> {
     static List<AbstractToolchainInstaller> toolchainInstallers = [
         new WindowsToolchainInstaller(),

@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi.dependencies
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Named
 import org.gradle.model.Managed
 import org.gradle.model.ModelMap
@@ -9,6 +10,7 @@ import org.gradle.model.ModelMap
 
 // TODO: Make generic for platform
 @Managed
+@CompileStatic
 interface NativeLibSpec extends Named {
     void setHeaders(File dir)
     File getHeaders()
@@ -24,4 +26,5 @@ interface NativeLibSpec extends Named {
 }
 
 @Managed
+@CompileStatic
 interface NativeDependenciesSpec extends ModelMap<NativeLibSpec> { }

@@ -1,21 +1,24 @@
 package jaci.openrio.gradle.wpi.toolchain.install
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.process.ExecSpec
 
+@CompileStatic
 class LinuxToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
         try {
-            project.exec { e ->
+            project.exec { ExecSpec e ->
                 e.commandLine 'apt-add-repository'
                 e.args 'ppa:wpilib/toolchain'
             }
-            project.exec { e ->
+            project.exec { ExecSpec e ->
                 e.commandLine 'apt'
                 e.args 'update'
             }
-            project.exec { e ->
+            project.exec { ExecSpec e ->
                 e.commandLine 'apt'
                 e.args 'install', 'frc-toolchain'
             }

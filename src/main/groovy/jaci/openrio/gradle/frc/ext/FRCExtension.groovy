@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.frc.ext
 
+import groovy.transform.CompileStatic
 import org.gradle.api.NamedDomainObjectContainer
 
+@CompileStatic
 public class FRCExtension {
     NamedDomainObjectContainer<RoboRIO> roborio
     NamedDomainObjectContainer<FRCJava> java

@@ -1,5 +1,6 @@
 package jaci.openrio.gradle
 
+import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
 import jaci.openrio.gradle.frc.FRCPlugin
@@ -7,11 +8,13 @@ import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project;
 
+@CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
     // Necessary to have access to project.configurations and such in the RuleSource
-    @TupleConstructor
     class ProjectWrapper {
         Project project
+
+        ProjectWrapper(Project project) { this.project = project }
     }
 
     void apply(Project project) {

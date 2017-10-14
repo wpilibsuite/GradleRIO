@@ -1,6 +1,7 @@
 package jaci.openrio.gradle.wpi
 
 import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.dependencies.WPIDependenciesPlugin
 import jaci.openrio.gradle.wpi.dependencies.WPIToolsPlugin
@@ -11,6 +12,7 @@ import org.gradle.api.Task
 
 import java.security.MessageDigest
 
+// TODO: Make @CompileStatic
 class WPIPlugin implements Plugin<Project> {
     void apply(Project project) {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)

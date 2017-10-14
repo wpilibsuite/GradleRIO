@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.frc.ext
 
+import groovy.transform.CompileStatic
 import jaci.gradle.deployers.Deployer
 
+@CompileStatic
 class FRCExtConfig {
 
     public String name

@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.wpi
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 
+@CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
     String wpilibVersion = "+"

@@ -1,6 +1,8 @@
 package jaci.openrio.gradle.wpi.dependencies
 
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
+import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -9,14 +11,16 @@ import org.gradle.internal.os.OperatingSystem
 
 import java.util.concurrent.Executors
 
+@CompileStatic
 class WPIToolsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
         project.configurations.maybeCreate("wpiTools")
 
-        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${project.wpi.smartDashboardVersion}")
-        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:java-installer:${project.wpi.javaInstallerVersion}")
+        def wpi = project.extensions.getByType(WPIExtension)
+        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
+        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:java-installer:${wpi.javaInstallerVersion}")
 
         smartDashboardDirectory().mkdirs()
         javaInstallerDirectory().mkdirs()
