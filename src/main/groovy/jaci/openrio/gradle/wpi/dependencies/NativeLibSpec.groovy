@@ -21,6 +21,13 @@ interface NativeLibSpec extends Named {
     void setSharedMatchers(List<String> matchers)
     List<String> getSharedMatchers()
 
+    void setLibraries(List<String> libraries)
+    List<String> getLibraries()
+
+    // Companion libs, i.e. other libraries that this one depends on
+    void setCompanions(List<String> companionLibs)
+    List<String> getCompanions()
+
     void setMaven(String dependencyNotation)
     String getMaven()
 

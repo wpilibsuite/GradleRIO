@@ -6,9 +6,11 @@ import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.internal.file.FileCollectionVisitor
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.language.base.LanguageSourceSet
@@ -51,6 +53,7 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         apply_third_party_drivers(project, project.extensions.wpi)
     }
 
+    // TODO: Move most of this to EmbeddedTools
     static class WPIDepRules extends RuleSource {
         @Model("libraries")
         void createLibrariesModel(NativeDependenciesSpec spec) { }
@@ -68,10 +71,22 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         @Mutate
         void addNativeLibraries(ModelMap<Task> tasks, final BinaryContainer binaries, final NativeDependenciesSpec spec, final ExtensionContainer extensions) {
             Project project = extensions.getByType(GradleRIOPlugin.ProjectWrapper).project
+            binaries.withType(NativeBinarySpec).findAll { NativeBinarySpec bin ->
+                bin.inputs.withType(DependentSourceSet) { lss ->
+                    def addedLibs = []
+                    lss.libs.forEach { lib ->
+                        if (lib instanceof LinkedHashMap) {
+                            def speclib = spec.get(lib["library"])
+                            if (speclib != null && speclib.companions != null)
+                                addedLibs += speclib.companions
+                        }
+                    }
+                    lss.libs.addAll(addedLibs.collect { [library: it] })
+                }
+            }
             spec.each { NativeLibSpec lib ->
                 def libname = lib.backingNode.path.name
                 FileTree rootTree, sharedFiles, staticFiles
-                Set<File> headerFiles
                 if (lib.getMaven() != null) {
                     // Fetch from maven, add to project dependencies
                     def cfg = project.configurations.maybeCreate("native_${libname}")
@@ -88,9 +103,9 @@ class WPIDependenciesPlugin implements Plugin<Project> {
                     }
                 }
 
-//                headerFiles = lib.headerDirs.collect { subdir -> new File(rootTree., subdir) }
-//                sharedFiles = rootTree.matching { pat -> pat.include(lib.sharedMatchers) }
-//                staticFiles = rootTree.matching { pat -> pat.include(lib.staticMatchers) }
+//                headerFiles = ((ConfigurableFileTree)rootTree).from(lib.headerDirs)
+                sharedFiles = rootTree.matching { pat -> pat.include(lib.sharedMatchers) }
+                staticFiles = rootTree.matching { pat -> pat.include(lib.staticMatchers) }
 
                 // We can't host a single library with multiple static/shared libs easily, so instead we'll just add it manually
                 binaries.withType(NativeBinarySpec).findAll { NativeBinarySpec bin ->
@@ -101,9 +116,17 @@ class WPIDependenciesPlugin implements Plugin<Project> {
                         }
                     }.size() > 0)
                 }.forEach { NativeBinarySpec bs ->
+                    // Remove our temporary library
+                    bs.inputs.withType(DependentSourceSet).forEach { lss -> lss.libs.removeIf { it instanceof LinkedHashMap && it["library"] == libname } }
                     bs.tasks.withType(AbstractNativeCompileTask) { task ->
-                        task.doLast {
-//                            println sharedFiles.files
+                        task.doFirst() {
+                            def headerDirs = lib.headerDirs.collect { new File(rootTree.asFileTrees.first().dir, it) }
+                            def libdirs = (sharedFiles + staticFiles).files.collect { it.parentFile }.unique()
+                            bs.cCompiler.args(*headerDirs.collectMany { ["-I", it.absolutePath] })
+                            bs.cppCompiler.args(*headerDirs.collectMany { ["-I", it.absolutePath] })
+                            bs.linker.args(*libdirs.collectMany { ["-L", it.absolutePath] })
+                            if (lib.libraries != null)
+                                bs.linker.args(*lib.libraries.collectMany { ["-l", it] })
                         }
                     }
                     println "Done"

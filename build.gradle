@@ -22,7 +22,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile ('gradle.plugin.jaci.gradle:DeployTools:2017.10.10') {
+    compile ('gradle.plugin.jaci.gradle:DeployTools:2017.10.14') {
         exclude module: 'groovy-all'
     }
     compile 'de.undercouch:gradle-download-task:3.3.0'
