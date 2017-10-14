@@ -2,6 +2,7 @@ package jaci.openrio.gradle.frc
 
 import jaci.gradle.deployers.Deployer
 import jaci.gradle.deployers.FileArtifact
+import jaci.gradle.deployers.FileSetArtifact
 import jaci.gradle.deployers.NativeArtifact
 import jaci.openrio.gradle.frc.ext.FRCNative
 import org.gradle.api.Plugin

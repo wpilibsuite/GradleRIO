@@ -106,6 +106,7 @@ class FRCPlugin implements Plugin<Project> {
                         def zipdep = zipentry.first()
                         FileTree ziptree = zipentry.last()
 
+                        // TODO: Move this over to NativeLibSpec and deploy from there. See Native Libraries deployer for details
                         Set<File> nativelibs = ["", "lib", "java/lib", "linux/athena"].collectMany { dirext ->
                             // TODO: This gets destroyed by clean task
                             // Do twice? (once during task run)
@@ -127,6 +128,11 @@ class FRCPlugin implements Plugin<Project> {
                         zips.collect { z -> z[1] }.forEach { zt -> task.dependsOn zt }
                     }
                 }
+            }
+
+            // Create the "Native Libraries" deployer. This avoids deploying libraries more than once.
+            if (frcExt.nativ.size() > 0) {
+                // TODO
             }
 
             def createBaseDeployer = { Deployer deployer, FRCExtConfig ext ->

@@ -54,6 +54,7 @@ class WPIDependenciesPlugin implements Plugin<Project> {
     }
 
     // TODO: Move most of this to EmbeddedTools
+    // TODO: Have a 'library set' that replaces the companions spec
     static class WPIDepRules extends RuleSource {
         @Model("libraries")
         void createLibrariesModel(NativeDependenciesSpec spec) { }
