@@ -1,8 +1,12 @@
 plugins {
     id 'com.gradle.build-scan' version '1.9.1'
-    id "com.gradle.plugin-publish" version "0.9.7"
-    id "idea"
+    id 'com.gradle.plugin-publish' version '0.9.7'
+    id 'me.champeau.buildscan-recipes' version '0.2.0'
+    id 'idea'
 }
+
+// TODO: Test quickstart
+
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
@@ -27,6 +31,10 @@ dependencies {
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
+}
+
+buildScanRecipes {
+    recipes 'git-commit', 'git-status', 'travis-ci', 'disk-usage', 'gc-stats'
 }
 
 group = "jaci.openrio.gradle"
