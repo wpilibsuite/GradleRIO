@@ -12,8 +12,8 @@ import org.gradle.model.ModelMap
 @Managed
 @CompileStatic
 interface NativeLibSpec extends Named {
-    void setHeaderMatchers(List<String> matchers)
-    List<String> getHeaderMatchers()
+    void setHeaderDirs(List<String> dirs)
+    List<String> getHeaderDirs()
 
     void setStaticMatchers(List<String> matchers)
     List<String> getStaticMatchers()
@@ -24,8 +24,11 @@ interface NativeLibSpec extends Named {
     void setMaven(String dependencyNotation)
     String getMaven()
 
-    void setFile(File dir_or_file)
+    void setFile(File dir_or_zip)
     File getFile()
+
+    void setTargetPlatforms(List<String> platforms)
+    List<String> getTargetPlatforms()
 }
 
 @Managed

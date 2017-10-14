@@ -11,19 +11,27 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.language.base.LanguageSourceSet
 import org.gradle.language.base.plugins.ComponentModelBasePlugin
+import org.gradle.language.c.tasks.CCompile
+import org.gradle.language.cpp.CppSourceSet
+import org.gradle.language.nativeplatform.DependentSourceSet
+import org.gradle.language.nativeplatform.tasks.AbstractNativeCompileTask
 import org.gradle.model.Each
 import org.gradle.model.Model
 import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.Path
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.NativeLibraryBinary
 import org.gradle.nativeplatform.PrebuiltLibraries
 import org.gradle.nativeplatform.PrebuiltLibrary
 import org.gradle.nativeplatform.Repositories
 import org.gradle.nativeplatform.StaticLibraryBinary
 import org.gradle.nativeplatform.internal.prebuilt.AbstractPrebuiltLibraryBinary
+import org.gradle.platform.base.BinaryContainer
+import org.gradle.platform.base.BinarySpec
 
 class WPIDependenciesPlugin implements Plugin<Project> {
     void apply(Project project) {
@@ -48,22 +56,22 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         void createLibrariesModel(NativeDependenciesSpec spec) { }
 
         @Mutate
-        void setDefaultsNativeLibs(@Each NativeLibSpec spec) {
-            // TODO: Separate based on platform
-            // Custom like Toolchain?
-            spec.setHeaderMatchers([ '**/*.h', '**/*.hpp' ])
-            spec.setSharedMatchers([ '**/*.dll', '**/*.dylib', '**/*.so*' ])
-            spec.setStaticMatchers([ '**/*.lib', '**/*.a' ])
-        }
-
-        @Mutate
-        void addNativeLibraries(ModelMap<Task> tasks, final Repositories repos, final NativeDependenciesSpec spec, final ExtensionContainer extensions) {
-            Project project = extensions.getByType(GradleRIOPlugin.ProjectWrapper).project
-
+        void addNativeLibrariesRepos(ModelMap<Task> tasks, final Repositories repos, final NativeDependenciesSpec spec) {
             PrebuiltLibraries prelibs = repos.maybeCreate('gradlerio', PrebuiltLibraries)
             spec.each { NativeLibSpec lib ->
                 def libname = lib.backingNode.path.name
-                FileTree rootTree, headerFiles, sharedFiles, staticFiles
+                // Add this to allow linking from the DSL
+                prelibs.create(libname) { }
+            }
+        }
+
+        @Mutate
+        void addNativeLibraries(ModelMap<Task> tasks, final BinaryContainer binaries, final NativeDependenciesSpec spec, final ExtensionContainer extensions) {
+            Project project = extensions.getByType(GradleRIOPlugin.ProjectWrapper).project
+            spec.each { NativeLibSpec lib ->
+                def libname = lib.backingNode.path.name
+                FileTree rootTree, sharedFiles, staticFiles
+                Set<File> headerFiles
                 if (lib.getMaven() != null) {
                     // Fetch from maven, add to project dependencies
                     def cfg = project.configurations.maybeCreate("native_${libname}")
@@ -80,13 +88,26 @@ class WPIDependenciesPlugin implements Plugin<Project> {
                     }
                 }
 
-                headerFiles = rootTree.matching { pat -> pat.include(lib.headerMatchers) }
-                sharedFiles = rootTree.matching { pat -> pat.include(lib.sharedMatchers) }
-                staticFiles = rootTree.matching { pat -> pat.include(lib.staticMatchers) }
+//                headerFiles = lib.headerDirs.collect { subdir -> new File(rootTree., subdir) }
+//                sharedFiles = rootTree.matching { pat -> pat.include(lib.sharedMatchers) }
+//                staticFiles = rootTree.matching { pat -> pat.include(lib.staticMatchers) }
 
-//                prelibs.create(libname) { PrebuiltLibrary pl ->
-//
-//                }
+                // We can't host a single library with multiple static/shared libs easily, so instead we'll just add it manually
+                binaries.withType(NativeBinarySpec).findAll { NativeBinarySpec bin ->
+                    (lib.targetPlatforms.collect { it.toLowerCase() }.contains(bin.targetPlatform.name.toLowerCase())) &&
+                    (bin.inputs.withType(DependentSourceSet).collectMany { lss ->
+                        lss.libs.findAll { lsslib ->
+                            (lsslib instanceof LinkedHashMap && lsslib["library"] == libname)      // TODO make our own libraries
+                        }
+                    }.size() > 0)
+                }.forEach { NativeBinarySpec bs ->
+                    bs.tasks.withType(AbstractNativeCompileTask) { task ->
+                        task.doLast {
+//                            println sharedFiles.files
+                        }
+                    }
+                    println "Done"
+                }
             }
         }
     }

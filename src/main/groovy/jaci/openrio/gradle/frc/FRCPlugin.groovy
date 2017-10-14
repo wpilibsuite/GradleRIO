@@ -107,6 +107,10 @@ class FRCPlugin implements Plugin<Project> {
                         FileTree ziptree = zipentry.last()
 
                         Set<File> nativelibs = ["", "lib", "java/lib", "linux/athena"].collectMany { dirext ->
+                            // TODO: This gets destroyed by clean task
+                            // Do twice? (once during task run)
+                            // It may be worth moving EmbeddedTools from a rule based model to an extension-based model so we can
+                            // defer execution of artifact.files() etc
                             ziptree.matching { pat -> pat.include("${dirext}${dirext.length() > 0 ? "/" : ""}*.so") }.getFiles()
                         }
 
