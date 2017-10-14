@@ -9,8 +9,6 @@ import org.gradle.api.Task
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 
-import java.util.concurrent.Executors
-
 @CompileStatic
 class WPIToolsPlugin implements Plugin<Project> {
 

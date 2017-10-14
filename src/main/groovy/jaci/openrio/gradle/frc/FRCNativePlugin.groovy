@@ -1,9 +1,7 @@
 package jaci.openrio.gradle.frc
 
-import groovy.transform.CompileStatic
 import jaci.gradle.deployers.Deployer
 import jaci.gradle.deployers.FileArtifact
-import jaci.gradle.deployers.JavaArtifact
 import jaci.gradle.deployers.NativeArtifact
 import jaci.openrio.gradle.frc.ext.FRCNative
 import org.gradle.api.Plugin

@@ -1,10 +1,8 @@
 package jaci.openrio.gradle.wpi.dependencies
 
-import groovy.transform.TupleConstructor
 import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.model.Model
 import org.gradle.model.Mutate

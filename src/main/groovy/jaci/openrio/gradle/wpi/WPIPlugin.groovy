@@ -1,7 +1,6 @@
 package jaci.openrio.gradle.wpi
 
 import groovy.json.JsonSlurper
-import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.dependencies.WPIDependenciesPlugin
 import jaci.openrio.gradle.wpi.dependencies.WPIToolsPlugin

@@ -1,6 +1,5 @@
 package jaci.openrio.gradle.wpi.toolchain
 
-import groovy.transform.CompileStatic
 import jaci.gradle.toolchains.CrossGcc
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller

@@ -1,12 +1,11 @@
 package jaci.openrio.gradle
 
 import groovy.transform.CompileStatic
-import groovy.transform.TupleConstructor
 import jaci.gradle.EmbeddedTools
 import jaci.openrio.gradle.frc.FRCPlugin
 import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
-import org.gradle.api.Project;
+import org.gradle.api.Project
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {

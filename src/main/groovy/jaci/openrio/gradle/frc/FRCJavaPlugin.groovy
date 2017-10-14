@@ -1,6 +1,5 @@
 package jaci.openrio.gradle.frc
 
-import groovy.transform.CompileStatic
 import jaci.gradle.deployers.Deployer
 import jaci.gradle.deployers.FileArtifact
 import jaci.gradle.deployers.JavaArtifact
