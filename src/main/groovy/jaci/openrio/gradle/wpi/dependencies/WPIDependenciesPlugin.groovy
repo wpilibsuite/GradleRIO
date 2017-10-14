@@ -1,18 +1,34 @@
 package jaci.openrio.gradle.wpi.dependencies
 
+import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.WPIExtension
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileTree
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.internal.os.OperatingSystem
+import org.gradle.language.base.plugins.ComponentModelBasePlugin
+import org.gradle.model.Each
 import org.gradle.model.Model
+import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.Path
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeLibraryBinary
 import org.gradle.nativeplatform.PrebuiltLibraries
+import org.gradle.nativeplatform.PrebuiltLibrary
 import org.gradle.nativeplatform.Repositories
+import org.gradle.nativeplatform.StaticLibraryBinary
+import org.gradle.nativeplatform.internal.prebuilt.AbstractPrebuiltLibraryBinary
 
 class WPIDependenciesPlugin implements Plugin<Project> {
     void apply(Project project) {
+        project.getPluginManager().apply(ComponentModelBasePlugin.class)
+
         project.repositories.maven { repo ->
             repo.name = "WPI"
             repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
@@ -23,42 +39,54 @@ class WPIDependenciesPlugin implements Plugin<Project> {
             repo.url = "http://dev.imjac.in/maven/"
         }
 
-        println("Hello World")
-
         apply_wpi_dependencies(project, project.extensions.wpi)
         apply_third_party_drivers(project, project.extensions.wpi)
     }
 
     static class WPIDepRules extends RuleSource {
-        @Model("nativeLibs")
-        void createLibrariesModel(NativeDependenciesSpec spec) {
-            println("B")
+        @Model("libraries")
+        void createLibrariesModel(NativeDependenciesSpec spec) { }
+
+        @Mutate
+        void setDefaultsNativeLibs(@Each NativeLibSpec spec) {
+            // TODO: Separate based on platform
+            // Custom like Toolchain?
+            spec.setHeaderMatchers([ '**/*.h', '**/*.hpp' ])
+            spec.setSharedMatchers([ '**/*.dll', '**/*.dylib', '**/*.so*' ])
+            spec.setStaticMatchers([ '**/*.lib', '**/*.a' ])
         }
 
         @Mutate
-        void addNativeLibraries(Repositories repos, @Path("nativeLibs") NativeDependenciesSpec spec, final ExtensionContainer extensions) {
-            println("A")
-            Project project = extensions.getByName('projectWrapper').project
+        void addNativeLibraries(ModelMap<Task> tasks, final Repositories repos, final NativeDependenciesSpec spec, final ExtensionContainer extensions) {
+            Project project = extensions.getByType(GradleRIOPlugin.ProjectWrapper).project
 
             PrebuiltLibraries prelibs = repos.maybeCreate('gradlerio', PrebuiltLibraries)
             spec.each { NativeLibSpec lib ->
                 def libname = lib.backingNode.path.name
-                println(libname)
+                FileTree rootTree, headerFiles, sharedFiles, staticFiles
                 if (lib.getMaven() != null) {
                     // Fetch from maven, add to project dependencies
                     def cfg = project.configurations.maybeCreate("native_${libname}")
                     project.dependencies.add(cfg.name, lib.getMaven())
 
-                    def destdir = new File(project.buildDir, "native_extract/${libname}")
-                    destdir.mkdirs()
-                    // Load dependency zip file
-                    project.copy { c ->
-                        c.from project.zipTree(cfg.dependencies.collectMany { cfg.files(it) }.first())
-                        c.into destdir
-                    }
+                    rootTree = project.zipTree(cfg.dependencies.collectMany { cfg.files(it) }.first())
                 } else {
-                    // Load the files directly
+                    if (lib.getFile().isDirectory()) {
+                        // Assume directory including static, shared and headers
+                        rootTree = project.fileTree(lib.getFile())
+                    } else {
+                        // Assume ZIP File including static, shared and headers
+                        rootTree = project.zipTree(lib.getFile())
+                    }
                 }
+
+                headerFiles = rootTree.matching { pat -> pat.include(lib.headerMatchers) }
+                sharedFiles = rootTree.matching { pat -> pat.include(lib.sharedMatchers) }
+                staticFiles = rootTree.matching { pat -> pat.include(lib.staticMatchers) }
+
+//                prelibs.create(libname) { PrebuiltLibrary pl ->
+//
+//                }
             }
         }
     }
