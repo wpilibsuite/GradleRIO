@@ -11,6 +11,9 @@ import jaci.gradle.targets.TargetsSpec
 import jaci.openrio.gradle.frc.ext.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.FileTree
+import org.gradle.api.internal.changedetection.state.ZipTree
+import org.gradle.api.internal.file.collections.DefaultConfigurableFileTree
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Copy
 import org.gradle.model.Mutate
@@ -18,16 +21,8 @@ import org.gradle.model.RuleSource
 
 class FRCPlugin implements Plugin<Project> {
 
-    // Necessary to have access to project.configurations and such in the RuleSource
-    @TupleConstructor
-    class ProjectWrapper {
-        Project project
-    }
-
     void apply(Project project) {
         project.pluginManager.apply(EmbeddedTools)
-
-        project.extensions.add('projectWrapper', new ProjectWrapper(project))
 
         def frc = new FRCExtension(project.container(RoboRIO), project.container(FRCJava), project.container(FRCNative))
         project.extensions.add('frc', frc)
@@ -78,10 +73,7 @@ class FRCPlugin implements Plugin<Project> {
 
             def nativeZips = project.configurations.nativeZip
             def zips = nativeZips.dependencies.findAll { dep -> dep != null && nativeZips.files(dep).size() > 0 }.collect { dep ->
-                return [dep, project.tasks.create("unzipDependency${dep.name.capitalize()}", Copy) { task ->
-                    task.from(project.zipTree(nativeZips.files(dep).first()))
-                    task.into(new File(project.buildDir, "gradlerio/unzip/${dep.name}"))
-                }]
+                return [dep, project.zipTree(nativeZips.files(dep).first())]
             }
 
             // Create the "Java Libraries" deployer. This avoids deploying libraries more than once.
@@ -120,14 +112,10 @@ class FRCPlugin implements Plugin<Project> {
                     // Add native zips (from wpilib etc)
                     zips.forEach { zipentry ->
                         def zipdep = zipentry.first()
-                        def unziptask = zipentry.last()
-                        if (unziptask.outputs.files.size() == 0) return;
+                        FileTree ziptree = zipentry.last()
 
-                        def unzipdir = unziptask.outputs.files.first()
-                        def nativelibs = [ "", "lib", "java/lib", "linux/athena" ].collectMany { dirext ->
-                            def ft = project.fileTree(new File(unzipdir, dirext))
-                            ft.include("*.so*")
-                            ft.getFiles()
+                        Set<File> nativelibs = ["", "lib", "java/lib", "linux/athena"].collectMany { dirext ->
+                            ziptree.matching { pat -> pat.include("${dirext}${dirext.length() > 0 ? "/" : ""}*.so") }.getFiles()
                         }
 
                         // ARTIFACT: Native Zips

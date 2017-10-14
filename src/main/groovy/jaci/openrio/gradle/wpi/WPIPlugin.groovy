@@ -15,9 +15,9 @@ class WPIPlugin implements Plugin<Project> {
     void apply(Project project) {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)
 
-        project.pluginManager.apply(WPIToolsPlugin)
+        project.pluginManager.apply(WPIDependenciesPlugin)
         project.pluginManager.apply(WPIToolchainPlugin)
-        new WPIDependenciesPlugin().apply(project)
+        project.pluginManager.apply(WPIToolsPlugin)
 
         project.task("wpi") { Task task ->
             task.group = "GradleRIO"
