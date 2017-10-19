@@ -1,162 +1,123 @@
 package jaci.openrio.gradle.frc
 
+import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
-import jaci.gradle.deployers.*
-import jaci.gradle.targets.TargetsSpec
-import jaci.openrio.gradle.frc.ext.*
+import jaci.gradle.deploy.DeployContext
+import jaci.gradle.deploy.DeployExtension
+import jaci.gradle.deploy.artifact.ArtifactBase
+import jaci.gradle.deploy.artifact.FileArtifact
+import jaci.gradle.deploy.artifact.FileCollectionArtifact
+import jaci.gradle.deploy.artifact.NativeLibraryArtifact
+import jaci.openrio.gradle.ExportJarResourceTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileTree
+import org.gradle.api.Task
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.tasks.util.PatternFilterable
+import org.gradle.language.nativeplatform.DependentSourceSet
+import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeBinary
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.platform.base.BinaryTasks
 
-// TODO: Make @CompileStatic
+@CompileStatic
 class FRCPlugin implements Plugin<Project> {
+
+    Project project
+
+    @Override
     void apply(Project project) {
+        this.project = project
         project.pluginManager.apply(EmbeddedTools)
 
-        def frc = new FRCExtension(project.container(RoboRIO), project.container(FRCJava), project.container(FRCNative))
-        project.extensions.add('frc', frc)
-
-        project.pluginManager.apply(FRCJavaPlugin)
-        project.pluginManager.apply(FRCNativePlugin)
+        project.afterEvaluate {
+            addNetconsoleArtifact(project)
+            addNativeLibraryArtifacts(project)
+        }
     }
 
-    static class DeployRules extends RuleSource {
-        @Mutate
-        void addRoboRios(TargetsSpec targets, final ExtensionContainer extensions) {
-            def frcExt = extensions.getByName('frc')
+    DeployExtension deployExtension(Project project) {
+        return project.extensions.getByType(DeployExtension)
+    }
 
-            frcExt.roborio.each { roborio ->
-                targets.create(roborio.name) { target ->
-                    target.addresses << '172.22.11.2'
-                    target.addresses << "roborio-${roborio.team}-frc.local".toString()
-                    target.addresses << "10.${(int)(roborio.team/100)}.${((int)roborio.team)%100}.2".toString()
-                    target.asyncFind = true
+    static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
+        ext.targets.withType(RoboRIO).all { RoboRIO r ->
+            artifact.targets << r.name
+        }
+    }
 
-                    target.user = 'admin'
-                    target.password = ''
-                    target.promptPassword = false
+    void addNetconsoleArtifact(Project project) {
+        ExportJarResourceTask netconsolehost_task = project.tasks.create('exportNetconsoleHost', ExportJarResourceTask) { ExportJarResourceTask task ->
+            task.resource = "netconsole/netconsole-host"
+            task.outfile = new File(project.buildDir, "gradlerio/resource/${task.resource}")
+        }
 
-                    target.directory = '/home/lvuser'
-                    target.mkdirs = true
-                    target.timeout = 3
+        deployExtension(project).artifacts.fileArtifact('netconsole') { FileArtifact artifact ->
+            artifact.dependsOn(netconsolehost_task)
+            allRoborioTargets(deployExtension(project), artifact)
+            artifact.predeploy << { DeployContext ctx -> ctx.execute('killall -q netconsole-host 2> /dev/null || :') }
+            artifact.file = netconsolehost_task.outputs.files.first()
+            artifact.directory = '/usr/local/frc/bin'
+            artifact.filename = 'netconsole-host'
+            artifact.postdeploy << { DeployContext ctx -> ctx.execute('chmod +x netconsole-host') }
+        }
+    }
 
-                    target.failOnMissing = true
-                    if (roborio.remote != null) {
-                        roborio.remote.resolveStrategy = DELEGATE_FIRST
-                        roborio.remote.delegate = target
-                        roborio.remote.call(target)
-                    }
-                }
+    void addNativeLibraryArtifacts(Project project) {
+        // Note: These include JNI. Actual native c/c++ is done through EmbeddedTools
+        def nativeLibs = project.configurations.getByName('nativeLib')
+        def nativeZips = project.configurations.getByName('nativeZip')
+
+        deployExtension(project).artifacts.fileCollectionArtifact('nativeLibs') { FileCollectionArtifact artifact ->
+            allRoborioTargets(deployExtension(project), artifact)
+            artifact.files = project.files()
+            artifact.directory = '/usr/local/frc/lib'
+            artifact.postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }
+
+            nativeLibs.dependencies.matching { Dependency dep -> dep != null && nativeLibs.files(dep).size() > 0 }.all { Dependency dep ->
+                artifact.files = artifact.files + project.files(nativeLibs.files(dep).toArray())
             }
         }
 
-        @Mutate
-        void addDeployers(DeployersSpec deployers, final ExtensionContainer extensions) {
-            FRCExtension frcExt = extensions.getByName('frc')
-            Project project = extensions.getByName('projectWrapper').project
+        deployExtension(project).artifacts.fileCollectionArtifact('nativeZips') { FileCollectionArtifact artifact ->
+            allRoborioTargets(deployExtension(project), artifact)
+            artifact.files = project.files()
+            artifact.directory = '/usr/local/frc/lib'
+            artifact.postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }
 
-            ExportJarResourceTask netconsolehost_task = project.tasks.create('exportNetconsoleHost', ExportJarResourceTask) { task ->
-                task.resource = "netconsole/netconsole-host"
-                task.outfile = new File(project.buildDir, "gradlerio/resource/${task.resource}")
-            }
-
-            def nativeZips = project.configurations.nativeZip
-            def zips = nativeZips.dependencies.findAll { dep -> dep != null && nativeZips.files(dep).size() > 0 }.collect { dep ->
-                return [dep, project.zipTree(nativeZips.files(dep).first())]
-            }
-
-            // Create the "Java Libraries" deployer. This avoids deploying libraries more than once.
-            if (frcExt.java.size() > 0) {
-                deployers.create('javaLibraries') { deployer ->
-                    deployer.targets += frcExt.java.collectMany { j -> j.targets }
-                    deployer.predeploy << "echo 'Deploying Java Libraries'"
-                    deployer.order = 1
-                    // ARTIFACT: Netconsole
-                    deployer.artifacts.create("netconsolehost", FileArtifact) { artifact ->
-                        artifact.predeploy << "killall -q netconsole-host 2> /dev/null || :"
-                        artifact.file = netconsolehost_task.outputs.files.first()
-                        artifact.directory = '/usr/local/frc/bin'
-                        artifact.filename = 'netconsole-host'
-                        artifact.postdeploy << 'chmod +x netconsole-host'
-                    }
-
-                    // Add netconsolehost export task dependency for this deployer
-                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { t ->
-                        t.dependsOn netconsolehost_task
-                        println(t)
-                    }
-
-                    // Add native libs (single .so)
-                    def nativeLibs = project.configurations.nativeLib
-                    nativeLibs.dependencies.findAll { dep -> dep != null && nativeLibs.files(dep).size() > 0 }.forEach { dep ->
-                        def libfile = nativeLibs.files(dep).first()
-                        // ARTIFACT: Native Libs
-                        deployer.artifacts.create("nativeLib${dep.name.capitalize()}", FileArtifact) { artifact ->
-                            artifact.file = libfile
-                            artifact.directory = '/usr/local/frc/lib'
-                            artifact.cacheMethod = CacheMethod.MD5_FILE
-                        }
-                    }
-
-                    // Add native zips (from wpilib etc)
-                    zips.forEach { zipentry ->
-                        def zipdep = zipentry.first()
-                        FileTree ziptree = zipentry.last()
-
-                        // TODO: Move this over to NativeLibSpec and deploy from there. See Native Libraries deployer for details
-                        Set<File> nativelibs = ["", "lib", "java/lib", "linux/athena"].collectMany { dirext ->
-                            // TODO: This gets destroyed by clean task
-                            // Do twice? (once during task run)
-                            // It may be worth moving EmbeddedTools from a rule based model to an extension-based model so we can
-                            // defer execution of artifact.files() etc
-                            ziptree.matching { pat -> pat.include("${dirext}${dirext.length() > 0 ? "/" : ""}*.so") }.getFiles()
-                        }
-
-                        // ARTIFACT: Native Zips
-                        deployer.artifacts.create("nativeZip${zipdep.name.capitalize()}", FileSetArtifact) { artifact ->
-                            artifact.files = nativelibs
-                            artifact.directory = '/usr/local/frc/lib'
-                            artifact.cacheMethod = CacheMethod.MD5_FILE
-                        }
-                    }
-
-                    // Add unzip tasks as dependencies to the main deploy task for this deployer
-                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
-                        zips.collect { z -> z[1] }.forEach { zt -> task.dependsOn zt }
-                    }
-                }
-            }
-
-            // Create the "Native Libraries" deployer. This avoids deploying libraries more than once.
-            if (frcExt.nativ.size() > 0) {
-                // TODO
-            }
-
-            def createBaseDeployer = { Deployer deployer, FRCExtConfig ext ->
-                deployer.targets += ext.targets
-                deployer.predeploy << "whoami"
-                deployer.postdeploy << "ldconfig" << "sync" << ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r || true"
-            }
-
-            frcExt.java.each { FRCJava java ->
-                deployers.create(java.name) { deployer ->
-                    createBaseDeployer(deployer, java)
-                    project.plugins.getPlugin(FRCJavaPlugin).configureDeployer(project, deployer, java)
-                    project.tasks.matching { t -> t.name == "deploy${deployer.name.capitalize()}".toString() }.whenTaskAdded { task ->
-                        task.dependsOn('deployJavaLibraries')
-                    }
-                }
-            }
-
-            frcExt.nativ.each { FRCNative nativ ->
-                deployers.create(nativ.name) { deployer ->
-                    createBaseDeployer(deployer, nativ)
-                    project.plugins.getPlugin(FRCNativePlugin).configureDeployer(project, deployer, nativ)
+            nativeZips.dependencies.matching { Dependency dep -> dep != null && nativeZips.files(dep).size() > 0 }.all { Dependency dep ->
+                def ziptree = project.zipTree(nativeZips.files(dep).first())
+                ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/*.so"].collect { String pattern ->
+                    artifact.files = artifact.files + ziptree.matching { PatternFilterable pat -> pat.include(pattern) }
                 }
             }
         }
     }
+
+    static class FRCRules extends RuleSource {
+        @BinaryTasks
+        void createNativeLibraryDeployTasks(final ModelMap<Task> tasks, final ExtensionContainer ext, final NativeBinarySpec binary) {
+            def deployExt = ext.getByType(DeployExtension)
+            def artifacts = deployExt.artifacts
+            binary.inputs.withType(DependentSourceSet) { DependentSourceSet ss ->
+                ss.libs.each { lss ->
+                    if (lss instanceof LinkedHashMap) {
+                        def lib = lss['library'] as String
+                        if (artifacts.findByName(lib) == null) {
+                            artifacts.nativeLibraryArtifact(lib) { NativeLibraryArtifact nla ->
+                                FRCPlugin.allRoborioTargets(deployExt, nla)
+                                nla.directory = '/usr/local/frc/lib'
+                                nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
+                                nla.library = lib
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
