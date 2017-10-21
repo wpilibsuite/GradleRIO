@@ -80,4 +80,9 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
     String installerPlatform() {
         return "MacOS"
     }
+
+    @Override
+    File sysrootLocation() {
+        return new File(WPIToolchainPlugin.toolchainInstallDirectory(),'arm-frc-linux-gnueabi')
+    }
 }

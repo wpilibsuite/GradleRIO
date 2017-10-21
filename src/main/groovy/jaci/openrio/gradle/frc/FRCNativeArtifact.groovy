@@ -6,6 +6,8 @@ import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.artifact.NativeArtifact
 import org.gradle.api.Project
 
+import java.nio.file.Paths
+
 @CompileStatic
 class FRCNativeArtifact extends NativeArtifact {
     FRCNativeArtifact(String name) {
@@ -27,9 +29,11 @@ class FRCNativeArtifact extends NativeArtifact {
     }
 
     List<String> arguments = []
+    boolean debug = false
+    int debugPort = 8348
 
-    Object robotCommand = {
-        "/usr/local/frc/bin/netconsole-host <<BINARY>> ${arguments.join(" ")}"
+    Object robotCommand = { DeployContext ctx, FRCNativeArtifact self ->
+        "/usr/local/frc/bin/netconsole-host ${self.debug ? "gdbserver host:${self.debugPort}" : ''} <<BINARY>> ${self.arguments.join(" ")}"
     }
 
     @Override
@@ -39,7 +43,7 @@ class FRCNativeArtifact extends NativeArtifact {
         if (robotCommand) {
             String rCmd = null
             if (robotCommand instanceof Closure)
-                rCmd = (robotCommand as Closure).call(this).toString()
+                rCmd = (robotCommand as Closure).call([ctx, this]).toString()
             else if (robotCommand instanceof String)
                 rCmd = (robotCommand as String)
 
@@ -48,6 +52,27 @@ class FRCNativeArtifact extends NativeArtifact {
                 rCmd = rCmd.replace('<<BINARY>>', binFile)
                 ctx.execute("echo '${rCmd}' > /home/lvuser/robotCommand")
             }
+        }
+
+        if (debug) {
+            def outfile = new File(project.buildDir, "debug/${name}.gdbcommands")
+
+            ctx.logger().log("====================================================================")
+            ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
+            ctx.logger().log("Launch debugger with gdb -ix='${Paths.get(project.rootDir.toURI()).relativize(Paths.get(outfile.toURI()))}'")
+            ctx.logger().log("NOTE: If you are running GDB on multiple targets, you will have to run")
+            ctx.logger().log("      (gdb) target remote host:${debugPort}")
+            ctx.logger().log("manually in case of conflicts.")
+            ctx.logger().log("====================================================================")
+
+            def init_commands = [
+                'set gnutarget elf32-littlearm',
+                "file ${_nativefile.absolutePath}".toString(),
+                "target remote ${ctx.selectedHost()}:${debugPort}".toString()
+            ]
+
+            outfile.parentFile.mkdirs()
+            outfile.text = init_commands.join('\n')
         }
     }
 }

@@ -28,7 +28,8 @@ class FRCJavaArtifact extends JavaArtifact {
     List<String> jvmArgs = []
     List<String> arguments = []
     boolean debug = false
-    String debugFlags = "-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=8348,server=y,suspend=y"
+    int debugPort = 8348
+    String debugFlags = "-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=${debugPort},server=y,suspend=y"
 
     Object robotCommand = {
         "/usr/local/frc/bin/netconsole-host /usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib/ ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -jar <<BINARY>> ${arguments.join(" ")}"
@@ -41,7 +42,7 @@ class FRCJavaArtifact extends JavaArtifact {
         if (robotCommand) {
             String rCmd = null
             if (robotCommand instanceof Closure)
-                rCmd = (robotCommand as Closure).call(this).toString()
+                rCmd = (robotCommand as Closure).call([ctx, this]).toString()
             else if (robotCommand instanceof String)
                 rCmd = (robotCommand as String)
 
@@ -50,6 +51,12 @@ class FRCJavaArtifact extends JavaArtifact {
                 rCmd = rCmd.replace('<<BINARY>>', binFile)
                 ctx.execute("echo '${rCmd}' > /home/lvuser/robotCommand")
             }
+        }
+
+        if (debug) {
+            ctx.logger().log("====================================================================")
+            ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
+            ctx.logger().log("====================================================================")
         }
     }
 }

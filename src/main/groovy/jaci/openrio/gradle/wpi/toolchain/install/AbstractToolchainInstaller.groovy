@@ -9,6 +9,7 @@ abstract class AbstractToolchainInstaller {
     abstract void install(Project project)
     abstract boolean targets(OperatingSystem os)
     abstract String installerPlatform()
+    abstract File sysrootLocation()
 
     boolean installable() {
         return targets(OperatingSystem.current())

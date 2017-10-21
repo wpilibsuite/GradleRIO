@@ -62,4 +62,9 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
     String installerPlatform() {
         return "Windows"
     }
+
+    @Override
+    File sysrootLocation() {
+        return WPIToolchainPlugin.toolchainInstallDirectory()
+    }
 }

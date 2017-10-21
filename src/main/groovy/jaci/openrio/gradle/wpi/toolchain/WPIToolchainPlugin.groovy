@@ -55,6 +55,10 @@ class WPIToolchainPlugin implements Plugin<Project> {
         return toolchains.first()
     }
 
+    public static File getSysroot() {
+        return getActiveInstaller().sysrootLocation()
+    }
+
     public static URL toolchainDownloadURL(String file) {
         return new URL("http://first.wpi.edu/FRC/roborio/toolchains/${file}")
     }

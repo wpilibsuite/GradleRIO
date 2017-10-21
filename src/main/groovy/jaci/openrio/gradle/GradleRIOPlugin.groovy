@@ -2,8 +2,6 @@ package jaci.openrio.gradle
 
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
-import jaci.gradle.deploy.artifact.ArtifactsExtension
-import jaci.openrio.gradle.frc.FRCJavaArtifact
 import jaci.openrio.gradle.frc.FRCPlugin
 import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
