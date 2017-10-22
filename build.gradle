@@ -71,7 +71,7 @@ task deleteQuickstart() {
 task zipQuickstart(type: Zip) {
     dependsOn deleteQuickstart
     from('quickstart')
-    include '**/*.cpp', '**/*.hpp', 'gradle/**/*', 'build.gradle', 'settings.gradle', 'gradlew', 'gradlew.bat', '.gitignore'
+    include '**/*.cpp', '**/*.hpp', "**/*.java", '**/gradle/**/*', '**/build.gradle', '**/settings.gradle', '**/gradlew', '**/gradlew.bat', '**/.gitignore'
     exclude '.vscode', '.gradle', 'build'
     destinationDir projectDir
     archiveName 'Quickstart.zip'

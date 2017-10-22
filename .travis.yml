@@ -12,5 +12,5 @@ install:
 script:
 - ./gradlew build zipQuickstart --scan --stacktrace
 - unzip Quickstart.zip -d quickstart_unzip
-- bash -c "cd quickstart_unzip/cpp && ./gradlew clean build"
-- bash -c "cd quickstart_unzip/java && ./gradlew clean build"
+- bash -c "cd quickstart_unzip/cpp && ./gradlew clean build deploy -Pdeploy-dry"
+- bash -c "cd quickstart_unzip/java && ./gradlew clean build deploy -Pdeploy-dry"
