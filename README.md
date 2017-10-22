@@ -19,13 +19,14 @@ GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visua
 - ```gradlew installJava``` will launch the RoboRIO Java Installer (required for Java).
 - ```gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
 
+**At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
+
 ## IDE Commands
 - ```gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
 - ```gradlew eclipse``` will generate IDE files for Eclipse (java)  
 - ```gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
-**At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
 
 ## Download
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory. Update the version in the `build.gradle` file with the [latest plugin version](https://plugins.gradle.org/plugin/jaci.openrio.gradle.GradleRIO) and you're good to go!
