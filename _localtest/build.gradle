@@ -33,7 +33,7 @@ deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
             team = 5333
-            directory = '/home/lvuser'
+            addresses << '10.0.0.154'
         }
     }
     artifacts {

@@ -31,6 +31,11 @@ class FRCPlugin implements Plugin<Project> {
         this.project = project
         project.pluginManager.apply(EmbeddedTools)
 
+        project.tasks.create('riolog', RIOLogTask) { RIOLogTask task ->
+            task.group = "GradleRIO"
+            task.description = "Run a console displaying output from the RoboRIO"
+        }
+
         project.afterEvaluate {
             addNetconsoleArtifact(project)
             addNativeLibraryArtifacts(project)
