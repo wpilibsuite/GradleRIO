@@ -1,16 +1,29 @@
 # GradleRIO
 GradleRIO is a powerful Gradle Plugin that allows teams competing in the FIRST
-robotics competition to produce and build their code without being limited to
-the Eclipse IDE.
+robotics competition to produce and build their code.
 
-GradleRIO extracts the WPILib sources from the eclipse plugin and allows you to
-use it with Eclipse, IntelliJ IDEA or any IDE of your choice. GradleRIO also allows you to build and
-deploy your code to the RoboRIO from the command-line, or through the IDE.
+![](img/tty.gif)
 
-## Basic Commands
-- ```gradlew idea``` / ```gradlew eclipse``` will generate all the necessary files for your Development Environment workspace
+GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, CTRE Toolsuite (Talon SRX) and NavX libraries, and you can even add your own libraries!
+
+GradleRIO will not only deploy to your RoboRIO, but also to Coprocessors like the Raspberry Pi, Jetson and Pine64. You can even deploy to multiple targets at the same time!
+
+GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visual Studio (for C++). Don't worry, you don't need an IDE if you don't want one, you can use Visual Studio Code, Notepad++, Sublime Text, Vim, or whatever you want, since all builds are done from the command line.
+
+## Commands
 - ```gradlew build``` will build your Robot Code
-- ```gradlew build deploy``` will build and deploy your code to the RoboRIO
+- ```gradlew deploy``` will build and deploy your code.  
+- ```gradlew riolog``` will display the RoboRIO console output on your computer.
+
+- ```gradlew smartDashboard``` will launch Smart Dashboard
+- ```gradlew installJava``` will launch the RoboRIO Java Installer (required for Java).
+- ```gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
+
+## IDE Commands
+- ```gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
+- ```gradlew eclipse``` will generate IDE files for Eclipse (java)  
+- ```gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
+- ```gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
 
@@ -18,61 +31,109 @@ deploy your code to the RoboRIO from the command-line, or through the IDE.
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory. Update the version in the `build.gradle` file with the [latest plugin version](https://plugins.gradle.org/plugin/jaci.openrio.gradle.GradleRIO) and you're good to go!
 Please note that your java files must be in `src/main/java`, not just `src/`.
 
-## Features
-### Dependency Management
-GradleRIO manages dependencies for your robot program. From things like WPILib, to Talon SRX Libraries, to libraries you've written yourself. This is all done in the `dependencies {}` block of your `build.gradle`. See the [examples](examples/) for more details
-
-### IDE Support
-GradleRIO supports a multitude of IDEs, with Eclipse and IntelliJ IDEA being supported by default. It's as simple as running ```gradlew eclipse``` or ```gradlew idea``` to get your Development Environment.
-
-### Robot Deployment
-GradleRIO is flexible with your Robot. When deploying code, GradleRIO will search for your RoboRIO on USB and Network Interfaces. If your RoboRIO is running on a Network that is not your FRC-Provided Radio (perhaps wired ethernet), you can even specify an IP Address to deploy to. 
-
-GradleRIO also has an extremely fast deploy time, only using 3 SSH sessions per deploy (one for discovery, one for NI setup and one for code deployment), and only copying libraries if they have been updated. In most cases, `gradlew build deploy` runs in under 10-15 seconds.
-
-Because all of the deployment properties are stored in ```build.gradle```, if you decide to change Team Number or Robot Base Class, it's very simple to update this info and have deployment work without a hitch. 
-
-### Extensibility
-GradleRIO runs on an underlying Gradle Build System, which is extremely extensible and is used by many professional software companies around the world. Gradle is stable, fast and flexible, with a huge community to back it. You can even write your own Plugins for Gradle if you really want to take control.
-
-IntelliJ IDEA and the latest releases of Eclipse have Gradle support built in, allowing you to run all these commands without leaving your IDE. Alternatively, you can also use the Command Line to build and deploy your code, and is easily automatable.
-
 ## Implementation Details
+NOTE: This section is for advanced users. View the quickstart and examples for your language to get started.
+
 ### Full Spec
 ```gradle
-frc {
-    team = "5333"                         // Your team number. Required
-    robotClass = "org.usfirst.myteam"     // Your robot main class (where you implement RobotBase / IterativeRobot)
-    
-    deploy = true                         // Whether to deploy to the RoboRIO or not. By default, this is true.
-    deployTimeout = 3                     // The time (in seconds) to wait before timing out on an SSH connection
-    deployDirectory = "/home/lvuser"      // The directory to deploy your jar to
-    rioIP = "10.53.33.2"                  // The IP Address of your RoboRIO. Automatically calculated from team number if not set
-    rioHost = "my_roborio.local"          // The Hostname of your RoboRIO. Automatically calculated from team number if not set
+deploy {
+    targets {
+        target('roborio', jaci.openrio.gradle.frc.RoboRIO) {
+            team = 5333
+            // Other values can be edited through EmbeddedTools.
+            // See https://github.com/JacisNonsense/EmbeddedTools#spec
+        }
+        // Other targets can be edited through EmbeddedTools.
+        // See https://github.com/JacisNonsense/EmbeddedTools#spec
+    }
+    artifacts {
+        // Setup a Java Artifact. Required for Java Users.
+        artifact('myJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
+            targets << 'roborio'
 
-    robotCommand = "./something_else"     // The command to run when starting your robot program. This is calculated by default, with runArguments
-    runArguments = "--hello"              // The command-line arguments to launch your jar with. By default, there are none. Not used if robotCommand set
-    jvmArguments = "-Xmx90m"              // The arguments to give to the JVM. By default, there are none. Not used if robotCommand is set.
-    useDebugCommand = true                // Set to true if you want to use a remote debugger with your robot program. Not used if robotCommand is set.
+            jvmArgs << '-Xmx=128m'      // Set more JVM Arguments. Optional.
+            arguments << 'myCustomArgs' // The command-line arguments to launch your jar with. Optional.
+            debug = true                // Enable to enable java debugging on the RoboRIO. Default: false
+            debugPort = 8348            // Set the debugging port. Default: 8348
+            robotCommand = './myOtherProgram'       // Set the contents of robotCommand. Optional, usually created depending on above values.
+
+            // Other values can be edited through EmbeddedTools.
+            // See https://github.com/JacisNonsense/EmbeddedTools#spec
+        }
+
+        // Setup a C++ (Native) Artifact. Required for C++ (Native) Users
+        artifact('myNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+            targets << 'roborio'
+            component = 'myFrcBinary'   // The name of the component you wish to build (required).
+
+            arguments << 'myCustomArgs' // The command-line arguments to launch your jar with. Optional.
+            debug = true                // Enable to enable java debugging on the RoboRIO. Default: false
+            debugPort = 8348            // Set the debugging port. Default: 8348
+            robotCommand = './myOtherProgram'       // Set the contents of robotCommand. Optional, usually created depending on above values.
+
+            // Other values can be edited through EmbeddedTools.
+            // See https://github.com/JacisNonsense/EmbeddedTools#spec
+        }
+        // Other artifacts can be edited through EmbeddedTools.
+        // See https://github.com/JacisNonsense/EmbeddedTools#spec
+    }
 }
 
+// Set the versions of libraries to use. This is calculated for you based
+// off known-stable versions for the current year, but you can modify
+// them here if you so desire. This block is not required.
 wpi {
-    wpilibVersion = "+"                   // The WPILib version to use. For this version of GradleRIO, must be a 2017 version
-    ntcoreVersion = "+"                   // The NetworkTables Core version to use.
-    opencvVersion = "+"                   // The OpenCV version to use
-    cscoreVersion = "+"                   // The CSCore version to use
+    wpilibVersion = '...'
+    ntcoreVersion = '...'
+    opencvVersion = '...'
+    cscoreVersion = '...'
+    wpiutilVersion = '...'
 
-    talonSrxVersion = "+"                 // The CTRE Toolsuite (Talon SRX) version to use.
-    navxVersion = "+"                     // The NavX Library version to use.
+    ctreVersion = '...'
+    navxVersion = '...'
+
+    smartDashboardVersion = '...'
+    javaInstallerVersion = '...'
+
+    toolchainVersion = '...'
 }
 
+// Set the dependencies you want to use in your JAVA project.
+// WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
+// CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
+// NavX adds the NavX IMU library.
 dependencies {
-    compile wpilib()                    // Compile with WPILib and it's dependencies (ntcore, opencv, cscore)
-    compile talonSrx()                  // Compile with the Talon SRX Library
-    compile navx()                      // Compile with the KauaiLab's NavX-MXP or NavX-Micro library
+    compile wpilib()
+    compile ctre()
+    compile navx()
+}
 
-    // Use these to link your own third-party device libraries (e.g. navX)
-    compile fileTree(dir: 'libs', include: '**/*.jar')
-    nativeLib  fileTree(dir: 'libs', include: '**/*.so')
+// Java only. Setup your Jar File.
+jar {
+    // Compile a 'fat jar' (libraries included)
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    // Include your Manifest. Arguments are your Robot Main Class.
+    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.myClass')
+}
+
+// Set up your Native (C++) projects. Not needed in Java.
+model {
+    components {
+        myFrcBinary(NativeExecutableSpec) {
+            targetPlatform 'roborio'
+            sources.cpp {
+                source {
+                    srcDir 'src/main/cpp'
+                }
+                // Add the libraries you wish to use in your NATIVE project.
+                // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
+                // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
+                // NavX adds the NavX IMU library.
+                lib library: "wpilib"
+                lib library: "ctre"
+                lib library: "navx"
+            }
+        }
+    }
 }
 ```

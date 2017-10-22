@@ -4,7 +4,13 @@ build
 *.ipr
 *.iml
 *.iws
+*.sln
+*.vcxproj
+*.vcxproj.filters
 .DS_STORE
 quickstart/gradle/libs/
 server_script/maven/
 server_script/tmp/
+CMakeLists.txt
+.vs
+cmake-build-debug
