@@ -8,7 +8,6 @@ import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.nativeplatform.plugins.NativeComponentPlugin
 
 @CompileStatic
 class WPIPlugin implements Plugin<Project> {

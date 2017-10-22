@@ -8,8 +8,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.java.archives.internal.DefaultManifest
 
-import java.util.jar.Manifest
-
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
     // Necessary to have access to project.configurations and such in the RuleSource

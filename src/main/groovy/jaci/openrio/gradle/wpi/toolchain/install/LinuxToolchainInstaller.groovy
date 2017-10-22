@@ -3,7 +3,6 @@ package jaci.openrio.gradle.wpi.toolchain.install
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.process.ExecSpec
 
 @CompileStatic
 class LinuxToolchainInstaller extends AbstractToolchainInstaller {
