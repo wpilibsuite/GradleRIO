@@ -6,6 +6,9 @@ import jaci.openrio.gradle.frc.FRCPlugin
 import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.java.archives.internal.DefaultManifest
+
+import java.util.jar.Manifest
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
@@ -25,6 +28,13 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.pluginManager.apply(WPIPlugin)
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
+    }
+
+    static Closure javaManifest(String robotClass) {
+        return { DefaultManifest mf ->
+            mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+            mf.attributes 'Robot-Class': robotClass
+        }
     }
 
     // ~/.gradle

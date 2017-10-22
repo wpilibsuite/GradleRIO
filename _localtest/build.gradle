@@ -71,13 +71,8 @@ dependencies {
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.myClass')
 }
-
-def mfest = { mf ->
-    mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
-    mf.attributes 'Robot-Class': 'test.MyClass'
-}
-tasks.jar.manifest(mfest)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.2.1'
