@@ -1,29 +1,22 @@
-plugins {
-    id "cpp"
-    id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.10.24"
-}
+apply plugin: "jaci.openrio.gradle.GradleRIO"
 
-def TEAM = 5333
-
-// Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
         target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
+            team = 5333
         }
     }
     artifacts {
-        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+        // Define my robot artifact. The FRCNativeArtifact type gives access to
+        // robotCommand and other tools necessary for the RoboRIO to detect
+        // and run our code.
+        artifact('robotCode', jaci.openrio.gradle.frc.FRCNativeArtifact) {
             targets << "roborio"
             component = 'frcUserProgram'
         }
     }
 }
 
-// Defining my C++ project. In this case, it is called 'frcUserProgram',
-// and is of the language C++.
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
@@ -42,8 +35,4 @@ model {
             }
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
 }

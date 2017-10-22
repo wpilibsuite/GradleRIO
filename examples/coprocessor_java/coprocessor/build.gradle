@@ -1,0 +1,41 @@
+apply plugin: 'jaci.gradle.EmbeddedTools'
+
+deploy {
+    targets {
+        target("rpi") {
+            addresses << 'raspberrypi'
+            user = 'pi'
+            password = 'raspberry'
+            directory = '/home/pi/mycode'       // Note: must be an absolute path
+            failOnMissing = false   // Just in case our coprocessor is missing. Optional.
+        }
+    }
+    artifacts {
+        // Define my artifact. In this case, the default java build for this project.
+        javaArtifact('coprocessorCode') {
+            targets << "rpi"
+            jar = 'jar'     // This sets the jarfile to deploy. The default jar task in gradle is simply called 'jar'
+        }
+    }
+}
+
+repositories {
+    // Since my Apache Commons dependency (defined below) exists in the Maven Central Repository, 
+    // I need to define it as a repository for this project.
+    mavenCentral()
+}
+
+dependencies {
+    // In this case, I'm adding the Apache Commons library for demonstration purposes.
+    // (This library isn't actually needed, but serves the purpose of demonstrating how
+    // to add a custom library)
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    // I need to set my manifest up so the coprocessor knows where my main class is
+    manifest {
+        attributes 'Main-Class': 'gradlerio.CoprocessorExample'
+    }
+}

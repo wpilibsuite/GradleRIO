@@ -1,0 +1,65 @@
+apply plugin: 'jaci.gradle.EmbeddedTools'
+
+deploy {
+    targets {
+        target("rpi") {
+            addresses << 'raspberrypi' << '10.0.0.158'
+            user = 'pi'
+            password = 'raspberry'
+            directory = '/home/pi/mycode'   // Note: must be an absolute path
+            failOnMissing = false   // Just in case our coprocessor is missing. Optional.
+        }
+    }
+    artifacts {
+        // Define my artifact. In this case, the native component defined below
+        nativeArtifact('coprocessorCode') {
+            targets << "rpi"
+            component = 'myCoprocessorComponent'
+            targetPlatform = 'rpiArm'
+        }
+    }
+}
+
+model {
+    platforms {
+        // Since I'm cross-compiling, I need to define my Target Platform. In this case, we'll call it 'rpiArm'
+        // and make it detect as a linux, arm toolchain.
+        'rpiArm' {
+            operatingSystem 'linux'
+            architecture 'arm'
+        }
+    }
+    toolChains {
+        // Here, I'm defining a new CrossGcc toolchain. CrossGcc allows for better control over cross-compiling toolchains
+        // like that of the Raspberry Pi.
+        rpiGcc(jaci.gradle.toolchains.CrossGcc) {
+            // This toolchain will respond to my rpiArm platform
+            target('rpiArm') {
+                // Defining my gcc, ar, g++, etc binaries to use the 'arm-linux-gnueabihf' prefix, with no suffix. 
+                // This is the prefix the Raspberry Pi uses, but may be different for your coprocessor.
+                defineTools(it, 'arm-linux-gnueabihf-', '')
+
+                // Here we're just simply telling Gradle that we want to compile with C++11. 
+                linker.withArguments { a -> a << '-std=c++11'}
+            }
+            // Here I'm telling Gradle where my toolchain is located. In this case, it is relative to my project directory.
+            // The path given MUST be absolute.
+            // Your tools will have to be a clone of https://github.com/raspberrypi/tools in your home directory.
+            path(project.file('~/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin').absolutePath)
+        }
+    }
+    components {
+        // Here is where I finally define my native component, in this case, an executable file.
+        myCoprocessorComponent(NativeExecutableSpec) {
+            // Target the Raspberry Pi
+            targetPlatform 'rpiArm'
+            sources.cpp {
+                source {
+                    // This is where our source files are located (src/cpp for C++ files, src/include for headers)
+                    srcDir 'src/cpp'
+                    exportedHeaders.srcDirs 'src/include'
+                }
+            }
+        }
+    }
+}
