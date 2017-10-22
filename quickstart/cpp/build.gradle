@@ -1,0 +1,42 @@
+plugins {
+    id "cpp"
+    id "visual-studio"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.2.3"
+}
+
+def TEAM = 5333
+
+deploy {
+    targets {
+        target("roborio${TEAM}", jaci.openrio.gradle.frc.RoboRIO) {
+            team = TEAM
+        }
+    }
+    artifacts {
+        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+            targets << "roborio${TEAM}"
+            component = 'frcUserProgram'
+        }
+    }
+}
+
+model {
+    components {
+        frcUserProgram(NativeExecutableSpec) {
+            targetPlatform 'roborio'
+            sources.cpp {
+                source {
+                    srcDir 'src/cpp'
+                    exportedHeaders.srcDirs 'src/include'
+                }
+                lib library: "wpilib"
+                lib library: "ctre"
+                lib library: "navx"
+            }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
