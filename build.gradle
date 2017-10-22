@@ -1,34 +1,52 @@
 plugins {
-    id "com.gradle.plugin-publish" version "0.9.7"
+    id 'com.gradle.build-scan' version '1.9.1'
+    id 'com.gradle.plugin-publish' version '0.9.7'
+    id 'me.champeau.buildscan-recipes' version '0.2.0'
+    id 'idea'
 }
+
+// TODO: Test quickstart
+
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
-dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile('org.hidetake:groovy-ssh:2.7.0') {
-      exclude module: 'groovy-all'
-  }
+repositories {
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    jcenter()
+    mavenLocal()
 }
 
-repositories {
-    jcenter()
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile ('gradle.plugin.jaci.gradle:DeployTools:2017.10.21')
+    compile 'de.undercouch:gradle-download-task:3.3.0'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+
+buildScanRecipes {
+    recipes 'git-commit', 'git-status', 'travis-ci', 'disk-usage', 'gc-stats'
 }
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2017.2.3"
+version = "2017.10.10"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'
     vcsUrl = 'https://github.com/Open-RIO/GradleRIO'
     description = 'Managing FRC Java projects, the Gradle way'
-    tags = ['frc', 'wpilib', 'toast', 'openrio', 'gradlerio']
+    tags = ['frc', 'wpilib', 'openrio', 'gradlerio']
 
     plugins {
-        wpilibVersionPlugin {
+        gradleRio {
             id = "${project.group}.${project.archivesBaseName}"
             displayName = 'GradleRIO'
         }
@@ -68,5 +86,5 @@ task fullRelease() {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    gradleVersion = '4.2.1'
 }

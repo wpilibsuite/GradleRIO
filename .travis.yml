@@ -5,3 +5,9 @@ jdk:
 
 notifications:
   email: false
+
+install:
+- ./gradlew -version
+
+script:
+- ./gradlew build --scan --stacktrace

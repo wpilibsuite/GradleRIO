@@ -4,6 +4,7 @@ build
 *.ipr
 *.iml
 *.iws
+.DS_STORE
 quickstart/gradle/libs/
 server_script/maven/
 server_script/tmp/
