@@ -9,22 +9,16 @@ import org.gradle.process.ExecSpec
 class LinuxToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
-        try {
-            project.exec { ExecSpec e ->
-                e.commandLine 'apt-add-repository'
-                e.args 'ppa:wpilib/toolchain'
-            }
-            project.exec { ExecSpec e ->
-                e.commandLine 'apt'
-                e.args 'update'
-            }
-            project.exec { ExecSpec e ->
-                e.commandLine 'apt'
-                e.args 'install', 'frc-toolchain'
-            }
-        } catch (all) {
-            throw new NoToolchainInstallersException("Linux installer only works on debian (apt) platforms! If on debian, run with sudo? See http://first.wpi.edu/FRC/roborio/toolchains/FRCLinuxToolchain.txt")
-        }
+        def filecontents = [
+            '#!/bin/bash',
+            'apt-add-repository ppa:wpilib/toolchain',
+            'apt update',
+            'apt install frc-toolchain'
+        ]
+        def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
+        file.mkdirs()
+        file.text = filecontents.join('\n')
+        println "Run `sudo ./LINUX_TOOLCHAIN_INSTALL.sh` in `build` in order to install toolchain"
     }
 
     @Override

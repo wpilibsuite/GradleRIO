@@ -63,12 +63,6 @@ model {
     }
 }
 
-wpi {
-    wpilibVersion = '2017.2.1'
-    cscoreVersion = '1.0.1'
-    opencvVersion = '3.1.0'
-}
-
 dependencies {
     compile wpilib()
     compile ctre()
