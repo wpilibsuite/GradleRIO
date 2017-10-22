@@ -8,6 +8,9 @@ notifications:
 
 install:
 - ./gradlew -version
+- sudo add-apt-repository ppa:wpilib/toolchain -y
+- sudo apt-get update -q
+- sudo apt-get install frc-toolchain -y
 
 script:
 - ./gradlew build zipQuickstart --scan --stacktrace

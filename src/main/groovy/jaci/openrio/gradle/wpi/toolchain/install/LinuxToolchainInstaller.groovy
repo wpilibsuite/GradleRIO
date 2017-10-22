@@ -17,7 +17,7 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
         def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
         file.mkdirs()
         file.text = filecontents.join('\n')
-        println "Run `sudo ./LINUX_TOOLCHAIN_INSTALL.sh` in `build` in order to install toolchain"
+        println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL.sh` in in order to install toolchain"
     }
 
     @Override
