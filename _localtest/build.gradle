@@ -1,0 +1,90 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath 'com.jcraft:jsch:0.1.53'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.10.21'
+        classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.3.0'
+        classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+'
+    }
+}
+
+plugins {
+    id "java"
+    id "eclipse"
+    id "idea"
+    id "cpp"
+    id 'com.gradle.build-scan' version '1.9'
+    id "com.dorongold.task-tree" version "1.3"
+}
+apply plugin: 'jaci.openrio.gradle.GradleRIO'
+
+buildScan {
+  licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+  licenseAgree = 'yes'
+}
+
+deploy {
+    targets {
+        target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
+            team = 5333
+            directory = '/home/lvuser'
+        }
+    }
+    artifacts {
+        artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
+            targets << 'roborio5333'
+        }
+        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+            targets << 'roborio5333'
+            component = 'myFrcBinary'
+        }
+    }
+}
+
+model {
+    components {
+        myFrcBinary(NativeExecutableSpec) {
+            targetPlatform 'roborio'
+            sources.cpp {
+                source {
+                    srcDir 'src/main/cpp'
+                }
+                lib library: "wpilib"
+                lib library: "ctre"
+                lib library: "navx"
+            }
+        }
+    }
+}
+
+wpi {
+    wpilibVersion = '2017.2.1'
+    cscoreVersion = '1.0.1'
+    opencvVersion = '3.1.0'
+}
+
+dependencies {
+    compile wpilib()
+    compile ctre()
+    compile navx()
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+def mfest = { mf ->
+    mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+    mf.attributes 'Robot-Class': 'test.MyClass'
+}
+tasks.jar.manifest(mfest)
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
