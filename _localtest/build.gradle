@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
         classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.10.21'
-        classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.3.0'
+        classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+'
     }
 }

@@ -23,7 +23,6 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
             d.src src
             d.dest dst
             d.overwrite false
-            d.onlyIfModified true
         }
         da.execute()
         if (da.upToDate) {
