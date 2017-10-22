@@ -32,7 +32,7 @@ class FRCNativeArtifact extends NativeArtifact {
     boolean debug = false
     int debugPort = 8348
 
-    Object robotCommand = { DeployContext ctx, FRCNativeArtifact self ->
+    def robotCommand = { DeployContext ctx, FRCNativeArtifact self ->
         "/usr/local/frc/bin/netconsole-host ${self.debug ? "gdbserver host:${self.debugPort}" : ''} <<BINARY>> ${self.arguments.join(" ")}"
     }
 
