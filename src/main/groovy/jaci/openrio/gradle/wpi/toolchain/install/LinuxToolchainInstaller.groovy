@@ -15,7 +15,7 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
             'apt install frc-toolchain'
         ]
         def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
-        file.mkdirs()
+        file.parentFile.mkdirs()
         file.text = filecontents.join('\n')
         println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL.sh` in in order to install toolchain"
     }
