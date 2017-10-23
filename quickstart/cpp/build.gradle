@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.10.24"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.10.24b"
 }
 
 def TEAM = 5333
@@ -32,10 +32,12 @@ model {
             sources.cpp {
                 // This is where our source files are located (src/cpp for C++ files, src/include for headers)
                 source {
-                    srcDir 'src/cpp'
+                    srcDirs = ['src/cpp']
+                    include '**/*.cpp'
                 }
                 exportedHeaders{
-                    srcDir 'src/include'
+                    srcDirs = ['src/cpp', 'src/include']
+                    include '**/*.hpp', '**/*.h'
                 }
 
                 // Define my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX) and NavX.

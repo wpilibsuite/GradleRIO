@@ -53,12 +53,14 @@ model {
         myCoprocessorComponent(NativeExecutableSpec) {
             // Target the Raspberry Pi
             targetPlatform 'rpiArm'
-            sources.cpp {
-                source {
-                    // This is where our source files are located (src/cpp for C++ files, src/include for headers)
-                    srcDir 'src/cpp'
-                    exportedHeaders.srcDirs 'src/include'
-                }
+            // This is where our source files are located (src/cpp for C++ files, src/include for headers)
+            source {
+                srcDir 'src/cpp'
+                include '**/*.cpp'
+            }
+            exportedHeaders {
+                srcDir 'src/include'
+                include '**/*.hpp', '**/*.h'
             }
         }
     }
