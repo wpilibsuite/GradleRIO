@@ -73,6 +73,7 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('ctre', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs = ['cpp/include']
+                lib.libraryMatchers = ['cpp/**/*.a']
                 lib.maven = "thirdparty.frc.ctre:Toolsuite-Zip:${wpi.ctreVersion}@zip"
             }
 
@@ -80,6 +81,7 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('navx', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs = ['roborio/cpp/include']
+                lib.libraryMatchers = ['roborio/**/*.a']
                 lib.maven = "thirdparty.frc.kauai:Navx-Zip:${wpi.navxVersion}@zip"
             }
         }

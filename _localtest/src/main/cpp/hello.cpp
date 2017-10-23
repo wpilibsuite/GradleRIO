@@ -12,8 +12,8 @@ int add(int a, int b) {
 
 class Robot: public IterativeRobot {
 public:
-    AHRS *ahrs;
-    CANTalon *canTalon;
+    AHRS *ahrs = new AHRS(SerialPort::kMXP);
+    CANTalon *canTalon = new CANTalon(0);
 
 
     Robot() { }
