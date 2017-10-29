@@ -62,16 +62,19 @@ class WPIJavaDeps implements Plugin<Project> {
         //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
-        project.dependencies.ext.ctreJni = {
-            "thirdparty.frc.ctre:Toolsuite-Zip:${wpi.ctreVersion}@zip"
-        }
+        // TODO: CTRE uses phoenix instead of toolsuite now?
+//        project.dependencies.ext.ctreJni = {
+//            "thirdparty.frc.ctre:Toolsuite-Zip:${wpi.ctreVersion}@zip"
+//        }
+//
+//        project.dependencies.ext.ctre = {
+//            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
+//            ["thirdparty.frc.ctre:Toolsuite-Java:${wpi.ctreVersion}"]
+//        }
 
-        project.dependencies.ext.ctre = {
-            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
-            ["thirdparty.frc.ctre:Toolsuite-Java:${wpi.ctreVersion}"]
-        }
-        project.dependencies.ext.navx = {
-            ["thirdparty.frc.kauai:Navx-Java:${wpi.navxVersion}"]
-        }
+        // TODO: NavX is not yet stable for 2018
+//        project.dependencies.ext.navx = {
+//            ["thirdparty.frc.kauai:Navx-Java:${wpi.navxVersion}"]
+//        }
     }
 }

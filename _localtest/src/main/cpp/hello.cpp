@@ -1,6 +1,4 @@
 #include "WPILib.h"
-#include "AHRS.h"
-#include "ctrlib/CANTalon.h"
 
 #include <iostream>
 
@@ -12,10 +10,6 @@ int add(int a, int b) {
 
 class Robot: public IterativeRobot {
 public:
-    AHRS *ahrs = new AHRS(SerialPort::kMXP);
-    CANTalon *canTalon = new CANTalon(0);
-
-
     Robot() { }
 
     void RobotInit() {

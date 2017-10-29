@@ -6,7 +6,7 @@ plugins {
 
     // EmbeddedTools is the backing library for GradleRIO, and includes everything that's non-frc specific, which
     // is why we use it for our coprocessor project.
-    id "jaci.gradle.EmbeddedTools" version "2017.10.24" apply false
+    id "jaci.gradle.EmbeddedTools" version "2017.10.29" apply false
 }
 
 // Setup the configuration for all sub-projects. This is a shortcut for manually applying the configuration
