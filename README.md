@@ -10,27 +10,30 @@ GradleRIO will not only deploy to your RoboRIO, but also to Coprocessors like th
 
 GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visual Studio (for C++). Don't worry, you don't need an IDE if you don't want one, you can use Visual Studio Code, Notepad++, Sublime Text, Vim, or whatever you want, since all builds are done from the command line.
 
-## Commands
-- ```gradlew build``` will build your Robot Code
-- ```gradlew deploy``` will build and deploy your code.  
-- ```gradlew riolog``` will display the RoboRIO console output on your computer.
+## Commands  
+Windows Users: It is recommended to use Powershell instead of CMD.  
+- ```./gradlew build``` will build your Robot Code
+- ```./gradlew deploy``` will build and deploy your code.  
+- ```./gradlew riolog``` will display the RoboRIO console output on your computer.
 
-- ```gradlew smartDashboard``` will launch Smart Dashboard
-- ```gradlew installJava``` will launch the RoboRIO Java Installer (required for Java).
-- ```gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
+- ```./gradlew smartDashboard``` will launch Smart Dashboard
+- ```./gradlew installJava``` will launch the RoboRIO Java Installer (required for Java).
+- ```./gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
 
 ## IDE Commands
-- ```gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
-- ```gradlew eclipse``` will generate IDE files for Eclipse (java)  
-- ```gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
-- ```gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
+- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
+- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)  
+- ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
+- ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
 
 ## Download
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
 Please note that your java files must be in `src/main/java`, not just `src/`. C++ files are in `src/cpp` and `src/include`.
+
+**C++ Users**: Run `./gradlew installToolchain` in order to install the FRC Toolchain
 
 ## Upgrading
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
