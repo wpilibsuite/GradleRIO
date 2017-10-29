@@ -53,8 +53,8 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('hal_binaries', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.libraryMatchers = ['**/libHALAthena.so']
-                lib.sharedMatchers = ["**/libHALAthena.so"]
+                lib.libraryMatchers = ['**/libwpiHal.so']
+                lib.sharedMatchers = ["**/libwpiHal.so"]
                 lib.maven = "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:linuxathena@zip"
             }
 
@@ -68,6 +68,27 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.libs << 'hal_binaries' << 'hal_headers'
                 lib.targetPlatform = 'roborio'
             }
+
+            // NI LIBS
+
+            libs.create('ni_libraries_binaries', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.libraryMatchers = ['**/*.so*']
+                lib.sharedMatchers = ['**/*.so*']
+                lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:linuxathena@zip"
+            }
+
+            libs.create('ni_libraries_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:headers@zip"
+            }
+
+            libs.create('ni_libraries', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'ni_libraries_binaries' << 'ni_libraries_headers'
+                lib.targetPlatform = 'roborio'
+            }
+
 
             // WPIUTIL
 
@@ -133,8 +154,8 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('opencv_binaries', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.libraryMatchers = ['**/libopencv*.so']
-                lib.sharedMatchers = ["**/libopencv*.so"]
+                lib.libraryMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
+                lib.sharedMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
             }
 
@@ -152,7 +173,7 @@ class WPINativeDeps implements Plugin<Project> {
             // MASTER WPILIB COMBINED LIB
 
             libs.create('wpilib', CombinedNativeLib) { CombinedNativeLib clib ->
-                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
+                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv" << "ni_libraries"
                 clib.targetPlatform = 'roborio'
             }
 
