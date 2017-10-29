@@ -3,9 +3,11 @@ def populate_artifacts artifacts, vers
         artifact_id = a[0]
         puts "Populating Maven Artifact #{artifact_id}..."
         artifact_tmp = a[1]
+        artifact_src_tmp = a[2]
         base_dir = "#{BASEPATH}/#{artifact_id}"
         vers_dir = "#{base_dir}/#{vers}"
         artifact_file = "#{vers_dir}/#{artifact_id}-#{vers}#{File.extname(a[1])}"
+        artifact_src_file = "#{vers_dir}/#{artifact_id}-#{vers}-sources#{File.extname(a[1])}"
         pom_file = "#{vers_dir}/#{File.basename(artifact_file, ".*")}.pom"
         meta_file = "#{base_dir}/maven_metadata.xml"
 
@@ -13,6 +15,12 @@ def populate_artifacts artifacts, vers
         FileUtils.cp artifact_tmp, artifact_file
         File.write "#{artifact_file}.md5", Digest::MD5.file(artifact_file).hexdigest
         File.write "#{artifact_file}.sha1", Digest::SHA1.file(artifact_file).hexdigest
+
+        unless artifact_src_tmp.nil?
+            FileUtils.cp artifact_src_tmp, artifact_src_file
+            File.write "#{artifact_src_file}.md5", Digest::MD5.file(artifact_src_file).hexdigest
+            File.write "#{artifact_src_file}.sha1", Digest::SHA1.file(artifact_src_file).hexdigest
+        end
 
         pom = <<-POM
 <?xml version="1.0" encoding="UTF-8"?>
