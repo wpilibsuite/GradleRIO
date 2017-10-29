@@ -27,13 +27,13 @@ class WPIExtension {
     String javaInstallerVersion = "2.0.3"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
-    String toolchainVersion = "2017-4.9.3"
+    String toolchainVersion = "2018-5.4"
 
     final Project project
 
     WPIExtension(Project project) {
         this.project = project
-        recommended('2017')
+        recommended('2018-beta')
     }
 
     void recommended(String year) {
@@ -59,9 +59,11 @@ class WPIExtension {
             }
         }
 
-        def versions = new JsonSlurper().parseText(versions_str)[year] as Map
-        this.versions().forEach { String property, Tuple tuple ->
-            this.setProperty(property, (versions as Map)[tuple.last()] ?: this.getProperty(property))
+        def versions = new JsonSlurper().parseText(versions_str)?.getAt(year) as Map
+        if (versions != null) {
+            this.versions().forEach { String property, Tuple tuple ->
+                this.setProperty(property, (versions as Map)[tuple.last()] ?: this.getProperty(property))
+            }
         }
     }
 
