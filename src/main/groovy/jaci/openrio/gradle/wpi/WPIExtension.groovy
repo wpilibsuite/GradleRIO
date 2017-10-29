@@ -10,7 +10,7 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2017.2.1"
+    String wpilibVersion = "2018.1.1-beta-1-20171028022722-29-gefc7770"
     String ntcoreVersion = "3.1.7"
     String opencvVersion = "3.1.0"
     String cscoreVersion = "1.0.1"
@@ -24,7 +24,7 @@ class WPIExtension {
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
-    String shuffleboardVersion = "0.2.0-20171028001009-14-g16a13d0"     // Fuck me i hope this versioning scheme gets better
+    String shuffleboardVersion = "0.2.0-20171028001009-14-g16a13d0"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.4"
