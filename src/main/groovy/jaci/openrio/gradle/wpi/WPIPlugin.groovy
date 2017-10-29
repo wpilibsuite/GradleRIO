@@ -15,7 +15,7 @@ class WPIPlugin implements Plugin<Project> {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)
 
         project.pluginManager.apply(WPIJavaDeps)
-        project.pluginManager.apply(WPINativeDeps)
+//        project.pluginManager.apply(WPINativeDeps)
 
         project.pluginManager.apply(WPIToolchainPlugin)
 

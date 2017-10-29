@@ -8,12 +8,7 @@ class WPICommonDeps implements Plugin<Project> {
     void apply(Project project) {
         project.repositories.maven { repo ->
             repo.name = "WPI"
-            repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"         // For compat with older software like SmartDashboard.
-        }
-
-        project.repositories.maven { repo ->
-            repo.name = "WPI"
-            repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"         // TODO: Switch this to release at the conclusion of BETA !important
+            repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
         }
 
         project.repositories.maven { repo ->

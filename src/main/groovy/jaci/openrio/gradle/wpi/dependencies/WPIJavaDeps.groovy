@@ -8,16 +8,6 @@ class WPIJavaDeps implements Plugin<Project> {
     void apply(Project project) {
         project.pluginManager.apply(WPICommonDeps)
 
-        project.repositories.maven { repo ->
-            repo.name = "WPI"
-            repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
-        }
-
-        project.repositories.maven { repo ->
-            repo.name = "Jaci"
-            repo.url = "http://dev.imjac.in/maven/"
-        }
-
         apply_wpi_dependencies(project, project.extensions.getByType(WPIExtension))
         apply_third_party_drivers(project, project.extensions.getByType(WPIExtension))
     }
@@ -31,28 +21,32 @@ class WPIJavaDeps implements Plugin<Project> {
         // }
 
         project.dependencies.ext.wpilibJni = {
-            def l = ["edu.wpi.first.wpilibj:athena-jni:${wpi.wpilibVersion}",
-             "org.opencv:opencv-jni:${wpi.opencvVersion}:${wpi.opencvVersion == "3.1.0" ? "linux-arm" : "linuxathena"}",
-             "edu.wpi.first.wpilib:athena-runtime:${wpi.wpilibVersion}@zip",
-             "edu.wpi.cscore.java:cscore:${wpi.cscoreVersion}:athena-uberzip@zip"]
-            if (wpi.opencvVersion == "3.1.0") l << "org.opencv:opencv-natives:${wpi.opencvVersion}:linux-arm"
-            l
+            // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
+            // libraries, while the -jni ones are standalone (have static libs embedded).
+            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}",
+             "org.opencv:opencv-jni:${wpi.opencvVersion}:linuxathena",
+             "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",              // opencv-jni requires opencv native (opencv is special)
+             "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:linuxathena@zip",              // wpilibj-jniShared requires HAL native
+             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:linuxathena@zip", // wpilibj-jniShared requires WPIUtil native
+             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.ntcoreVersion}:linuxathena@zip",    // wpilibj-jniShared requires NTCore native
+             "edu.wpi.first.cscore:cscore-cpp:${wpi.cscoreVersion}:linuxathena@zip"]
         }
 
         project.dependencies.ext.wpilib = {
             project.dependencies.ext.wpilibJni().each {
                 project.dependencies.add("nativeZip", it)
             }
-            ["edu.wpi.first.wpilibj:athena:${wpi.wpilibVersion}",
-             "edu.wpi.first.wpilib.networktables.java:NetworkTables:${wpi.ntcoreVersion}:arm",
-             "edu.wpi.first.wpilib.networktables.java:NetworkTables:${wpi.ntcoreVersion}:desktop",
+            ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}",
+             "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}",
              "org.opencv:opencv-java:${wpi.opencvVersion}",
-             "edu.wpi.cscore.java:cscore:${wpi.cscoreVersion}:arm"]
+             "edu.wpi.first.cscore:cscore-java:${wpi.cscoreVersion}"]
         }
 
         project.dependencies.ext.wpilibSource = {
-            ["edu.wpi.first.wpilibj:athena:${wpi.wpilibVersion}:sources",
-             "edu.wpi.first.wpilib.networktables.java:NetworkTables:${wpi.ntcoreVersion}:sources"]
+            ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources",
+             "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}:sources",
+             "org.opencv:opencv-java:${wpi.opencvVersion}:sources",
+             "edu.wpi.first.cscore:cscore-java:${wpi.cscoreVersion}:sources"]
         }
     }
 
