@@ -28,6 +28,8 @@ class WPIToolsPlugin implements Plugin<Project> {
             task.description = "Launch Smart Dashboard"
 
             task.doLast {
+                println "NOTE: SmartDashboard is old! Use Shuffleboard instead! Run ./gradlew shuffleboard."
+
                 def config = project.configurations.getByName("wpiTools")
                 Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "SmartDashboard" })
                 ProcessBuilder builder
