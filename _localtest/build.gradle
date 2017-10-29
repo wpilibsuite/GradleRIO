@@ -35,17 +35,16 @@ deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
             team = 5333
-            addresses << '10.0.0.154'
         }
     }
     artifacts {
         artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
             targets << 'roborio5333'
         }
-        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
-            targets << 'roborio5333'
-            component = 'myFrcBinary'
-        }
+//        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+//            targets << 'roborio5333'
+//            component = 'myFrcBinary'
+//        }
     }
 }
 
@@ -73,7 +72,7 @@ dependencies {
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.myClass')
+    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.MyClass')
 }
 
 task wrapper(type: Wrapper) {

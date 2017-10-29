@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.frc
 
+import de.undercouch.gradle.tasks.download.DownloadAction
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deploy.DeployContext
@@ -7,8 +8,10 @@ import jaci.gradle.deploy.DeployExtension
 import jaci.gradle.deploy.artifact.ArtifactBase
 import jaci.gradle.deploy.artifact.FileArtifact
 import jaci.gradle.deploy.artifact.FileCollectionArtifact
+import jaci.gradle.deploy.artifact.JavaArtifact
 import jaci.gradle.deploy.artifact.NativeLibraryArtifact
 import jaci.openrio.gradle.ExportJarResourceTask
+import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -39,6 +42,7 @@ class FRCPlugin implements Plugin<Project> {
         project.afterEvaluate {
             addNetconsoleArtifact(project)
             addNativeLibraryArtifacts(project)
+            addJreArtifact(project)
         }
     }
 
@@ -49,6 +53,43 @@ class FRCPlugin implements Plugin<Project> {
     static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
         ext.targets.withType(RoboRIO).all { RoboRIO r ->
             artifact.targets << r.name
+        }
+    }
+
+    void addJreArtifact(Project project) {
+        // Download Zulu JRE (do this during config time in case we're not connected to both the robot and internet)
+        def zuluJreUrl = "https://github.com/wpilibsuite/zulu-jre-ipk/releases/download/v2018-beta2/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
+        def dest = new File(GradleRIOPlugin.globalDirectory, 'jre/zulu/JreZulu_18u131.ipk')
+        dest.parentFile.mkdirs()
+
+        if (!project.gradle.startParameter.isOffline()) {
+            def da = new DownloadAction(project)
+            da.with { DownloadAction d ->
+                d.src zuluJreUrl
+                d.dest dest
+                d.overwrite false
+            }
+            da.execute()
+        }
+
+        if (!dest.exists()) {
+            println "Cannot find RoboRIO JRE File! Make sure your first build happens while connected to the internet!"
+        } else {
+            deployExtension(project).artifacts.fileArtifact('jre') { FileArtifact artifact ->
+                allRoborioTargets(deployExtension(project), artifact)
+                artifact.onlyIf = { DeployContext ctx ->
+                    dest.exists() && deployExtension(project).artifacts.withType(JavaArtifact).size() > 0 &&
+                    ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').toString().trim() != 'OK'
+                }
+                artifact.predeploy << { DeployContext ctx -> ctx.logger().log("JRE Missing! Deploying RoboRIO Zulu JRE....") }
+                artifact.file = dest
+                artifact.directory = '/tmp'
+                artifact.filename = 'zulujre.ipk'
+                artifact.postdeploy << { DeployContext ctx ->
+                    ctx.execute('opkg install /tmp/zulujre.ipk; rm /tmp/zulujre.ipk')
+                }
+                artifact.postdeploy << { DeployContext ctx -> ctx.logger().log("JRE Deployed!") }
+            }
         }
     }
 
@@ -93,7 +134,7 @@ class FRCPlugin implements Plugin<Project> {
 
             nativeZips.dependencies.matching { Dependency dep -> dep != null && nativeZips.files(dep).size() > 0 }.all { Dependency dep ->
                 def ziptree = project.zipTree(nativeZips.files(dep).first())
-                ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/*.so"].collect { String pattern ->
+                ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so"].collect { String pattern ->
                     artifact.files = artifact.files + ziptree.matching { PatternFilterable pat -> pat.include(pattern) }
                 }
             }

@@ -23,7 +23,7 @@ class WPIJavaDeps implements Plugin<Project> {
         project.dependencies.ext.wpilibJni = {
             // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
             // libraries, while the -jni ones are standalone (have static libs embedded).
-            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}",
+            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:linuxathena",
              "org.opencv:opencv-jni:${wpi.opencvVersion}:linuxathena",
              "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",              // opencv-jni requires opencv native (opencv is special)
              "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:linuxathena@zip",              // wpilibj-jniShared requires HAL native
@@ -38,6 +38,7 @@ class WPIJavaDeps implements Plugin<Project> {
             }
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}",
+             "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpiutilVersion}",
              "org.opencv:opencv-java:${wpi.opencvVersion}",
              "edu.wpi.first.cscore:cscore-java:${wpi.cscoreVersion}"]
         }
@@ -45,6 +46,7 @@ class WPIJavaDeps implements Plugin<Project> {
         project.dependencies.ext.wpilibSource = {
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}:sources",
+             "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpiutilVersion}:sources",
              "org.opencv:opencv-java:${wpi.opencvVersion}:sources",
              "edu.wpi.first.cscore:cscore-java:${wpi.cscoreVersion}:sources"]
         }
