@@ -40,10 +40,10 @@ task wrapper(type: Wrapper) {
 }
 ```
 
-Next, replace the version in the plugin line:
+Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
-    // ...
+    // ... other plugins ...
     id "jaci.openrio.gradle.GradleRIO" version "2017.10.24b"
 }
 ```
