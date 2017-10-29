@@ -10,6 +10,8 @@ import jaci.gradle.deploy.artifact.FileArtifact
 import jaci.gradle.deploy.artifact.FileCollectionArtifact
 import jaci.gradle.deploy.artifact.JavaArtifact
 import jaci.gradle.deploy.artifact.NativeLibraryArtifact
+import jaci.gradle.deploy.target.RemoteTarget
+import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 import jaci.openrio.gradle.ExportJarResourceTask
 import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
@@ -34,13 +36,28 @@ class FRCPlugin implements Plugin<Project> {
         this.project = project
         project.pluginManager.apply(EmbeddedTools)
 
-        project.tasks.create('riolog', RIOLogTask) { RIOLogTask task ->
-            task.group = "GradleRIO"
-            task.description = "Run a console displaying output from the RoboRIO"
+        project.extensions.getByType(DeployExtension).targets.all { RemoteTarget target ->
+            if (target instanceof RoboRIO) {
+                project.tasks.create("riolog${target.name.capitalize()}", RIOLogTask) { RIOLogTask task ->
+                    task.group = "GradleRIO"
+                    task.description = "Run a console displaying output from the RoboRIO (${target.name})"
+                    project.tasks.withType(TargetDiscoveryTask).matching { TargetDiscoveryTask t -> t.target == target }.all { TargetDiscoveryTask discover_task ->
+                        task.dependsOn(discover_task)
+                    }
+                }
+
+                // TODO: Master RIOLog with Workers?
+                if (project.tasks.findByName('riolog') == null) {
+                    project.tasks.create('riolog', RIOLogTask) { RIOLogTask task ->
+                        task.group = "GradleRIO"
+                        task.description = "Run a console displaying output from the default RoboRIO (${target.name})"
+                        task.dependsOn("riolog${target.name.capitalize()}")
+                    }
+                }
+            }
         }
 
         project.afterEvaluate {
-            addNetconsoleArtifact(project)
             addNativeLibraryArtifacts(project)
             addJreArtifact(project)
         }
@@ -90,23 +107,6 @@ class FRCPlugin implements Plugin<Project> {
                 }
                 artifact.postdeploy << { DeployContext ctx -> ctx.logger().log("JRE Deployed!") }
             }
-        }
-    }
-
-    void addNetconsoleArtifact(Project project) {
-        ExportJarResourceTask netconsolehost_task = project.tasks.create('exportNetconsoleHost', ExportJarResourceTask) { ExportJarResourceTask task ->
-            task.resource = "netconsole/netconsole-host"
-            task.outfile = new File(project.buildDir, "gradlerio/resource/${task.resource}")
-        }
-
-        deployExtension(project).artifacts.fileArtifact('netconsole') { FileArtifact artifact ->
-            artifact.dependsOn(netconsolehost_task)
-            allRoborioTargets(deployExtension(project), artifact)
-            artifact.predeploy << { DeployContext ctx -> ctx.execute('killall -q netconsole-host 2> /dev/null || :') }
-            artifact.file = netconsolehost_task.outputs.files.first()
-            artifact.directory = '/usr/local/frc/bin'
-            artifact.filename = 'netconsole-host'
-            artifact.postdeploy << { DeployContext ctx -> ctx.execute('chmod +x netconsole-host') }
         }
     }
 

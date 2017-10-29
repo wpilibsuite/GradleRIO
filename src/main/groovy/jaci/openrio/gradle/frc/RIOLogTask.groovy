@@ -1,10 +1,14 @@
 package jaci.openrio.gradle.frc
 
 import groovy.transform.CompileStatic
+import jaci.gradle.deploy.tasks.TargetDiscoveryTask
+import jaci.openrio.gradle.frc.riolog.RiologConnection
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.configuration.ConsoleOutput
+import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
+import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
 @CompileStatic
@@ -12,28 +16,36 @@ class RIOLogTask extends DefaultTask {
     @TaskAction
     void riolog() {
         println "RIOLog Started! Use CTRL+C (SIGINT) to stop..."
+        println "Remember, the Driver Station must be connected for RIOLog to work!"
         println ""
         if (project.gradle.startParameter.consoleOutput != ConsoleOutput.Plain) {
             println "NOTE: Recommended to use --console=plain with Riolog to disable output buffering"
             println "      run with `./gradlew riolog --console=plain`"
             System.out.flush()
         }
-        def socket = new DatagramSocket(null as SocketAddress)
-        socket.setReuseAddress(true)
-        socket.setSoTimeout(1000)       // Just incase our thread gets interrupted by daemon, but we're still waiting on receive
-        socket.bind(new InetSocketAddress(6666))
 
-        def buf = new byte[4096]
-        def packet = new DatagramPacket(buf, buf.length)
+        def discoveries = dependsOn.findAll {
+            i -> i instanceof TargetDiscoveryTask && (i as TargetDiscoveryTask).isTargetActive()
+        }.collect {
+            it as TargetDiscoveryTask
+        }
 
-        while (!Thread.interrupted()) {     // In the case we're run in a daemon (like most times), this is a good thing to check
+        def hosts = discoveries.collect() { TargetDiscoveryTask discover ->
+            discover.context.selectedHost()
+        }
+        if (hosts.empty) throw new StopExecutionException()
+        def host = hosts.first()
+
+        def conn = new RiologConnection(host)
+        conn.start()
+        while (!Thread.currentThread().interrupted()) {
             try {
-                socket.receive(packet)
-                byte[] data = packet.getData()
-                if (data != null) {
-                    println("${new String(data, 0, packet.length, Charset.forName('UTF-8'))}")
-                }
-            } catch (SocketTimeoutException e) {  }
+                conn.join()
+            } catch (InterruptedException e) {
+                println "Interrupted!"
+                Thread.currentThread().interrupt()
+                conn.interrupt()
+            }
         }
     }
 }

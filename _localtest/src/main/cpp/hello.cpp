@@ -4,21 +4,18 @@
 
 using namespace frc;
 
-int add(int a, int b) {
-    return a + b;
-}
-
 class Robot: public IterativeRobot {
 public:
     Robot() { }
 
     void RobotInit() {
         std::cout << "Hello World" << std::endl;
-        std::cout << add(1, 2) << std::endl;
     }
 
     void DisabledInit() { }
-    void AutonomousInit() { }
+    void AutonomousInit() {
+        std::cout << "Auto" << std::endl;
+    }
     void TeleopInit() { }
     void TestInit() { }
 
