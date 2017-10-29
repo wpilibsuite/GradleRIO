@@ -10,14 +10,15 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
     void install(Project project) {
         def filecontents = [
             '#!/bin/bash',
-            'apt-add-repository ppa:wpilib/toolchain',
+            'apt-add-repository ppa:wpilib/toolchain-beta',
             'apt update',
             'apt install frc-toolchain'
         ]
-        def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
+        def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL_BETA.sh')
         file.parentFile.mkdirs()
         file.text = filecontents.join('\n')
-        println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL.sh` in in order to install toolchain"
+        // TODO remove beta at release
+        println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL_BETA.sh` in in order to install toolchain"
     }
 
     @Override
