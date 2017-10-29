@@ -32,6 +32,22 @@ GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visua
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
 Please note that your java files must be in `src/main/java`, not just `src/`. C++ files are in `src/cpp` and `src/include`.
 
+## Upgrading
+To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
+```gradle
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
+```
+
+Next, replace the version in the plugin line (only change the GradleRIO line):
+```gradle
+plugins {
+    // ... other plugins ...
+    id "jaci.openrio.gradle.GradleRIO" version "2017.10.24b"
+}
+```
+
 ## Implementation Details
 NOTE: This section is for advanced users. View the quickstart and examples for your language to get started.
 
