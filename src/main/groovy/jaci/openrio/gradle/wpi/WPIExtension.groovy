@@ -24,7 +24,7 @@ class WPIExtension {
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
-    String javaInstallerVersion = "2.0.3"
+    String shuffleboardVersion = "0.2.0-20171028001009-14-g16a13d0"     // Fuck me i hope this versioning scheme gets better
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.4"
@@ -82,7 +82,7 @@ class WPIExtension {
             "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
-            "javaInstallerVersion" : new Tuple("JavaInstaller", javaInstallerVersion, "javainstaller"),
+            "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
 
             "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain")
         ]

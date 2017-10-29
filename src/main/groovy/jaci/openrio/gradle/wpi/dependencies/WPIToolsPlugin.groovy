@@ -18,10 +18,10 @@ class WPIToolsPlugin implements Plugin<Project> {
 
         def wpi = project.extensions.getByType(WPIExtension)
         project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
-        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:java-installer:${wpi.javaInstallerVersion}")
+        project.dependencies.add("wpiTools", "edu.wpi.first.shuffleboard:Shuffleboard:${wpi.shuffleboardVersion}")
 
         smartDashboardDirectory().mkdirs()
-        javaInstallerDirectory().mkdirs()
+        shuffleboardDirectory().mkdirs()
 
         project.task("smartDashboard") { Task task ->
             task.group = "GradleRIO"
@@ -49,30 +49,29 @@ class WPIToolsPlugin implements Plugin<Project> {
             }
         }
 
-        project.task("installJava") { Task task ->
+        project.task("shuffleboard") { Task task ->
             task.group = "GradleRIO"
-            task.description = "Launch the Java Installer for the RoboRIO"
+            task.description = "Launch Shuffleboard"
 
             task.doLast {
                 def config = project.configurations.getByName("wpiTools")
-                Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "java-installer" })
+                Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "Shuffleboard" })
                 ProcessBuilder builder
                 if (OperatingSystem.current().isWindows()) {
                     builder = new ProcessBuilder(
-                        "cmd", "/c", "start",
-                        "java", "-jar", "${jarfiles.first().absolutePath}".toString()
+                            "cmd", "/c", "start",
+                            "java", "-jar", "${jarfiles.first().absolutePath}".toString()
                     )
                 } else {
                     builder = new ProcessBuilder(
-                        Jvm.current().getExecutable("java").absolutePath,
-                        "-jar",
-                        jarfiles.first().absolutePath
+                            Jvm.current().getExecutable("java").absolutePath,
+                            "-jar",
+                            jarfiles.first().absolutePath
                     )
                 }
 
-
-                builder.directory(javaInstallerDirectory())
-                builder.start().waitFor()
+                builder.directory(shuffleboardDirectory())
+                builder.start()
             }
         }
     }
@@ -81,7 +80,7 @@ class WPIToolsPlugin implements Plugin<Project> {
         return new File(GradleRIOPlugin.globalDirectory, "SmartDashboard")
     }
 
-    public static File javaInstallerDirectory() {
-        return new File(GradleRIOPlugin.globalDirectory, "JavaInstaller")
+    public static File shuffleboardDirectory() {
+        return new File(GradleRIOPlugin.globalDirectory, "Shuffleboard")
     }
 }
