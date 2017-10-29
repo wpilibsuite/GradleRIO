@@ -13,9 +13,11 @@ install:
 - sudo apt-get install frc-toolchain -y
 
 script:
-- ./gradlew build zipQuickstart --scan --stacktrace
+- ./gradlew build zipQuickstart publishToMavenLocal --scan --stacktrace
 - unzip Quickstart.zip -d quickstart_unzip
 - cd quickstart_unzip/cpp
 - ./gradlew clean build deploy -Pdeploy-dry
 - cd ../java
+- ./gradlew clean build deploy -Pdeploy-dry
+- cd ../../_localtest
 - ./gradlew clean build deploy -Pdeploy-dry
