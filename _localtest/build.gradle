@@ -1,3 +1,5 @@
+import jaci.gradle.nativedeps.NativeLib
+
 buildscript {
     repositories {
         mavenLocal()
@@ -51,6 +53,16 @@ deploy {
 }
 
 model {
+    libraries {
+        ctre(NativeLib) {
+            targetPlatform = 'roborio'
+            headerDirs = []
+            staticMatchers = ['**/*.a']
+            headerDirs = ['cpp/include']
+            libraryMatchers = ['cpp/lib/*.a']
+            file = 'libs/phoenix_v5.0.4.4.zip'
+        }
+    }
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
@@ -59,7 +71,7 @@ model {
                     srcDir 'src/main/cpp'
                 }
                 lib library: "wpilib"
-//                lib library: "ctre"
+                lib library: "ctre"
 //                lib library: "navx"
             }
         }
@@ -70,8 +82,8 @@ dependencies {
     compile wpilib()
     // CTRE Phoenix FRC Beta library
     // Download from Teamforge, not currently publically available
-    compile files('libs/phoenix_v5.0.4.1/java/lib/CTRE_Phoenix.jar')
-    nativeLib files('libs/phoenix_v5.0.4.1/java/lib/libCTRE_PhoenixCCI.so')
+    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
+    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
 //    compile ctre()
 //    compile navx()
 }
