@@ -35,6 +35,7 @@ deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
             team = 5333
+            addresses << '10.0.0.152'
         }
     }
     artifacts {
@@ -66,6 +67,10 @@ model {
 
 dependencies {
     compile wpilib()
+    // CTRE Phoenix FRC Beta library
+    // Download from Teamforge, not currently publically available
+    compile files('libs/phoenix_v5.0.4.1/java/lib/CTRE_Phoenix.jar')
+    nativeLib files('libs/phoenix_v5.0.4.1/java/lib/libCTRE_PhoenixCCI.so')
 //    compile ctre()
 //    compile navx()
 }

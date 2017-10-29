@@ -134,7 +134,7 @@ class FRCPlugin implements Plugin<Project> {
 
             nativeZips.dependencies.matching { Dependency dep -> dep != null && nativeZips.files(dep).size() > 0 }.all { Dependency dep ->
                 def ziptree = project.zipTree(nativeZips.files(dep).first())
-                ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so"].collect { String pattern ->
+                ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "**/libopencv*.so.*"].collect { String pattern ->
                     artifact.files = artifact.files + ziptree.matching { PatternFilterable pat -> pat.include(pattern) }
                 }
             }

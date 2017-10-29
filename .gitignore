@@ -14,3 +14,4 @@ server_script/tmp/
 CMakeLists.txt
 .vs
 cmake-build-debug
+_localtest/libs
