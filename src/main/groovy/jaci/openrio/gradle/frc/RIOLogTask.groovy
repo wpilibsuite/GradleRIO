@@ -2,21 +2,22 @@ package jaci.openrio.gradle.frc
 
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.tasks.TargetDiscoveryTask
+import jaci.openrio.gradle.frc.riolog.FakeDSConnector
 import jaci.openrio.gradle.frc.riolog.RiologConnection
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.configuration.ConsoleOutput
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-import java.nio.ByteBuffer
-import java.nio.charset.Charset
-
 @CompileStatic
 class RIOLogTask extends DefaultTask {
     @TaskAction
     void riolog() {
         println "RIOLog Started! Use CTRL+C (SIGINT) to stop..."
-        println "Remember, the Driver Station must be connected for RIOLog to work!"
+        if (!project.hasProperty('fakeds')) {
+            println "Remember, the Driver Station must be connected for RIOLog to work!"
+            println "Run ./gradlew riolog -Pfakeds to fake a Driver Station connection!"
+        }
         println ""
         if (project.gradle.startParameter.consoleOutput != ConsoleOutput.Plain) {
             println "NOTE: Recommended to use --console=plain with Riolog to disable output buffering"
@@ -37,7 +38,12 @@ class RIOLogTask extends DefaultTask {
         def host = hosts.first()
 
         def conn = new RiologConnection(host)
+        FakeDSConnector fakeds = null
         conn.start()
+        if (project.hasProperty('fakeds')) {
+            fakeds = new FakeDSConnector(host)
+            fakeds.start()
+        }
         while (!Thread.currentThread().interrupted()) {
             try {
                 conn.join()
@@ -45,6 +51,7 @@ class RIOLogTask extends DefaultTask {
                 println "Interrupted!"
                 Thread.currentThread().interrupt()
                 conn.interrupt()
+                if (fakeds != null) fakeds.interrupt()
             }
         }
     }
