@@ -10,14 +10,17 @@ GradleRIO will not only deploy to your RoboRIO, but also to Coprocessors like th
 
 GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visual Studio (for C++). Don't worry, you don't need an IDE if you don't want one, you can use Visual Studio Code, Notepad++, Sublime Text, Vim, or whatever you want, since all builds are done from the command line.
 
+## 2018 Beta
+Note: for 2018, the CTRE and NavX libraries are not yet released. The CTRE Phoenix library available on the Beta Teamforge page can be used manually, see [this example](BETA_CTRE.md) for info.
+
 ## Commands  
 Windows Users: It is recommended to use Powershell instead of CMD.  
-- ```./gradlew build``` will build your Robot Code
-- ```./gradlew deploy``` will build and deploy your code.  
-- ```./gradlew riolog``` will display the RoboRIO console output on your computer.
+- ```./gradlew build``` will build your Robot Code  
+- ```./gradlew deploy``` will build and deploy your code.    
+- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).  
 
-- ```./gradlew smartDashboard``` will launch Smart Dashboard
-- ```./gradlew installJava``` will launch the RoboRIO Java Installer (required for Java).
+- ```./gradlew smartDashboard``` will launch Smart Dashboard  
+- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.  
 - ```./gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
@@ -33,7 +36,8 @@ Windows Users: It is recommended to use Powershell instead of CMD.
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
 Please note that your java files must be in `src/main/java`, not just `src/`. C++ files are in `src/cpp` and `src/include`.
 
-**C++ Users**: Run `./gradlew installToolchain` in order to install the FRC Toolchain
+**C++ Users**: Run `./gradlew installToolchain` in order to install the FRC Toolchain.  
+**Java Users**: The Java installation will be automatically deployed to your RoboRIO. You do not need to use the Java Installer.
 
 ## Upgrading
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
@@ -47,7 +51,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2017.10.24b"
+    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-2"
 }
 ```
 
@@ -109,11 +113,11 @@ wpi {
     cscoreVersion = '...'
     wpiutilVersion = '...'
 
-    ctreVersion = '...'
-    navxVersion = '...'
+//    ctreVersion = '...'
+//    navxVersion = '...'
 
     smartDashboardVersion = '...'
-    javaInstallerVersion = '...'
+    shuffleboardVersion = '...'
 
     toolchainVersion = '...'
 }
@@ -124,8 +128,8 @@ wpi {
 // NavX adds the NavX IMU library.
 dependencies {
     compile wpilib()
-    compile ctre()
-    compile navx()
+//    compile ctre()
+//    compile navx()
 }
 
 // Java only. Setup your Jar File.
@@ -150,8 +154,8 @@ model {
                 // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
                 // NavX adds the NavX IMU library.
                 lib library: "wpilib"
-                lib library: "ctre"
-                lib library: "navx"
+                //lib library: "ctre"
+                //lib library: "navx"
             }
         }
     }
