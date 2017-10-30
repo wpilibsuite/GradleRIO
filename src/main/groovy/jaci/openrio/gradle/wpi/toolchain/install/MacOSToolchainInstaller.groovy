@@ -15,8 +15,8 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
     @Override
     void install(Project project) {
         List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-") as List<String>
-        URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-OSX-Toolchain-${desiredVersion.last()}.pkg.tar.gz")
-        File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.pkg.tar.gz")
+        URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-OSX-Toolchain-${desiredVersion.last()}.pkg.zip")
+        File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.pkg.zip")
         dst.parentFile.mkdirs()
 
 
@@ -38,7 +38,7 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
         extrDir.mkdirs()
 
         project.copy { CopySpec c ->
-            c.from(project.tarTree(project.resources.gzip(dst)))
+            c.from(project.zipTree(dst))
             c.into(extrDir)
         }
 
