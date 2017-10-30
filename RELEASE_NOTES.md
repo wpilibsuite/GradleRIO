@@ -1,3 +1,6 @@
+# 2018-beta-2c
+- Make the Mac Toolchain installer work properly
+
 # 2018-beta-2
 - Update WPI libraries, toolchain, etc to 2018 beta versions  
 - Temporarily remove CTRE and NavX libraries (not yet updated to 2018). See [here](BETA_CTRE.md) for instructions on including the CTRE Phoenix Beta library from Teamforge.  
