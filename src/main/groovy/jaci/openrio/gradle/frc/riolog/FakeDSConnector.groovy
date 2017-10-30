@@ -63,5 +63,6 @@ class FakeDSConnector {
     void interrupt() {
         udpThread.interrupt()
         tcpThread.interrupt()
+        if (tcpSocket.isConnected()) tcpSocket.close()
     }
 }
