@@ -11,6 +11,7 @@ class RoboRIO extends RemoteTarget {
         this.directory = '/home/lvuser'
         this.user = 'admin'
         this.password = ''
+
     }
 
     int team
