@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.10.30"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.11.09"
 }
 
 def TEAM = 5333

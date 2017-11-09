@@ -19,7 +19,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2017.10.30'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2017.11.09'
     compile 'de.undercouch:gradle-download-task:3.1.2'
 }
 
@@ -34,7 +34,7 @@ buildScanRecipes {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2017.10.30"
+version = "2017.11.09"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'
