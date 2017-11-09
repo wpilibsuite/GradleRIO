@@ -43,11 +43,11 @@ deploy {
     artifacts {
         artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
             targets << 'roborio5333'
-            robotCommand = false
         }
         artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
             targets << 'roborio5333'
             component = 'myFrcBinary'
+            robotCommand = false
         }
     }
 }
