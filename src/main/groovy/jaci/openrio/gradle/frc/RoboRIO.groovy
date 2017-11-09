@@ -17,6 +17,6 @@ class RoboRIO extends RemoteTarget {
     int team
     void setTeam(int team) {
         this.team = team
-        this.addresses = [ "roborio-${team}-frc.local".toString(), "10.${(int)(team / 100)}.${team % 100}.2".toString(), "172.22.11.2" ]
+        this.addresses = [ "roborio-${team}-FRC.local".toString(), "10.${(int)(team / 100)}.${team % 100}.2".toString(), "172.22.11.2" ]
     }
 }

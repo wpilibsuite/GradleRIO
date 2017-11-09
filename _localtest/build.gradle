@@ -10,8 +10,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
-//        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2017.10.23'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.10.30'
+//        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2017.10.30'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.11.09'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+'
     }
@@ -37,7 +37,7 @@ deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
             team = 5333
-            addresses << '10.0.0.152'
+            addresses << '10.0.0.155'
         }
     }
     artifacts {
@@ -85,7 +85,7 @@ dependencies {
     compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
     nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
 //    compile ctre()
-//    compile navx()
+    compile navx(), bare
 }
 
 jar {

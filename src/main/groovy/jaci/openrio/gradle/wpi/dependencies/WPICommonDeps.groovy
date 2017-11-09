@@ -15,5 +15,10 @@ class WPICommonDeps implements Plugin<Project> {
             repo.name = "Jaci"
             repo.url = "http://dev.imjac.in/maven/"
         }
+
+        project.repositories.maven { repo ->
+            repo.name = "KauaiLabs"
+            repo.url = "http://www.kauailabs.com/maven2"
+        }
     }
 }

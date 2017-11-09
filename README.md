@@ -128,8 +128,8 @@ wpi {
 // NavX adds the NavX IMU library.
 dependencies {
     compile wpilib()
+    compile navx(), bare
 //    compile ctre()
-//    compile navx()
 }
 
 // Java only. Setup your Jar File.

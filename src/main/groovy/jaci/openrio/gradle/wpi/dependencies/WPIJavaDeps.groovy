@@ -57,12 +57,19 @@ class WPIJavaDeps implements Plugin<Project> {
         // Java:
         // dependencies {
         //     compile ctre()
-        //     compile navx()
+        //     compile navx(), bare
         //
         //     // Use this to include a device library we don't provide, from your file system.
         //     compile fileTree(dir: 'libs', include: '**/*.jar')
         //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
+
+        // Bare is passed as a configuration closure to navx (and other dependencies) in order to prevent
+        // transitive wpilib dependencies that could potentially conflict with our own versions.
+        project.dependencies.ext.bare = {
+            exclude module: 'athena'
+            exclude module: 'wpilibj-java'
+        }
 
         // TODO: CTRE uses phoenix instead of toolsuite now?
 //        project.dependencies.ext.ctreJni = {
@@ -74,9 +81,9 @@ class WPIJavaDeps implements Plugin<Project> {
 //            ["thirdparty.frc.ctre:Toolsuite-Java:${wpi.ctreVersion}"]
 //        }
 
-        // TODO: NavX is not yet stable for 2018
-//        project.dependencies.ext.navx = {
-//            ["thirdparty.frc.kauai:Navx-Java:${wpi.navxVersion}"]
-//        }
+
+        project.dependencies.ext.navx = {
+            ["com.kauailabs.navx.frc:navx_frc:${wpi.navxVersion}"]
+        }
     }
 }

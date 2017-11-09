@@ -18,7 +18,7 @@ class WPIExtension {
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     //String ctreVersion = "5.0.2.1"        // TODO: CTRE uses phoenix instead of toolsuite now?
-//    String navxVersion = "3.0.331"        // TODO: NavX is not yet stable for 2018
+    String navxVersion = "3.0.334"          // TODO: NavX for C++ once published
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
@@ -77,7 +77,7 @@ class WPIExtension {
             "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
 //            "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
-//            "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
+            "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
