@@ -14,6 +14,7 @@ jobs:
     steps:
       - checkout
       - run: apt-get install -y sudo
+      - run: apt-get install -y software-properties-common
       - run: ./gradlew dependencies
       - run: ./gradlew clean build
       - run: cd quickstart/java; ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
