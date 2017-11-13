@@ -15,8 +15,5 @@ jobs:
       - checkout
       - run: ./gradlew dependencies
       - run: ./gradlew clean build
-      - run: pushd quickstart/java
-      - run: ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
-      - run: popd; pushd quickstart/cpp
-      - run: ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
-      - run: popd
+      - run: cd quickstart/java; ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
+      - run: cd quickstart/cpp;  ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
