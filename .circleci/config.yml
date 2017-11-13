@@ -13,8 +13,10 @@ jobs:
     
     steps:
       - checkout
-      - run: ./gradlew dependencies wpi
-      - run: ./gradlew clean build deploy -Pdeploy-dry
-
-
-
+      - run: ./gradlew dependencies
+      - run: ./gradlew clean build
+      - run: pushd quickstart/java
+      - run: ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
+      - run: popd; pushd quickstart/cpp
+      - run: ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
+      - run: popd
