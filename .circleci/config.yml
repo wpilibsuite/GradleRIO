@@ -13,7 +13,8 @@ jobs:
     
     steps:
       - checkout
+      - run: apt-get install -y sudo
       - run: ./gradlew dependencies
       - run: ./gradlew clean build
       - run: cd quickstart/java; ./gradlew dependencies wpi clean build deploy -Pdeploy-dry --scan
-      - run: cd quickstart/cpp;  ./gradlew dependencies wpi installToolchain; chmod +x build/LINUX_TOOLCHAIN_INSTALL.sh; ./build/LINUX_TOOLCHAIN_INSTALL.sh; ./gradlew clean build deploy -Pdeploy-dry --scan
+      - run: cd quickstart/cpp;  ./gradlew dependencies wpi installToolchain; sudo ./build/LINUX_TOOLCHAIN_INSTALL.sh; ./gradlew clean build deploy -Pdeploy-dry --scan
