@@ -1,0 +1,12 @@
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+
+repositories {
+  jcenter() // fontawesomeFX
+  mavenCentral() // Used for the GSON library (Google's JSON converter)
+}
+
+dependencies {
+  compile 'com.google.code.gson:gson:2.8.2'
+}

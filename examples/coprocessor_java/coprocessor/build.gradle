@@ -30,6 +30,10 @@ dependencies {
     // (This library isn't actually needed, but serves the purpose of demonstrating how
     // to add a custom library)
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+    // Here is an example of how to include common code between multiple subsystems using Gradle.
+    // It's useful for  common constants (like ports #'s) and common utility code.
+    compile project(':common')
 }
 
 jar {
