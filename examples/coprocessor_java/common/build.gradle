@@ -1,0 +1,6 @@
+
+dependencies {
+  // This is a sample dependency for the common project, but isn't directly included
+  // in either the robot or coprocessor projects
+  compile 'com.google.code.gson:gson:2.8.2'
+}

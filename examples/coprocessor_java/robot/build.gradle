@@ -19,6 +19,10 @@ deploy {
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
+    // Here is an example of how to include common code between multiple subsystems using Gradle.
+    // It's useful for  common constants (like ports #'s) and common utility code.
+    compile project(':common')
+
     compile wpilib()
     compile ctre()
     compile navx()

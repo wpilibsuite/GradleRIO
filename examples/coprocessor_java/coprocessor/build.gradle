@@ -19,17 +19,15 @@ deploy {
     }
 }
 
-repositories {
-    // Since my Apache Commons dependency (defined below) exists in the Maven Central Repository, 
-    // I need to define it as a repository for this project.
-    mavenCentral()
-}
-
 dependencies {
     // In this case, I'm adding the Apache Commons library for demonstration purposes.
     // (This library isn't actually needed, but serves the purpose of demonstrating how
     // to add a custom library)
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+    // Here is an example of how to include common code between multiple subsystems using Gradle.
+    // It's useful for  common constants (like ports #'s) and common utility code.
+    compile project(':common')
 }
 
 jar {
