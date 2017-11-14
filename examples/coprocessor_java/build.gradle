@@ -21,6 +21,10 @@ allprojects {
 subprojects {
     apply plugin: "java"
     repositories{
+        // Since we use this repository for various sub-projects' dependencies, we need to define
+	// it here at the root level.
+	// For example, the coprocessor project uses the apache-commons library, and the
+	// common project uses the gson library.
         mavenCentral()
     }
 }
