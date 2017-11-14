@@ -19,12 +19,6 @@ deploy {
     }
 }
 
-repositories {
-    // Since my Apache Commons dependency (defined below) exists in the Maven Central Repository, 
-    // I need to define it as a repository for this project.
-    mavenCentral()
-}
-
 dependencies {
     // In this case, I'm adding the Apache Commons library for demonstration purposes.
     // (This library isn't actually needed, but serves the purpose of demonstrating how

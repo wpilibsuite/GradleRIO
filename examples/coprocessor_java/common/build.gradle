@@ -1,8 +1,4 @@
 
-repositories {
-  mavenCentral() // Used for the GSON library (Google's JSON converter)
-}
-
 dependencies {
   // This is a sample dependency for the common project, but isn't directly included
   // in either the robot or coprocessor projects
