@@ -46,7 +46,7 @@ class TelemetryPlugin implements Plugin<Project> {
 
         def thread = null as Thread
         project.afterEvaluate {
-            if (project.extensions.getByType(TelemetryExtension).reportTelemetry && !project.gradle.startParameter.isOffline() && (System.getenv('CI') == null || !System.getenv('CI').toBoolean())) {
+            if (project.extensions.getByType(TelemetryExtension).reportTelemetry && !project.gradle.startParameter.isOffline() && System.getenv('CI') == null) {
                 thread = new Thread({
                     def telemetry = renderTelemetry(project, false)
                     def reportFile = new File(GradleRIOPlugin.globalDirectory, 'lastreport.telemetry')
@@ -80,7 +80,7 @@ class TelemetryPlugin implements Plugin<Project> {
         }
 
         project.gradle.buildFinished {
-            thread.join()
+            if (thread != null) thread.join()
         }
     }
 
