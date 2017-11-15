@@ -80,7 +80,7 @@ class TelemetryPlugin implements Plugin<Project> {
         }
 
         project.gradle.buildFinished {
-            thread.join()
+            if (thread != null) thread.join()
         }
     }
 
