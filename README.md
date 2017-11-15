@@ -28,6 +28,8 @@ Windows Users: It is recommended to use Powershell instead of CMD.
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
+## Misc Commands  
+- ```./gradlew telemetry``` will print telemetry information, the exact same information sent to openrio.imjac.in in order to aid in future development. Telemetry can be disabled as shown in [Full Spec](#full-spec) below.
 
 ## Download
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
