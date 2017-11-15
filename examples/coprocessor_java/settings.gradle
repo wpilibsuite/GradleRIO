@@ -1,1 +1,1 @@
-include "coprocessor", "robot"
+include "coprocessor", "robot", "common"
