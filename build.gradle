@@ -35,7 +35,7 @@ buildScanRecipes {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2018-beta-2d"
+version = "2018-beta-2e"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'

@@ -51,7 +51,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-2c"
+    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-2e"
 }
 ```
 
@@ -159,5 +159,15 @@ model {
             }
         }
     }
+}
+
+// GradleRIO reports some anonymous data to aid in future development
+// This includes your gradle version, dependencies, plugins and versions.
+// It does NOT include your IP address, username, password, or other confidential 
+// data. 
+// You can choose to disable this telemetry if you're paranoid.
+// Telemetry is, by default, enabled.
+telemetry {
+    reportTelemetry = false
 }
 ```

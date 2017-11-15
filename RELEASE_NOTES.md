@@ -1,3 +1,9 @@
+# 2018-beta-2e
+- Add telemetry
+
+# 2018-beta-2d
+- Add NavX maven
+
 # 2018-beta-2c
 - Make the Mac Toolchain installer work properly
 
