@@ -11,6 +11,10 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.SelfResolvingDependency
 
+/**
+ * Lists project dependencies
+ * This helps us determine library support for popular libraries
+ */
 @CompileStatic
 class DependencyProvider implements TelemetryProvider {
 

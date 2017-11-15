@@ -7,6 +7,9 @@ import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.telemetry.TelemetryProvider
 import org.gradle.api.Project
 
+/**
+ * Reports a unique, anonymous UUID for each user (helps us determine 'unique users')
+ */
 @CompileStatic
 class UUIDProvider implements TelemetryProvider {
 

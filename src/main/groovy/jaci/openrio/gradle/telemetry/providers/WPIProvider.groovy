@@ -7,6 +7,9 @@ import jaci.openrio.gradle.telemetry.TelemetryProvider
 import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Project
 
+/**
+ * Reports configured WPI versions for quick reference
+ */
 @CompileStatic
 class WPIProvider implements TelemetryProvider {
 

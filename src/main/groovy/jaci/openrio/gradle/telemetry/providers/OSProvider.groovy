@@ -7,6 +7,9 @@ import jaci.openrio.gradle.telemetry.TelemetryProvider
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 
+/**
+ * Reports the Operating System
+ */
 @CompileStatic
 class OSProvider implements TelemetryProvider {
 

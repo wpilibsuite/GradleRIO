@@ -8,6 +8,10 @@ import jaci.openrio.gradle.telemetry.TelemetryProvider
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ResolvedDependency
 
+/**
+ * Lists resolved classpath dependencies
+ * These are the plugins as well as their versions (lets us tell what the gradlerio version is)
+ */
 @CompileStatic
 class ClasspathProvider implements TelemetryProvider {
 

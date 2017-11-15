@@ -6,6 +6,9 @@ import groovy.transform.CompileStatic
 import jaci.openrio.gradle.telemetry.TelemetryProvider
 import org.gradle.api.Project
 
+/**
+ * Reports the Gradle version
+ */
 @CompileStatic
 class GradleProvider implements TelemetryProvider {
 
