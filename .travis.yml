@@ -16,6 +16,6 @@ script:
 - ./gradlew build zipQuickstart --scan --stacktrace
 - unzip Quickstart.zip -d quickstart_unzip
 - cd quickstart_unzip/cpp
-- ./gradlew clean build deploy -Pdeploy-dry
+- ./gradlew clean build deploy -Pdeploy-dry --stacktrace
 - cd ../java
-- ./gradlew clean build deploy -Pdeploy-dry
+- ./gradlew clean build deploy -Pdeploy-dry --stacktrace
