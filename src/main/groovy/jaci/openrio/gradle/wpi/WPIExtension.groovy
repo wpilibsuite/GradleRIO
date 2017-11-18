@@ -10,11 +10,11 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.1.1-beta-2"
-    String ntcoreVersion = "4.0.0-beta-2"
+    String wpilibVersion = "2018.1.1-beta-3"
+    String ntcoreVersion = "4.0.0-beta-3"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.1.0-beta-2"
-    String wpiutilVersion = "3.0.0-beta-2"
+    String cscoreVersion = "1.1.0-beta-3"
+    String wpiutilVersion = "3.0.0-beta-3"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     //String ctreVersion = "5.0.2.1"        // TODO: CTRE uses phoenix instead of toolsuite now?
@@ -31,7 +31,7 @@ class WPIExtension {
 
     WPIExtension(Project project) {
         this.project = project
-        recommended('2018-beta-2')
+        recommended('2018-beta-3')
     }
 
     void recommended(String year) {
