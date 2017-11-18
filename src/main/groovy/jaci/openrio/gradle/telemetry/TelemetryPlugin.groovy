@@ -8,6 +8,7 @@ import jaci.openrio.gradle.telemetry.providers.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.slf4j.LoggerFactory
 
 import java.util.zip.GZIPOutputStream
 
@@ -48,32 +49,44 @@ class TelemetryPlugin implements Plugin<Project> {
         project.afterEvaluate {
             if (project.extensions.getByType(TelemetryExtension).reportTelemetry && !project.gradle.startParameter.isOffline() && System.getenv('CI') == null) {
                 thread = new Thread({
+                    def log = LoggerFactory.getLogger('gradlerio_telemetry')
+                    def start = System.currentTimeMillis()
+
                     def telemetry = renderTelemetry(project, false)
                     def reportFile = new File(GradleRIOPlugin.globalDirectory, 'lastreport.telemetry')
-                    if (!reportFile.exists() || reportFile.text != telemetry || project.hasProperty('dirty-telemetry')) {
-                        // Report telemetry to web
-                        def baos = new ByteArrayOutputStream()
-                        def gzstr = new GZIPOutputStream(baos)
-                        gzstr.write(telemetry.bytes)
-                        gzstr.close()
+                    // Report telemetry to web
+                    def baos = new ByteArrayOutputStream()
+                    def gzstr = new GZIPOutputStream(baos)
+                    gzstr.write(telemetry.bytes)
+                    gzstr.close()
 
-                        def b64 = baos.toByteArray().encodeBase64().toString()
-                        baos.close()
+                    def b64 = baos.toByteArray().encodeBase64().toString()
+                    baos.close()
 
-                        try {
-                            def url = new URL("http://openrio.imjac.in/gradlerio/telemetry/report")
-                            url.openConnection().with { URLConnection conn ->
-                                def http = conn as HttpURLConnection
-                                http.doOutput = true
-                                http.requestMethod = 'POST'
-                                http.outputStream.withWriter { writer ->
-                                    writer << b64
-                                }
-                                http.content
+                    def start_upload = System.currentTimeMillis()
+                    try {
+                        def url = new URL("http://openrio.imjac.in/gradlerio/telemetry/report")
+                        url.openConnection().with { URLConnection conn ->
+                            def http = conn as HttpURLConnection
+                            http.doOutput = true
+                            http.requestMethod = 'POST'
+                            http.outputStream.withWriter { writer ->
+                                writer << b64
                             }
-                            reportFile.text = telemetry
-                        } catch (Exception e) { }
+                            http.content
+                        }
+                        reportFile.text = telemetry
+
+                    } catch (Exception e) {
+                        def s = new StringWriter()
+                        def pw = new PrintWriter(s)
+                        e.printStackTrace(pw)
+                        log.info("Could not run upload Telemetry...")
+                        log.info(s.toString())
+                    } finally {
+                        log.info("Telemetry Upload took ${System.currentTimeMillis() - start_upload}ms. (Upload only)")
                     }
+                    log.info("Telemetry Report took ${System.currentTimeMillis() - start}ms")
                 })
                 thread.start()
             }
