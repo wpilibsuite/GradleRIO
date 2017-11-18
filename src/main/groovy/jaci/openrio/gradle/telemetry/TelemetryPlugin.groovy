@@ -47,9 +47,15 @@ class TelemetryPlugin implements Plugin<Project> {
 
         def thread = null as Thread
         project.afterEvaluate {
-            if (project.extensions.getByType(TelemetryExtension).reportTelemetry && !project.gradle.startParameter.isOffline() && System.getenv('CI') == null) {
+            def log = LoggerFactory.getLogger('gradlerio_telemetry')
+
+            def noTelemetry = project.hasProperty('no-telemetry')
+            def reportConfig = project.extensions.getByType(TelemetryExtension).reportTelemetry
+            def offline = project.gradle.startParameter.isOffline()
+            def CI = !(System.getenv('CI') == null)
+
+            if (!noTelemetry && reportConfig && !offline && !CI) {
                 thread = new Thread({
-                    def log = LoggerFactory.getLogger('gradlerio_telemetry')
                     def start = System.currentTimeMillis()
 
                     def telemetry = renderTelemetry(project, false)
@@ -89,6 +95,8 @@ class TelemetryPlugin implements Plugin<Project> {
                     log.info("Telemetry Report took ${System.currentTimeMillis() - start}ms")
                 })
                 thread.start()
+            } else {
+                log.info("Telemetry skipped! (no-telemetry = ${noTelemetry}, ReportTelemetry = ${reportConfig}, offline = ${offline}, CI = ${CI}) (expected false, true, false, false)")
             }
         }
 

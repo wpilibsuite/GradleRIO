@@ -79,6 +79,10 @@ model {
     }
 }
 
+telemetry {
+    reportTelemetry = false
+}
+
 dependencies {
     compile wpilib()
     // CTRE Phoenix FRC Beta library
