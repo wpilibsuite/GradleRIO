@@ -61,13 +61,7 @@ class WPIRoboRioGcc extends CrossGcc {
                         a << '--sysroot' << sysroot
                     }
                     target.linker.withArguments { a ->
-                        a << '--sysroot' << sysroot
-                    }
-                    target.assembler.withArguments { a ->
-                        a << '--sysroot' << sysroot
-                    }
-                    target.staticLibArchiver.withArguments { a ->
-                        a << '--sysroot' << sysroot
+		-               a << '--sysroot' << sysroot
                     }
                 }
 
