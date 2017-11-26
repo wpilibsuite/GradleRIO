@@ -51,7 +51,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-2f"
+    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-3a"
 }
 ```
 
