@@ -1,5 +1,4 @@
 #include "WPILib.h"
-#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
 
 #include <iostream>
 
@@ -11,8 +10,6 @@ public:
 
     void RobotInit() {
         std::cout << "Hello World" << std::endl;
-		CTRE::MotorControl::CAN::TalonSRX talon(99);
-		talon.Set(0.5);
     }
 
     void DisabledInit() { }

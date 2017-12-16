@@ -19,7 +19,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2017.12.16'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2017.12.17'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
 }
@@ -35,7 +35,7 @@ buildScanRecipes {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2018-beta-5"
+version = "2018-beta-5a"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'
@@ -84,5 +84,5 @@ task fullRelease() {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4'
 }

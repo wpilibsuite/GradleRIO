@@ -3,6 +3,7 @@ package jaci.openrio.gradle.wpi.toolchain
 import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.toolchain.install.*
+import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -17,7 +18,7 @@ import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.platform.NativePlatform
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
-import org.gradle.nativeplatform.toolchain.internal.gcc.version.CompilerMetaDataProviderFactory
+import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
 import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.internal.ExecActionFactory
 
@@ -85,18 +86,30 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
         @Mutate
         void addToolchains(NativeToolChainRegistryInternal toolChainRegistry, ServiceRegistry serviceRegistry) {
-            def fileResolver = serviceRegistry.get(FileResolver.class)
-            def execActionFactory = serviceRegistry.get(ExecActionFactory.class)
-            def compilerOutputFileNamingSchemeFactory = serviceRegistry.get(CompilerOutputFileNamingSchemeFactory.class)
-            def instantiator = serviceRegistry.get(Instantiator.class)
-            def buildOperationExecutor = serviceRegistry.get(BuildOperationExecutor.class)
-            def metaDataProviderFactory = serviceRegistry.get(CompilerMetaDataProviderFactory.class)
-            def workerLeaseService = serviceRegistry.get(WorkerLeaseService.class)
+//            def fileResolver = serviceRegistry.get(FileResolver.class)
+//            def execActionFactory = serviceRegistry.get(ExecActionFactory.class)
+//            def compilerOutputFileNamingSchemeFactory = serviceRegistry.get(CompilerOutputFileNamingSchemeFactory.class)
+//            def instantiator = serviceRegistry.get(Instantiator.class)
+//            def buildOperationExecutor = serviceRegistry.get(BuildOperationExecutor.class)
+//            def metaDataProviderFactory = serviceRegistry.get(CompilerMetaDataProviderFactory.class)
+//            def workerLeaseService = serviceRegistry.get(WorkerLeaseService.class)
+//
+//            toolChainRegistry.registerFactory(WPIRoboRioGcc.class, { String name ->
+//                return instantiator.newInstance(WPIRoboRioGcc.class, instantiator, name, buildOperationExecutor, OperatingSystem.current(), fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory, metaDataProviderFactory, workerLeaseService)
+//            })
+            final FileResolver fileResolver = serviceRegistry.get(FileResolver.class);
+            final ExecActionFactory execActionFactory = serviceRegistry.get(ExecActionFactory.class);
+            final CompilerOutputFileNamingSchemeFactory compilerOutputFileNamingSchemeFactory = serviceRegistry.get(CompilerOutputFileNamingSchemeFactory.class);
+            final Instantiator instantiator = serviceRegistry.get(Instantiator.class);
+            final BuildOperationExecutor buildOperationExecutor = serviceRegistry.get(BuildOperationExecutor.class);
+            final CompilerMetaDataProviderFactory metaDataProviderFactory = serviceRegistry.get(CompilerMetaDataProviderFactory.class);
+            final WorkerLeaseService workerLeaseService = serviceRegistry.get(WorkerLeaseService.class);
 
-            toolChainRegistry.registerFactory(WPIRoboRioGcc.class, { String name ->
-                return instantiator.newInstance(WPIRoboRioGcc.class, instantiator, name, buildOperationExecutor, OperatingSystem.current(), fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory, metaDataProviderFactory, workerLeaseService)
-            })
-
+            toolChainRegistry.registerFactory(WPIRoboRioGcc.class, new NamedDomainObjectFactory<WPIRoboRioGcc>() {
+                public WPIRoboRioGcc create(String name) {
+                    return instantiator.newInstance(WPIRoboRioGcc.class, instantiator, name, buildOperationExecutor, OperatingSystem.current(), fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory, metaDataProviderFactory, workerLeaseService);
+                }
+            });
             toolChainRegistry.registerDefaultToolChain('roborioGcc', WPIRoboRioGcc)
         }
     }

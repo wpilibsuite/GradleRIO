@@ -5,14 +5,9 @@ import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.DeployExtension
-import jaci.gradle.deploy.artifact.ArtifactBase
-import jaci.gradle.deploy.artifact.FileArtifact
-import jaci.gradle.deploy.artifact.FileCollectionArtifact
-import jaci.gradle.deploy.artifact.JavaArtifact
-import jaci.gradle.deploy.artifact.NativeLibraryArtifact
+import jaci.gradle.deploy.artifact.*
 import jaci.gradle.deploy.target.RemoteTarget
 import jaci.gradle.deploy.tasks.TargetDiscoveryTask
-import jaci.openrio.gradle.ExportJarResourceTask
 import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project

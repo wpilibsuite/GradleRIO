@@ -43,7 +43,7 @@ Please note that your java files must be in `src/main/java`, not just `src/`. C+
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4'
 }
 ```
 

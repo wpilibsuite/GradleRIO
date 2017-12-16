@@ -1,3 +1,6 @@
+# 2018-beta-5a
+- Update to Gradle 4.4
+
 # 2018-beta-2e
 - Add telemetry
 

@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
 //        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2017.10.30'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.11.09'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.12.17'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
         classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+'
@@ -54,16 +54,16 @@ deploy {
 }
 
 model {
-    libraries {
-        ctre(NativeLib) {
-            targetPlatform = 'roborio'
-            headerDirs = []
-            staticMatchers = ['**/*.a']
-            headerDirs = ['cpp/include']
-            libraryMatchers = ['cpp/lib/*.a']
-            file = 'libs/phoenix_v5.0.4.4.zip'
-        }
-    }
+//    libraries {
+//        ctre(NativeLib) {
+//            targetPlatform = 'roborio'
+//            headerDirs = []
+//            staticMatchers = ['**/*.a']
+//            headerDirs = ['cpp/include']
+//            libraryMatchers = ['cpp/lib/*.a']
+//            file = 'libs/phoenix_v5.0.4.4.zip'
+//        }
+//    }
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
@@ -72,7 +72,7 @@ model {
                     srcDir 'src/main/cpp'
                 }
                 lib library: "wpilib"
-                lib library: "ctre"
+//                lib library: "ctre"
 //                lib library: "navx"
             }
         }
@@ -99,5 +99,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4'
 }

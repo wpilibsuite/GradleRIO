@@ -30,11 +30,10 @@ model {
         }
     }
     toolChains {
-        // Here, I'm defining a new CrossGcc toolchain. CrossGcc allows for better control over cross-compiling toolchains
-        // like that of the Raspberry Pi.
-        rpiGcc(jaci.gradle.toolchains.CrossGcc) {
+        rpiGcc(Gcc) {
             // This toolchain will respond to my rpiArm platform
-            target('rpiArm') {
+            setTargets('rpiArm')
+            eachPlatform {
                 // Defining my gcc, ar, g++, etc binaries to use the 'arm-linux-gnueabihf' prefix, with no suffix. 
                 // This is the prefix the Raspberry Pi uses, but may be different for your coprocessor.
                 defineTools(it, 'arm-linux-gnueabihf-', '')

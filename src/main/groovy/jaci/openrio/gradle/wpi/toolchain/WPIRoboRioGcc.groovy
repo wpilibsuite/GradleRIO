@@ -1,6 +1,5 @@
 package jaci.openrio.gradle.wpi.toolchain
 
-import jaci.gradle.toolchains.CrossGcc
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.MacOSToolchainInstaller
@@ -12,25 +11,27 @@ import org.gradle.internal.reflect.Instantiator
 import org.gradle.internal.work.WorkerLeaseService
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.toolchain.GccPlatformToolChain
-import org.gradle.nativeplatform.toolchain.internal.gcc.version.CompilerMetaDataProviderFactory
+import org.gradle.nativeplatform.toolchain.internal.gcc.AbstractGccCompatibleToolChain
+import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
 import org.gradle.process.internal.ExecActionFactory
 
-class WPIRoboRioGcc extends CrossGcc {
+class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
     WPIRoboRioGcc(Instantiator instantiator, String name, BuildOperationExecutor buildOperationExecutor,
                   OperatingSystem operatingSystem, FileResolver fileResolver,
                   ExecActionFactory execActionFactory, CompilerOutputFileNamingSchemeFactory compilerOutputFileNamingSchemeFactory,
                   CompilerMetaDataProviderFactory metaDataProviderFactory, WorkerLeaseService workerLeaseService) {
 
-        super(instantiator, name, buildOperationExecutor, operatingSystem,
+        super(name, buildOperationExecutor, operatingSystem,
                 fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory,
-                metaDataProviderFactory, workerLeaseService)
+                metaDataProviderFactory.gcc(), instantiator, workerLeaseService)
 
         AbstractToolchainInstaller activeInstaller = WPIToolchainPlugin.getActiveInstaller()
         // On Linux, we can't specify the install location of the apt-get package, so instead we
         // assume it's on the system path
         boolean customPath = !(activeInstaller instanceof LinuxToolchainInstaller)
 
-        target('roborio', new Action<GccPlatformToolChain>() {
+        setTargets('roborio')
+        eachPlatform(new Action<GccPlatformToolChain>() {
             @Override
             void execute(GccPlatformToolChain target) {
                 String gccPrefix = "arm-frc-linux-gnueabi-"
