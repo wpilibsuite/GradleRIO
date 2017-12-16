@@ -10,22 +10,22 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.1.1-beta-3"
-    String ntcoreVersion = "4.0.0-beta-3"
+    String wpilibVersion = "2018.1.1-beta-5"
+    String ntcoreVersion = "4.0.0-beta-4"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.1.0-beta-3"
-    String wpiutilVersion = "3.0.0-beta-3"
+    String cscoreVersion = "1.1.0-beta-4"
+    String wpiutilVersion = "3.0.0-beta-4"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     //String ctreVersion = "5.0.2.1"        // TODO: CTRE uses phoenix instead of toolsuite now?
-    String navxVersion = "3.0.334"          // TODO: NavX for C++ once published
+    String navxVersion = "3.0.341"          // TODO: NavX for C++ once published
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
     String shuffleboardVersion = "0.3.0"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
-    String toolchainVersion = "2018-5.4"
+    String toolchainVersion = "2018-5.5"
 
     final Project project
 
