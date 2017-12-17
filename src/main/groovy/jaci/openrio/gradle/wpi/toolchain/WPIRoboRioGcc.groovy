@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.wpi.toolchain
 
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
 import jaci.openrio.gradle.wpi.toolchain.install.MacOSToolchainInstaller
@@ -15,6 +16,7 @@ import org.gradle.nativeplatform.toolchain.internal.gcc.AbstractGccCompatibleToo
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
 import org.gradle.process.internal.ExecActionFactory
 
+@CompileStatic
 class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
     WPIRoboRioGcc(Instantiator instantiator, String name, BuildOperationExecutor buildOperationExecutor,
                   OperatingSystem operatingSystem, FileResolver fileResolver,
@@ -38,9 +40,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                 String gccSuffix = OperatingSystem.current().isWindows() ? ".exe" : ""
 
                 target.cCompiler.executable =           gccPrefix + "gcc" + gccSuffix
-                target.cCompiler.withArguments      { a -> a << "-DROBORIO" }   // Define the 'ROBORIO' macro
                 target.cppCompiler.executable =         gccPrefix + "g++" + gccSuffix
-                target.cppCompiler.withArguments    { a -> a << "-DROBORIO" }   // Define the 'ROBORIO' macro
                 target.linker.executable =              gccPrefix + "g++" + gccSuffix
                 target.assembler.executable =           gccPrefix + "as"  + gccSuffix
                 target.staticLibArchiver.executable =   gccPrefix + "ar"  + gccSuffix
@@ -55,20 +55,26 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                     // For some reason mac buries required libs one level deeper than windows
                     if (activeInstaller instanceof MacOSToolchainInstaller)
                         sysroot = new File(sysroot, "arm-frc-linux-gnueabi").absolutePath
-                    target.cCompiler.withArguments { a ->
+                    target.cCompiler.withArguments ({ List<String> a ->
                         a << '--sysroot' << sysroot
-                    }
-                    target.cppCompiler.withArguments { a ->
+                    } as Action<? super List<String>>)
+
+                    target.cppCompiler.withArguments ({ List<String> a ->
                         a << '--sysroot' << sysroot
-                    }
-                    target.linker.withArguments { a ->
+                    } as Action<? super List<String>>)
+
+                    target.linker.withArguments ({ List<String> a ->
                         a << '--sysroot' << sysroot
-                    }
+                    } as Action<? super List<String>>)
                 }
 
-                target.cppCompiler.withArguments { a ->
-                    a << '-std=c++1y'
-                }
+                target.cppCompiler.withArguments ({ List<String> a ->
+                    a << '-std=c++1y' << '-pthread'
+                } as Action<? super List<String>>)
+
+                target.linker.withArguments ({ List<String> a ->
+                    a << '-pthread' << '-rdynamic'
+                } as Action<? super List<String>>)
             }
         })
 
