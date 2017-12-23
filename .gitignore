@@ -6,7 +6,7 @@ build
 *.iws
 *.sln
 *.vcxproj
-*.vcxproj.filters
+*.vcxproj.*
 .DS_STORE
 quickstart/gradle/libs/
 server_script/maven/

@@ -151,6 +151,7 @@ class FRCPlugin implements Plugin<Project> {
                                 nla.directory = '/usr/local/frc/lib'
                                 nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
                                 nla.library = lib
+                                nla.targetPlatform = 'roborio'
                             }
                         }
                     }

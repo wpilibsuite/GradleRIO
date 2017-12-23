@@ -78,13 +78,6 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
     static class WPIToolchainRules extends RuleSource {
         @Mutate
-        void addPlatform(PlatformContainer platforms) {
-            def roborio = platforms.maybeCreate('roborio', NativePlatform)
-            roborio.architecture('arm')
-            roborio.operatingSystem('linux')
-        }
-
-        @Mutate
         void addToolchains(NativeToolChainRegistryInternal toolChainRegistry, ServiceRegistry serviceRegistry) {
 //            def fileResolver = serviceRegistry.get(FileResolver.class)
 //            def execActionFactory = serviceRegistry.get(ExecActionFactory.class)
