@@ -20,8 +20,10 @@ class SimulationTask extends DefaultTask {
         // OR: Write a script that does this for the user?
         //          i.e. task outputs a runnable file that the user then uses.
         def installTask = binary.tasks.withType(InstallExecutable).first()
+        def env = SimulationPlugin.getHALExtensionsEnvVar(project)
+        println "Using Environment: HALSIM_EXTENSIONS=${env}"
         project.exec { ExecSpec spec ->
-            spec.environment.put("HALSIM_EXTENSIONS", SimulationPlugin.getHALExtensionsEnvVar(project))
+            spec.environment.put("HALSIM_EXTENSIONS", env)
             spec.commandLine(installTask.runScript)
 
         }
