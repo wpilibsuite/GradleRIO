@@ -88,10 +88,11 @@ dependencies {
     compile wpilib()
     // CTRE Phoenix FRC Beta library
     // Download from Teamforge, not currently publically available
-    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
-    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
+//    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
+//    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
 //    compile ctre()
     compile navx(), bare
+    simulation halsim_print()
 }
 
 jar {

@@ -69,7 +69,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                 }
 
                 target.cppCompiler.withArguments ({ List<String> a ->
-                    a << '-std=c++1y' << '-pthread'
+                    a << '-pthread'
                 } as Action<? super List<String>>)
 
                 target.linker.withArguments ({ List<String> a ->

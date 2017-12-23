@@ -1,7 +1,9 @@
 package jaci.openrio.gradle.wpi.dependencies
 
+import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 
 class WPICommonDeps implements Plugin<Project> {
     @Override
@@ -19,6 +21,23 @@ class WPICommonDeps implements Plugin<Project> {
         project.repositories.maven { repo ->
             repo.name = "KauaiLabs"
             repo.url = "http://www.kauailabs.com/maven2"
+        }
+
+        apply_halsim_extensions(project, project.extensions.getByType(WPIExtension))
+    }
+
+    void apply_halsim_extensions(Project project, WPIExtension wpi) {
+        def native64classifier = (
+                OperatingSystem.current().isWindows() ? "windowsx86-64" :
+                OperatingSystem.current().isMacOsX() ? "osxx86-64" :
+                OperatingSystem.current().isLinux() ? "linuxx86-64" :
+                null
+        )
+
+        if (native64classifier != null) {
+            project.dependencies.ext.halsim_print = {
+                ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${native64classifier}@zip"]
+            }
         }
     }
 }

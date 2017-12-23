@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.openrio.gradle.frc.FRCPlugin
 import jaci.openrio.gradle.ide.ClionPlugin
+import jaci.openrio.gradle.sim.SimulationPlugin
 import jaci.openrio.gradle.telemetry.TelemetryPlugin
 import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
@@ -28,6 +29,7 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.pluginManager.apply(WPIPlugin)
         project.pluginManager.apply(ClionPlugin)
         project.pluginManager.apply(TelemetryPlugin)
+        project.pluginManager.apply(SimulationPlugin)
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
     }

@@ -8,9 +8,13 @@ import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.language.cpp.CppSourceSet
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.platform.NativePlatform
+import org.gradle.platform.base.BinaryContainer
+import org.gradle.platform.base.BinarySpec
 import org.gradle.platform.base.PlatformContainer
 
 @CompileStatic
@@ -36,7 +40,7 @@ class WPIPlugin implements Plugin<Project> {
         }
     }
 
-    static class WPIToolchainRules extends RuleSource {
+    static class WPIRules extends RuleSource {
         @Mutate
         void addPlatform(PlatformContainer platforms) {
             def roborio = platforms.maybeCreate('roborio', NativePlatform)
@@ -50,6 +54,14 @@ class WPIPlugin implements Plugin<Project> {
 
             def anyArm = platforms.maybeCreate('anyArm', NativePlatform)
             anyArm.architecture('arm')
+        }
+
+        @Mutate
+        void addBinaryFlags(BinaryContainer binaries) {
+            binaries.withType(NativeBinarySpec) { NativeBinarySpec bin ->
+                bin.cppCompiler.args << "-std=c++1y"
+                null
+            }
         }
     }
 }

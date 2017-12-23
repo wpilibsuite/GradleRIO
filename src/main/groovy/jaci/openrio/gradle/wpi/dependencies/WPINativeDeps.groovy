@@ -62,7 +62,7 @@ class WPINativeDeps implements Plugin<Project> {
                         lib.targetPlatforms = ['any64']
                         lib.staticMatchers = ["**/*${libname}.lib".toString()]
                         lib.sharedMatchers = ["**/*${libname}.so".toString(), "**/*${libname}.dylib".toString()]
-                        lib.libraryMatchers = lib.sharedMatchers + "**/*${libname}.dll".toString()
+                        lib.libraryMatchers = lib.sharedMatchers + "windows/x86-64/shared/${libname}.dll".toString()
                         lib.maven = "${mavenBase}:${native64classifier}@zip"
                     }
                 }
