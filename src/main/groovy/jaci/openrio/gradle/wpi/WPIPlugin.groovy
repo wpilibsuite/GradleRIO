@@ -8,13 +8,11 @@ import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.language.cpp.CppSourceSet
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.platform.NativePlatform
 import org.gradle.platform.base.BinaryContainer
-import org.gradle.platform.base.BinarySpec
 import org.gradle.platform.base.PlatformContainer
 
 @CompileStatic

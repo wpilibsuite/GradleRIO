@@ -16,10 +16,8 @@ import org.gradle.internal.work.WorkerLeaseService
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
-import org.gradle.nativeplatform.platform.NativePlatform
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
-import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.internal.ExecActionFactory
 
 @CompileStatic

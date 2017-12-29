@@ -3,7 +3,6 @@ package jaci.openrio.gradle.sim
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Dependency
-import org.gradle.api.file.CopySpec
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
@@ -13,9 +12,6 @@ import org.gradle.deployment.internal.DeploymentRegistry
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
-import org.gradle.process.JavaExecSpec
-import org.gradle.process.internal.worker.DefaultWorkerProcessFactory
-import org.gradle.process.internal.worker.WorkerProcess
 
 import javax.inject.Inject
 

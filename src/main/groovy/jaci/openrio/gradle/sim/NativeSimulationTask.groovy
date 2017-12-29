@@ -3,15 +3,12 @@ package jaci.openrio.gradle.sim
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.deployment.internal.Deployment
 import org.gradle.deployment.internal.DeploymentHandle
 import org.gradle.deployment.internal.DeploymentRegistry
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.jvm.tasks.Jar
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
-import org.gradle.process.ExecSpec
 
 import javax.inject.Inject
 
