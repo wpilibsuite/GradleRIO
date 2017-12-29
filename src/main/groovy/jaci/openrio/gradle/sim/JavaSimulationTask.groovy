@@ -7,9 +7,17 @@ import org.gradle.api.file.CopySpec
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
+import org.gradle.deployment.internal.Deployment
+import org.gradle.deployment.internal.DeploymentHandle
+import org.gradle.deployment.internal.DeploymentRegistry
+import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.process.JavaExecSpec
+import org.gradle.process.internal.worker.DefaultWorkerProcessFactory
+import org.gradle.process.internal.worker.WorkerProcess
+
+import javax.inject.Inject
 
 @CompileStatic
 class JavaSimulationTask extends DefaultTask {
@@ -18,7 +26,7 @@ class JavaSimulationTask extends DefaultTask {
 
     @TaskAction
     void run() {
-        // Extract necessary libs TODO make this a new task so it can be cached
+        // Extract necessary libs
         def nativeLibs = project.configurations.getByName('nativeSimulationLib')
         def nativeZips = project.configurations.getByName('nativeSimulationZip')
         def extractionFiles = null as FileCollection
@@ -44,26 +52,77 @@ class JavaSimulationTask extends DefaultTask {
 
         def libdirs = extractionFiles.collect { File f -> f.parentFile }.unique()
 
-        // TODO: Spawn in new window (gradle daemon keeps this process alive)
-        // OR: Write a script that does this for the user?
-        //          i.e. task outputs a runnable file that the user then uses.
         def env = SimulationPlugin.getHALExtensionsEnvVar(project)
         println "Using Environment: HALSIM_EXTENSIONS=${env}"
         def ldpath = libdirs.join(SimulationPlugin.envDelimiter())
-        project.javaexec { JavaExecSpec spec ->
-            spec.environment.put("HALSIM_EXTENSIONS", env)
 
+        def deploymentId = getPath()
+        def deploymentRegistry = getDeploymentRegistry()
+        def deploymentHandle = deploymentRegistry.get(deploymentId, SimulationDeploymentHandle)
+
+        if (deploymentHandle == null) {
+            deploymentHandle = deploymentRegistry.start(
+                    deploymentId,
+                    DeploymentRegistry.ChangeBehavior.BLOCK,
+                    SimulationDeploymentHandle,
+                    jar, ldpath, env
+            )
+        }
+    }
+
+    // NOTE: This is all internal stuff. As gradle gets updates, this is subject to a LOT of change
+    // Usually we would use javaexec, but these tasks don't end, they just keep running.
+    // For that reason, we're using the Deployment API, which is internal.
+    // TL;DR, the Deployment API is used when executing tasks that are long running (continuous) to
+    // help them work with the Daemon
+    // https://github.com/gradle/gradle/issues/2336
+    @Inject
+    public DeploymentRegistry getDeploymentRegistry() {
+        throw new UnsupportedOperationException()
+    }
+
+    @CompileStatic
+    public static class SimulationDeploymentHandle implements DeploymentHandle {
+
+        private final Jar jar
+        private final String ldpath, env
+        private final ProcessBuilder builder
+        private Process process
+
+        @Inject
+        public SimulationDeploymentHandle(Jar jar, String ldpath, String env) {
+            this.jar = jar
+            this.ldpath = ldpath
+            this.env = env
+            builder = new ProcessBuilder(
+                    Jvm.current().getExecutable("java").absolutePath,
+                    "-Djava.library.path=${ldpath}",
+                    "-jar", jar.archivePath.toString()
+            )
+            builder.environment().put("HALSIM_EXTENSIONS", env)
             if (OperatingSystem.current().isUnix()) {
-                spec.environment.put("LD_LIBRARY_PATH", ldpath)
-                spec.environment.put("DYLD_FALLBACK_LIBRARY_PATH", ldpath)  // On Mac it isn't 'safe' to override the non-fallback version.
+                builder.environment().put("LD_LIBRARY_PATH", ldpath)
+                builder.environment().put("DYLD_FALLBACK_LIBRARY_PATH", ldpath)  // On Mac it isn't 'safe' to override the non-fallback version.
             } else if (OperatingSystem.current().isWindows()) {
-                spec.environment.put("PATH", ldpath + ";" + System.getenv("PATH"))
+                builder.environment().put("PATH", ldpath + ";" + System.getenv("PATH"))
             }
+        }
 
-            spec.jvmArgs("-Djava.library.path=${ldpath}")
-            spec.setClasspath(project.configurations.getByName('compile'))
-            spec.setMain("-jar")
-            spec.args(jar.archivePath)
+        @Override
+        boolean isRunning() {
+            return process != null && process.isAlive()
+        }
+
+        @Override
+        void start(Deployment deployment) {
+            process = builder.start()
+            process.consumeProcessOutputStream(System.out as OutputStream)
+            process.consumeProcessErrorStream(System.err as OutputStream)
+        }
+
+        @Override
+        void stop() {
+            process.destroyForcibly()
         }
     }
 
