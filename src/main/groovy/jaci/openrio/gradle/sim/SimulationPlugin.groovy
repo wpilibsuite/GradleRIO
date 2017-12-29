@@ -90,7 +90,10 @@ class SimulationPlugin implements Plugin<Project> {
                             task.group = "GradleRIO"
                             task.description = "Simulate Task for ${spec.name} native executable"
 
-                            task.dependsOn(bin.tasks.withType(InstallExecutable))
+                            // TODO This needs _something_ since we can't make it depend on InstallExecutable
+                            // This imposes a limit where if a source file is edited, the daemon will never kill the
+                            // process. Same goes for the java above.
+//                            task.dependsOn(bin.tasks.withType(InstallExecutable))
                             task.binary = bin
                             null
                         }
