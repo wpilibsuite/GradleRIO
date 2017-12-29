@@ -71,15 +71,14 @@ class WPIJavaDeps implements Plugin<Project> {
             exclude module: 'wpilibj-java'
         }
 
-        // TODO: CTRE uses phoenix instead of toolsuite now?
-//        project.dependencies.ext.ctreJni = {
-//            "thirdparty.frc.ctre:Toolsuite-Zip:${wpi.ctreVersion}@zip"
-//        }
-//
-//        project.dependencies.ext.ctre = {
-//            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
-//            ["thirdparty.frc.ctre:Toolsuite-Java:${wpi.ctreVersion}"]
-//        }
+        project.dependencies.ext.ctreJni = {
+            "openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}:native@zip"
+        }
+
+        project.dependencies.ext.ctre = {
+            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
+            ["openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}"]
+        }
 
 
         project.dependencies.ext.navx = {

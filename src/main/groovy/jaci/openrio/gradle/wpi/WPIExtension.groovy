@@ -17,7 +17,7 @@ class WPIExtension {
     String wpiutilVersion = "3.0.0-beta-4"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
-    //String ctreVersion = "5.0.2.1"        // TODO: CTRE uses phoenix instead of toolsuite now?
+    String ctreVersion = "5.0.4.2_FRC-BETA-ONLY" // TODO: NOT STABLE
     String navxVersion = "3.0.341"          // TODO: NavX for C++ once published
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities

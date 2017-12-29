@@ -19,6 +19,11 @@ class WPICommonDeps implements Plugin<Project> {
         }
 
         project.repositories.maven { repo ->
+            repo.name = "OpenRIO"
+            repo.url = "https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2"
+        }
+
+        project.repositories.maven { repo ->
             repo.name = "KauaiLabs"
             repo.url = "http://www.kauailabs.com/maven2"
         }

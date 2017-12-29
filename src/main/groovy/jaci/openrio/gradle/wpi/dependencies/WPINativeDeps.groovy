@@ -161,14 +161,28 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
-            // TODO: CTRE uses phoenix instead of toolsuite now?
             // CTRE
-//            libs.create('ctre', NativeLib) { NativeLib lib ->
-//                common(lib)
-//                lib.headerDirs = ['cpp/include']
-//                lib.libraryMatchers = ['cpp/**/*.a']
-//                lib.maven = "thirdparty.frc.ctre:Toolsuite-Zip:${wpi.ctreVersion}@zip"
-//            }
+
+            libs.create('ctre_athena', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.mainLibraryName = "ctre_binaries"
+                lib.headerDirs = []
+                lib.staticMatchers = ['*.a']
+                lib.maven = "openrio.mirror.third.ctre:CTRE-phoenix-cpp:${wpi.ctreVersion}@zip"
+            }
+
+            libs.create('ctre_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "openrio.mirror.third.ctre:CTRE-phoenix-cpp:${wpi.ctreVersion}:headers@zip"
+
+            }
+
+            libs.create('ctre', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'ctre_binaries' << 'ctre_headers'
+                lib.targetPlatforms = ['roborio']
+                null
+            }
 
             // TODO: NavX is not yet stable for 2018
             // NavX

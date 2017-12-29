@@ -80,6 +80,10 @@ model {
     }
 }
 
+wpi {
+    wpilibVersion = "2018.1.1-beta-5"
+}
+
 telemetry {
     reportTelemetry = false
 }
@@ -92,7 +96,9 @@ dependencies {
 //    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
 //    compile ctre()
     compile navx(), bare
-    simulation halsim_print()
+//    simulation halsim_print()
+    simulation files("halsim_ds_nt.dll")
+    simulation files("halsim_lowfi.dll")
 }
 
 jar {
