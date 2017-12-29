@@ -1,3 +1,7 @@
+# (UNRELESED)
+- Add CTRE 3rd party library
+- Add simulation framework for HAL Extensions
+
 # 2018-beta-5b
 - Close #5
 

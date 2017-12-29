@@ -3,6 +3,7 @@ package jaci.openrio.gradle.wpi.dependencies
 import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 
 class WPIJavaDeps implements Plugin<Project> {
     void apply(Project project) {
@@ -20,6 +21,23 @@ class WPIJavaDeps implements Plugin<Project> {
         //     compile wpilib()
         // }
 
+        def native64classifier = (
+            OperatingSystem.current().isWindows() ? "windowsx86-64" :
+            OperatingSystem.current().isMacOsX() ? "osxx86-64" :
+            OperatingSystem.current().isLinux() ? "linuxx86-64" :
+            null
+        )
+
+        project.dependencies.ext.wpilibSimulationJni = {
+            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:${native64classifier}",
+             "org.opencv:opencv-jni:${wpi.opencvVersion}:${native64classifier}",
+             "org.opencv:opencv-cpp:${wpi.opencvVersion}:${native64classifier}@zip",              // opencv-jni requires opencv native (opencv is special)
+             "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:${native64classifier}@zip",              // wpilibj-jniShared requires HAL native
+             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:${native64classifier}@zip", // wpilibj-jniShared requires WPIUtil native
+             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.ntcoreVersion}:${native64classifier}@zip",    // wpilibj-jniShared requires NTCore native
+             "edu.wpi.first.cscore:cscore-cpp:${wpi.cscoreVersion}:${native64classifier}@zip"]
+        }
+
         project.dependencies.ext.wpilibJni = {
             // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
             // libraries, while the -jni ones are standalone (have static libs embedded).
@@ -35,6 +53,9 @@ class WPIJavaDeps implements Plugin<Project> {
         project.dependencies.ext.wpilib = {
             project.dependencies.ext.wpilibJni().each {
                 project.dependencies.add("nativeZip", it)
+            }
+            project.dependencies.ext.wpilibSimulationJni().each {
+                project.dependencies.add("nativeSimulationZip", it)
             }
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}",

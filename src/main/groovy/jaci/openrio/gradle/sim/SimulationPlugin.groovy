@@ -2,28 +2,22 @@ package jaci.openrio.gradle.sim
 
 import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
-import org.gradle.api.Action
-import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.XmlProvider
 import org.gradle.api.file.CopySpec
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.ide.visualstudio.VisualStudioExtension
 import org.gradle.ide.visualstudio.VisualStudioProject
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.jvm.tasks.Jar
 import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
-import org.gradle.nativeplatform.NativeBinarySpec
-import org.gradle.nativeplatform.NativeExecutableBinary
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
-import org.gradle.platform.base.BinaryContainer
-import org.gradle.platform.base.BinaryTasks
 import org.gradle.platform.base.ComponentSpecContainer
 
 @CompileStatic
@@ -43,6 +37,24 @@ class SimulationPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        project.tasks.withType(Jar).all { Jar jarTask ->
+            def attr = jarTask.manifest.attributes
+            if (jarTask.name.equals("jar")) {   // TODO Make this configurable (for alternate jars)
+                project.tasks.create("simulate${jarTask.name.capitalize()}", JavaSimulationTask) { JavaSimulationTask task ->
+                    task.group = "GradleRIO"
+                    task.description = "Simulate Task for Java/Kotlin/JVM"
+
+                    task.dependsOn(jarTask)
+                    task.jar = jarTask
+                    null
+                }
+            }
+        }
+    }
+
+    static String envDelimiter() {
+        return OperatingSystem.current().isWindows() ? ";" : ":"
     }
 
     static String getHALExtensionsEnvVar(Project project) {
@@ -65,24 +77,23 @@ class SimulationPlugin implements Plugin<Project> {
                 rtLibs += f
             }
         }
-        return rtLibs.join(OperatingSystem.current().isWindows() ? ";" : ":")
+        return rtLibs.join(envDelimiter())
     }
 
     static class SimRules extends RuleSource {
         @Mutate
-        void createInstallAllComponentsTask(ModelMap<Task> tasks, ComponentSpecContainer components) {
+        void createSimulateComponentsTask(ModelMap<Task> tasks, ComponentSpecContainer components) {
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
                 spec.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                    if (bin.targetPlatform.operatingSystem.current) {
-                        if (!tasks.containsKey("simulate${spec.name.capitalize()}"))
-                            tasks.create("simulate${spec.name.capitalize()}", SimulationTask) { SimulationTask task ->
-                                task.group = "GradleRIO"
-                                task.description = "Simulate Task for ${spec.name} executable"
+                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals('roborio')) {
+                        tasks.create("simulate${spec.name.capitalize()}${bin.targetPlatform.name.capitalize()}", NativeSimulationTask) { NativeSimulationTask task ->
+                            task.group = "GradleRIO"
+                            task.description = "Simulate Task for ${spec.name} native executable"
 
-                                task.dependsOn(bin.tasks.withType(InstallExecutable))
-                                task.binary = bin
-                                null
-                            }
+                            task.dependsOn(bin.tasks.withType(InstallExecutable))
+                            task.binary = bin
+                            null
+                        }
                     }
                 }
             }

@@ -21,9 +21,14 @@ class GradleRIOPlugin implements Plugin<Project> {
     }
 
     void apply(Project project) {
+        // These configurations only act for the JAVA portion of GradleRIO
+        // Native libraries have their own dependency management system
         project.configurations.maybeCreate("nativeLib")
         project.configurations.maybeCreate("nativeZip")
-        
+
+        project.configurations.maybeCreate("nativeSimulationLib")
+        project.configurations.maybeCreate("nativeSimulationZip")
+
         project.pluginManager.apply(EmbeddedTools)
         project.pluginManager.apply(FRCPlugin)
         project.pluginManager.apply(WPIPlugin)

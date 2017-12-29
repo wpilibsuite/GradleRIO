@@ -10,7 +10,7 @@ import org.gradle.nativeplatform.tasks.InstallExecutable
 import org.gradle.process.ExecSpec
 
 @CompileStatic
-class SimulationTask extends DefaultTask {
+class NativeSimulationTask extends DefaultTask {
 
     NativeExecutableBinarySpec binary
 
