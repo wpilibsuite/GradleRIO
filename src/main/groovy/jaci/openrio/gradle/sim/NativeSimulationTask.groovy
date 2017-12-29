@@ -78,8 +78,6 @@ class NativeSimulationTask extends DefaultTask {
                 builder.environment().put("LD_LIBRARY_PATH", dir.absolutePath)
                 builder.environment().put("DYLD_FALLBACK_LIBRARY_PATH", dir.absolutePath)  // On Mac it isn't 'safe' to override the non-fallback version.
             }
-
-            println builder.command()
         }
 
         @Override
