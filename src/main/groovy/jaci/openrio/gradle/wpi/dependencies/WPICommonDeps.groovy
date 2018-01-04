@@ -40,9 +40,17 @@ class WPICommonDeps implements Plugin<Project> {
         )
 
         if (native64classifier != null) {
-            project.dependencies.ext.halsim_print = {
-                ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${native64classifier}@zip"]
-            }
+            project.dependencies.ext.sim = [
+                print: {
+                    ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                },
+                nt_ds: {
+                    ["edu.wpi.first.halsim:halsim-ds-nt:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                },
+                nt_readout: {
+                    ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                }
+            ]
         }
     }
 }

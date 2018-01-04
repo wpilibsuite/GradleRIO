@@ -10,14 +10,14 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.1.1-beta-5"
-    String ntcoreVersion = "4.0.0-beta-4"
+    String wpilibVersion = "2018.1.1"
+    String ntcoreVersion = "4.0.0"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.1.0-beta-4"
-    String wpiutilVersion = "3.0.0-beta-4"
+    String cscoreVersion = "1.1.0"
+    String wpiutilVersion = "3.0.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
-    String ctreVersion = "5.0.4.2_FRC-BETA-ONLY" // TODO: NOT STABLE
+    String ctreVersion = "5.1.2.1"
     String navxVersion = "3.0.341"          // TODO: NavX for C++ once published
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
