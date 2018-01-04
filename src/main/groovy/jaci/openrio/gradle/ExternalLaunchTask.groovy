@@ -55,6 +55,10 @@ class ExternalLaunchTask extends DefaultTask {
         project.buildDir.mkdirs()
         file.text = fileContent
 
+        if (OperatingSystem.current().isUnix()) {
+            project.exec { "chmod 0755 ${file.absolutePath}" }
+        }
+
         if (project.hasProperty('headless')) {
             println "Commands written to ${file.absolutePath}! Run this file."
             return null;
