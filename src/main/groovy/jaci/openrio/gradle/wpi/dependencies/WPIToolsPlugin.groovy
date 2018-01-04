@@ -1,6 +1,7 @@
 package jaci.openrio.gradle.wpi.dependencies
 
 import groovy.transform.CompileStatic
+import jaci.openrio.gradle.ExternalLaunchTask
 import jaci.openrio.gradle.GradleRIOPlugin
 import jaci.openrio.gradle.wpi.WPIExtension
 import org.gradle.api.Plugin
@@ -23,57 +24,31 @@ class WPIToolsPlugin implements Plugin<Project> {
         smartDashboardDirectory().mkdirs()
         shuffleboardDirectory().mkdirs()
 
-        project.task("smartDashboard") { Task task ->
+        def jvm = OperatingSystem.current().isWindows() ? "java" : Jvm.current().getExecutable("java").absolutePath
+
+        project.tasks.create("smartDashboard", ExternalLaunchTask) { ExternalLaunchTask task ->
             task.group = "GradleRIO"
             task.description = "Launch Smart Dashboard"
 
             task.doLast {
-                println "NOTE: SmartDashboard is old! Use Shuffleboard instead! Run ./gradlew shuffleboard."
+                println "NOTE: SmartDashboard is old, and is depreciated in 2018 and beyond! Use Shuffleboard instead! Run ./gradlew shuffleboard."
 
                 def config = project.configurations.getByName("wpiTools")
                 Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "SmartDashboard" })
-                ProcessBuilder builder
-                if (OperatingSystem.current().isWindows()) {
-                    builder = new ProcessBuilder(
-                        "cmd", "/c", "start",
-                        "java", "-jar", "${jarfiles.first().absolutePath}".toString()
-                    )
-                } else {
-                    builder = new ProcessBuilder(
-                        Jvm.current().getExecutable("java").absolutePath,
-                        "-jar",
-                        jarfiles.first().absolutePath
-                    )
-                }
-
-                builder.directory(smartDashboardDirectory())
-                builder.start()
+                task.workingDir = smartDashboardDirectory()
+                task.launch(jvm, "-jar", jarfiles.first().absolutePath)
             }
         }
 
-        project.task("shuffleboard") { Task task ->
+        project.tasks.create("shuffleboard", ExternalLaunchTask) { ExternalLaunchTask task ->
             task.group = "GradleRIO"
             task.description = "Launch Shuffleboard"
 
             task.doLast {
                 def config = project.configurations.getByName("wpiTools")
                 Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "Shuffleboard" })
-                ProcessBuilder builder
-                if (OperatingSystem.current().isWindows()) {
-                    builder = new ProcessBuilder(
-                            "cmd", "/c", "start",
-                            "java", "-jar", "${jarfiles.first().absolutePath}".toString()
-                    )
-                } else {
-                    builder = new ProcessBuilder(
-                            Jvm.current().getExecutable("java").absolutePath,
-                            "-jar",
-                            jarfiles.first().absolutePath
-                    )
-                }
-
-                builder.directory(shuffleboardDirectory())
-                builder.start()
+                task.workingDir = shuffleboardDirectory()
+                task.launch(jvm, "-jar", jarfiles.first().absolutePath)
             }
         }
     }

@@ -45,7 +45,6 @@ class SimulationPlugin implements Plugin<Project> {
                     task.group = "GradleRIO"
                     task.description = "Simulate Task for Java/Kotlin/JVM"
 
-                    task.dependsOn(jarTask)
                     task.jar = jarTask
                     null
                 }
@@ -82,7 +81,8 @@ class SimulationPlugin implements Plugin<Project> {
 
     static class SimRules extends RuleSource {
         @Mutate
-        void createSimulateComponentsTask(ModelMap<Task> tasks, ComponentSpecContainer components) {
+        void createSimulateComponentsTask(ModelMap<Task> tasks, ComponentSpecContainer components, ExtensionContainer extCont) {
+            def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
                 spec.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
                     if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals('roborio')) {
@@ -92,8 +92,7 @@ class SimulationPlugin implements Plugin<Project> {
 
                             // TODO This needs _something_ since we can't make it depend on InstallExecutable
                             // This imposes a limit where if a source file is edited, the daemon will never kill the
-                            // process. Same goes for the java above.
-//                            task.dependsOn(bin.tasks.withType(InstallExecutable))
+                            // process. Same goes for the java above. Or does it?
                             task.binary = bin
                             null
                         }
