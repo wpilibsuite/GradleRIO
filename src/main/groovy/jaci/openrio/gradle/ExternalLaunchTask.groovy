@@ -57,7 +57,10 @@ class ExternalLaunchTask extends DefaultTask {
         file.text = fileContent
 
         if (OperatingSystem.current().isUnix()) {
-            project.exec { ExecSpec spec -> spec.commandLine "chmod 0755 ${file.absolutePath}" }
+            project.exec { ExecSpec spec ->
+                spec.commandLine "chmod"
+                spec.args("0755", file.absolutePath)
+            }
         }
 
         if (project.hasProperty('headless')) {
