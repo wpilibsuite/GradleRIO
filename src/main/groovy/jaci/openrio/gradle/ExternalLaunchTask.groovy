@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.process.ExecSpec
 
 import java.util.stream.Collectors
 
@@ -56,7 +57,7 @@ class ExternalLaunchTask extends DefaultTask {
         file.text = fileContent
 
         if (OperatingSystem.current().isUnix()) {
-            project.exec { "chmod 0755 ${file.absolutePath}" }
+            project.exec { ExecSpec spec -> spec.commandLine "chmod 0755 ${file.absolutePath}" }
         }
 
         if (project.hasProperty('headless')) {
