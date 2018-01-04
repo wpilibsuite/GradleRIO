@@ -52,6 +52,7 @@ class ExternalLaunchTask extends DefaultTask {
         }
 
         File file = new File(project.buildDir, "gradlerio_${name}.${OperatingSystem.current().isWindows() ? "bat" : "sh"}")
+        project.buildDir.mkdirs()
         file.text = fileContent
 
         if (project.hasProperty('headless')) {

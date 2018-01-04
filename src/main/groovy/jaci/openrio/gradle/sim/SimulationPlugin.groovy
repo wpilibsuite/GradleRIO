@@ -46,6 +46,7 @@ class SimulationPlugin implements Plugin<Project> {
                     task.description = "Simulate Task for Java/Kotlin/JVM"
 
                     task.jar = jarTask
+                    task.dependsOn jarTask
                     null
                 }
             }
@@ -94,6 +95,7 @@ class SimulationPlugin implements Plugin<Project> {
                             // This imposes a limit where if a source file is edited, the daemon will never kill the
                             // process. Same goes for the java above. Or does it?
                             task.binary = bin
+                            // TODO: Install task dependency
                             null
                         }
                     }
