@@ -19,7 +19,7 @@ class WPIToolsPlugin implements Plugin<Project> {
 
         def wpi = project.extensions.getByType(WPIExtension)
         project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
-        project.dependencies.add("wpiTools", "edu.wpi.first.shuffleboard:Shuffleboard:${wpi.shuffleboardVersion}")
+        project.dependencies.add("wpiTools", "edu.wpi.first.shuffleboard:app:${wpi.shuffleboardVersion}")
 
         smartDashboardDirectory().mkdirs()
         shuffleboardDirectory().mkdirs()
@@ -46,7 +46,7 @@ class WPIToolsPlugin implements Plugin<Project> {
 
             task.doLast {
                 def config = project.configurations.getByName("wpiTools")
-                Set<File> jarfiles = config.files(config.dependencies.find { d -> d.name == "Shuffleboard" })
+                Set<File> jarfiles = config.files(config.dependencies.find { d -> d.group == "edu.wpi.first.shuffleboard" })
                 task.workingDir = shuffleboardDirectory()
                 task.launch(jvm, "-jar", jarfiles.first().absolutePath)
             }

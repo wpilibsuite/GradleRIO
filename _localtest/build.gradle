@@ -14,7 +14,7 @@ buildscript {
         classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2017.12.23'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
-        classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '2018.01.06'
+        classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '2018.01.06a'
     }
 }
 

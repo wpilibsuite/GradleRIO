@@ -22,7 +22,7 @@ class WPIExtension {
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
-    String shuffleboardVersion = "0.3.0"
+    String shuffleboardVersion = "1.0.0"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
