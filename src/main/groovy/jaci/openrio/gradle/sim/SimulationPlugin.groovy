@@ -104,29 +104,31 @@ class SimulationPlugin implements Plugin<Project> {
         }
 
         @Mutate
-        void createVisualStudioBindings(VisualStudioExtension vs, ExtensionContainer extCont) {
+        void createVisualStudioBindings(ExtensionContainer extCont) {
             def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
-            vs.projects.all { VisualStudioProject pj ->
-                if (pj.component instanceof NativeExecutableSpec) {
-                    boolean shouldAddHALArgs = false
-                    (pj.component as NativeExecutableSpec).binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                        if (bin.targetPlatform.operatingSystem.current) {
-                            shouldAddHALArgs = true
+            def vs = extCont.findByType(VisualStudioExtension)
+            if (vs != null)
+                vs.projects.all { VisualStudioProject pj ->
+                    if (pj.component instanceof NativeExecutableSpec) {
+                        boolean shouldAddHALArgs = false
+                        (pj.component as NativeExecutableSpec).binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
+                            if (bin.targetPlatform.operatingSystem.current) {
+                                shouldAddHALArgs = true
+                            }
+                        }
+
+                        if (shouldAddHALArgs) {
+                            new File(pj.projectFile.location.parentFile, "${pj.projectFile.location.name}.user").text =
+                                    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                                    "<Project ToolsVersion=\"15.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\n" +
+                                    "  <PropertyGroup Condition=\"'\$(Configuration)|\$(Platform)'=='any64|Win32'\">\n" +
+                                    "    <LocalDebuggerEnvironment>HALSIM_EXTENSIONS=${SimulationPlugin.getHALExtensionsEnvVar(project)}</LocalDebuggerEnvironment>\n" +
+                                    "    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>\n" +
+                                    "  </PropertyGroup>\n" +
+                                    "</Project>"
                         }
                     }
-
-                    if (shouldAddHALArgs) {
-                        new File(pj.projectFile.location.parentFile, "${pj.projectFile.location.name}.user").text =
-                                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                                "<Project ToolsVersion=\"15.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\n" +
-                                "  <PropertyGroup Condition=\"'\$(Configuration)|\$(Platform)'=='any64|Win32'\">\n" +
-                                "    <LocalDebuggerEnvironment>HALSIM_EXTENSIONS=${SimulationPlugin.getHALExtensionsEnvVar(project)}</LocalDebuggerEnvironment>\n" +
-                                "    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>\n" +
-                                "  </PropertyGroup>\n" +
-                                "</Project>"
-                    }
                 }
-            }
         }
     }
 
