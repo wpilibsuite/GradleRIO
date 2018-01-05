@@ -51,7 +51,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018-beta-5b"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.05"
 }
 ```
 
@@ -113,8 +113,8 @@ wpi {
     cscoreVersion = '...'
     wpiutilVersion = '...'
 
-//    ctreVersion = '...'
-//    navxVersion = '...'
+    ctreVersion = '...'
+    navxVersion = '...'
 
     smartDashboardVersion = '...'
     shuffleboardVersion = '...'
@@ -128,8 +128,8 @@ wpi {
 // NavX adds the NavX IMU library.
 dependencies {
     compile wpilib()
-    compile navx(), bare
-//    compile ctre()
+    compile navx()
+    compile ctre()
 }
 
 // Java only. Setup your Jar File.
@@ -154,8 +154,8 @@ model {
                 // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
                 // NavX adds the NavX IMU library.
                 lib library: "wpilib"
-                //lib library: "ctre"
-                //lib library: "navx"
+                lib library: "ctre"
+                lib library: "navx"
             }
         }
     }
