@@ -70,8 +70,8 @@ class FRCPlugin implements Plugin<Project> {
 
     void addJreArtifact(Project project) {
         // Download Zulu JRE (do this during config time in case we're not connected to both the robot and internet)
-        def zuluJreUrl = "https://github.com/wpilibsuite/zulu-jre-ipk/releases/download/v2018-beta2/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
-        def dest = new File(GradleRIOPlugin.globalDirectory, 'jre/zulu/JreZulu_18u131.ipk')
+        def zuluJreUrl = "https://github.com/wpilibsuite/zulu-jre-ipk/releases/download/v2018.1/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
+        def dest = new File(GradleRIOPlugin.globalDirectory, 'jre/zulu/JreZulu_18u131_kickoff.ipk')
         dest.parentFile.mkdirs()
 
         if (!project.gradle.startParameter.isOffline()) {

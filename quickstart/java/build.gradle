@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.06a"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.06b"
 }
 
 def TEAM = 5333
