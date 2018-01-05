@@ -184,14 +184,28 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
-            // TODO: NavX is not yet stable for 2018
-            // NavX
-//            libs.create('navx', NativeLib) { NativeLib lib ->
-//                common(lib)
-//                lib.headerDirs = ['roborio/cpp/include']
-//                lib.libraryMatchers = ['roborio/**/*.a']
-//                lib.maven = "thirdparty.frc.kauai:Navx-Zip:${wpi.navxVersion}@zip"
-//            }
+            // NAVX
+
+            libs.create('navx_athena', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.mainLibraryName = "navx_binaries"
+                lib.headerDirs = []
+                lib.staticMatchers = ['*.a']
+                lib.maven = "openrio.mirror.third.kauailabs:navx-cpp:${wpi.navxVersion}@zip"
+            }
+
+            libs.create('navx_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "openrio.mirror.third.kauailabs:navx-cpp:${wpi.navxVersion}:headers@zip"
+
+            }
+
+            libs.create('navx', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'navx_binaries' << 'navx_headers'
+                lib.targetPlatforms = ['roborio']
+                null
+            }
         }
     }
 }

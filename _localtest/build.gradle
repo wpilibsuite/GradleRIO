@@ -67,14 +67,14 @@ model {
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
-            targetPlatform 'any64'
+//            targetPlatform 'any64'
             sources.cpp {
                 source {
                     srcDir 'src/main/cpp'
                 }
                 lib library: "wpilib"
-//                lib library: "ctre"
-//                lib library: "navx"
+                lib library: "ctre"
+                lib library: "navx"
             }
         }
     }
@@ -91,8 +91,7 @@ dependencies {
 //    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
 //    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
     compile ctre()
-    compile navx(), bare
-//    simulation halsim_print()
+    compile navx()
     simulation sim.nt_ds()
     simulation sim.nt_readout()
 }

@@ -18,7 +18,7 @@ class WPIExtension {
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     String ctreVersion = "5.1.2.1"
-    String navxVersion = "3.0.341"          // TODO: NavX for C++ once published
+    String navxVersion = "3.0.342"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"

@@ -78,19 +78,20 @@ class WPIJavaDeps implements Plugin<Project> {
         // Java:
         // dependencies {
         //     compile ctre()
-        //     compile navx(), bare
+        //     compile navx()
         //
         //     // Use this to include a device library we don't provide, from your file system.
         //     compile fileTree(dir: 'libs', include: '**/*.jar')
         //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
         // }
 
+        // TODO: 2019
         // Bare is passed as a configuration closure to navx (and other dependencies) in order to prevent
         // transitive wpilib dependencies that could potentially conflict with our own versions.
-        project.dependencies.ext.bare = {
-            exclude module: 'athena'
-            exclude module: 'wpilibj-java'
-        }
+//        project.dependencies.ext.bare = {
+//            exclude module: 'athena'
+//            exclude module: 'wpilibj-java'
+//        }
 
         project.dependencies.ext.ctreJni = {
             "openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}:native@zip"
@@ -103,7 +104,7 @@ class WPIJavaDeps implements Plugin<Project> {
 
 
         project.dependencies.ext.navx = {
-            ["com.kauailabs.navx.frc:navx_frc:${wpi.navxVersion}"]
+            ["openrio.mirror.third.kauailabs:navx-java:${wpi.navxVersion}"]
         }
     }
 }

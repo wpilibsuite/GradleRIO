@@ -1,6 +1,8 @@
-# (UNRELESED)
+# 2018.01.05
 - Add CTRE 3rd party library
-- Add simulation framework for HAL Extensions
+- Add NavX 3rd party library
+- Add simulation framework for HAL Extensions, not yet stable
+- Update to stable 2018 release
 
 # 2018-beta-5b
 - Close #5

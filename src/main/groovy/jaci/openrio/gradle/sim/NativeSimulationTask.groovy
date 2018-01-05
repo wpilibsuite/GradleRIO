@@ -37,8 +37,9 @@ class NativeSimulationTask extends ExternalLaunchTask {
         }
         workingDir = installTask.installDirectory.asFile.get()
         persist = true
-        launch(new File(dir, installTask.sourceFile.asFile.get().name).absolutePath)
+        //launch(new File(dir, installTask.sourceFile.asFile.get().name).absolutePath)
         // TODO: Add some kind of subsystem here so we can launch externally. It should watch for a stopped build or something
+        println "Simulation is not yet implemented!"
     }
 
 }

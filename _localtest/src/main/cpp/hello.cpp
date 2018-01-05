@@ -1,5 +1,6 @@
 #include "WPILib.h"
-//#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
+#include "ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h"
+#include "AHRS.h"
 
 #include <iostream>
 
@@ -8,17 +9,19 @@ using namespace frc;
 class Robot: public IterativeRobot {
 public:
     Robot() { }
-//    CTRE::MotorControl::CAN::TalonSRX *srx;
+    ctre::phoenix::motorcontrol::can::WPI_TalonSRX *srx;
+    AHRS *navx;
 
     void RobotInit() {
         std::cout << "Hello World" << std::endl;
-//        srx = new CTRE::MotorControl::CAN::TalonSRX(60);
+        srx = new ctre::phoenix::motorcontrol::can::WPI_TalonSRX(60);
+        navx = new AHRS(frc::I2C::Port::kMXP);
     }
 
     void DisabledInit() { }
     void AutonomousInit() {
         std::cout << "Auto" << std::endl;
-//        srx->Set(1.0);
+        srx->Set(1.0);
     }
     void TeleopInit() { }
     void TestInit() { }

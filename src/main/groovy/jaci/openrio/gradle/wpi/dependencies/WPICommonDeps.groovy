@@ -23,10 +23,11 @@ class WPICommonDeps implements Plugin<Project> {
             repo.url = "https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2"
         }
 
-        project.repositories.maven { repo ->
-            repo.name = "KauaiLabs"
-            repo.url = "http://www.kauailabs.com/maven2"
-        }
+        // TODO: 2019
+//        project.repositories.maven { repo ->
+//            repo.name = "KauaiLabs"
+//            repo.url = "http://www.kauailabs.com/maven2"
+//        }
 
         apply_halsim_extensions(project, project.extensions.getByType(WPIExtension))
     }
