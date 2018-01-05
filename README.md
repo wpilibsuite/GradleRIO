@@ -10,9 +10,6 @@ GradleRIO will not only deploy to your RoboRIO, but also to Coprocessors like th
 
 GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visual Studio (for C++). Don't worry, you don't need an IDE if you don't want one, you can use Visual Studio Code, Notepad++, Sublime Text, Vim, or whatever you want, since all builds are done from the command line.
 
-## 2018 Beta
-Note: for 2018, the CTRE and NavX libraries are not yet released. The CTRE Phoenix library available on the Beta Teamforge page can be used manually, see [this example](BETA_CTRE.md) for info.
-
 ## Commands  
 Windows Users: It is recommended to use Powershell instead of CMD.  
 - ```./gradlew build``` will build your Robot Code  
@@ -30,6 +27,9 @@ Windows Users: It is recommended to use Powershell instead of CMD.
 - ```./gradlew eclipse``` will generate IDE files for Eclipse (java)  
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
+
+## Misc Commands
+- ```./gradlew telemetry``` will display the telemetry that GradleRIO reports. This can be disabled. See more about this [here](PRIVACY.md)
 
 
 ## Download
