@@ -31,6 +31,8 @@ Windows Users: It is recommended to use Powershell instead of CMD.
 ## Misc Commands
 - ```./gradlew telemetry``` will display the telemetry that GradleRIO reports. This can be disabled. See more about this [here](PRIVACY.md)
 
+## Getting Started
+Read the docs [here](docs/) to get started. They are much more descriptive than this README.
 
 ## Download
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
