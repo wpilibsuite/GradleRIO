@@ -57,20 +57,18 @@ class TelemetryPlugin implements Plugin<Project> {
             if (!noTelemetry && reportConfig && !offline && !CI) {
                 thread = new Thread({
                     def start = System.currentTimeMillis()
-
-                    def telemetry = renderTelemetry(project, false)
-                    def reportFile = new File(GradleRIOPlugin.globalDirectory, 'lastreport.telemetry')
-                    // Report telemetry to web
-                    def baos = new ByteArrayOutputStream()
-                    def gzstr = new GZIPOutputStream(baos)
-                    gzstr.write(telemetry.bytes)
-                    gzstr.close()
-
-                    def b64 = baos.toByteArray().encodeBase64().toString()
-                    baos.close()
-
-                    def start_upload = System.currentTimeMillis()
                     try {
+                        def telemetry = renderTelemetry(project, false)
+                        def reportFile = new File(GradleRIOPlugin.globalDirectory, 'lastreport.telemetry')
+                        // Report telemetry to web
+                        def baos = new ByteArrayOutputStream()
+                        def gzstr = new GZIPOutputStream(baos)
+                        gzstr.write(telemetry.bytes)
+                        gzstr.close()
+
+                        def b64 = baos.toByteArray().encodeBase64().toString()
+                        baos.close()
+
                         def url = new URL("http://openrio.imjac.in/gradlerio/telemetry/report")
                         url.openConnection().with { URLConnection conn ->
                             def http = conn as HttpURLConnection
@@ -89,8 +87,6 @@ class TelemetryPlugin implements Plugin<Project> {
                         e.printStackTrace(pw)
                         log.info("Could not run upload Telemetry...")
                         log.info(s.toString())
-                    } finally {
-                        log.info("Telemetry Upload took ${System.currentTimeMillis() - start_upload}ms. (Upload only)")
                     }
                     log.info("Telemetry Report took ${System.currentTimeMillis() - start}ms")
                 })

@@ -9,8 +9,10 @@ class WPIJavaDeps implements Plugin<Project> {
     void apply(Project project) {
         project.pluginManager.apply(WPICommonDeps)
 
-        apply_wpi_dependencies(project, project.extensions.getByType(WPIExtension))
-        apply_third_party_drivers(project, project.extensions.getByType(WPIExtension))
+        def wpiext = project.extensions.getByType(WPIExtension)
+        apply_wpi_dependencies(project, wpiext)
+        apply_third_party_drivers(project, wpiext)
+        apply_openrio(project, wpiext)
     }
 
     void apply_wpi_dependencies(Project project, WPIExtension wpi) {
@@ -106,5 +108,13 @@ class WPIJavaDeps implements Plugin<Project> {
         project.dependencies.ext.navx = {
             ["openrio.mirror.third.kauailabs:navx-java:${wpi.navxVersion}"]
         }
+    }
+
+    void apply_openrio(Project project, WPIExtension wpi) {
+        project.dependencies.ext.openrio = [
+            powerup: [
+                matchData: { ["openrio.powerup:MatchData:${wpi.openrioMatchDataVersion}"] }
+            ]
+        ]
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.06b"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.07"
 }
 
 def TEAM = 5333
@@ -44,6 +44,7 @@ model {
                 lib library: "wpilib"
                 lib library: "ctre"
                 lib library: "navx"
+                lib library: "openrio.powerup.matchData"
             }
         }
     }

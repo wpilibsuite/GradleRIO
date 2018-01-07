@@ -206,6 +206,14 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.targetPlatforms = ['roborio']
                 null
             }
+
+            // OpenRIO
+
+            libs.create('openrio.powerup.matchData', NativeLib) { NativeLib lib ->
+                lib.targetPlatforms = ['roborio']
+                lib.headerDirs = ['']
+                lib.maven = "openrio.powerup:MatchData:${wpi.openrioMatchDataVersion}:headers@zip"
+            }
         }
     }
 }

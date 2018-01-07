@@ -1,3 +1,7 @@
+# 2018.01.07
+- Add MatchData to GradleRIO
+- Catch all in TelemetryPlugin
+
 # 2018.01.05
 - Add CTRE 3rd party library
 - Add NavX 3rd party library

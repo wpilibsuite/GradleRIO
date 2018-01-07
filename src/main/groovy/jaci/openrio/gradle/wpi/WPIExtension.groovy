@@ -27,42 +27,13 @@ class WPIExtension {
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
 
+    // OpenRIO Dependencies
+    String openrioMatchDataVersion = "2018.01.07"
+
     final Project project
 
     WPIExtension(Project project) {
         this.project = project
-        recommended('2018-beta-3')
-    }
-
-    void recommended(String year) {
-        def md5 = MessageDigest.getInstance("MD5")
-        md5.update(year.bytes)
-        def cachename = md5.digest().encodeHex().toString()
-        def cachefolder = new File(GradleRIOPlugin.getGlobalDirectory(), "cache/recommended")
-        cachefolder.mkdirs()
-        def cachefile = new File(cachefolder, cachename)
-
-        String versions_str
-
-        if (project.gradle.startParameter.isOffline()) {
-            println "Using offline recommended version cache..."
-            versions_str = cachefile.text
-        } else {
-            try {
-                versions_str = "http://openrio.imjac.in/gradlerio/recommended".toURL().text
-                cachefile.text = versions_str
-            } catch (all) {
-                println "Using offline recommended version cache..."
-                versions_str = cachefile.text
-            }
-        }
-
-        def versions = new JsonSlurper().parseText(versions_str)?.getAt(year) as Map
-        if (versions != null) {
-            this.versions().forEach { String property, Tuple tuple ->
-                this.setProperty(property, (versions as Map)[tuple.last()] ?: this.getProperty(property))
-            }
-        }
     }
 
     Map<String, Tuple> versions() {
