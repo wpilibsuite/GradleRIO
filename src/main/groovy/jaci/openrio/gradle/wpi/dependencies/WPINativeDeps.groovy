@@ -209,6 +209,25 @@ class WPINativeDeps implements Plugin<Project> {
 
             // OpenRIO
 
+            libs.create('pathfinder_athena', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.mainLibraryName = 'pathfinder_binaries'
+                lib.staticMatchers = ['*.a']
+                lib.maven = "jaci.pathfinder:Pathfinder-Core:${wpi.pathfinderVersion}:athena@zip"
+            }
+
+            libs.create('pathfinder_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "jaci.pathfinder:Pathfinder-Core:${wpi.pathfinderVersion}:headers@zip"
+            }
+
+            libs.create('pathfinder', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'pathfinder_binaries' << 'pathfinder_headers'
+                lib.targetPlatforms = ['roborio']
+                null
+            }
+
             libs.create('openrio.powerup.matchData', NativeLib) { NativeLib lib ->
                 lib.targetPlatforms = ['roborio']
                 lib.headerDirs = ['']

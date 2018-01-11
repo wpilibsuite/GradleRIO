@@ -2,7 +2,7 @@
 // but it makes the plugins available for subprojects.
 plugins {
     // GradleRIO is used for code intended to go on robots, which is why it's only applied to the 'robot' project.
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.07" apply false
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.11" apply false
 
     // EmbeddedTools is the backing library for GradleRIO, and includes everything that's non-frc specific, which
     // is why we use it for our coprocessor project.

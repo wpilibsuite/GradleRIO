@@ -1,3 +1,6 @@
+# 2018.01.11
+- Add Pathfinder support for C++ and Java
+
 # 2018.01.07
 - Add MatchData to GradleRIO
 - Catch all in TelemetryPlugin

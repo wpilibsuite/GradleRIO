@@ -28,6 +28,7 @@ class WPIExtension {
     String toolchainVersion = "2018-5.5"
 
     // OpenRIO Dependencies
+    String pathfinderVersion = "1.8"
     String openrioMatchDataVersion = "2018.01.07"
 
     final Project project
