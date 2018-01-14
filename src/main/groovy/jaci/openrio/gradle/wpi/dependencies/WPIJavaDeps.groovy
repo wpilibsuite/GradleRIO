@@ -104,6 +104,14 @@ class WPIJavaDeps implements Plugin<Project> {
             ["openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}"]
         }
 
+        project.dependencies.ext.ctreLegacyJni = {
+            "openrio.mirror.third.ctre:CTRE-toolsuite-java:${wpi.ctreLegacyVersion}:native@zip"
+        }
+
+        project.dependencies.ext.ctreLegacy = {
+            project.dependencies.add("nativeZip", project.dependencies.ext.ctreLegacyJni())
+            ["openrio.mirror.third.ctre:CTRE-toolsuite-java:${wpi.ctreLegacyVersion}"]
+        }
 
         project.dependencies.ext.navx = {
             ["openrio.mirror.third.kauailabs:navx-java:${wpi.navxVersion}"]

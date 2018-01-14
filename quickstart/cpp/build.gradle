@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.11"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.14"
 }
 
 def TEAM = 5333
@@ -40,7 +40,7 @@ model {
                     include '**/*.hpp', '**/*.h'
                 }
 
-                // Define my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX) and NavX.
+                // Define my dependencies. In this case, WPILib (+ friends), CTRE Phoenix (Talon SRX) and NavX.
                 lib library: "wpilib"
                 lib library: "ctre"
                 lib library: "navx"

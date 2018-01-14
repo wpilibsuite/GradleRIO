@@ -1,3 +1,8 @@
+# 2018.01.14
+- Add Legacy CTRE Toolsuite Support
+- Update libraries
+- Fix MacOS Toolchain Installer
+
 # 2018.01.11
 - Add Pathfinder support for C++ and Java
 

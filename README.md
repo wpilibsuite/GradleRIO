@@ -116,6 +116,7 @@ wpi {
     wpiutilVersion = '...'
 
     ctreVersion = '...'
+    ctreLegacyVersion = '...'   // NOTE: Legacy Toolsuite
     navxVersion = '...'
 
     smartDashboardVersion = '...'
@@ -132,6 +133,7 @@ dependencies {
     compile wpilib()
     compile navx()
     compile ctre()
+    // compile ctreLegacy() // NOTE: Legacy Toolsuite. Use above ctre() if you're not sure.
 }
 
 // Java only. Setup your Jar File.
@@ -156,8 +158,9 @@ model {
                 // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
                 // NavX adds the NavX IMU library.
                 lib library: "wpilib"
-                lib library: "ctre"
                 lib library: "navx"
+                lib library: "ctre"
+                // lib library: "ctre_legacy"   // NOTE: Legacy Toolsuite. Use above ctre() if you're not sure.
             }
         }
     }

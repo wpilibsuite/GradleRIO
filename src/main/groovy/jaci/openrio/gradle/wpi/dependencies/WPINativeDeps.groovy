@@ -184,6 +184,29 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
+            // CTRE (Legacy)
+
+            libs.create('ctre_legacy_athena', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.mainLibraryName = "ctre_legacy_binaries"
+                lib.headerDirs = []
+                lib.staticMatchers = ['*.a']
+                lib.maven = "openrio.mirror.third.ctre:CTRE-toolsuite-cpp:${wpi.ctreLegacyVersion}@zip"
+            }
+
+            libs.create('ctre_legacy_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "openrio.mirror.third.ctre:CTRE-toolsuite-cpp:${wpi.ctreLegacyVersion}:headers@zip"
+
+            }
+
+            libs.create('ctre_legacy', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'ctre_legacy_binaries' << 'ctre_legacy_headers'
+                lib.targetPlatforms = ['roborio']
+                null
+            }
+
             // NAVX
 
             libs.create('navx_athena', NativeLib) { NativeLib lib ->

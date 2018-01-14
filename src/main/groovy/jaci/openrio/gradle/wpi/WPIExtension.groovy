@@ -17,8 +17,9 @@ class WPIExtension {
     String wpiutilVersion = "3.0.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
-    String ctreVersion = "5.1.2.1"
-    String navxVersion = "3.0.342"
+    String ctreVersion = "5.2.1.1"
+    String ctreLegacyVersion = "4_Legacy"
+    String navxVersion = "3.0.346"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2.0.4"
@@ -48,13 +49,17 @@ class WPIExtension {
 
             "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
-//            "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
+            "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
+            "ctreLegacyVersion": new Tuple("CTRE (Legacy)", ctreLegacyVersion, "ctreLegacy"),
             "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
 
-            "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain")
+            "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain"),
+
+            "pathfinderVersion": new Tuple("Pathfinder", pathfinderVersion, "pathfinder"),
+            "openrioMatchDataVersion" : new Tuple("OpenRIO:MatchData", openrioMatchDataVersion, "openrioMatchData")
         ]
     }
 }
