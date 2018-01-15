@@ -83,7 +83,7 @@ model {
 }
 
 telemetry {
-    reportTelemetry = false
+    reportTelemetry = true
 }
 
 dependencies {

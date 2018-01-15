@@ -46,7 +46,7 @@ class TelemetryPlugin implements Plugin<Project> {
         }
 
         def thread = null as Thread
-        project.afterEvaluate {
+        project.gradle.buildFinished {
             def log = LoggerFactory.getLogger('gradlerio_telemetry')
 
             def noTelemetry = project.hasProperty('no-telemetry')
