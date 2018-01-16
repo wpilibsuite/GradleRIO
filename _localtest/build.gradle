@@ -14,7 +14,7 @@ buildscript {
         classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.01.11'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
-        classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '2018.01.14'
+        classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '2018.01.15'
     }
 }
 
@@ -37,7 +37,7 @@ buildScan {
 deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
-            team = 5663
+            team = 5333
             addresses << '10.0.0.155'
         }
     }
@@ -49,6 +49,7 @@ deploy {
             targets << 'roborio5333'
             component = 'myFrcBinary'
             robotCommand = false
+            debug = true
         }
     }
 }
@@ -83,7 +84,7 @@ model {
 }
 
 telemetry {
-    reportTelemetry = true
+    reportTelemetry = false
 }
 
 dependencies {
