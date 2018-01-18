@@ -157,6 +157,16 @@ class FRCPlugin implements Plugin<Project> {
                     }
                 }
             }
+
+            deployExt.artifacts
+                    .withType(FRCNativeArtifact)
+                    .matching { FRCNativeArtifact art ->
+                        art.component.equalsIgnoreCase(binary.component.name) &&
+                        art.targetPlatform.equalsIgnoreCase(binary.targetPlatform.name)
+                    }
+                    .all { FRCNativeArtifact art ->
+                        art._bin = binary
+                    }
         }
     }
 
