@@ -1,3 +1,6 @@
+# 2018.01.18
+- Add proper gdb support
+
 # 2018.01.14
 - Add Legacy CTRE Toolsuite Support
 - Update libraries

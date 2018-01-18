@@ -71,7 +71,6 @@ class FRCNativeArtifact extends NativeArtifact {
             ctx.logger().log("====================================================================")
             ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
             ctx.logger().log("Launch debugger with ${isWin ? "" : "./"}${Paths.get(project.rootDir.toURI()).relativize(Paths.get(cmdfile.toURI())).toString()}")
-            ctx.logger().log("manually in case of conflicts.")
             ctx.logger().log("====================================================================")
 
             def srcpaths = []
