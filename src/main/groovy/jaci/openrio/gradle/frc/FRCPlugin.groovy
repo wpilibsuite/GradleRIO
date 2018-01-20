@@ -55,6 +55,7 @@ class FRCPlugin implements Plugin<Project> {
         project.afterEvaluate {
             addNativeLibraryArtifacts(project)
             addJreArtifact(project)
+            addCommandArtifacts(project)
         }
     }
 
@@ -65,6 +66,17 @@ class FRCPlugin implements Plugin<Project> {
     static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
         ext.targets.withType(RoboRIO).all { RoboRIO r ->
             artifact.targets << r.name
+        }
+    }
+
+    void addCommandArtifacts(Project project) {
+        // As far as I can tell, the order of this doesn't matter
+        // It only comments out some stuff for the LabVIEW runtime that apparently isn't needed, and dramatically
+        // reduces memory usage.
+        // See https://github.com/wpilibsuite/EclipsePlugins/pull/154
+        deployExtension(project).artifacts.commandArtifact('roborioCommands') { CommandArtifact artifact ->
+            allRoborioTargets(deployExtension(project), artifact)
+            artifact.command = "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini"
         }
     }
 
@@ -90,15 +102,19 @@ class FRCPlugin implements Plugin<Project> {
             deployExtension(project).artifacts.fileArtifact('jre') { FileArtifact artifact ->
                 allRoborioTargets(deployExtension(project), artifact)
                 artifact.onlyIf = { DeployContext ctx ->
-                    dest.exists() && deployExtension(project).artifacts.withType(JavaArtifact).size() > 0 &&
-                    ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').toString().trim() != 'OK'
+                    dest.exists() && (
+                            (
+                                    deployExtension(project).artifacts.withType(JavaArtifact).size() > 0 &&
+                                    ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').toString().trim() != 'OK'
+                            ) || project.hasProperty("deploy-force-jre")
+                    )
                 }
-                artifact.predeploy << { DeployContext ctx -> ctx.logger().log("JRE Missing! Deploying RoboRIO Zulu JRE....") }
+                artifact.predeploy << { DeployContext ctx -> ctx.logger().log("Deploying RoboRIO Zulu JRE....") }
                 artifact.file = dest
                 artifact.directory = '/tmp'
                 artifact.filename = 'zulujre.ipk'
                 artifact.postdeploy << { DeployContext ctx ->
-                    ctx.execute('opkg install /tmp/zulujre.ipk; rm /tmp/zulujre.ipk')
+                    ctx.execute('opkg remove zulu-jre*; opkg install /tmp/zulujre.ipk; rm /tmp/zulujre.ipk')
                 }
                 artifact.postdeploy << { DeployContext ctx -> ctx.logger().log("JRE Deployed!") }
             }

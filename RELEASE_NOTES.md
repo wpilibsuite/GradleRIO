@@ -1,3 +1,7 @@
+# 2018.01.20
+- Add JRE deploy override (-Pdeploy-force-jre)
+- Add StartupDLLs comments to reduce memory usage in both languages
+
 # 2018.01.18
 - Add proper gdb support
 
