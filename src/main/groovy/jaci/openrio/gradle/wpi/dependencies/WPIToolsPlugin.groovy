@@ -18,8 +18,10 @@ class WPIToolsPlugin implements Plugin<Project> {
         project.configurations.maybeCreate("wpiTools")
 
         def wpi = project.extensions.getByType(WPIExtension)
-        project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
-        project.dependencies.add("wpiTools", "edu.wpi.first.shuffleboard:app:${wpi.shuffleboardVersion}")
+        project.afterEvaluate {
+            project.dependencies.add("wpiTools", "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
+            project.dependencies.add("wpiTools", "edu.wpi.first.shuffleboard:app:${wpi.shuffleboardVersion}")
+        }
 
         smartDashboardDirectory().mkdirs()
         shuffleboardDirectory().mkdirs()

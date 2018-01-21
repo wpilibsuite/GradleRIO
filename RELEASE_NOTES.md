@@ -1,3 +1,7 @@
+# 2018.01.21
+- Update WPILib and Shuffleboard Versions
+- Fix #73 (Shuffleboard/Smartdashboard versions not updating)
+
 # 2018.01.20
 - Add JRE deploy override (-Pdeploy-force-jre)
 - Add StartupDLLs comments to reduce memory usage in both languages
