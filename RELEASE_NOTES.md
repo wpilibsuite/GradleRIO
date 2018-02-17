@@ -1,3 +1,6 @@
+# 2018.02.17
+- Update Dependency Versions (thanks Arvind-Srinivasan)
+
 # 2018.01.21
 - Update WPILib and Shuffleboard Versions
 - Fix #73 (Shuffleboard/Smartdashboard versions not updating)
