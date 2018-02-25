@@ -35,5 +35,7 @@ The only public uses for the data as a whole are:
 
 Any public releases of the data will **NOT** show your team number, nor your unique user ID. Public defines any distribution at all. 
 
+Teams may ask what data we hold for them (build counts, unique users, etc) and we will be happy to forward them that information in the same forum from which it was asked, unedited. (Ammendment 1)
+
 ## How can I verify this?
 The code that runs the telemetry is completely Open-Source. The Gradle side can be seen [here](https://github.com/Open-RIO/GradleRIO/tree/master/src/main/groovy/jaci/openrio/gradle/telemetry), and the server side can be seen [here](https://github.com/JacisNonsense/imjac.in_ta/blob/master/modules/openrio/openrio_library.rb).
