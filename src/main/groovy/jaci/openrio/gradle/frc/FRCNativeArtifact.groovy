@@ -1,5 +1,7 @@
 package jaci.openrio.gradle.frc
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.DeployContext
@@ -64,40 +66,71 @@ class FRCNativeArtifact extends NativeArtifact {
         }
 
         if (debug) {
-            def gdbfile = new File(project.buildDir, "debug/${name}.gdbcommands")
             def isWin = OperatingSystem.current().isWindows()
+
+            def gdbfile = new File(project.buildDir, "debug/${name}.gdbcommands")
             def cmdfile = new File(project.buildDir, "debug/${name}${isWin ? ".bat" : ""}")
+            def conffile = new File(project.buildDir, "debug/${name}.debugconfig")
+
+            conffile.parentFile.mkdirs()
 
             ctx.logger().log("====================================================================")
             ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
             ctx.logger().log("Launch debugger with ${isWin ? "" : "./"}${Paths.get(project.rootDir.toURI()).relativize(Paths.get(cmdfile.toURI())).toString()}")
             ctx.logger().log("====================================================================")
 
+            // Setup
+
             def srcpaths = []
+            def headerpaths = []
+            def sopaths = []
             _bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
                 srcpaths += ss.source.srcDirs
                 srcpaths += ss.exportedHeaders.srcDirs
             }
             _bin.libs.each { NativeDependencySet ds ->
-                srcpaths += ds.includeRoots
+                headerpaths += ds.includeRoots
+                sopaths += ds.runtimeFiles.files
             }
+
+            def filepath = _nativefile.absolutePath.replaceAll("\\\\", "/")
+            def target = ctx.selectedHost() + ":" + debugPort
+            def gdbpath = new File(WPIToolchainPlugin.toolchainInstallDirectory(), "bin/arm-frc-linux-gnueabi-gdb" + (isWin ? ".exe" : "")).absolutePath
+            def sysroot = (WPIToolchainPlugin.getActiveInstaller() instanceof LinuxToolchainInstaller) ? null : WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
+
+            // .debugconfig
+
+            def dbcfg = [
+                launchfile: filepath,
+                target: target,
+                gdb: gdbpath,
+                sysroot: sysroot,
+                srcpaths: (srcpaths as List<File>).collect { it.absolutePath },
+                headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
+                sofiles: (sopaths as List<File>).collect { it.absolutePath },
+                arch: "elf32-littlearm"
+            ]
+
+            def gbuilder = new GsonBuilder()
+            gbuilder.setPrettyPrinting()
+            conffile.text = gbuilder.create().toJson(dbcfg)
+
+            // .gdbcommands
 
             def init_commands = [
                 'set gnutarget elf32-littlearm',
-                "file ${_nativefile.absolutePath.replaceAll("\\\\", "/")}".toString(),
-                "target remote ${ctx.selectedHost()}:${debugPort}".toString()
+                "file ${filepath}".toString(),
+                "target remote ${target}".toString()
             ] as List<String>
 
-            if (!(WPIToolchainPlugin.getActiveInstaller() instanceof LinuxToolchainInstaller))
-                init_commands += ["set sysroot \"${WPIToolchainPlugin.toolchainInstallDirectory().absolutePath}\""] as List<String>
+            if (sysroot != null) init_commands += ["set sysroot \"${sysroot}\""] as List<String>
             init_commands += srcpaths.collect { "dir \"${it}\"" } as List<String>
+            init_commands += headerpaths.collect { "dir \"${it}\"" } as List<String>
 
-            def gdbpath = new File(WPIToolchainPlugin.toolchainInstallDirectory(), "bin/arm-frc-linux-gnueabi-gdb").absolutePath
             def cmdline = [
-                "${gdbpath}${isWin ? ".exe" : ""}", "-ix=\"${gdbfile.absolutePath.replaceAll("\\\\", "/")}\""
+                gdbpath, "-ix=\"${gdbfile.absolutePath.replaceAll("\\\\", "/")}\""
             ]
 
-            gdbfile.parentFile.mkdirs()
             gdbfile.text = init_commands.join('\n')
             cmdfile.text = cmdline.join(" ")
 
