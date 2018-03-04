@@ -67,7 +67,12 @@ class EditorConfigurationTask extends DefaultTask {
 
         def gbuilder = new GsonBuilder()
         gbuilder.setPrettyPrinting()
-        println(gbuilder.create().toJson(cfg))
+        def json = gbuilder.create().toJson(cfg)
+
+        println(json)
+        def outfile = new File(project.buildDir, "editor/.editcfg")
+        outfile.parentFile.mkdirs()
+        outfile.text = json
     }
 
 }
