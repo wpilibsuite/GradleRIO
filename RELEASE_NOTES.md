@@ -1,3 +1,6 @@
+# 2018.03.06
+- Update Dependency Versions
+
 # 2018.02.17
 - Update Dependency Versions (thanks Arvind-Srinivasan)
 

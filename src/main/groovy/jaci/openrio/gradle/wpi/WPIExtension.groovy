@@ -10,20 +10,20 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.3.2"
-    String ntcoreVersion = "4.0.0"
+    String wpilibVersion = "2018.4.1"
+    String ntcoreVersion = "4.1.0"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.2.0"
-    String wpiutilVersion = "3.1.0"
+    String cscoreVersion = "1.3.0"
+    String wpiutilVersion = "3.2.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
-    String ctreVersion = "5.2.1.1"
+    String ctreVersion = "5.2.2.0"
     String ctreLegacyVersion = "4_Legacy"
     String navxVersion = "3.0.346"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "3.0.0"
-    String shuffleboardVersion = "1.2.1"
+    String shuffleboardVersion = "1.2.2"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
