@@ -17,7 +17,7 @@ class WPIExtension {
     String wpiutilVersion = "3.2.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
-    String ctreVersion = "5.2.2.0"
+    String ctreVersion = "5.3.1.0"
     String ctreLegacyVersion = "4_Legacy"
     String navxVersion = "3.0.346"
 
