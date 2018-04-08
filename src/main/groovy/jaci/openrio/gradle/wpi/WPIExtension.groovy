@@ -22,8 +22,8 @@ class WPIExtension {
     String navxVersion = "3.0.346"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "3.0.0"
-    String shuffleboardVersion = "1.2.2"
+    String smartDashboardVersion = "3.0.1"
+    String shuffleboardVersion = "1.3.1"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
