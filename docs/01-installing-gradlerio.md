@@ -16,16 +16,23 @@ more to your liking.  For cpp, you will likely want to rename 'MyRobot.cpp' and 
 something more to your liking.
 
 ## Step 3b.  Option 2 - Update an existing project
-If you have an existing project, you can copy in most of the files from the quickstart directory.  For Java,
-you will not need the 'team0000' directory.  For cpp, you will not need the 'MyRobot.cpp' or
-'MyHeader.h' file.  Be careful when you copy the files not to destroy your existing files.
+If you have an existing project, you will want to copy in most of the files
+from the quickstart directory, but omit the sample Robot files.  For Java,
+the samples files to omit are in the `src/main/java/frc/team0000` directory. For cpp,
+you want to exclude the `src/cpp/Robot.cpp` and `src/include/MyHeader.h` files.
+
+The easiest way to accomplish is to delete the sample files from your temporary
+directory, and then just copy the remaining files from your temporary
+directory over top of your existing code.
 
 ## Step 4.  Configure your project
 
-Next, open up your `build.gradle` file and edit the team number to reflect your team.  
+Next, open up your `build.gradle` file and edit the team number to reflect your team.
+Java users will also need to edit the `ROBOT_CLASS` variable in `build.gradle` to point to your Robot class.
 
-C++ Users: Your C++ source files (.cpp) will be in `src/cpp/`, and your header files (.h) will be in `src/include/`  
-Java Users: Edit the `ROBOT_CLASS` variable in `build.gradle` to point to where your Robot class is. Your java source files will be in `src/main/java/`. You do not need to deploy java to your RoboRIO, GradleRIO will do it for you.
+**Note:** Make sure to use the directory layout suggested by the quickstart:
+  - C++:  Source files (.cpp) in `src/cpp` and header files (.h) in `src/include`.
+  - Java: Source files in `src/main/java/`.
 
 ## Step 5. Run Gradle Tasks
 All `./gradlew` tasks should be run in a command/terminal window. On Windows, it is recommended to use Powershell.
@@ -39,3 +46,5 @@ Java Users: Run `./gradlew build`. Make sure you are connected to an internet co
 That's it! You're now ready to use GradleRIO.  
 Deploy code to your robot using `./gradlew deploy`  
 Build but not deploy your code using `./gradlew build`
+
+**Note:** Java users do not need to deploy Java to their RoboRIO, as GradleRIO will do it for you.
