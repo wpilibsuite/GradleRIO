@@ -17,6 +17,7 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
         def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL_BETA.sh')
         file.parentFile.mkdirs()
         file.text = filecontents.join('\n')
+        file.setExecutable(true);
         // TODO remove beta at release
         println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL_BETA.sh` in in order to install toolchain"
     }
