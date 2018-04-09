@@ -34,7 +34,7 @@ class NativeSimulationTask extends ExternalLaunchTask {
         }
         workingDir = installTask.installDirectory.asFile.get()
         persist = true
-        headless = true
+        scriptOnly = true
         launch(installTask.sourceFile.asFile.get().absolutePath)
         // TODO: Add some kind of subsystem here so we can launch externally. It should watch for a stopped build or something
     }
