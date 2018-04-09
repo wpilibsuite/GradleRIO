@@ -22,9 +22,6 @@ class NativeSimulationTask extends ExternalLaunchTask {
 
     @TaskAction
     void run() {
-        // TODO: Spawn in new window (gradle daemon keeps this process alive)
-        // OR: Write a script that does this for the user?
-        //          i.e. task outputs a runnable file that the user then uses.
         def installTask = binary.tasks.withType(InstallExecutable).first()
         def env = SimulationPlugin.getHALExtensionsEnvVar(project)
         println "Using Environment: HALSIM_EXTENSIONS=${env}"
@@ -37,9 +34,9 @@ class NativeSimulationTask extends ExternalLaunchTask {
         }
         workingDir = installTask.installDirectory.asFile.get()
         persist = true
-        //launch(new File(dir, installTask.sourceFile.asFile.get().name).absolutePath)
+        headless = true
+        launch(installTask.sourceFile.asFile.get().absolutePath)
         // TODO: Add some kind of subsystem here so we can launch externally. It should watch for a stopped build or something
-        println "Simulation is not yet implemented!"
     }
 
 }
