@@ -46,7 +46,7 @@ class WPICommonDeps implements Plugin<Project> {
                     ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${native64classifier}@zip"]
                 },
                 nt_ds: {
-                    ["edu.wpi.first.halsim:halsim-ds-nt:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                    ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${native64classifier}@zip"]
                 },
                 nt_readout: {
                     ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${native64classifier}@zip"]
