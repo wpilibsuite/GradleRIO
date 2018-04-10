@@ -13,6 +13,7 @@ class ExternalLaunchTask extends DefaultTask {
     private def _withBuilderClosures = [] as List<Closure>
     def environment = [:] as Map<String, String>
     def persist = false
+    def scriptOnly = false
     def workingDir = null as File
 
     Process launch(String... cmd) {
@@ -63,7 +64,7 @@ class ExternalLaunchTask extends DefaultTask {
             }
         }
 
-        if (project.hasProperty('headless')) {
+        if (scriptOnly || project.hasProperty('headless')) {
             println "Commands written to ${file.absolutePath}! Run this file."
             return null;
         } else {
