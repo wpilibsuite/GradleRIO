@@ -32,7 +32,7 @@ class NativeSimulationTask extends ExternalLaunchTask {
             environment["LD_LIBRARY_PATH"] = dir.absolutePath
             environment["DYLD_FALLBACK_LIBRARY_PATH"] = dir.absolutePath
         }
-        workingDir = installTask.installDirectory.asFile.get()
+        workingDir = dir
         persist = true
         scriptOnly = true
         launch(installTask.sourceFile.asFile.get().absolutePath)
