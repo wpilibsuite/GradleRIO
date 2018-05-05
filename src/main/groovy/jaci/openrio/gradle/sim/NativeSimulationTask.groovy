@@ -35,7 +35,7 @@ class NativeSimulationTask extends ExternalLaunchTask {
         workingDir = dir
         persist = true
         scriptOnly = true
-        launch(installTask.sourceFile.asFile.get().absolutePath)
+//        launch(installTask.sourceFile.asFile.get().absolutePath)  // TODO: Gradle 4.7 breaks this
         // TODO: Add some kind of subsystem here so we can launch externally. It should watch for a stopped build or something
     }
 
