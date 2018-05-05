@@ -64,8 +64,8 @@ class JavaSimulationTask extends ExternalLaunchTask {
             environment["PATH"] = ldpath + ";" + System.getenv("PATH")
         }
         persist = true  // So if we crash instantly you can still see the output
-        //launch(java, "-Djava.library.path=${ldpath}", "-jar", jar.archivePath.toString())
+        scriptOnly = true
+        launch(java, "-Djava.library.path=${ldpath}", "-jar", jar.archivePath.toString())
         // TODO: Add some kind of subsystem here so we can launch externally. It should watch for a stopped build or something
-        println "Simulation is not yet implemented!"
     }
 }
