@@ -49,20 +49,20 @@ class WPINativeDeps implements Plugin<Project> {
 
                 libs.create("${name}_athena", NativeLib) { NativeLib lib ->
                     common(lib)
-                    lib.mainLibraryName = "${name}_binaries"
+                    lib.libraryName = "${name}_binaries"
                     lib.sharedMatchers = ["**/lib${libname}.so".toString()]
-                    lib.libraryMatchers = lib.sharedMatchers
+                    lib.dynamicMatchers = lib.sharedMatchers
                     lib.maven = "${mavenBase}:linuxathena@zip"
                 }
 
                 if (supportNative && native64classifier != null) {
                     libs.create("${name}_native", NativeLib) { NativeLib lib ->
                         common(lib)
-                        lib.mainLibraryName = "${name}_binaries"
+                        lib.libraryName = "${name}_binaries"
                         lib.targetPlatforms = ['any64']
                         lib.staticMatchers = ["**/*${libname}.lib".toString()]
                         lib.sharedMatchers = ["**/*${libname}.so".toString(), "**/*${libname}.dylib".toString()]
-                        lib.libraryMatchers = lib.sharedMatchers + "windows/x86-64/shared/${libname}.dll".toString()
+                        lib.dynamicMatchers = lib.sharedMatchers + "windows/x86-64/shared/${libname}.dll".toString()
                         lib.maven = "${mavenBase}:${native64classifier}@zip"
                     }
                 }
@@ -86,7 +86,7 @@ class WPINativeDeps implements Plugin<Project> {
             // NI LIBS
             libs.create('ni_libraries_binaries', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.libraryMatchers = ['**/*.so*']
+                lib.dynamicMatchers = ['**/*.so*']
                 lib.sharedMatchers = ['**/*.so*']
                 lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:linuxathena@zip"
             }
@@ -122,8 +122,8 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('opencv_athena', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.mainLibraryName = 'opencv_binaries'
-                lib.libraryMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
+                lib.libraryName = 'opencv_binaries'
+                lib.dynamicMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.sharedMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
             }
@@ -131,11 +131,11 @@ class WPINativeDeps implements Plugin<Project> {
             if (native64classifier != null) {
                 libs.create('opencv_native', NativeLib) { NativeLib lib ->
                     common(lib)
-                    lib.mainLibraryName = 'opencv_binaries'
+                    lib.libraryName = 'opencv_binaries'
                     lib.targetPlatforms = ['any64']
                     lib.staticMatchers = ['**/*opencv*.lib']
                     lib.sharedMatchers = ['**/*opencv*.so', '**/*opencv*.so.*', '**/*opencv*.dylib']
-                    lib.libraryMatchers = lib.sharedMatchers + '**/*opencv*.dll'
+                    lib.dynamicMatchers = lib.sharedMatchers + '**/*opencv*.dll'
                     lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:${native64classifier}@zip"
                 }
             }
@@ -155,7 +155,7 @@ class WPINativeDeps implements Plugin<Project> {
             }
 
             libs.create('wpilib_sim', CombinedNativeLib) { CombinedNativeLib clib ->
-                clib.mainLibraryName = 'wpilib'
+                clib.libraryName = 'wpilib'
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
                 clib.targetPlatforms = ['any64']
                 null
@@ -165,7 +165,7 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('ctre_athena', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.mainLibraryName = "ctre_binaries"
+                lib.libraryName = "ctre_binaries"
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.ctre:CTRE-phoenix-cpp:${wpi.ctreVersion}@zip"
@@ -188,7 +188,7 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('ctre_legacy_athena', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.mainLibraryName = "ctre_legacy_binaries"
+                lib.libraryName = "ctre_legacy_binaries"
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.ctre:CTRE-toolsuite-cpp:${wpi.ctreLegacyVersion}@zip"
@@ -211,7 +211,7 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('navx_athena', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.mainLibraryName = "navx_binaries"
+                lib.libraryName = "navx_binaries"
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.kauailabs:navx-cpp:${wpi.navxVersion}@zip"
@@ -234,7 +234,7 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('pathfinder_athena', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.mainLibraryName = 'pathfinder_binaries'
+                lib.libraryName = 'pathfinder_binaries'
                 lib.staticMatchers = ['*.a']
                 lib.maven = "jaci.pathfinder:Pathfinder-Core:${wpi.pathfinderVersion}:athena@zip"
             }

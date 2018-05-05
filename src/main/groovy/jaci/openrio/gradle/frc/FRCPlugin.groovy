@@ -8,6 +8,7 @@ import jaci.gradle.deploy.DeployExtension
 import jaci.gradle.deploy.artifact.*
 import jaci.gradle.deploy.target.RemoteTarget
 import jaci.gradle.deploy.tasks.TargetDiscoveryTask
+import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.openrio.gradle.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,6 +20,7 @@ import org.gradle.language.nativeplatform.DependentSourceSet
 import org.gradle.model.ModelMap
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.platform.base.BinaryTasks
 
 @CompileStatic
@@ -157,19 +159,15 @@ class FRCPlugin implements Plugin<Project> {
         void createNativeLibraryDeployTasks(final ModelMap<Task> tasks, final ExtensionContainer ext, final NativeBinarySpec binary) {
             def deployExt = ext.getByType(DeployExtension)
             def artifacts = deployExt.artifacts
-            binary.inputs.withType(DependentSourceSet) { DependentSourceSet ss ->
-                ss.libs.each { lss ->
-                    if (lss instanceof LinkedHashMap) {
-                        def lib = lss['library'] as String
-                        if (artifacts.findByName(lib) == null) {
-                            artifacts.nativeLibraryArtifact(lib) { NativeLibraryArtifact nla ->
-                                FRCPlugin.allRoborioTargets(deployExt, nla)
-                                nla.directory = '/usr/local/frc/lib'
-                                nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
-                                nla.library = lib
-                                nla.targetPlatform = 'roborio'
-                            }
-                        }
+            binary.libs.each { NativeDependencySet set ->
+                if (set instanceof DelegatedDependencySet) {
+                    def delegSet = set as DelegatedDependencySet
+                    artifacts.nativeLibraryArtifact(delegSet.getName()) { NativeLibraryArtifact nla ->
+                        FRCPlugin.allRoborioTargets(deployExt, nla)
+                        nla.directory = '/usr/local/frc/lib'
+                        nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
+                        nla.library = delegSet.name
+                        nla.targetPlatform = 'roborio'
                     }
                 }
             }

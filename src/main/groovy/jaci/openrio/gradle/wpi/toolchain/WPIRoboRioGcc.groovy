@@ -13,6 +13,7 @@ import org.gradle.internal.work.WorkerLeaseService
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.toolchain.GccPlatformToolChain
 import org.gradle.nativeplatform.toolchain.internal.gcc.AbstractGccCompatibleToolChain
+import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
 import org.gradle.process.internal.ExecActionFactory
 
@@ -21,11 +22,12 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
     WPIRoboRioGcc(Instantiator instantiator, String name, BuildOperationExecutor buildOperationExecutor,
                   OperatingSystem operatingSystem, FileResolver fileResolver,
                   ExecActionFactory execActionFactory, CompilerOutputFileNamingSchemeFactory compilerOutputFileNamingSchemeFactory,
-                  CompilerMetaDataProviderFactory metaDataProviderFactory, WorkerLeaseService workerLeaseService) {
+                  CompilerMetaDataProviderFactory metaDataProviderFactory, WorkerLeaseService workerLeaseService,
+                  SystemLibraryDiscovery systemLibraryDiscovery) {
 
         super(name, buildOperationExecutor, operatingSystem,
                 fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory,
-                metaDataProviderFactory.gcc(), instantiator, workerLeaseService)
+                metaDataProviderFactory.gcc(), systemLibraryDiscovery, instantiator, workerLeaseService)
 
         AbstractToolchainInstaller activeInstaller = WPIToolchainPlugin.getActiveInstaller()
         // On Linux, we can't specify the install location of the apt-get package, so instead we
