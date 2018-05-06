@@ -28,6 +28,7 @@ class WPINativeDeps implements Plugin<Project> {
             def common = { NativeLib lib ->
                 lib.targetPlatforms = ['roborio']
                 lib.headerDirs = []
+                lib.sourceDirs = []
                 lib.staticMatchers = []
             }
 
@@ -55,6 +56,14 @@ class WPINativeDeps implements Plugin<Project> {
                     lib.maven = "${mavenBase}:linuxathena@zip"
                 }
 
+                libs.create("${name}_sources", NativeLib) { NativeLib lib ->
+                    common(lib)
+                    if (supportNative)
+                        lib.targetPlatforms << 'any64'
+                    lib.sourceDirs << ''
+                    lib.maven = "${mavenBase}:sources@zip"
+                }
+
                 if (supportNative && native64classifier != null) {
                     libs.create("${name}_native", NativeLib) { NativeLib lib ->
                         common(lib)
@@ -68,7 +77,7 @@ class WPINativeDeps implements Plugin<Project> {
                 }
 
                 libs.create(name, CombinedNativeLib) { CombinedNativeLib lib ->
-                    lib.libs << "${name}_binaries".toString() << "${name}_headers".toString()
+                    lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
                     lib.targetPlatforms = ['roborio']
                     if (supportNative)
                         lib.targetPlatforms << 'any64'
@@ -86,8 +95,8 @@ class WPINativeDeps implements Plugin<Project> {
             // NI LIBS
             libs.create('ni_libraries_binaries', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.dynamicMatchers = ['**/*.so*']
                 lib.sharedMatchers = ['**/*.so*']
+                lib.dynamicMatchers = []    // NI Libs are not deployed to RIO
                 lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:linuxathena@zip"
             }
 

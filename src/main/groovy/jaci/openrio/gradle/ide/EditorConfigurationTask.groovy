@@ -2,6 +2,7 @@ package jaci.openrio.gradle.ide
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
+import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
 import org.gradle.api.DefaultTask
@@ -42,6 +43,7 @@ class EditorConfigurationTask extends DefaultTask {
         ext._binaries.each { NativeExecutableBinarySpec bin ->
             def srcpaths = []
             def headerpaths = []
+            def sourcepaths = []
             def sopaths = []
 
             bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
@@ -49,15 +51,19 @@ class EditorConfigurationTask extends DefaultTask {
                 srcpaths += ss.exportedHeaders.srcDirs
             }
             bin.libs.each { NativeDependencySet ds ->
-                headerpaths += ds.includeRoots
-                sopaths += ds.runtimeFiles.files
+                headerpaths += ds.getIncludeRoots()
+                sopaths += ds.getRuntimeFiles().files
+                if (ds instanceof DelegatedDependencySet) {
+                    sourcepaths += (ds as DelegatedDependencySet).getSourceFiles()
+                }
             }
 
             def dCurrent = [
                 launchfile        : bin.executable.file.absolutePath,
                 srcDirs           : (srcpaths as List<File>).collect { it.absolutePath },
                 libHeaderDirs     : (headerpaths as List<File>).collect { it.absolutePath },
-                libSharedFilePaths: (sopaths as List<File>).collect { it.absolutePath }
+                libSharedFilePaths: (sopaths as List<File>).collect { it.absolutePath },
+                libSourceFiles    : (sourcepaths as List<File>).collect { it.absolutePath }
             ]
 
             dComponents[bin.component.name] = dCurrent
