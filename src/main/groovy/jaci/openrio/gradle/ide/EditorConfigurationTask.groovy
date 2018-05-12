@@ -42,13 +42,14 @@ class EditorConfigurationTask extends DefaultTask {
         def ext = project.extensions.getByType(EditorConfigurationExtension)
         ext._binaries.each { NativeExecutableBinarySpec bin ->
             def srcpaths = []
+            def exportedHeaders = []
             def headerpaths = []
             def sourcepaths = []
             def sopaths = []
 
             bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
                 srcpaths += ss.source.srcDirs
-                srcpaths += ss.exportedHeaders.srcDirs
+                exportedHeaders += ss.exportedHeaders.srcDirs
             }
             bin.libs.each { NativeDependencySet ds ->
                 headerpaths += ds.getIncludeRoots()
@@ -63,7 +64,8 @@ class EditorConfigurationTask extends DefaultTask {
                 srcDirs           : (srcpaths as List<File>).collect { it.absolutePath },
                 libHeaderDirs     : (headerpaths as List<File>).collect { it.absolutePath },
                 libSharedFilePaths: (sopaths as List<File>).collect { it.absolutePath },
-                libSourceFiles    : (sourcepaths as List<File>).collect { it.absolutePath }
+                libSourceFiles    : (sourcepaths as List<File>).collect { it.absolutePath },
+                exportedHeaders   : (exportedHeaders as List<File>).collect { it.absolutePath }
             ]
 
             dComponents[bin.component.name] = dCurrent
