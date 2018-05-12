@@ -32,7 +32,6 @@ class WPIJavaDeps implements Plugin<Project> {
 
         project.dependencies.ext.wpilibSimulationJni = {
             ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:${native64classifier}",
-             "org.opencv:opencv-jni:${wpi.opencvVersion}:${native64classifier}",
              "org.opencv:opencv-cpp:${wpi.opencvVersion}:${native64classifier}@zip",              // opencv-jni requires opencv native (opencv is special)
              "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:${native64classifier}@zip",              // wpilibj-jniShared requires HAL native
              "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:${native64classifier}@zip", // wpilibj-jniShared requires WPIUtil native
@@ -44,7 +43,6 @@ class WPIJavaDeps implements Plugin<Project> {
             // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
             // libraries, while the -jni ones are standalone (have static libs embedded).
             ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:linuxathena",
-             "org.opencv:opencv-jni:${wpi.opencvVersion}:linuxathena",
              "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",              // opencv-jni requires opencv native (opencv is special)
              "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:linuxathena@zip",              // wpilibj-jniShared requires HAL native
              "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:linuxathena@zip", // wpilibj-jniShared requires WPIUtil native
