@@ -2,12 +2,11 @@ plugins {
     id 'com.gradle.build-scan' version '1.9.1'
     id 'com.gradle.plugin-publish' version '0.9.9'
     id 'me.champeau.buildscan-recipes' version '0.2.0'
+    id 'java-gradle-plugin'
     id 'idea'
+    id 'maven-publish'
+    id 'groovy'
 }
-
-
-apply plugin: 'groovy'
-apply plugin: 'maven-publish'
 
 repositories {
     maven {
@@ -17,8 +16,6 @@ repositories {
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
 //    compile 'jaci.gradle:EmbeddedTools:2018.05.05'
     compile 'gradle.plugin.jaci.gradle:DeployTools:2018.05.06'
     compile 'de.undercouch:gradle-download-task:3.1.2'
@@ -61,6 +58,15 @@ publishing {
                     groupId 'gradle.plugin.' + group
                 }
             }
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        gradleRio {
+            id = 'jaci.openrio.gradle.GradleRIO'
+            implementationClass = 'jaci.openrio.gradle.GradleRIOPlugin'
         }
     }
 }
