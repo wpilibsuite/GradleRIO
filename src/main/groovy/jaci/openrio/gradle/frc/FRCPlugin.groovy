@@ -7,6 +7,7 @@ import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.DeployExtension
 import jaci.gradle.deploy.artifact.*
 import jaci.gradle.deploy.target.RemoteTarget
+import jaci.gradle.deploy.tasks.ArtifactDeployTask
 import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.openrio.gradle.GradleRIOPlugin
@@ -54,6 +55,10 @@ class FRCPlugin implements Plugin<Project> {
             }
         }
 
+        project.tasks.create("writeDebugInfo", DebugInfoTask) { DebugInfoTask task ->
+            project.tasks.withType(ArtifactDeployTask).all { Task t -> t.dependsOn(task) }
+        }
+
         project.afterEvaluate {
             addNativeLibraryArtifacts(project)
             addJreArtifact(project)
@@ -61,11 +66,11 @@ class FRCPlugin implements Plugin<Project> {
         }
     }
 
-    DeployExtension deployExtension(Project project) {
+    public static DeployExtension deployExtension(Project project) {
         return project.extensions.getByType(DeployExtension)
     }
 
-    static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
+    public static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
         ext.targets.withType(RoboRIO).all { RoboRIO r ->
             artifact.targets << r.name
         }

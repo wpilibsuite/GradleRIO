@@ -64,14 +64,14 @@ class FRCNativeArtifact extends NativeArtifact {
                 ctx.execute("echo '${rCmd}' > /home/lvuser/robotCommand")
             }
         }
+        def isWin = OperatingSystem.current().isWindows()
+
+        def filebasename = "${name}_${ctx.remoteTarget().name}"
+        def conffile = new File(project.buildDir, "debug/${filebasename}.debugconfig")
+        def gdbfile = new File(project.buildDir, "debug/${filebasename}.gdbcommands")
+        def cmdfile = new File(project.buildDir, "debug/${filebasename}${isWin ? ".bat" : ""}")
 
         if (debug) {
-            def isWin = OperatingSystem.current().isWindows()
-
-            def gdbfile = new File(project.buildDir, "debug/${name}.gdbcommands")
-            def cmdfile = new File(project.buildDir, "debug/${name}${isWin ? ".bat" : ""}")
-            def conffile = new File(project.buildDir, "debug/${name}.debugconfig")
-
             conffile.parentFile.mkdirs()
 
             ctx.logger().log("====================================================================")
@@ -108,7 +108,8 @@ class FRCNativeArtifact extends NativeArtifact {
                 srcpaths: (srcpaths as List<File>).collect { it.absolutePath },
                 headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
                 sofiles: (sopaths as List<File>).collect { it.absolutePath },
-                arch: "elf32-littlearm"
+                arch: "elf32-littlearm",
+                component: this.component
             ]
 
             def gbuilder = new GsonBuilder()
@@ -140,6 +141,11 @@ class FRCNativeArtifact extends NativeArtifact {
                     spec.args("0755", cmdfile.absolutePath)
                 }
             }
+        } else {
+            // Not debug, clear debug files
+            if (conffile.exists()) conffile.delete()
+            if (gdbfile.exists()) gdbfile.delete()
+            if (cmdfile.exists()) cmdfile.delete()
         }
     }
 }

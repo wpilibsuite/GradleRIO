@@ -1,5 +1,6 @@
 package jaci.openrio.gradle.frc
 
+import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.DeployContext
@@ -52,11 +53,24 @@ class FRCJavaArtifact extends JavaArtifact {
                 ctx.execute("echo '${rCmd}' > /home/lvuser/robotCommand")
             }
         }
+        def conffile = new File(project.buildDir, "debug/${name}_${ctx.remoteTarget().name}.debugconfig")
 
         if (debug) {
             ctx.logger().log("====================================================================")
             ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
             ctx.logger().log("====================================================================")
+
+            def target = ctx.selectedHost() + ":" + debugPort
+            def dbcfg = [
+                target: target
+            ]
+
+            def gbuilder = new GsonBuilder()
+            gbuilder.setPrettyPrinting()
+            conffile.text = gbuilder.create().toJson(dbcfg)
+        } else {
+            // Not debug, remove debug files
+            if (conffile.exists()) conffile.delete()
         }
     }
 }
