@@ -7,6 +7,7 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.deployment.internal.Deployment
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @CompileStatic
 class JavaSimulationTask extends ExternalLaunchTask {
-
+    @Internal
     Jar jar
 
     @TaskAction

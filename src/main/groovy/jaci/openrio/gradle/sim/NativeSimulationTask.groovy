@@ -5,6 +5,7 @@ import jaci.openrio.gradle.ExternalLaunchTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.deployment.internal.Deployment
 import org.gradle.deployment.internal.DeploymentHandle
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @CompileStatic
 class NativeSimulationTask extends ExternalLaunchTask {
-
+    @Internal
     NativeExecutableBinarySpec binary
 
     @TaskAction
