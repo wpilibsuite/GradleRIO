@@ -62,7 +62,9 @@ class FRCJavaArtifact extends JavaArtifact {
 
             def target = ctx.selectedHost() + ":" + debugPort
             def dbcfg = [
-                target: target
+                target: target,
+                ipAddress: ctx.selectedHost(),
+                port: debugPort
             ]
 
             def gbuilder = new GsonBuilder()

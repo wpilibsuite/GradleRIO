@@ -20,6 +20,7 @@ class DebugInfoTask extends DefaultTask {
                         artifact: art.name,
                         target: target,
                         debugfile: "${art.name}_${target}.debugconfig".toString(),
+                        project: project.name,
                         language: "java"
                     ]
                 }
