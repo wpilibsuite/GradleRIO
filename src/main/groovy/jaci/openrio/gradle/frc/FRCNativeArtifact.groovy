@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.artifact.NativeArtifact
+import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.openrio.gradle.wpi.toolchain.WPIToolchainPlugin
 import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
 import org.gradle.api.Project
@@ -84,6 +85,7 @@ class FRCNativeArtifact extends NativeArtifact {
             def srcpaths = []
             def headerpaths = []
             def sopaths = []
+            def libsrcpaths = []
             _bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
                 srcpaths += ss.source.srcDirs
                 srcpaths += ss.exportedHeaders.srcDirs
@@ -91,6 +93,9 @@ class FRCNativeArtifact extends NativeArtifact {
             _bin.libs.each { NativeDependencySet ds ->
                 headerpaths += ds.includeRoots
                 sopaths += ds.runtimeFiles.files
+                if (ds instanceof DelegatedDependencySet) {
+                    libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
+                }
             }
 
             def filepath = _nativefile.absolutePath.replaceAll("\\\\", "/")
@@ -108,6 +113,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 srcpaths: (srcpaths as List<File>).collect { it.absolutePath },
                 headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
                 sofiles: (sopaths as List<File>).collect { it.absolutePath },
+                libsrcpaths: (libsrcpaths as List<File>).collect { it.absolutePath },
                 arch: "elf32-littlearm",
                 component: this.component
             ]
