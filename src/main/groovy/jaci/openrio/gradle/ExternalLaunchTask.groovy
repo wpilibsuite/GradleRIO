@@ -1,6 +1,7 @@
 package jaci.openrio.gradle
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
@@ -11,9 +12,13 @@ import java.util.stream.Collectors
 class ExternalLaunchTask extends DefaultTask {
 
     private def _withBuilderClosures = [] as List<Closure>
+    @Internal
     def environment = [:] as Map<String, String>
+    @Internal
     def persist = false
+    @Internal
     def scriptOnly = false
+    @Internal
     def workingDir = null as File
 
     Process launch(String... cmd) {
