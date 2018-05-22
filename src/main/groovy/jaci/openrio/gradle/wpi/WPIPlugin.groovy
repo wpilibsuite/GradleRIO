@@ -45,10 +45,8 @@ class WPIPlugin implements Plugin<Project> {
             roborio.architecture('arm')
             roborio.operatingSystem('linux')
 
-            // We don't support x86 (32-bit) since it's the 21st century
-
-            def any64 = platforms.maybeCreate('any64', NativePlatform)
-            any64.architecture('x86_64')
+            def desktop = platforms.maybeCreate('desktop', NativePlatform)
+            System.getProperty("os.arch") == 'amd64' ? desktop.architecture('x86_64') : desktop.architecture('x86')
 
             def anyArm = platforms.maybeCreate('anyArm', NativePlatform)
             anyArm.architecture('arm')

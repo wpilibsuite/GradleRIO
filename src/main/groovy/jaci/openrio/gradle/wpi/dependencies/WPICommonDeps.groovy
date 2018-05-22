@@ -33,23 +33,24 @@ class WPICommonDeps implements Plugin<Project> {
     }
 
     void apply_halsim_extensions(Project project, WPIExtension wpi) {
-        def native64classifier = (
-                OperatingSystem.current().isWindows() ? "windowsx86-64" :
+        def nativeclassifier = (
+                OperatingSystem.current().isWindows() ?
+                System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
                 OperatingSystem.current().isMacOsX() ? "osxx86-64" :
                 OperatingSystem.current().isLinux() ? "linuxx86-64" :
                 null
         )
 
-        if (native64classifier != null) {
+        if (nativeclassifier != null) {
             project.dependencies.ext.sim = [
                 print: {
-                    ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                    ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
                 },
                 nt_ds: {
-                    ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                    ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
                 },
                 nt_readout: {
-                    ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${native64classifier}@zip"]
+                    ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
                 }
             ]
         }
