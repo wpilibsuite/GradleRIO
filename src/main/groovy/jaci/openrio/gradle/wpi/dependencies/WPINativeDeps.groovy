@@ -32,8 +32,9 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.staticMatchers = []
             }
 
-            def native64classifier = (
-                    OperatingSystem.current().isWindows() ? "windowsx86-64" :
+            def nativeclassifier = (
+                    OperatingSystem.current().isWindows() ?
+                    System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
                     OperatingSystem.current().isMacOsX() ? "osxx86-64" :
                     OperatingSystem.current().isLinux() ? "linuxx86-64" :
                     null
@@ -43,7 +44,7 @@ class WPINativeDeps implements Plugin<Project> {
                 libs.create("${name}_headers", NativeLib) { NativeLib lib ->
                     common(lib)
                     if (supportNative)
-                        lib.targetPlatforms << 'any64'
+                        lib.targetPlatforms << 'desktop'
                     lib.headerDirs << ''
                     lib.maven = "${mavenBase}:headers@zip"
                 }
@@ -59,20 +60,21 @@ class WPINativeDeps implements Plugin<Project> {
                 libs.create("${name}_sources", NativeLib) { NativeLib lib ->
                     common(lib)
                     if (supportNative)
-                        lib.targetPlatforms << 'any64'
+                        lib.targetPlatforms << 'desktop'
                     lib.sourceDirs << ''
                     lib.maven = "${mavenBase}:sources@zip"
                 }
 
-                if (supportNative && native64classifier != null) {
+                if (supportNative && nativeclassifier != null) {
                     libs.create("${name}_native", NativeLib) { NativeLib lib ->
                         common(lib)
                         lib.libraryName = "${name}_binaries"
-                        lib.targetPlatforms = ['any64']
+                        lib.targetPlatforms = ['desktop']
                         lib.staticMatchers = ["**/*${libname}.lib".toString()]
                         lib.sharedMatchers = ["**/*${libname}.so".toString(), "**/*${libname}.dylib".toString()]
-                        lib.dynamicMatchers = lib.sharedMatchers + "windows/x86-64/shared/${libname}.dll".toString()
-                        lib.maven = "${mavenBase}:${native64classifier}@zip"
+
+                        lib.dynamicMatchers = lib.sharedMatchers + "**/${libname}.dll".toString()
+                        lib.maven = "${mavenBase}:${nativeclassifier}@zip"
                     }
                 }
 
@@ -80,7 +82,7 @@ class WPINativeDeps implements Plugin<Project> {
                     lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
                     lib.targetPlatforms = ['roborio']
                     if (supportNative)
-                        lib.targetPlatforms << 'any64'
+                        lib.targetPlatforms << 'desktop'
                     null
                 }
             }
@@ -124,7 +126,7 @@ class WPINativeDeps implements Plugin<Project> {
             // OPENCV
             libs.create('opencv_headers', NativeLib) { NativeLib lib ->
                 common(lib)
-                lib.targetPlatforms << 'any64'
+                lib.targetPlatforms << 'desktop'
                 lib.headerDirs << ''
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
             }
@@ -137,21 +139,21 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
             }
 
-            if (native64classifier != null) {
+            if (nativeclassifier != null) {
                 libs.create('opencv_native', NativeLib) { NativeLib lib ->
                     common(lib)
                     lib.libraryName = 'opencv_binaries'
-                    lib.targetPlatforms = ['any64']
+                    lib.targetPlatforms = ['desktop']
                     lib.staticMatchers = ['**/*opencv*.lib']
                     lib.sharedMatchers = ['**/*opencv*.so', '**/*opencv*.so.*', '**/*opencv*.dylib']
                     lib.dynamicMatchers = lib.sharedMatchers + '**/*opencv*.dll'
-                    lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:${native64classifier}@zip"
+                    lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
                 }
             }
 
             libs.create('opencv', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'opencv_binaries' << 'opencv_headers'
-                lib.targetPlatforms = ['roborio', 'any64']
+                lib.targetPlatforms = ['roborio', 'desktop']
                 null
             }
 
@@ -166,7 +168,7 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('wpilib_sim', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libraryName = 'wpilib'
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
-                clib.targetPlatforms = ['any64']
+                clib.targetPlatforms = ['desktop']
                 null
             }
 

@@ -56,7 +56,7 @@ model {
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
-//            targetPlatform 'any64'
+//            targetPlatform 'desktop'
             binaries.all {
                 cppCompiler.args('-g')
             }

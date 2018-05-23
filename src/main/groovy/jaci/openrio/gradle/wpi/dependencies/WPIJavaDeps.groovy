@@ -23,20 +23,21 @@ class WPIJavaDeps implements Plugin<Project> {
         //     compile wpilib()
         // }
 
-        def native64classifier = (
-            OperatingSystem.current().isWindows() ? "windowsx86-64" :
+        def nativeclassifier = (
+            OperatingSystem.current().isWindows() ?
+            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
             OperatingSystem.current().isMacOsX() ? "osxx86-64" :
             OperatingSystem.current().isLinux() ? "linuxx86-64" :
             null
         )
 
         project.dependencies.ext.wpilibSimulationJni = {
-            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:${native64classifier}",
-             "org.opencv:opencv-cpp:${wpi.opencvVersion}:${native64classifier}@zip",              // opencv-jni requires opencv native (opencv is special)
-             "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:${native64classifier}@zip",              // wpilibj-jniShared requires HAL native
-             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:${native64classifier}@zip", // wpilibj-jniShared requires WPIUtil native
-             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.ntcoreVersion}:${native64classifier}@zip",    // wpilibj-jniShared requires NTCore native
-             "edu.wpi.first.cscore:cscore-cpp:${wpi.cscoreVersion}:${native64classifier}@zip"]
+            ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:${nativeclassifier}",
+             "org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",              // opencv-jni requires opencv native (opencv is special)
+             "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:${nativeclassifier}@zip",              // wpilibj-jniShared requires HAL native
+             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}:${nativeclassifier}@zip", // wpilibj-jniShared requires WPIUtil native
+             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.ntcoreVersion}:${nativeclassifier}@zip",    // wpilibj-jniShared requires NTCore native
+             "edu.wpi.first.cscore:cscore-cpp:${wpi.cscoreVersion}:${nativeclassifier}@zip"]
         }
 
         project.dependencies.ext.wpilibJni = {
