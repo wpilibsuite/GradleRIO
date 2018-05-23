@@ -165,9 +165,21 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
+            libs.create('wpilibjni', CombinedNativeLib) { CombinedNativeLib clib ->
+                clib.libs << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv" << "ni_libraries"
+                clib.targetPlatforms = ['roborio']
+            }
+
             libs.create('wpilib_sim', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libraryName = 'wpilib'
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
+                clib.targetPlatforms = ['desktop']
+                null
+            }
+
+            libs.create('wpilibjni_sim', CombinedNativeLib) { CombinedNativeLib clib ->
+                clib.libraryName = 'wpilibjni'
+                clib.libs << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
                 clib.targetPlatforms = ['desktop']
                 null
             }
