@@ -31,7 +31,7 @@ class WPIJavaDeps implements Plugin<Project> {
             null
         )
 
-        project.dependencies.ext.wpilibSimulationJni = {
+        project.dependencies.ext.wpilibDesktopJni = {
             ["edu.wpi.first.wpilibj:wpilibj-jniShared:${wpi.wpilibVersion}:${nativeclassifier}",
              "org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",              // opencv-jni requires opencv native (opencv is special)
              "edu.wpi.first.hal:hal:${wpi.wpilibVersion}:${nativeclassifier}@zip",              // wpilibj-jniShared requires HAL native
@@ -55,8 +55,8 @@ class WPIJavaDeps implements Plugin<Project> {
             project.dependencies.ext.wpilibJni().each {
                 project.dependencies.add("nativeZip", it)
             }
-            project.dependencies.ext.wpilibSimulationJni().each {
-                project.dependencies.add("nativeSimulationZip", it)
+            project.dependencies.ext.wpilibDesktopJni().each {
+                project.dependencies.add("nativeDesktopZip", it)
             }
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.ntcoreVersion}",

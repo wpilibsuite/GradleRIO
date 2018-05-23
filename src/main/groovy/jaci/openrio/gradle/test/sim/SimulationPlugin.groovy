@@ -1,15 +1,15 @@
-package jaci.openrio.gradle.sim
+package jaci.openrio.gradle.test.sim
 
 import groovy.transform.CompileStatic
 import jaci.openrio.gradle.GradleRIOPlugin
+import jaci.openrio.gradle.test.ExtractTestJNITask
+import jaci.openrio.gradle.test.TestPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.CopySpec
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.util.PatternFilterable
-import org.gradle.ide.visualstudio.VisualStudioExtension
-import org.gradle.ide.visualstudio.VisualStudioProject
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.model.ModelMap
@@ -45,16 +45,15 @@ class SimulationPlugin implements Plugin<Project> {
                     task.group = "GradleRIO"
                     task.description = "Simulate Task for Java/Kotlin/JVM"
 
+                    def extractTask = project.tasks.withType(ExtractTestJNITask).first()
+
                     task.jar = jarTask
-                    task.dependsOn jarTask
+                    task.dependsOn jarTask, extractTask
+
                     null
                 }
             }
         }
-    }
-
-    static String envDelimiter() {
-        return OperatingSystem.current().isWindows() ? ";" : ":"
     }
 
     static String getHALExtensionsEnvVar(Project project) {
@@ -77,7 +76,7 @@ class SimulationPlugin implements Plugin<Project> {
                 rtLibs += f
             }
         }
-        return rtLibs.join(envDelimiter())
+        return rtLibs.join(TestPlugin.envDelimiter())
     }
 
     static class SimRules extends RuleSource {

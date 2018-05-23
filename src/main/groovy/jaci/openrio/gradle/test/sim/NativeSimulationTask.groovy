@@ -1,20 +1,12 @@
-package jaci.openrio.gradle.sim
+package jaci.openrio.gradle.test.sim
 
 import groovy.transform.CompileStatic
 import jaci.openrio.gradle.ExternalLaunchTask
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
-import org.gradle.deployment.internal.Deployment
-import org.gradle.deployment.internal.DeploymentHandle
-import org.gradle.deployment.internal.DeploymentRegistry
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
-
-import javax.inject.Inject
 
 @CompileStatic
 class NativeSimulationTask extends ExternalLaunchTask {

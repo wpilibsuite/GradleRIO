@@ -4,9 +4,9 @@ import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.openrio.gradle.frc.FRCPlugin
 import jaci.openrio.gradle.ide.ClionPlugin
-import jaci.openrio.gradle.ide.EditorConfigurationTask
 import jaci.openrio.gradle.ide.IDEPlugin
-import jaci.openrio.gradle.sim.SimulationPlugin
+import jaci.openrio.gradle.test.TestPlugin
+import jaci.openrio.gradle.test.sim.SimulationPlugin
 import jaci.openrio.gradle.wpi.WPIPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -27,15 +27,15 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.configurations.maybeCreate("nativeLib")
         project.configurations.maybeCreate("nativeZip")
 
-        project.configurations.maybeCreate("nativeSimulationLib")
-        project.configurations.maybeCreate("nativeSimulationZip")
+        project.configurations.maybeCreate("nativeDesktopLib")
+        project.configurations.maybeCreate("nativeDesktopZip")
 
         project.pluginManager.apply(EmbeddedTools)
         project.pluginManager.apply(FRCPlugin)
         project.pluginManager.apply(WPIPlugin)
         project.pluginManager.apply(ClionPlugin)
         project.pluginManager.apply(IDEPlugin)
-        project.pluginManager.apply(SimulationPlugin)
+        project.pluginManager.apply(TestPlugin)
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
     }
