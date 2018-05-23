@@ -10,11 +10,8 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.3.2"
-    String ntcoreVersion = "4.0.0"
+    String wpilibVersion = "2018.424242.+"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.2.0"
-    String wpiutilVersion = "3.1.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
     String ctreVersion = "5.2.1.1"
@@ -43,11 +40,7 @@ class WPIExtension {
         // property: [ PrettyName, Version, RecommendedKey ]
         return [
             "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
-            "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion, "ntcore"),
             "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
-            "cscoreVersion" : new Tuple("CSCore", cscoreVersion, "cscore"),
-
-            "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
             "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
             "ctreLegacyVersion": new Tuple("CTRE (Legacy)", ctreLegacyVersion, "ctreLegacy"),

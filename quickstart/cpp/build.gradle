@@ -1,10 +1,18 @@
 plugins {
     id "cpp"
     id "visual-studio"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.22"
+    id 'google-test-test-suite'
+    id "jaci.openrio.gradle.GradleRIO" version "2018.05.23"
 }
 
 def TEAM = 5333
+
+repositories {
+    maven {
+        url "${System.getProperty('user.home')}/releases/maven/development"
+    }
+    mavenCentral()
+}
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -29,6 +37,10 @@ model {
         frcUserProgram(NativeExecutableSpec) {
             // Target the RoboRIO (arm-frc-linux-gnueabihf)
             targetPlatform 'roborio'
+            targetPlatform 'desktop'
+
+            useLibrary(it, 'wpilib')
+
             sources.cpp {
                 // This is where our source files are located (src/cpp for C++ files, src/include for headers)
                 source {
@@ -39,17 +51,35 @@ model {
                     srcDirs = ['src/cpp', 'src/include']
                     include '**/*.hpp', '**/*.h'
                 }
+            }
+        }
 
-                // Define my dependencies. In this case, WPILib (+ friends), CTRE Phoenix (Talon SRX) and NavX.
-                lib library: "wpilib"
-                lib library: "ctre"
-                lib library: "navx"
-                lib library: "openrio.powerup.matchData"
+    }
+    testSuites {
+        frcUserProgramTest(GoogleTestTestSuiteSpec) {
+
+            testing $.components.frcUserProgram
+
+            binaries.all {
+                println it.toolChain.name
+                if (it.toolChain.name == 'roborioGcc') {
+                    println 'skippingBuild'
+                    buildable = false
+                }
+                useLibrary(it, 'wpilib', 'gtest')
+                cppCompiler.define "RUNNING_GTEST"
+            }
+
+            sources.cpp {
+                source {
+                    srcDir 'src/test'
+                    include '**/*.cpp'
+                }
             }
         }
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
+    gradleVersion = '4.7'
 }

@@ -51,7 +51,6 @@ GradleRIO automatically uses stable releases of all software, but if you wish to
 ```gradle
 wpi {
     wpilibVersion = "2018.1.1"
-    ntcoreVersion = "4.0.0"
 
     navxVersion = "3.0.342"
 }
@@ -59,7 +58,7 @@ wpi {
 
 You can see all these values in the [README](https://github.com/Open-RIO/GradleRIO#full-spec)
 
-## Adding Custom Dependencies 
+## Adding Custom Dependencies
 If you want to add your own project dependencies, it is very easy to do so:
 
 ### Java:

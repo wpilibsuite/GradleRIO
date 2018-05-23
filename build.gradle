@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-//    compile 'jaci.gradle:EmbeddedTools:2018.05.05'
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.05.19a'
+    compile 'jaci.gradle:EmbeddedTools:2018.05.23'
+//    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.05.19a'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
 }
@@ -33,7 +33,7 @@ buildScanRecipes {
 
 group = "jaci.openrio.gradle"
 archivesBaseName = "GradleRIO"
-version = "2018.05.05"
+version = "2018.05.23"
 
 pluginBundle {
     website = 'https://github.com/Open-RIO/GradleRIO'

@@ -57,7 +57,7 @@ class WPIPlugin implements Plugin<Project> {
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(NativeBinarySpec) { NativeBinarySpec bin ->
                 if (!(bin.toolChain in VisualCpp)) {
-                    bin.cppCompiler.args << "-std=c++1y" << '-g'
+                    bin.cppCompiler.args << "-std=c++14" << '-g'
                 } else {
                     bin.cppCompiler.args << '/Zi' << '/EHsc' << '/DNOMINMAX'
                     bin.linker.args << '/DEBUG:FULL'
