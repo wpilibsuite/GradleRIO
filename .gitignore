@@ -19,3 +19,5 @@ bin/
 .settings/
 .project
 .classpath
+out/
+hs_err_*
