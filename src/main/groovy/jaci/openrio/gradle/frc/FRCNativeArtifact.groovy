@@ -84,7 +84,7 @@ class FRCNativeArtifact extends NativeArtifact {
 
             def srcpaths = []
             def headerpaths = []
-            def sopaths = []
+            def libpaths = []
             def libsrcpaths = []
             _bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
                 srcpaths += ss.source.srcDirs
@@ -92,7 +92,7 @@ class FRCNativeArtifact extends NativeArtifact {
             }
             _bin.libs.each { NativeDependencySet ds ->
                 headerpaths += ds.includeRoots
-                sopaths += ds.runtimeFiles.files
+                libpaths += ds.runtimeFiles.files
                 if (ds instanceof DelegatedDependencySet) {
                     libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
                 }
@@ -112,7 +112,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 sysroot: sysroot,
                 srcpaths: (srcpaths as List<File>).collect { it.absolutePath },
                 headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
-                sofiles: (sopaths as List<File>).collect { it.absolutePath },
+                libfiles: (libpaths as List<File>).collect { it.absolutePath },
                 libsrcpaths: (libsrcpaths as List<File>).collect { it.absolutePath },
                 arch: "elf32-littlearm",
                 component: this.component

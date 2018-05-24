@@ -13,7 +13,7 @@ import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.model.ModelMap
-import org.gradle.model.Mutate
+import org.gradle.model.Validate
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeExecutableSpec
@@ -38,6 +38,13 @@ class SimulationPlugin implements Plugin<Project> {
             }
         }
 
+        project.tasks.create("simulateExternalCpp", NativeExternalSimulationTask) { NativeExternalSimulationTask task ->
+            task.group = "GradleRIO"
+            task.description = "Simulate External Task for native executable"
+
+            null
+        }
+
         project.tasks.withType(Jar).all { Jar jarTask ->
             def attr = jarTask.manifest.attributes
             if (jarTask.name.equals("jar")) {   // TODO Make this configurable (for alternate jars)
@@ -56,10 +63,10 @@ class SimulationPlugin implements Plugin<Project> {
         }
     }
 
-    static String getHALExtensionsEnvVar(Project project) {
+    static List<String> getHALExtensions(Project project) {
         def cfg = project.configurations.getByName("simulation")
         def ext = OperatingSystem.current().sharedLibrarySuffix
-        def rtLibs = []
+        List<String> rtLibs = []
         cfg.dependencies.collectMany {
             cfg.files(it)
         }.each { File f ->
@@ -73,30 +80,27 @@ class SimulationPlugin implements Plugin<Project> {
                 }.files as Set<File>).collect { it.absolutePath }
             } else {
                 // Assume it's a native file already
-                rtLibs += f
+                rtLibs += f.toString()
             }
         }
+        return rtLibs
+    }
+
+    static String getHALExtensionsEnvVar(Project project) {
+        def rtLibs = getHALExtensions(project)
         return rtLibs.join(TestPlugin.envDelimiter())
     }
 
     static class SimRules extends RuleSource {
-        @Mutate
+        @Validate
         void createSimulateComponentsTask(ModelMap<Task> tasks, ComponentSpecContainer components, ExtensionContainer extCont) {
+            NativeExternalSimulationTask mainTask = (NativeExternalSimulationTask)tasks.get('simulateExternalCpp')
             def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
                 spec.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
                     if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals('roborio')) {
-                        tasks.create("simulate${spec.name.capitalize()}${bin.targetPlatform.name.capitalize()}", NativeSimulationTask) { NativeSimulationTask task ->
-                            task.group = "GradleRIO"
-                            task.description = "Simulate Task for ${spec.name} native executable"
-
-                            // TODO This needs _something_ since we can't make it depend on InstallExecutable
-                            // This imposes a limit where if a source file is edited, the daemon will never kill the
-                            // process. Same goes for the java above. Or does it?
-                            task.binary = bin
-                            // TODO: Install task dependency
-                            null
-                        }
+                        mainTask.binaries << bin
+                        mainTask.dependsOn bin.tasks.install
                     }
                 }
             }
