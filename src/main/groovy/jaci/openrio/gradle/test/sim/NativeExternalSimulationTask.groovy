@@ -12,6 +12,7 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet
 import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
+import org.gradle.nativeplatform.toolchain.Clang
 import org.gradle.nativeplatform.tasks.InstallExecutable
 
 @CompileStatic
@@ -29,6 +30,7 @@ class NativeExternalSimulationTask extends DefaultTask {
             cfg['name'] = binary.component.name
             cfg['extensions'] = extensions
             cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
+            cfg['clang'] = binary.toolChain in Clang
 
             def srcpaths = []
             def headerpaths = []
