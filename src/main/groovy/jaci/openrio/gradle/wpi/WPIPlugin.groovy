@@ -12,6 +12,7 @@ import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.platform.NativePlatform
+import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.platform.base.BinaryContainer
 import org.gradle.platform.base.PlatformContainer
 
@@ -55,7 +56,12 @@ class WPIPlugin implements Plugin<Project> {
         @Mutate
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(NativeBinarySpec) { NativeBinarySpec bin ->
-                bin.cppCompiler.args << "-std=c++1y"
+                if (!(bin.toolChain in VisualCpp)) {
+                    bin.cppCompiler.args << "-std=c++1y" << '-g'
+                } else {
+                    bin.cppCompiler.args << '/Zi' << '/EHsc' << '/DNOMINMAX'
+                    bin.linker.args << '/DEBUG:FULL'
+                }
                 null
             }
         }
