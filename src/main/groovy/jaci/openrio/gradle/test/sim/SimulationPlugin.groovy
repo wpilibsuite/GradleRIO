@@ -45,7 +45,22 @@ class SimulationPlugin implements Plugin<Project> {
             null
         }
 
+
+        def simExternProject = project.tasks.create("simulateExternalJava", JavaExternalSimulationTask) { JavaExternalSimulationTask task ->
+            task.group = "GradleRIO"
+            task.description = "Simulate External Task for Java/Kotlin/JVM"
+
+            null
+        }
+
+        project.tasks.withType(ExtractTestJNITask) {
+            simExternProject.dependsOn it
+        }
+
         project.tasks.withType(Jar).all { Jar jarTask ->
+            simExternProject.dependsOn jarTask
+            simExternProject.jars << jarTask
+
             def attr = jarTask.manifest.attributes
             if (jarTask.name.equals("jar")) {   // TODO Make this configurable (for alternate jars)
                 project.tasks.create("simulate${jarTask.name.capitalize()}", JavaSimulationTask) { JavaSimulationTask task ->
