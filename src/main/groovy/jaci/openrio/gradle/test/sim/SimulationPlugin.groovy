@@ -67,10 +67,12 @@ class SimulationPlugin implements Plugin<Project> {
                     task.group = "GradleRIO"
                     task.description = "Simulate Task for Java/Kotlin/JVM"
 
-                    def extractTask = project.tasks.withType(ExtractTestJNITask).first()
+                    project.tasks.withType(ExtractTestJNITask).whenTaskAdded { ExtractTestJNITask extractTask ->
+                        task.dependsOn extractTask
+                    }
 
                     task.jar = jarTask
-                    task.dependsOn jarTask, extractTask
+                    task.dependsOn jarTask
 
                     null
                 }

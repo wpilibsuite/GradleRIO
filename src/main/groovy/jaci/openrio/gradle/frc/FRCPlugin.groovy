@@ -24,6 +24,8 @@ import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.platform.base.BinaryTasks
 
+import java.util.function.Function
+
 @CompileStatic
 class FRCPlugin implements Plugin<Project> {
 
@@ -58,6 +60,20 @@ class FRCPlugin implements Plugin<Project> {
         project.tasks.create("writeDebugInfo", DebugInfoTask) { DebugInfoTask task ->
             project.tasks.withType(ArtifactDeployTask).all { Task t -> t.dependsOn(task) }
         }
+
+        // Helper Extensions
+        project.extensions.add("getTeamOrDefault", { Integer teamDefault ->
+            if (project.hasProperty("teamNumber"))
+                return Integer.parseInt(project.property("teamNumber") as String)
+            return teamDefault
+        } as Closure<Integer>);
+
+        project.extensions.add("getDebugOrDefault", { Boolean debugDefault ->
+            if (project.hasProperty("debugMode"))
+                return true
+            return debugDefault
+        } as Closure<Boolean>);
+
 
         project.afterEvaluate {
             addNativeLibraryArtifacts(project)

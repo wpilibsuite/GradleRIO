@@ -41,13 +41,16 @@ repositories {
 deploy {
     targets {
         target('roborio5333', jaci.openrio.gradle.frc.RoboRIO) {
-            team = 5333
+            team = getTeamOrDefault(5333)
+            println(team)
         }
     }
     artifacts {
         artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
             targets << 'roborio5333'
             robotCommand = false
+            debug = getDebugOrDefault(false)
+            println(debug)
         }
         artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
             targets << 'roborio5333'
