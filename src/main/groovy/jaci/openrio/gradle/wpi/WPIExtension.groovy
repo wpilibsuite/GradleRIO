@@ -10,7 +10,7 @@ import java.security.MessageDigest
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.424242.+"
+    String wpilibVersion = "2018.4.1-20180525190241-1013-g5fcb67a"
     String opencvVersion = "3.2.0"
 
     // Third Party (dev.imjac.in/maven/thirdparty) libs
