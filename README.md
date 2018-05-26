@@ -28,9 +28,6 @@ Windows Users: It is recommended to use Powershell instead of CMD.
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
-## Misc Commands
-- ```./gradlew telemetry``` will display the telemetry that GradleRIO reports. This can be disabled. See more about this [here](PRIVACY.md)
-
 ## Getting Started
 Read the docs [here](docs/) to get started. They are much more descriptive than this README.
 
@@ -165,14 +162,3 @@ model {
         }
     }
 }
-
-// GradleRIO reports some anonymous data to aid in future development
-// This includes your gradle version, dependencies, plugins and versions.
-// It does NOT include your IP address, username, password, or other confidential 
-// data. 
-// You can choose to disable this telemetry if you're paranoid.
-// Telemetry is, by default, enabled.
-telemetry {
-    reportTelemetry = false
-}
-```
