@@ -2,17 +2,10 @@ plugins {
     id "cpp"
     id "visual-studio"
     id 'google-test-test-suite'
-    id "jaci.openrio.gradle.GradleRIO" version "2018.05.23"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.05.25"
 }
 
 def TEAM = 5333
-
-repositories {
-    maven {
-        url "${System.getProperty('user.home')}/releases/maven/development"
-    }
-    mavenCentral()
-}
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -37,7 +30,7 @@ model {
         frcUserProgram(NativeExecutableSpec) {
             // Target the RoboRIO (arm-frc-linux-gnueabihf)
             targetPlatform 'roborio'
-            targetPlatform 'desktop'
+            //targetPlatform 'desktop'
 
             useLibrary(it, 'wpilib')
 
@@ -54,29 +47,6 @@ model {
             }
         }
 
-    }
-    testSuites {
-        frcUserProgramTest(GoogleTestTestSuiteSpec) {
-
-            testing $.components.frcUserProgram
-
-            binaries.all {
-                println it.toolChain.name
-                if (it.toolChain.name == 'roborioGcc') {
-                    println 'skippingBuild'
-                    buildable = false
-                }
-                useLibrary(it, 'wpilib', 'gtest')
-                cppCompiler.define "RUNNING_GTEST"
-            }
-
-            sources.cpp {
-                source {
-                    srcDir 'src/test'
-                    include '**/*.cpp'
-                }
-            }
-        }
     }
 }
 

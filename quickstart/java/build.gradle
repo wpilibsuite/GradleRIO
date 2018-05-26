@@ -2,14 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.05.23"
-}
-
-repositories {
-    maven {
-        url "${System.getProperty('user.home')}/releases/maven/development"
-    }
-    mavenCentral()
+    id "jaci.openrio.gradle.GradleRIO" version "2018.05.25"
 }
 
 def TEAM = 5333
