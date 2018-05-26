@@ -45,7 +45,7 @@ Please note that your java files must be in `src/main/java`, not just `src/`. C+
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
+    gradleVersion = '4.7'
 }
 ```
 
@@ -53,7 +53,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018.02.17"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.05.25"
 }
 ```
 
@@ -110,10 +110,7 @@ deploy {
 // them here if you so desire. This block is not required.
 wpi {
     wpilibVersion = '...'
-    wpilibVersion = '...'
     opencvVersion = '...'
-    wpilibVersion = '...'
-    wpilibVersion = '...'
 
     ctreVersion = '...'
     ctreLegacyVersion = '...'   // NOTE: Legacy Toolsuite
@@ -149,18 +146,17 @@ model {
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
+
+            // Add the libraries you wish to use in your NATIVE project.
+            // WPILib adds WPILibC, NTCore, OpenCV, CSCore among others.
+            // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
+            // NavX adds the NavX IMU library.
+            useLibrary(it, "wpilib", "navx", "ctre")
             sources.cpp {
                 source {
                     srcDir 'src/main/cpp'
                 }
-                // Add the libraries you wish to use in your NATIVE project.
-                // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-                // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
-                // NavX adds the NavX IMU library.
-                lib library: "wpilib"
-                lib library: "navx"
-                lib library: "ctre"
-                // lib library: "ctre_legacy"   // NOTE: Legacy Toolsuite. Use above ctre() if you're not sure.
+
             }
         }
     }
