@@ -21,3 +21,4 @@ bin/
 .classpath
 out/
 hs_err_*
+.vscode/

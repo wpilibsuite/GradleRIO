@@ -10,7 +10,7 @@ class WPICommonDeps implements Plugin<Project> {
     void apply(Project project) {
         project.repositories.maven { repo ->
             repo.name = "WPI"
-            repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
+            repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"
         }
 
         project.repositories.maven { repo ->

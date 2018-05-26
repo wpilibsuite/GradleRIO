@@ -10,21 +10,21 @@ GradleRIO will not only deploy to your RoboRIO, but also to Coprocessors like th
 
 GradleRIO will work with Eclipse or IntelliJ IDEA (for Java), and CLion or Visual Studio (for C++). Don't worry, you don't need an IDE if you don't want one, you can use Visual Studio Code, Notepad++, Sublime Text, Vim, or whatever you want, since all builds are done from the command line.
 
-## Commands  
-Windows Users: It is recommended to use Powershell instead of CMD.  
-- ```./gradlew build``` will build your Robot Code  
-- ```./gradlew deploy``` will build and deploy your code.    
-- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).  
+## Commands
+Windows Users: It is recommended to use Powershell instead of CMD.
+- ```./gradlew build``` will build your Robot Code
+- ```./gradlew deploy``` will build and deploy your code.
+- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).
 
-- ```./gradlew smartDashboard``` will launch Smart Dashboard  
-- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.  
+- ```./gradlew smartDashboard``` will launch Smart Dashboard
+- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
 - ```./gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
 
 ## IDE Commands
-- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
-- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)  
+- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)
+- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
@@ -38,14 +38,14 @@ Read the docs [here](docs/) to get started. They are much more descriptive than 
 To get GradleRIO, download the [Quickstart Zip](Quickstart.zip) and unzip it to your project directory.
 Please note that your java files must be in `src/main/java`, not just `src/`. C++ files are in `src/cpp` and `src/include`.
 
-**C++ Users**: Run `./gradlew installToolchain` in order to install the FRC Toolchain.  
+**C++ Users**: Run `./gradlew installToolchain` in order to install the FRC Toolchain.
 **Java Users**: The Java installation will be automatically deployed to your RoboRIO. You do not need to use the Java Installer.
 
 ## Upgrading
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
+    gradleVersion = '4.7'
 }
 ```
 
@@ -53,7 +53,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018.02.17"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.05.25"
 }
 ```
 
@@ -110,10 +110,7 @@ deploy {
 // them here if you so desire. This block is not required.
 wpi {
     wpilibVersion = '...'
-    ntcoreVersion = '...'
     opencvVersion = '...'
-    cscoreVersion = '...'
-    wpiutilVersion = '...'
 
     ctreVersion = '...'
     ctreLegacyVersion = '...'   // NOTE: Legacy Toolsuite
@@ -139,7 +136,7 @@ dependencies {
 // Java only. Setup your Jar File.
 jar {
     // Compile a 'fat jar' (libraries included)
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     // Include your Manifest. Arguments are your Robot Main Class.
     manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.myClass')
 }
@@ -149,18 +146,17 @@ model {
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
+
+            // Add the libraries you wish to use in your NATIVE project.
+            // WPILib adds WPILibC, NTCore, OpenCV, CSCore among others.
+            // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
+            // NavX adds the NavX IMU library.
+            useLibrary(it, "wpilib", "navx", "ctre")
             sources.cpp {
                 source {
                     srcDir 'src/main/cpp'
                 }
-                // Add the libraries you wish to use in your NATIVE project.
-                // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-                // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
-                // NavX adds the NavX IMU library.
-                lib library: "wpilib"
-                lib library: "navx"
-                lib library: "ctre"
-                // lib library: "ctre_legacy"   // NOTE: Legacy Toolsuite. Use above ctre() if you're not sure.
+
             }
         }
     }
@@ -168,8 +164,8 @@ model {
 
 // GradleRIO reports some anonymous data to aid in future development
 // This includes your gradle version, dependencies, plugins and versions.
-// It does NOT include your IP address, username, password, or other confidential 
-// data. 
+// It does NOT include your IP address, username, password, or other confidential
+// data.
 // You can choose to disable this telemetry if you're paranoid.
 // Telemetry is, by default, enabled.
 telemetry {

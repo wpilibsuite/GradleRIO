@@ -25,4 +25,6 @@ public:
     void TestPeriodic() { }
 };
 
-START_ROBOT_CLASS(Robot)
+#ifndef RUNNING_FRC_TESTS
+int main() { return frc::StartRobot<Robot>(); }
+#endif
