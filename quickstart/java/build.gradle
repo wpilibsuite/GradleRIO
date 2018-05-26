@@ -5,6 +5,10 @@ plugins {
     id "jaci.openrio.gradle.GradleRIO" version "2018.05.25"
 }
 
+repositories {
+    mavenCentral()
+}
+
 def TEAM = 5333
 def ROBOT_CLASS = "frc.team0000.robot.Robot"
 

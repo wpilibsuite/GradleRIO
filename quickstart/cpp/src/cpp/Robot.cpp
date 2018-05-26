@@ -1,11 +1,6 @@
 #include "WPILib.h"
 #include "MyHeader.h"
 
-#ifdef RUNNING_GTEST
-#include "HAL/HAL.h"
-#include "gtest/gtest.h"
-#endif
-
 using namespace frc;
 
 // From MyHeader.h
@@ -30,13 +25,6 @@ public:
     void TestPeriodic() { }
 };
 
-#ifndef RUNNING_GTEST
+#ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
-#else
-int main(int argc, char** argv) {
-    HAL_Initialize(500, 0);
-    ::testing::InitGoogleTest(&argc, argv);
-    int ret = RUN_ALL_TESTS();
-    return ret;
-}
 #endif
