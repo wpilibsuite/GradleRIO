@@ -93,6 +93,11 @@ dependencies {
     testCompile "junit:junit:4.11"
 }
 
+wpi {
+    toolchainVersionLow = "5.5"
+    toolchainVersionHigh = "5.5"
+}
+
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.MyClass')

@@ -1,4 +1,4 @@
-package jaci.openrio.gradle.wpi.toolchain.discover
+package jaci.openrio.gradle.wpi.toolchain
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
@@ -12,24 +12,55 @@ import org.gradle.process.internal.ExecAction
 import org.gradle.process.internal.ExecActionFactory
 import org.gradle.process.internal.JavaExecAction
 import org.gradle.util.TreeVisitor
+import org.gradle.util.VersionNumber
 
 @CompileStatic
-abstract class AbstractToolchainDiscoverer {
+class ToolchainDiscoverer {
 
+    String name
     GccMetadataProvider metadataProvider
+    Optional<GccMetadata> metadataLazy
+    Optional<File> rootDir
+    String versionLo, versionHi
     Project project
 
-    AbstractToolchainDiscoverer(Project project) {
+    ToolchainDiscoverer(String name, Project project, File rootDir) {
+        this.name = name
         this.project = project
+        this.rootDir = optFile(rootDir)
+        this.versionLo = null
+        this.versionHi = null
+        this.metadataLazy = Optional.empty()
         FileResolver fileResolver = new IdentityFileResolver()
         ExecActionFactory execActionFactory = new DefaultExecActionFactory(fileResolver)
         this.metadataProvider = GccMetadataProvider.forGcc(execActionFactory)
     }
 
-    abstract Optional<File> rootDir()
+    void configureVersionChecking(String low, String high) {
+        versionLo = low
+        versionHi = high
+    }
+
+    Optional<File> rootDir() {
+        return rootDir
+    }
 
     boolean exists() {
         return metadata().isPresent()
+    }
+
+    boolean versionValid() {
+        if (!exists())
+            return false
+
+        def v = metadata().get().version
+        def lowValid = versionLo == null || v.compareTo(VersionNumber.parse(versionLo)) >= 0
+        def highValid = versionHi == null || v.compareTo(VersionNumber.parse(versionHi)) <= 0
+        return lowValid && highValid
+    }
+
+    boolean valid() {
+        return exists() && versionValid()
     }
 
     Optional<File> binDir() {
@@ -64,7 +95,10 @@ abstract class AbstractToolchainDiscoverer {
     }
 
     Optional<GccMetadata> metadata(TreeVisitor<? extends String> visitor = null) {
-        return metadata(gccFile().orElse(null), visitor)
+        if (!metadataLazy.isPresent()) {
+            metadataLazy = metadata(gccFile().orElse(null), visitor)
+        }
+        return metadataLazy
     }
 
     Optional<GccMetadata> metadata(File file, TreeVisitor<? extends String> visitor = null) {
@@ -77,10 +111,16 @@ abstract class AbstractToolchainDiscoverer {
     }
 
     void explain(TreeVisitor<? extends String> visitor) {
-        boolean exists = exists()
-        visitor.node("Found: " + (exists ? "true" : "false"))
-
         visitor.with {
+            node("Valid?: " + valid())
+            node("Found?: " + exists())
+            node("Version Range")
+            startChildren()
+                node("Low: " + versionLo)
+                node("High: " + versionHi)
+                node("Is Valid?: " + versionValid())
+            endChildren()
+
             node("Root: " + rootDir().orElse(null))
             node("Bin: " + binDir().orElse(null))
             node("Lib: " + libDir().orElse(null))
@@ -88,7 +128,7 @@ abstract class AbstractToolchainDiscoverer {
             node("Gcc: " + gccFile().orElse(null))
             node("Gdb: " + gdbFile().orElse(null))
 
-            if (exists) {
+            if (exists()) {
                 def meta = metadata().get()
 
                 node("Metadata")

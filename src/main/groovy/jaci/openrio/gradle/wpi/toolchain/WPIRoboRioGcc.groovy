@@ -1,10 +1,7 @@
 package jaci.openrio.gradle.wpi.toolchain
 
 import groovy.transform.CompileStatic
-import jaci.openrio.gradle.wpi.toolchain.discover.AbstractToolchainDiscoverer
 import jaci.openrio.gradle.wpi.toolchain.install.AbstractToolchainInstaller
-import jaci.openrio.gradle.wpi.toolchain.install.LinuxToolchainInstaller
-import jaci.openrio.gradle.wpi.toolchain.install.MacOSToolchainInstaller
 import org.apache.log4j.Logger
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -34,8 +31,8 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                 metaDataProviderFactory.gcc(), systemLibraryDiscovery, instantiator, workerLeaseService)
 
         AbstractToolchainInstaller activeInstaller = WPIToolchainPlugin.getActiveInstaller()
-        AbstractToolchainDiscoverer toolchainDiscoverer = project.plugins.getPlugin(WPIToolchainPlugin).discoverRoborioToolchain()
-        Logger.getLogger(this.class).info("Using Toolchain: " + toolchainDiscoverer.class.name)
+        ToolchainDiscoverer toolchainDiscoverer = project.plugins.getPlugin(WPIToolchainPlugin).discoverRoborioToolchain()
+        Logger.getLogger(this.class).info("Using Toolchain: " + toolchainDiscoverer.name)
         // On Linux, we can't specify the install location of the apt-get package, so instead we
         // assume it's on the system path
         boolean customPath = toolchainDiscoverer.sysroot().isPresent()

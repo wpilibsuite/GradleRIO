@@ -1,12 +1,8 @@
 package jaci.openrio.gradle.wpi.toolchain
 
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
 import jaci.openrio.gradle.GradleRIOPlugin
-import jaci.openrio.gradle.wpi.toolchain.discover.AbstractToolchainDiscoverer
-import jaci.openrio.gradle.wpi.toolchain.discover.FRCHomeToolchainDiscoverer
-import jaci.openrio.gradle.wpi.toolchain.discover.GradleToolchainDiscoverer
-import jaci.openrio.gradle.wpi.toolchain.discover.SystemPathToolchainDiscoverer
+import jaci.openrio.gradle.wpi.WPIExtension
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.apache.log4j.Logger
 import org.gradle.api.NamedDomainObjectFactory
@@ -27,11 +23,14 @@ import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
+import org.gradle.process.ExecSpec
 import org.gradle.process.internal.ExecActionFactory
 import org.gradle.util.TreeVisitor
 
 @CompileStatic
 class WPIToolchainPlugin implements Plugin<Project> {
+
+    final String homeEnv = "FRC_2018ALPHA_HOME"
 
     @CompileStatic
     class ToolchainNotFoundException extends RuntimeException {
@@ -46,16 +45,10 @@ class WPIToolchainPlugin implements Plugin<Project> {
         new LinuxToolchainInstaller()
     ]
 
-    List<AbstractToolchainDiscoverer> toolchainDiscoverers
+    List<ToolchainDiscoverer> toolchainDiscoverers
 
     @Override
     void apply(Project project) {
-        toolchainDiscoverers = [
-            new FRCHomeToolchainDiscoverer(project),
-            new GradleToolchainDiscoverer(project),
-            new SystemPathToolchainDiscoverer(project)
-        ]
-
         def rootInstallTask = project.task("installToolchain") { Task task ->
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
@@ -82,6 +75,40 @@ class WPIToolchainPlugin implements Plugin<Project> {
         }
     }
 
+    void createToolchainDiscoverers(Project project) {
+        toolchainDiscoverers = [] as ArrayList
+        WPIExtension wpiExtension = project.extensions.getByType(WPIExtension)
+
+        // FRC Home
+        def envvar = System.getenv(homeEnv)
+        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, envvar == null ? null : new File(envvar))
+
+        // GradleRIO ~/.gradle/gradlerio
+        toolchainDiscoverers << new ToolchainDiscoverer("GradleRIO Home", project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))
+
+        // System Path
+        def os = new ByteArrayOutputStream()
+        project.exec { ExecSpec spec ->
+            def tool = ToolchainDiscoverer.composeTool("g++")
+            if (OperatingSystem.current().isWindows())
+                spec.commandLine("where.exe", tool)
+            else
+                spec.commandLine("which", tool)
+
+            spec.standardOutput = os
+            spec.ignoreExitValue = true
+        }
+        def paths = os.toString().trim().split("\n").collect { String path -> path.trim() }.findAll { String path -> !path.empty } as List<String>
+        paths.eachWithIndex { String path, int index ->
+            toolchainDiscoverers << new ToolchainDiscoverer("System Path " + index, project, new File(path).parentFile.parentFile)
+        }
+
+        // Populate Version Information
+        toolchainDiscoverers.each { ToolchainDiscoverer t ->
+            t.configureVersionChecking(wpiExtension.toolchainVersionLow, wpiExtension.toolchainVersionHigh)
+        }
+    }
+
     public static AbstractToolchainInstaller getActiveInstaller() {
         def toolchains = toolchainInstallers.findAll { t ->
             return t.installable()
@@ -90,8 +117,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
         return toolchains.first()
     }
 
-    public AbstractToolchainDiscoverer discoverRoborioToolchain() {
-        def d = toolchainDiscoverers.find { AbstractToolchainDiscoverer t -> t.exists() }
+    public ToolchainDiscoverer discoverRoborioToolchain() {
+        def d = toolchainDiscoverers.find { ToolchainDiscoverer t -> t.valid() }
         if (d == null) {
             Logger.getLogger(this.class).info(explainToolchains())
             throw new ToolchainNotFoundException("No valid toolchain(s) found! Information dumped to info log (run with --info)")
@@ -117,8 +144,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
     String explainToolchains() {
         TreeVisitor<String> formatter = new TreeFormatter()
-        toolchainDiscoverers.each { AbstractToolchainDiscoverer tcd ->
-            formatter.node(tcd.class.simpleName)
+        toolchainDiscoverers.each { ToolchainDiscoverer tcd ->
+            formatter.node(tcd.name)
             formatter.startChildren()
             tcd.explain(formatter)
             formatter.endChildren()
@@ -139,6 +166,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
             final SystemLibraryDiscovery standardLibraryDiscovery = serviceRegistry.get(SystemLibraryDiscovery.class);
 
             final Project project = extContainer.getByType(GradleRIOPlugin.ProjectWrapper).project
+
+            project.plugins.getPlugin(WPIToolchainPlugin).createToolchainDiscoverers(project)
 
             toolChainRegistry.registerFactory(WPIRoboRioGcc.class, new NamedDomainObjectFactory<WPIRoboRioGcc>() {
                 public WPIRoboRioGcc create(String name) {

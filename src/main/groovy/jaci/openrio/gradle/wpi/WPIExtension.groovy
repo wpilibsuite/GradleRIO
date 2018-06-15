@@ -27,6 +27,8 @@ class WPIExtension {
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
+    String toolchainVersionLow = "5.5"
+    String toolchainVersionHigh = "5.5"
 
     // OpenRIO Dependencies
     String pathfinderVersion = "1.8"
