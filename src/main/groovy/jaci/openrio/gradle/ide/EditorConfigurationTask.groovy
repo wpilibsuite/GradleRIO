@@ -25,14 +25,14 @@ class EditorConfigurationTask extends DefaultTask {
         def cfg = [:]
 
         // Compiler
-        def compilerDir = WPIToolchainPlugin.toolchainInstallDirectory()
+        def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin).discoverRoborioToolchain()
         def dCompiler = [
-            toolchainDir     : compilerDir.absolutePath,
-            gdbPath          : new File(WPIToolchainPlugin.toolchainInstallDirectory(), "bin/arm-frc-linux-gnueabi-gdb" + (isWin ? ".exe" : "")).absolutePath,
-            compilerPath     : new File(WPIToolchainPlugin.toolchainInstallDirectory(), "bin/arm-frc-linux-gnueabi-g++" + (isWin ? ".exe" : "")).absolutePath,
-            sysroot          : (WPIToolchainPlugin.getActiveInstaller() instanceof LinuxToolchainInstaller) ? null : WPIToolchainPlugin.toolchainInstallDirectory().absolutePath,
-            compilerHeaders  : new File(WPIToolchainPlugin.toolchainInstallDirectory(), "include").absolutePath,
-            compilerLibraries: new File(WPIToolchainPlugin.toolchainInstallDirectory(), "lib").absolutePath
+            toolchainDir     : toolchainD.rootDir().get().absolutePath,
+            gdbPath          : toolchainD.gdbFile().get().absolutePath,
+            compilerPath     : toolchainD.gccFile().get().absolutePath,
+            sysroot          : toolchainD.sysroot().map({ File f -> f.absolutePath }).orElse(null),
+            compilerHeaders  : toolchainD.includeDir().get(),
+            compilerLibraries: toolchainD.libDir().get()
         ]
 
         cfg['compiler'] = dCompiler

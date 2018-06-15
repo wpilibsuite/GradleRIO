@@ -100,8 +100,10 @@ class FRCNativeArtifact extends NativeArtifact {
 
             def filepath = _nativefile.absolutePath.replaceAll("\\\\", "/")
             def target = ctx.selectedHost() + ":" + debugPort
-            def gdbpath = new File(WPIToolchainPlugin.toolchainInstallDirectory(), "bin/arm-frc-linux-gnueabi-gdb" + (isWin ? ".exe" : "")).absolutePath
-            def sysroot = (WPIToolchainPlugin.getActiveInstaller() instanceof LinuxToolchainInstaller) ? null : WPIToolchainPlugin.toolchainInstallDirectory().absolutePath
+            def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
+
+            def gdbpath = toolchainD.gdbFile().get().absolutePath
+            def sysroot = toolchainD.sysroot().orElse(null)
 
             // .debugconfig
 
