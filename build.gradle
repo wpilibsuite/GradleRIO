@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
 //    compile 'jaci.gradle:EmbeddedTools:2018.05.05'
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.05.19a'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.06.18'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
 }

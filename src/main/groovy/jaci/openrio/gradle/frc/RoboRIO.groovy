@@ -12,6 +12,10 @@ class RoboRIO extends RemoteTarget {
         this.user = 'admin'
         this.password = ''
 
+        // 2 Core RoboRIO processor. You can increase this number, but depending on your machine,
+        // your network connection, your code CPU usage and other factors, you may find deploys
+        // start failing since there are too many SSH sessions open at once.
+        this.maxChannels = 2
     }
 
     int team
