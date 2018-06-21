@@ -9,13 +9,13 @@ Edit your `build.gradle` so that it deploys debugging libs.
 deploy {
     artifacts {
         // Java
-        artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
+        artifact('frcJava', FRCJavaArtifact) {
             targets << "roborio"
             debug = true        // Add this line
         }
 
         // C++
-        artifact('frcNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+        artifact('frcNative', FRCNativeArtifact) {
             targets << "roborio"
             component = 'frcUserProgram'
             debug = true        // Add this line

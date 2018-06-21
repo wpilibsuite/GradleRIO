@@ -61,7 +61,7 @@ NOTE: This section is for advanced users. View the quickstart and examples for y
 ```gradle
 deploy {
     targets {
-        target('roborio', jaci.openrio.gradle.frc.RoboRIO) {
+        target('roborio', RoboRIO) {
             team = 5333
             // Other values can be edited through EmbeddedTools.
             // See https://github.com/JacisNonsense/EmbeddedTools#spec
@@ -71,7 +71,7 @@ deploy {
     }
     artifacts {
         // Setup a Java Artifact. Required for Java Users.
-        artifact('myJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
+        artifact('myJava', FRCJavaArtifact) {
             targets << 'roborio'
 
             jvmArgs << '-Xmx=128m'      // Set more JVM Arguments. Optional.
@@ -85,7 +85,7 @@ deploy {
         }
 
         // Setup a C++ (Native) Artifact. Required for C++ (Native) Users
-        artifact('myNative', jaci.openrio.gradle.frc.FRCNativeArtifact) {
+        artifact('myNative', FRCNativeArtifact) {
             targets << 'roborio'
             component = 'myFrcBinary'   // The name of the component you wish to build (required).
 
@@ -138,7 +138,7 @@ jar {
     // Compile a 'fat jar' (libraries included)
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
     // Include your Manifest. Arguments are your Robot Main Class.
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest('test.myClass')
+    manifest GradleRIOPlugin.javaManifest('test.myClass')
 }
 
 // Set up your Native (C++) projects. Not needed in Java.

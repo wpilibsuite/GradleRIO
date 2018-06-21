@@ -31,15 +31,15 @@ buildScanRecipes {
     recipes 'git-commit', 'git-status', 'travis-ci', 'disk-usage', 'gc-stats'
 }
 
-group = "jaci.openrio.gradle"
+group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2018.05.05"
+version = "2018.06.21"
 
 pluginBundle {
-    website = 'https://github.com/Open-RIO/GradleRIO'
-    vcsUrl = 'https://github.com/Open-RIO/GradleRIO'
-    description = 'Managing FRC projects, the Gradle way'
-    tags = ['frc', 'wpilib', 'openrio', 'gradlerio']
+    website = 'https://github.com/wpilibsuite/GradleRIO'
+    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
+    description = 'Managing FRC projects, the Gradle way (2019+)'
+    tags = ['frc', 'wpilib', 'gradlerio']
 
     plugins {
         gradleRio {
@@ -65,34 +65,10 @@ publishing {
 gradlePlugin {
     plugins {
         gradleRio {
-            id = 'jaci.openrio.gradle.GradleRIO'
-            implementationClass = 'jaci.openrio.gradle.GradleRIOPlugin'
+            id = 'edu.wpi.first.GradleRIO'
+            implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
         }
     }
-}
-
-task deleteQuickstart() {
-    doLast {
-        def f = new File("Quickstart.zip")
-        if (f.exists()) f.delete()
-    }
-}
-
-task zipQuickstart(type: Zip) {
-    dependsOn deleteQuickstart
-    from('quickstart')
-    include '**/*.cpp', '**/*.hpp', '**/*.h', "**/*.java", '**/gradle/**/*', '**/build.gradle', '**/settings.gradle', '**/gradlew', '**/gradlew.bat', '**/.gitignore'
-    exclude '.vscode/**/*', '.gradle/**/*', 'build/**/*'
-    destinationDir projectDir
-    archiveName 'Quickstart.zip'
-}
-
-build.dependsOn zipQuickstart
-
-// Release both plugin and build other projects
-task fullRelease() {
-    dependsOn publishPlugins
-    dependsOn zipQuickstart
 }
 
 task wrapper(type: Wrapper) {

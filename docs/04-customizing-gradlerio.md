@@ -9,7 +9,7 @@ If, for some reason, you wish to use a custom IP address for your RoboRIO, you c
 ```gradle
 deploy {
     targets {
-        target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
+        target("roborio", RoboRIO) {
             team = TEAM
             addresses << '10.MY.IP.2'   // Add this line
         }
