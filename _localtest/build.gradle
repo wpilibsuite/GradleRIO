@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
 //        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2018.05.19'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.06.18'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.06.24'
         classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2018.06.21'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
@@ -42,7 +42,6 @@ deploy {
     targets {
         target('roborio5333', edu.wpi.first.gradlerio.frc.RoboRIO) {
             team = getTeamOrDefault(5333)
-            println(team)
         }
     }
     artifacts {
@@ -50,7 +49,6 @@ deploy {
             targets << 'roborio5333'
             robotCommand = false
             debug = getDebugOrDefault(false)
-            println(debug)
         }
         artifact('frcNative', edu.wpi.first.gradlerio.frc.FRCNativeArtifact) {
             targets << 'roborio5333'
