@@ -1,8 +1,11 @@
 package edu.wpi.first.gradlerio.frc.riolog
 
+import groovy.transform.CompileStatic
+
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
+@CompileStatic
 class InfoFrame implements Frames.Frame {
 
     @Override

@@ -1,5 +1,8 @@
 package edu.wpi.first.gradlerio.frc.riolog
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class FakeDSConnector {
 
     String targetAddress

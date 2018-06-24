@@ -1,9 +1,13 @@
 package edu.wpi.first.gradlerio.frc.riolog
 
+import groovy.transform.CompileStatic
+
 import java.nio.ByteBuffer
 
+@CompileStatic
 class Frames {
 
+    @CompileStatic
     static interface Frame {
         int tag()
         void process(ByteBuffer data, int length)

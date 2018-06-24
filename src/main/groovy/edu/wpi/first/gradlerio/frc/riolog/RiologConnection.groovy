@@ -1,7 +1,10 @@
 package edu.wpi.first.gradlerio.frc.riolog
 
+import groovy.transform.CompileStatic
+
 import java.nio.ByteBuffer
 
+@CompileStatic
 class RiologConnection {
 
     Socket socket
