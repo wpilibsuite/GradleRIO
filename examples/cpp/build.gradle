@@ -1,0 +1,51 @@
+plugins {
+    id "cpp"
+    id "edu.wpi.first.GradleRIO" version "2018.06.21"
+}
+
+// Define my targets (RoboRIO) and artifacts (deployable files)
+// This is added by GradleRIO's backing project EmbeddedTools.
+deploy {
+    targets {
+        target("roborio", edu.wpi.first.gradlerio.frc.RoboRIO) {
+            // Team can be overridden by command line, for use with VSCode
+            team = getTeamOrDefault(5333)
+        }
+    }
+    artifacts {
+        artifact('frcCpp', edu.wpi.first.gradlerio.frc.FRCNativeArtifact) {
+            targets << "roborio"
+            component = 'frcUserProgram'
+            // Debug can be overridden by command line, for use with VSCode
+            debug = getDebugOrDefault(false)
+        }
+    }
+}
+
+model {
+    components {
+        frcUserProgram(NativeExecutableSpec) {
+            targetPlatform 'roborio'
+
+            // -g is the debug information flag. You should leave this here, unless
+            // you have good reason to remove it.
+            binaries.all {
+                cppCompiler.args('-g')
+            }
+
+            sources.cpp {
+                source {
+                    srcDir 'src/main/cpp'
+                }
+            }
+
+            // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
+            // and NavX.
+            useLibrary(it, "wpilib", "ctre", "navx")
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.7'
+}

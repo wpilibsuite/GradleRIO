@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.50"
+    id "java"
     id "edu.wpi.first.GradleRIO" version "2018.06.21"
 }
 
@@ -15,17 +15,12 @@ deploy {
         }
     }
     artifacts {
-        // We still use FRCJavaArtifact since kotlin does respond as a Java build.
-        artifact('frcKotlin', edu.wpi.first.gradlerio.frc.FRCJavaArtifact) {
+        artifact('frcJava', edu.wpi.first.gradlerio.frc.FRCJavaArtifact) {
             targets << "roborio"
             // Debug can be overridden by command line, for use with VSCode
             debug = getDebugOrDefault(false)
         }
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
@@ -34,9 +29,6 @@ dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
-
-    // We need to add the Kotlin stdlib in order to use most Kotlin language features.
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
