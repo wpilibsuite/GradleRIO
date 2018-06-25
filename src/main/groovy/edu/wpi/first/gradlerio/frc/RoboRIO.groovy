@@ -22,10 +22,6 @@ class RoboRIO extends RemoteTarget {
         // start failing since there are too many SSH sessions open at once.
         this.maxChannels = 2
 
-        this.failureMessage = { List<TargetDiscoveryTask.TargetFailedException> reasons ->
-            roborioFailureMessage(reasons)
-        }
-
         this.onlyIf = { DeployContext ctx ->
             verifyOnlyIf(ctx)
         }
@@ -80,15 +76,6 @@ class RoboRIO extends RemoteTarget {
     void verifyImageVersion(String image) {
         if (!validImageVersions.contains(image))
             throw new InvalidImageException(image, validImageVersions)
-    }
-
-    String roborioFailureMessage(List<TargetDiscoveryTask.TargetFailedException> reasons) {
-        def imageReasons = reasons.findAll { it.getCause() instanceof InvalidImageException }
-        if (!imageReasons.empty) {
-            return (imageReasons.first().getCause() as InvalidImageException).getMessage()
-        } else {
-            return "Target ${name} could not be located! ${failOnMissing ? "Failing..." : "Skipping..."}"
-        }
     }
 
     @Override
