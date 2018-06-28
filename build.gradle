@@ -33,7 +33,7 @@ buildScanRecipes {
 
 group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2018.06.21"
+version = "2019.0.0-alpha-1"
 
 pluginBundle {
     website = 'https://github.com/wpilibsuite/GradleRIO'

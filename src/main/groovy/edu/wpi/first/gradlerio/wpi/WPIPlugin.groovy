@@ -5,9 +5,12 @@ import edu.wpi.first.gradlerio.wpi.dependencies.WPIJavaDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIToolsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import jaci.gradle.IndentedLogger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.internal.logging.text.StyledTextOutput
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
@@ -36,6 +39,15 @@ class WPIPlugin implements Plugin<Project> {
                     println "${tup.first()}: ${tup[1]} (${key})"
                 }
             }
+        }
+
+        // TODO: Remove for stable, update for 2019 corelibs when appropriate
+        project.afterEvaluate {
+            def log = new IndentedLogger((project as ProjectInternal).services, 0);
+            def style = StyledTextOutput.Style.SuccessHeader
+            log.logStyle("NOTE: You are using an ALPHA version of GradleRIO, designed for the 2019 Season!", style)
+            log.logStyle("This release uses the 2018 Core Libraries, however all tooling (GradleRIO + IDE support) is incubating for 2019", style)
+            log.logStyle("If you encounter any issues and/or bugs, please report them to http://github.com/wpilibsuite/GradleRIO", style)
         }
     }
 
