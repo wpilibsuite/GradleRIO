@@ -1,10 +1,10 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.NativeDepsSpec
 import jaci.gradle.nativedeps.NativeLib
-import edu.wpi.first.gradlerio.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer

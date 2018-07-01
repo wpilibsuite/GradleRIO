@@ -1,18 +1,18 @@
 package edu.wpi.first.gradlerio.test.sim
 
-import java.nio.file.Paths
-
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
+import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
-import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet
 import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
-import org.gradle.nativeplatform.toolchain.Clang
 import org.gradle.nativeplatform.tasks.InstallExecutable
+import org.gradle.nativeplatform.toolchain.Clang
+
+import java.nio.file.Paths
 
 @CompileStatic
 class NativeExternalSimulationTask extends DefaultTask {

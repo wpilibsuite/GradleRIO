@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.frc
 
 import de.undercouch.gradle.tasks.download.DownloadAction
+import edu.wpi.first.gradlerio.GradleRIOPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deploy.DeployContext
@@ -10,7 +11,6 @@ import jaci.gradle.deploy.target.RemoteTarget
 import jaci.gradle.deploy.tasks.ArtifactDeployTask
 import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 import jaci.gradle.nativedeps.DelegatedDependencySet
-import edu.wpi.first.gradlerio.GradleRIOPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task

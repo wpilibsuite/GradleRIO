@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.ExternalLaunchTask
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.jvm.Jvm

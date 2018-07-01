@@ -1,19 +1,16 @@
 package edu.wpi.first.gradlerio.wpi.toolchain
 
-import edu.wpi.first.gradlerio.wpi.toolchain.install.AbstractToolchainInstaller
-import edu.wpi.first.gradlerio.wpi.toolchain.install.LinuxToolchainInstaller
-import edu.wpi.first.gradlerio.wpi.toolchain.install.MacOSToolchainInstaller
-import edu.wpi.first.gradlerio.wpi.toolchain.install.NoToolchainInstallersException
-import edu.wpi.first.gradlerio.wpi.toolchain.install.WindowsToolchainInstaller
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.gradlerio.wpi.toolchain.install.*
+import groovy.transform.CompileStatic
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.apache.log4j.Logger
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.internal.operations.BuildOperationExecutor
@@ -24,10 +21,15 @@ import org.gradle.internal.text.TreeFormatter
 import org.gradle.internal.work.WorkerLeaseService
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
+import org.gradle.nativeplatform.platform.NativePlatform
+import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
+import org.gradle.platform.base.BinaryContainer
+import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.ExecSpec
 import org.gradle.process.internal.ExecActionFactory
 import org.gradle.util.TreeVisitor
@@ -35,10 +37,12 @@ import org.gradle.util.TreeVisitor
 @CompileStatic
 class WPIToolchainPlugin implements Plugin<Project> {
 
-    final String homeEnv = "FRC_2018ALPHA_HOME"
+    static final String homeEnv = "FRC_2018ALPHA_HOME"
+    static final String discovererGradleRIO = "GradleRIO Home"
+    static final String notoolchainMessage = "No valid RoboRIO toolchain(s) found! Run `./gradlew installToolchain`, or run with `--info` for more details."
 
     @CompileStatic
-    class ToolchainNotFoundException extends RuntimeException {
+    static class ToolchainNotFoundException extends RuntimeException {
         ToolchainNotFoundException(String msg) {
             super(msg)
         }
@@ -54,17 +58,26 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def rootInstallTask = project.task("installToolchain") { Task task ->
+        def rootInstallTask = project.tasks.create("installToolchain", ToolchainInstallTask) { ToolchainInstallTask task ->
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
+        }
 
-            task.doLast {
-                AbstractToolchainInstaller installer = getActiveInstaller()
+        // Cancel all other tasks when installing the toolchain, if the toolchain is ready
+        project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
+            def installTask = graph.allTasks.find { Task t -> t instanceof ToolchainInstallTask } as ToolchainInstallTask
+            if (installTask != null && installTask.needsInstall()) {
+                project.tasks.each { Task t ->
+                    if (!(t instanceof ToolchainInstallTask))
+                        t.setEnabled(false)
+                }
 
-                if (installer == null) {
-                    throw new NoToolchainInstallersException("Cannot install Toolchain! (No Installers for this Platform)")
-                } else {
-                    installer.installToolchain(task.project)
+                def cancelled = graph.allTasks.findAll { Task t -> !(t instanceof ToolchainInstallTask) }
+                if (cancelled.size() > 0) {
+                    println("Installing Toolchain requires being the only task running. Cancelling the following task(s):")
+                    cancelled.each { Task t ->
+                        println("- " + t.name)
+                    }
                 }
             }
         }
@@ -89,7 +102,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
         toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, envvar == null ? null : new File(envvar))
 
         // GradleRIO ~/.gradle/gradlerio
-        toolchainDiscoverers << new ToolchainDiscoverer("GradleRIO Home", project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))
+        toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))
 
         // System Path
         def os = new ByteArrayOutputStream()
@@ -122,11 +135,15 @@ class WPIToolchainPlugin implements Plugin<Project> {
         return toolchains.first()
     }
 
+    public ToolchainDiscoverer maybeDiscoverRoborioToolchain() {
+        return toolchainDiscoverers.find { ToolchainDiscoverer t -> t.valid() }
+    }
+
     public ToolchainDiscoverer discoverRoborioToolchain() {
-        def d = toolchainDiscoverers.find { ToolchainDiscoverer t -> t.valid() }
+        def d = maybeDiscoverRoborioToolchain()
         if (d == null) {
             Logger.getLogger(this.class).info(explainToolchains())
-            throw new ToolchainNotFoundException("No valid toolchain(s) found! Information dumped to info log (run with --info)")
+            throw new ToolchainNotFoundException(notoolchainMessage)
         }
         return d
     }
@@ -180,6 +197,32 @@ class WPIToolchainPlugin implements Plugin<Project> {
                 }
             });
             toolChainRegistry.registerDefaultToolChain('roborioGcc', WPIRoboRioGcc)
+        }
+
+        @Mutate
+        void addPlatform(PlatformContainer platforms) {
+            def roborio = platforms.maybeCreate('roborio', NativePlatform)
+            roborio.architecture('arm')
+            roborio.operatingSystem('linux')
+
+            def desktop = platforms.maybeCreate('desktop', NativePlatform)
+            System.getProperty("os.arch") == 'amd64' ? desktop.architecture('x86_64') : desktop.architecture('x86')
+
+            def anyArm = platforms.maybeCreate('anyArm', NativePlatform)
+            anyArm.architecture('arm')
+        }
+
+        @Mutate
+        void addBinaryFlags(BinaryContainer binaries) {
+            binaries.withType(NativeBinarySpec) { NativeBinarySpec bin ->
+                if (!(bin.toolChain in VisualCpp)) {
+                    bin.cppCompiler.args << "-std=c++1y" << '-g'
+                } else {
+                    bin.cppCompiler.args << '/Zi' << '/EHsc' << '/DNOMINMAX'
+                    bin.linker.args << '/DEBUG:FULL'
+                }
+                null
+            }
         }
     }
 }

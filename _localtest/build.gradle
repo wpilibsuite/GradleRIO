@@ -11,8 +11,8 @@ buildscript {
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
 //        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2018.05.19'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.06.25a'
-        classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2018.06.21'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.07.03'
+        classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2019.0.0-alpha-2'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
     }
@@ -75,6 +75,11 @@ model {
     }
 }
 
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
     compile wpilib()
     // CTRE Phoenix FRC Beta library
@@ -101,6 +106,6 @@ jar {
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest('test.MyClass')
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.8.1'
 }

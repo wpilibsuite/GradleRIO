@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.test.sim
 
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.test.ExtractTestJNITask
 import edu.wpi.first.gradlerio.test.TestPlugin
+import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -13,8 +13,8 @@ import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.model.ModelMap
-import org.gradle.model.Validate
 import org.gradle.model.RuleSource
+import org.gradle.model.Validate
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.tasks.InstallExecutable

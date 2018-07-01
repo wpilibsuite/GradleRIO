@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.wpi.toolchain.install
 
 import de.undercouch.gradle.tasks.download.DownloadAction
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
 import org.gradle.internal.os.OperatingSystem

@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.test.sim.SimulationPlugin
+import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test

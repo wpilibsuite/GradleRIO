@@ -8,9 +8,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.GccMetadata
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.GccMetadataProvider
 import org.gradle.process.internal.DefaultExecActionFactory
-import org.gradle.process.internal.ExecAction
 import org.gradle.process.internal.ExecActionFactory
-import org.gradle.process.internal.JavaExecAction
 import org.gradle.util.TreeVisitor
 import org.gradle.util.VersionNumber
 

@@ -2,12 +2,8 @@ package edu.wpi.first.gradlerio
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecSpec
-
-import java.util.stream.Collectors
 
 class ExternalLaunchTask extends DefaultTask {
 

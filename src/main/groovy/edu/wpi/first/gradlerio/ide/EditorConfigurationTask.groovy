@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.ide
 
 import com.google.gson.GsonBuilder
+import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
-import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem

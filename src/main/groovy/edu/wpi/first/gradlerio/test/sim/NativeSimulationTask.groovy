@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test.sim
 
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.ExternalLaunchTask
+import groovy.transform.CompileStatic
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem

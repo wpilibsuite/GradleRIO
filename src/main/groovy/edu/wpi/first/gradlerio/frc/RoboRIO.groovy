@@ -3,7 +3,6 @@ package edu.wpi.first.gradlerio.frc
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.target.RemoteTarget
-import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

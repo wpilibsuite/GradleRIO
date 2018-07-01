@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.frc
 
-import groovy.transform.CompileStatic
-import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 import edu.wpi.first.gradlerio.frc.riolog.FakeDSConnector
 import edu.wpi.first.gradlerio.frc.riolog.RiologConnection
+import groovy.transform.CompileStatic
+import jaci.gradle.deploy.tasks.TargetDiscoveryTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.configuration.ConsoleOutput
 import org.gradle.api.tasks.StopExecutionException

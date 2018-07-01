@@ -1,12 +1,12 @@
 package edu.wpi.first.gradlerio
 
-import groovy.transform.CompileStatic
-import jaci.gradle.EmbeddedTools
 import edu.wpi.first.gradlerio.frc.FRCPlugin
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
 import edu.wpi.first.gradlerio.wpi.WPIPlugin
+import groovy.transform.CompileStatic
+import jaci.gradle.EmbeddedTools
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.java.archives.internal.DefaultManifest

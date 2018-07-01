@@ -1,12 +1,12 @@
 package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
+import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.artifact.NativeArtifact
 import jaci.gradle.nativedeps.DelegatedDependencySet
-import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet

@@ -1,12 +1,12 @@
 package edu.wpi.first.gradlerio.test.sim
 
 import com.google.gson.GsonBuilder
+import edu.wpi.first.gradlerio.test.TestPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
-import edu.wpi.first.gradlerio.test.TestPlugin
-import org.gradle.jvm.tasks.Jar
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
+import org.gradle.jvm.tasks.Jar
 
 @CompileStatic
 class JavaExternalSimulationTask extends DefaultTask {
