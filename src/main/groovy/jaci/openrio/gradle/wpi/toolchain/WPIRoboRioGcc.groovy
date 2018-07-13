@@ -38,7 +38,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
         eachPlatform(new Action<GccPlatformToolChain>() {
             @Override
             void execute(GccPlatformToolChain target) {
-                String gccPrefix = "arm-frc-linux-gnueabi-"
+                String gccPrefix = getPrefix()
                 String gccSuffix = OperatingSystem.current().isWindows() ? ".exe" : ""
 
                 target.cCompiler.executable =           gccPrefix + "gcc" + gccSuffix
@@ -87,5 +87,9 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
     @Override
     public String getTypeName() {
         return "RoboRioGcc"
+    }
+
+    public String getPrefix() {
+        return "arm-frc-linux-gnueabi-"
     }
 }

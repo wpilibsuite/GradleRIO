@@ -13,13 +13,23 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.internal.reflect.Instantiator
 import org.gradle.internal.service.ServiceRegistry
 import org.gradle.internal.work.WorkerLeaseService
+import org.gradle.language.base.internal.ProjectLayout
+import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeExecutableBinarySpec
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.SharedLibraryBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
+import org.gradle.nativeplatform.tasks.AbstractLinkTask
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
+import org.gradle.platform.base.BinaryTasks
 import org.gradle.process.internal.ExecActionFactory
+import org.gradle.process.ExecSpec
+
+import java.nio.file.Paths
 
 @CompileStatic
 class WPIToolchainPlugin implements Plugin<Project> {
@@ -104,6 +114,48 @@ class WPIToolchainPlugin implements Plugin<Project> {
                 }
             });
             toolChainRegistry.registerDefaultToolChain('roborioGcc', WPIRoboRioGcc)
+        }
+
+        @BinaryTasks
+        void createNativeStripTasks(final ModelMap<Task> tasks, final ProjectLayout projectLayout, final NativeBinarySpec binary) {
+            def project = (Project) projectLayout.projectIdentifier
+            WPIRoboRioGcc gcc = null
+            if (binary.toolChain instanceof WPIRoboRioGcc) {
+                gcc = (WPIRoboRioGcc)binary.toolChain
+            } else {
+                return
+            }
+            Task rawLinkTask = null
+            if (binary instanceof SharedLibraryBinarySpec) {
+                rawLinkTask = ((SharedLibraryBinarySpec)binary).tasks.link
+            } else if (binary instanceof NativeExecutableBinarySpec) {
+                rawLinkTask = ((NativeExecutableBinarySpec)binary).tasks.link
+            }
+            if (!(rawLinkTask instanceof AbstractLinkTask)) {
+                return
+            }
+            AbstractLinkTask linkTask = (AbstractLinkTask)rawLinkTask
+
+            linkTask.doLast {
+                def mainFile = linkTask.linkedFile.get().asFile
+
+                if (mainFile.exists()) {
+                    def mainFileStr = mainFile.toString()
+                    def debugFile = mainFileStr + '.debug'
+
+                    def path = Paths.get(WPIToolchainPlugin.getSysroot().toString(), 'bin', gcc.prefix).toString()
+
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine path + 'objcopy', '--only-keep-debug', mainFileStr, debugFile
+                    }
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine path + 'strip', '-g', mainFileStr
+                    }
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine path + 'objcopy', "--add-gnu-debuglink=$debugFile", mainFileStr
+                    }
+                }
+            }
         }
     }
 }
