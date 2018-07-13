@@ -184,7 +184,7 @@ class ToolchainDiscoverer {
     }
 
     protected static Optional<File> join(Optional<File> f, String join) {
-        return optFile(f.map({ File file -> new File(file, join) }).orElse(null))
+        return optFile((File)(f.map({ File file -> new File(file, join) }).orElse(null)))
     }
 
     protected static Optional<File> optFile(File f) {

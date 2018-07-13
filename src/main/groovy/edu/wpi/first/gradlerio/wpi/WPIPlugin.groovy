@@ -25,7 +25,7 @@ class WPIPlugin implements Plugin<Project> {
         project.pluginManager.apply(WPIToolsPlugin)
 
         project.plugins.withType(ToolchainsPlugin).all {
-            logger.info("GradleRIO Native Project Detected".toString())
+            logger.info("DeployTools Native Project Detected".toString())
             project.pluginManager.apply(WPINativeDeps)
             project.pluginManager.apply(WPIToolchainPlugin)
         }

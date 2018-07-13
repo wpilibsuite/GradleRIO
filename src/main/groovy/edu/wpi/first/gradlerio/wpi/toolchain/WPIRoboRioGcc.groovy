@@ -62,6 +62,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
             }
 
             setTargets('roborio')
+            path("NOTOOLCHAINPATH")
         } else {
             logger.info("Using Toolchain: " + toolchainDiscoverer.name)
 
