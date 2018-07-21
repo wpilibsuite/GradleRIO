@@ -3,14 +3,15 @@ package edu.wpi.first.gradlerio.frc
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
-import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.artifact.JavaArtifact
+import jaci.gradle.deploy.context.DeployContext
+import jaci.gradle.deploy.sessions.IPSessionController
 import org.gradle.api.Project
 
 @CompileStatic
 class FRCJavaArtifact extends JavaArtifact {
-    FRCJavaArtifact(String name) {
-        super(name)
+    FRCJavaArtifact(String name, Project project) {
+        super(name, project)
         setJar('jar')
 
         predeploy << { DeployContext ctx ->
@@ -18,7 +19,7 @@ class FRCJavaArtifact extends JavaArtifact {
         }
 
         postdeploy << { DeployContext ctx ->
-            def artifactName = filename ?: _jarfile.name
+            def artifactName = filename ?: file.get().name
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
             ctx.execute("chmod +x ${artifactName}; chown lvuser ${artifactName}")
             ctx.execute("sync")
@@ -37,8 +38,8 @@ class FRCJavaArtifact extends JavaArtifact {
     }
 
     @Override
-    void deploy(Project project, DeployContext ctx) {
-        super.deploy(project, ctx)
+    void deploy(DeployContext ctx) {
+        super.deploy(ctx)
 
         if (robotCommand) {
             String rCmd = null
@@ -48,28 +49,35 @@ class FRCJavaArtifact extends JavaArtifact {
                 rCmd = (robotCommand as String)
 
             if (rCmd != null) {
-                def binFile = PathUtils.combine(ctx.workingDir(), filename ?: _jarfile.name)
+                def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
                 rCmd = rCmd.replace('<<BINARY>>', binFile)
                 ctx.execute("echo '${rCmd}' > /home/lvuser/robotCommand")
             }
         }
-        def conffile = new File(project.buildDir, "debug/${name}_${ctx.remoteTarget().name}.debugconfig")
+        def conffile = new File(project.buildDir, "debug/${name}_${ctx.deployLocation.target.name}.debugconfig")
 
         if (debug) {
-            ctx.logger().log("====================================================================")
-            ctx.logger().log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
-            ctx.logger().log("====================================================================")
+            ctx.logger.withLock {
+                ctx.logger.log("====================================================================")
+                ctx.logger.log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
+                ctx.logger.log("====================================================================")
+            }
 
-            def target = ctx.selectedHost() + ":" + debugPort
-            def dbcfg = [
-                target: target,
-                ipAddress: ctx.selectedHost(),
-                port: debugPort
-            ]
+            if (ctx.controller instanceof IPSessionController) {
+                def ip = (IPSessionController)ctx.controller
+                def target = ip.getHost() + ":" + debugPort
+                def dbcfg = [
+                        target   : target,
+                        ipAddress: ip.getHost(),
+                        port     : debugPort
+                ]
 
-            def gbuilder = new GsonBuilder()
-            gbuilder.setPrettyPrinting()
-            conffile.text = gbuilder.create().toJson(dbcfg)
+                def gbuilder = new GsonBuilder()
+                gbuilder.setPrettyPrinting()
+                conffile.text = gbuilder.create().toJson(dbcfg)
+            } else {
+                ctx.logger.log("Session Controller isn't IP Compatible. No debug file written.")
+            }
         } else {
             // Not debug, remove debug files
             if (conffile.exists()) conffile.delete()

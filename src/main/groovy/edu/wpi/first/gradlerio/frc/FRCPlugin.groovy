@@ -4,12 +4,11 @@ import de.undercouch.gradle.tasks.download.DownloadAction
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
-import jaci.gradle.deploy.DeployContext
 import jaci.gradle.deploy.DeployExtension
 import jaci.gradle.deploy.artifact.*
+import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.target.RemoteTarget
-import jaci.gradle.deploy.tasks.ArtifactDeployTask
-import jaci.gradle.deploy.tasks.TargetDiscoveryTask
+import jaci.gradle.deploy.target.discovery.TargetDiscoveryTask
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -96,7 +95,7 @@ class FRCPlugin implements Plugin<Project> {
         return project.extensions.getByType(DeployExtension)
     }
 
-    public static void allRoborioTargets(DeployExtension ext, ArtifactBase artifact) {
+    public static void allRoborioTargets(DeployExtension ext, Artifact artifact) {
         ext.targets.withType(RoboRIO).all { RoboRIO r ->
             artifact.targets << r.name
         }
@@ -138,18 +137,18 @@ class FRCPlugin implements Plugin<Project> {
                     dest.exists() && (
                             (
                                     deployExtension(project).artifacts.withType(JavaArtifact).size() > 0 &&
-                                    ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').toString().trim() != 'OK'
+                                    ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').result.toString().trim() != 'OK'
                             ) || project.hasProperty("deploy-force-jre")
                     )
                 }
-                artifact.predeploy << { DeployContext ctx -> ctx.logger().log("Deploying RoboRIO Zulu JRE....") }
+                artifact.predeploy << { DeployContext ctx -> ctx.logger.log("Deploying RoboRIO Zulu JRE....") }
                 artifact.file = dest
                 artifact.directory = '/tmp'
                 artifact.filename = 'zulujre.ipk'
                 artifact.postdeploy << { DeployContext ctx ->
                     ctx.execute('opkg remove zulu-jre*; opkg install /tmp/zulujre.ipk; rm /tmp/zulujre.ipk')
                 }
-                artifact.postdeploy << { DeployContext ctx -> ctx.logger().log("JRE Deployed!") }
+                artifact.postdeploy << { DeployContext ctx -> ctx.logger.log("JRE Deployed!") }
             }
         }
     }
@@ -166,7 +165,11 @@ class FRCPlugin implements Plugin<Project> {
             artifact.postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }
 
             nativeLibs.dependencies.matching { Dependency dep -> dep != null && nativeLibs.files(dep).size() > 0 }.all { Dependency dep ->
-                artifact.files = artifact.files + project.files(nativeLibs.files(dep).toArray())
+                artifact.setFiles(artifact.getFiles().get() + project.files(nativeLibs.files(dep).toArray()))
+            }
+
+            artifact.onlyIf = {
+                artifact.files.isPresent() && !artifact.files.get().empty
             }
         }
 
@@ -179,8 +182,12 @@ class FRCPlugin implements Plugin<Project> {
             nativeZips.dependencies.matching { Dependency dep -> dep != null && nativeZips.files(dep).size() > 0 }.all { Dependency dep ->
                 def ziptree = project.zipTree(nativeZips.files(dep).first())
                 ["*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "**/libopencv*.so.*"].collect { String pattern ->
-                    artifact.files = artifact.files + ziptree.matching { PatternFilterable pat -> pat.include(pattern) }
+                    artifact.setFiles(artifact.getFiles().get() + ziptree.matching { PatternFilterable pat -> pat.include(pattern) })
                 }
+            }
+
+            artifact.onlyIf = {
+                artifact.files.isPresent() && !artifact.files.get().empty
             }
         }
     }

@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
 //    compile 'jaci.gradle:EmbeddedTools:2018.05.05'
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.07.03'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.07.21'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
 }
@@ -33,7 +33,10 @@ buildScanRecipes {
 
 group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2019.0.0-alpha-2"
+version = "2019.0.0-alpha-3"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 pluginBundle {
     website = 'https://github.com/wpilibsuite/GradleRIO'
@@ -72,5 +75,5 @@ gradlePlugin {
 }
 
 wrapper {
-    gradleVersion = '4.8.1'
+    gradleVersion = '4.9'
 }

@@ -2,13 +2,13 @@ package edu.wpi.first.gradlerio.wpi.toolchain
 
 import edu.wpi.first.gradlerio.wpi.toolchain.install.ToolchainInstallTask
 import groovy.transform.CompileStatic
-import jaci.gradle.ETLogger
+import jaci.gradle.log.ETLogger
+import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.internal.operations.BuildOperationExecutor
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.internal.reflect.Instantiator
@@ -35,7 +35,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                 fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory,
                 metaDataProviderFactory.gcc(), systemLibraryDiscovery, instantiator, workerLeaseService)
 
-        logger = new ETLogger(this.class, (project as ProjectInternal).services)
+        logger = ETLoggerFactory.INSTANCE.create(this.class.simpleName)
 
         WPIToolchainPlugin plugin = project.plugins.getPlugin(WPIToolchainPlugin)
         ToolchainDiscoverer toolchainDiscoverer = plugin.maybeDiscoverRoborioToolchain()

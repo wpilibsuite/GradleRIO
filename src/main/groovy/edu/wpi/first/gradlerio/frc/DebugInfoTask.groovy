@@ -2,7 +2,7 @@ package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.artifact.ArtifactBase
+import jaci.gradle.deploy.artifact.Artifact
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -12,7 +12,7 @@ class DebugInfoTask extends DefaultTask {
     @TaskAction
     void writeDebugInfo() {
         def cfg = []
-        FRCPlugin.deployExtension(project).artifacts.all { ArtifactBase art ->
+        FRCPlugin.deployExtension(project).artifacts.all { Artifact art ->
             if (art instanceof FRCJavaArtifact) {
                 art.targets.all { String target ->
                     cfg << [

@@ -1,8 +1,11 @@
 package edu.wpi.first.gradlerio.frc
 
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.DeployContext
+import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.target.RemoteTarget
+import jaci.gradle.deploy.target.location.SshDeployLocation
+import org.apache.log4j.Logger
+import org.gradle.api.Project
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -10,16 +13,15 @@ import java.util.regex.Pattern
 @CompileStatic
 class RoboRIO extends RemoteTarget {
 
-    RoboRIO(String name) {
-        super(name)
-        this.directory = '/home/lvuser'
-        this.user = 'admin'
-        this.password = ''
+    private Logger log;
 
-        // 2 Core RoboRIO processor. You can increase this number, but depending on your machine,
-        // your network connection, your code CPU usage and other factors, you may find deploys
-        // start failing since there are too many SSH sessions open at once.
-        this.maxChannels = 2
+    RoboRIO(String name, Project project) {
+        super(name, project)
+        log = Logger.getLogger(this.toString())
+
+        this.directory = '/home/lvuser'
+
+        this.maxChannels = 4
 
         this.onlyIf = { DeployContext ctx ->
             verifyOnlyIf(ctx)
@@ -29,18 +31,26 @@ class RoboRIO extends RemoteTarget {
     int team
     void setTeam(int team) {
         this.team = team
-        this.addresses = [ "roborio-${team}-FRC.local".toString(), "10.${(int)(team / 100)}.${team % 100}.2".toString(), "172.22.11.2" ]
+        setAddresses("roborio-${team}-FRC.local".toString(), "10.${(int)(team / 100)}.${team % 100}.2".toString(), "172.22.11.2")
+    }
+
+    void setAddresses(String... addresses) {
+        this.locations.clear()
+        addresses.each { String addr ->
+            this.getLocations().location(SshDeployLocation) { SshDeployLocation loc ->
+                loc.setAddress(addr)
+                loc.setIpv6(false)
+                loc.setUser("admin")
+                loc.setPassword("")
+            }
+        }
     }
 
     boolean verifyOnlyIf(DeployContext ctx) {
-        try {
-            ctx.logger().silent(true)
-            if (checkImage) {
-                log.info("Checking image...")
-                readAndVerifyImage(ctx);
-            }
-        } finally {
-            ctx.logger().silent(false)
+        ctx.logger.silent(true)
+        if (checkImage) {
+            log.info("Checking image...")
+            readAndVerifyImage(ctx);
         }
         return true
     }

@@ -11,8 +11,8 @@ buildscript {
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
 //        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2018.05.19'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.07.03'
-        classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2019.0.0-alpha-2'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.07.21'
+        classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2019.0.0-alpha-3'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
     }
@@ -52,10 +52,14 @@ deploy {
         }
         artifact('frcNative', edu.wpi.first.gradlerio.frc.FRCNativeArtifact) {
             targets << 'roborio5333'
+//            robotCommand = false
             component = 'myFrcBinary'
         }
     }
 }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 model {
     components {
@@ -73,11 +77,6 @@ model {
             useLibrary(it, "wpilib", "ctre", "navx")
         }
     }
-}
-
-configurations.all {
-    // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
@@ -107,5 +106,5 @@ jar {
 }
 
 wrapper {
-    gradleVersion = '4.8.1'
+    gradleVersion = '4.9'
 }

@@ -3,7 +3,8 @@ package edu.wpi.first.gradlerio.frc
 import edu.wpi.first.gradlerio.frc.riolog.FakeDSConnector
 import edu.wpi.first.gradlerio.frc.riolog.RiologConnection
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.tasks.TargetDiscoveryTask
+import jaci.gradle.deploy.sessions.IPSessionController
+import jaci.gradle.deploy.target.discovery.TargetDiscoveryTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.configuration.ConsoleOutput
 import org.gradle.api.tasks.StopExecutionException
@@ -26,13 +27,13 @@ class RIOLogTask extends DefaultTask {
         }
 
         def discoveries = dependsOn.findAll {
-            i -> i instanceof TargetDiscoveryTask && (i as TargetDiscoveryTask).isTargetActive()
+            i -> i instanceof TargetDiscoveryTask && (i as TargetDiscoveryTask).available()
         }.collect {
             it as TargetDiscoveryTask
         }
 
         def hosts = discoveries.collect() { TargetDiscoveryTask discover ->
-            discover.context.selectedHost()
+            ((IPSessionController)discover.activeContext().controller).host
         }
         if (hosts.empty) throw new StopExecutionException()
         def host = hosts.first()
