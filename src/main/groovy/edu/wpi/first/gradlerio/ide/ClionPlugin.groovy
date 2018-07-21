@@ -19,7 +19,7 @@ class ClionPlugin implements Plugin<Project> {
         project.pluginManager.apply(ComponentModelBasePlugin)
         project.extensions.create('clion', ClionExtension)
 
-        project.tasks.create('cleanClion', Delete) { Delete task ->
+        project.tasks.register('cleanClion', Delete) { Delete task ->
             task.group = "GradleRIO"
             task.description = "Clean Clion IDE Files"
             ['.idea', 'cmake-build-debug', 'CMakeLists.txt'].each { String file ->
@@ -28,7 +28,7 @@ class ClionPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.create('clion', GenerateClionTask) { GenerateClionTask task ->
+        project.tasks.register('clion', GenerateClionTask) { GenerateClionTask task ->
             task.group = "GradleRIO"
             task.description = "Generate Clion CMakeLists.txt files."
         }

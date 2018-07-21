@@ -10,15 +10,14 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
     void install(Project project) {
         def filecontents = [
             '#!/bin/bash',
-            'apt-add-repository ppa:wpilib/toolchain-beta',
+            'apt-add-repository ppa:wpilib/toolchain',
             'apt update',
             'apt install frc-toolchain'
         ]
-        def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL_BETA.sh')
+        def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
         file.parentFile.mkdirs()
         file.text = filecontents.join('\n')
-        // TODO remove beta at release
-        println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL_BETA.sh` in in order to install toolchain"
+        println "Run `sudo ./build/LINUX_TOOLCHAIN_INSTALL.sh` in in order to install toolchain"
     }
 
     @Override
@@ -33,6 +32,6 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
 
     @Override
     File sysrootLocation() {
-        return new File("/")             // TODO: Determine Sysroot Location
+        return new File("/")
     }
 }

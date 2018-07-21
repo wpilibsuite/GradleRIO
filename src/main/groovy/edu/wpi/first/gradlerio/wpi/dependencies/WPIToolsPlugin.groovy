@@ -27,7 +27,7 @@ class WPIToolsPlugin implements Plugin<Project> {
 
         def jvm = OperatingSystem.current().isWindows() ? "java" : Jvm.current().getExecutable("java").absolutePath
 
-        project.tasks.create("smartDashboard", ExternalLaunchTask) { ExternalLaunchTask task ->
+        project.tasks.register("smartDashboard", ExternalLaunchTask) { ExternalLaunchTask task ->
             task.group = "GradleRIO"
             task.description = "Launch Smart Dashboard"
 
@@ -41,7 +41,7 @@ class WPIToolsPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.create("shuffleboard", ExternalLaunchTask) { ExternalLaunchTask task ->
+        project.tasks.register("shuffleboard", ExternalLaunchTask) { ExternalLaunchTask task ->
             task.group = "GradleRIO"
             task.description = "Launch Shuffleboard"
 

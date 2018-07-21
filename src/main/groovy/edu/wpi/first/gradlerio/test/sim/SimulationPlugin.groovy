@@ -38,7 +38,7 @@ class SimulationPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.create("simulateExternalCpp", NativeExternalSimulationTask) { NativeExternalSimulationTask task ->
+        project.tasks.register("simulateExternalCpp", NativeExternalSimulationTask) { NativeExternalSimulationTask task ->
             task.group = "GradleRIO"
             task.description = "Simulate External Task for native executable"
 
@@ -46,24 +46,25 @@ class SimulationPlugin implements Plugin<Project> {
         }
 
 
-        def simExternProject = project.tasks.create("simulateExternalJava", JavaExternalSimulationTask) { JavaExternalSimulationTask task ->
+        project.tasks.register("simulateExternalJava", JavaExternalSimulationTask) { JavaExternalSimulationTask task ->
             task.group = "GradleRIO"
             task.description = "Simulate External Task for Java/Kotlin/JVM"
+
+            task.dependsOn("extractTestJNI")
 
             null
         }
 
-        project.tasks.withType(ExtractTestJNITask) {
-            simExternProject.dependsOn it
-        }
 
-        project.tasks.withType(Jar).all { Jar jarTask ->
-            simExternProject.dependsOn jarTask
-            simExternProject.jars << jarTask
+        // TODO: This whole block needs to changed when Jar becomes Lazy, since otherwise the sim task will never get these bound.
+        project.tasks.withType(Jar).configureEach { Jar jarTask ->
+            project.tasks.named("simulateExternalJava").configure { JavaExternalSimulationTask t ->
+                t.dependsOn(jarTask)
+                t.jars << jarTask
+            }
 
-            def attr = jarTask.manifest.attributes
             if (jarTask.name.equals("jar")) {   // TODO Make this configurable (for alternate jars)
-                project.tasks.create("simulate${jarTask.name.capitalize()}", JavaSimulationTask) { JavaSimulationTask task ->
+                project.tasks.register("simulate${jarTask.name.capitalize()}", JavaSimulationTask) { JavaSimulationTask task ->
                     task.group = "GradleRIO"
                     task.description = "Simulate Task for Java/Kotlin/JVM"
 

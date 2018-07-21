@@ -16,7 +16,7 @@ class IDEPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def ecfgTask = project.tasks.create('editorConfig', EditorConfigurationTask) { EditorConfigurationTask task ->
+        def ecfgTask = project.tasks.register('editorConfig', EditorConfigurationTask) { EditorConfigurationTask task ->
             task.group = 'GradleRIO'
             task.description = 'Generate Editor Configuration for Build and Debugging'
         }

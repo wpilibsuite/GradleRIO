@@ -4,6 +4,7 @@ import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.toolchain.install.*
 import groovy.transform.CompileStatic
+import jaci.gradle.log.ETLoggerFactory
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.apache.log4j.Logger
 import org.gradle.api.NamedDomainObjectFactory
@@ -64,7 +65,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def rootInstallTask = project.tasks.create("installToolchain", ToolchainInstallTask) { ToolchainInstallTask task ->
+        def rootInstallTask = project.tasks.register("installToolchain", ToolchainInstallTask) { ToolchainInstallTask task ->
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
         }
@@ -91,7 +92,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
         }
 
         // Mostly for diagnostics
-        def toolchainExplainTask = project.task("explainToolchains") { Task task ->
+        def toolchainExplainTask = project.tasks.register("explainToolchains") { Task task ->
             task.group = "GradleRIO"
             task.description = "Explain FRC Toolchain Installs"
 
@@ -244,8 +245,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
                     def objcopyOptional = tc.tool('objcopy')
                     def stripOptional = tc.tool('strip')
                     if (!objcopyOptional.isPresent() || !stripOptional.isPresent()) {
-                        // TODO Change to logging framework
-                        println 'Failed to strip binaries because of unknown tool'
+                        def logger = ETLoggerFactory.INSTANCE.create("NativeBinaryStrip")
+                        logger.logError('Failed to strip binaries because of unknown tool objcopy and strip')
                         return
                     }
 

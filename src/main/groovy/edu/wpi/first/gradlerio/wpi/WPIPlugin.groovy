@@ -30,7 +30,7 @@ class WPIPlugin implements Plugin<Project> {
             project.pluginManager.apply(WPIToolchainPlugin)
         }
 
-        project.task("wpi") { Task task ->
+        project.tasks.register("wpi") { Task task ->
             task.group = "GradleRIO"
             task.description = "Print all versions of the wpi block"
             task.doLast {

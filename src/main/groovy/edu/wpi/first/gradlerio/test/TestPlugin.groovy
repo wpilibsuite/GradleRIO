@@ -16,13 +16,14 @@ class TestPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.pluginManager.apply(SimulationPlugin)
 
-        def extractTask = project.tasks.create("extractTestJNI", ExtractTestJNITask) { ExtractTestJNITask t ->
+        project.tasks.register("extractTestJNI", ExtractTestJNITask) { ExtractTestJNITask t ->
             t.group = "GradleRIO"
             t.description = "Extract Test JNI Native Libraries (nativeDesktopLib, nativeDesktopZip)"
         }
 
-        project.tasks.withType(Test).all { Test t ->
-            t.dependsOn(extractTask)
+        // TODO 4.9
+        project.tasks.withType(Test).configureEach { Test t ->
+            t.dependsOn("extractTestJNI")
 
             t.doFirst {
                 def env = [:] as Map<String, String>

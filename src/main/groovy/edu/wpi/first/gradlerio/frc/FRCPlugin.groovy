@@ -34,7 +34,7 @@ class FRCPlugin implements Plugin<Project> {
 
         project.extensions.getByType(DeployExtension).targets.all { RemoteTarget target ->
             if (target instanceof RoboRIO) {
-                project.tasks.create("riolog${target.name.capitalize()}", RIOLogTask) { RIOLogTask task ->
+                project.tasks.register("riolog${target.name.capitalize()}", RIOLogTask) { RIOLogTask task ->
                     task.group = "GradleRIO"
                     task.description = "Run a console displaying output from the RoboRIO (${target.name})"
                     project.tasks.withType(TargetDiscoveryTask).matching { TargetDiscoveryTask t -> t.target == target }.all { TargetDiscoveryTask discover_task ->
@@ -44,7 +44,7 @@ class FRCPlugin implements Plugin<Project> {
 
                 // TODO: Master RIOLog with Workers?
                 if (project.tasks.findByName('riolog') == null) {
-                    project.tasks.create('riolog', RIOLogTask) { RIOLogTask task ->
+                    project.tasks.register('riolog', RIOLogTask) { RIOLogTask task ->
                         task.group = "GradleRIO"
                         task.description = "Run a console displaying output from the default RoboRIO (${target.name})"
                         task.dependsOn("riolog${target.name.capitalize()}")
@@ -53,7 +53,7 @@ class FRCPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.create("writeDebugInfo", DebugInfoTask) { DebugInfoTask task ->
+        project.tasks.register("writeDebugInfo", DebugInfoTask) { DebugInfoTask task ->
             project.tasks.withType(ArtifactDeployTask).all { Task t -> t.dependsOn(task) }
         }
 
