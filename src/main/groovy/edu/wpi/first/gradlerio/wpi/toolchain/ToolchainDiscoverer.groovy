@@ -88,6 +88,8 @@ class ToolchainDiscoverer {
     Optional<File> sysroot() {
         if (OperatingSystem.current().isLinux())
             return Optional.empty()
+        else if (OperatingSystem.current().isMacOsX())
+            return rootDir().map { File f -> new File(f, "arm-frc-linux-gnueabi") } as Optional<File>
         else
             return rootDir()
     }
