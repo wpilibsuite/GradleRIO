@@ -62,7 +62,20 @@ class FRCPlugin implements Plugin<Project> {
         project.extensions.add("getTeamOrDefault", { Integer teamDefault ->
             if (project.hasProperty("teamNumber"))
                 return Integer.parseInt(project.property("teamNumber") as String)
-            return teamDefault
+
+            def number = getTeamNumberFromJSON()
+            if (number < 0)
+                return teamDefault
+            return number
+        } as Closure<Integer>);
+
+        project.extensions.add("getTeamNumber", {
+            if (project.hasProperty("teamNumber"))
+                return Integer.parseInt(project.property("teamNumber") as String)
+            def number = getTeamNumberFromJSON()
+            if (number < 0)
+                throw new TeamNumberNotFoundException()
+            return number
         } as Closure<Integer>);
 
         project.extensions.add("getDebugOrDefault", { Boolean debugDefault ->
@@ -170,6 +183,17 @@ class FRCPlugin implements Plugin<Project> {
                 }
             }
         }
+    }
+
+    private int getTeamNumberFromJSON() {
+        def jsonFile = project.rootProject.file(".wpilib/wpilib_preferences.json")
+        if (jsonFile.exists()) {
+            def parsedJson = new groovy.json.JsonSlurper().parseText(jsonFile.text)
+            def teamNumber = parsedJson['teamNumber']
+            if (teamNumber != null)
+                return teamNumber as Integer
+        }
+        return -1;
     }
 
     static class FRCRules extends RuleSource {
