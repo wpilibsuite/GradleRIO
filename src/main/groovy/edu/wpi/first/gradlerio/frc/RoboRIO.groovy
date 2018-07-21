@@ -44,6 +44,12 @@ class RoboRIO extends RemoteTarget {
                 loc.setPassword("")
             }
         }
+
+        this.getLocations().location(DSDeployLocation) { DSDeployLocation ds ->
+            ds.setUser("admin")
+            ds.setPassword("")
+            ds.setIpv6(false)
+        }
     }
 
     boolean verifyOnlyIf(DeployContext ctx) {
