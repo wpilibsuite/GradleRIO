@@ -13,6 +13,7 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.util.PatternFilterable
@@ -42,9 +43,11 @@ class FRCPlugin implements Plugin<Project> {
                     }
                 }
 
-                // TODO: Master RIOLog with Workers?
-                if (project.tasks.findByName('riolog') == null) {
-                    project.tasks.register('riolog', RIOLogTask) { RIOLogTask task ->
+                // Guard for when the root project already has riolog
+                try {
+                    project.rootProject.tasks.named('riolog')
+                } catch (UnknownTaskException ignored) {
+                    project.rootProject.tasks.register('riolog', RIOLogTask) { RIOLogTask task ->
                         task.group = "GradleRIO"
                         task.description = "Run a console displaying output from the default RoboRIO (${target.name})"
                         task.dependsOn("riolog${target.name.capitalize()}")
