@@ -20,16 +20,21 @@ import org.gradle.internal.service.ServiceRegistry
 import org.gradle.internal.text.TreeFormatter
 import org.gradle.internal.work.WorkerLeaseService
 import org.gradle.model.Defaults
+import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.SharedLibraryBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.platform.NativePlatform
+import org.gradle.nativeplatform.tasks.AbstractLinkTask
 import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
 import org.gradle.platform.base.BinaryContainer
+import org.gradle.platform.base.BinaryTasks
 import org.gradle.platform.base.PlatformContainer
 import org.gradle.process.ExecSpec
 import org.gradle.process.internal.ExecActionFactory
@@ -63,6 +68,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
         }
+
+        project.extensions.create("wpiToolchain", WPIToolchainExtension)
 
         // Cancel all other tasks when installing the toolchain, if the toolchain is ready
         project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
@@ -198,6 +205,64 @@ class WPIToolchainPlugin implements Plugin<Project> {
                 }
             });
             toolChainRegistry.registerDefaultToolChain('roborioGcc', WPIRoboRioGcc)
+        }
+
+        @BinaryTasks
+        void createNativeStripTasks(final ModelMap<Task> tasks, final ExtensionContainer extContainer, final NativeBinarySpec binary) {
+            final Project project = extContainer.getByType(GradleRIOPlugin.ProjectWrapper).project
+            if(extContainer.getByType(WPIToolchainExtension).skipStrip) {
+                return
+            }
+            WPIRoboRioGcc gcc = null
+            if (binary.toolChain instanceof WPIRoboRioGcc) {
+                gcc = (WPIRoboRioGcc)binary.toolChain
+            } else {
+                return
+            }
+            Task rawLinkTask = null
+            if (binary instanceof SharedLibraryBinarySpec) {
+                rawLinkTask = ((SharedLibraryBinarySpec)binary).tasks.link
+            } else if (binary instanceof NativeExecutableBinarySpec) {
+                rawLinkTask = ((NativeExecutableBinarySpec)binary).tasks.link
+            }
+            if (!(rawLinkTask instanceof AbstractLinkTask)) {
+                return
+            }
+            AbstractLinkTask linkTask = (AbstractLinkTask)rawLinkTask
+
+            linkTask.doLast {
+                def mainFile = linkTask.linkedFile.get().asFile
+
+                if (mainFile.exists()) {
+                    def mainFileStr = mainFile.toString()
+                    def debugFile = mainFileStr + '.debug'
+
+                    WPIToolchainPlugin plugin = project.plugins.getPlugin(WPIToolchainPlugin)
+                    def tc = plugin.discoverRoborioToolchain()
+                    def binDir = tc.binDir().get().toString()
+
+                    def objcopyOptional = tc.tool('objcopy')
+                    def stripOptional = tc.tool('strip')
+                    if (!objcopyOptional.isPresent() || !stripOptional.isPresent()) {
+                        // TODO Change to logging framework
+                        println 'Failed to strip binaries because of unknown tool'
+                        return
+                    }
+
+                    def objcopy = tc.tool('objcopy').get().toString()
+                    def strip = tc.tool('strip').get().toString()
+
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine objcopy, '--only-keep-debug', mainFileStr, debugFile
+                    }
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine strip, '-g', mainFileStr
+                    }
+                    project.exec { ExecSpec ex ->
+                        ex.commandLine objcopy, "--add-gnu-debuglink=$debugFile", mainFileStr
+                    }
+                }
+            }
         }
 
         @Mutate
