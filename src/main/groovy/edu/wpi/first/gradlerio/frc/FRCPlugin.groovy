@@ -56,8 +56,10 @@ class FRCPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.register("writeDebugInfo", DebugInfoTask) { DebugInfoTask task ->
-            project.tasks.withType(ArtifactDeployTask).all { Task t -> t.dependsOn(task) }
+        def debugInfoLazy = project.tasks.register("writeDebugInfo", DebugInfoTask)
+
+        project.tasks.withType(ArtifactDeployTask).configureEach { ArtifactDeployTask t ->
+            t.dependsOn(debugInfoLazy)
         }
 
         // Helper Extensions
