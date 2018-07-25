@@ -57,6 +57,8 @@ class FRCJavaArtifact extends JavaArtifact {
         def conffile = new File(project.buildDir, "debug/${name}_${ctx.deployLocation.target.name}.debugconfig")
 
         if (debug) {
+            conffile.parentFile.mkdirs()
+
             ctx.logger.withLock {
                 ctx.logger.log("====================================================================")
                 ctx.logger.log("DEBUGGING ACTIVE ON PORT ${debugPort}!")
