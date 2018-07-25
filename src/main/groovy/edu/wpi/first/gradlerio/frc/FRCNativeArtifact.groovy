@@ -107,7 +107,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
 
                 def gdbpath = toolchainD.gdbFile().get().absolutePath
-                def sysroot = toolchainD.sysroot().orElse(null)
+                def sysroot = toolchainD.sysroot().orElse(null).absolutePath
 
                 // .debugconfig
 
