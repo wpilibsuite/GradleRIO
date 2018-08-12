@@ -103,10 +103,10 @@ class WPINativeDeps implements Plugin<Project> {
             }
 
             // WPILIB C
-            createWpiLibrary('wpilibc', "edu.wpi.first.wpilibc:wpilibc:${wpi.wpilibVersion}", 'wpilibc', true)
+            createWpiLibrary('wpilibc', "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true)
 
             // HAL
-            createWpiLibrary('hal', "edu.wpi.first.hal:hal:${wpi.wpilibVersion}", 'wpiHal', true)
+            createWpiLibrary('hal', "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true)
 
 
             // NI LIBS
@@ -135,13 +135,19 @@ class WPINativeDeps implements Plugin<Project> {
 
 
             // WPIUTIL
-            createWpiLibrary('wpiutil', "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpiutilVersion}", 'wpiutil', true)
+            createWpiLibrary('wpiutil', "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true)
 
             // NTCORE
-            createWpiLibrary('ntcore', "edu.wpi.first.ntcore:ntcore-cpp:${wpi.ntcoreVersion}", 'ntcore', true)
+            createWpiLibrary('ntcore', "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true)
 
             // CSCORE
-            createWpiLibrary('cscore', "edu.wpi.first.cscore:cscore-cpp:${wpi.cscoreVersion}", 'cscore', true)
+            createWpiLibrary('cscore', "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}", 'cscore', true)
+
+            // CAMERASERVER
+            createWpiLibrary('cameraserver', "edu.wpi.first.cameraserver:cameraserver-cpp:${wpi.wpilibVersion}", 'cameraserver', true)
+
+            // GTEST
+            createWpiLibrary('googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true)
 
             // OPENCV
             libs.create('opencv_headers', NativeLib) { NativeLib lib ->
@@ -186,7 +192,7 @@ class WPINativeDeps implements Plugin<Project> {
             // MASTER WPILIB COMBINED LIB
 
             libs.create('wpilib', CombinedNativeLib) { CombinedNativeLib clib ->
-                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv" << "ni_libraries"
+                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv" << "ni_libraries"
                 clib.targetPlatforms = ['roborio']
                 null
             }
@@ -199,7 +205,7 @@ class WPINativeDeps implements Plugin<Project> {
 
             libs.create('wpilib_sim', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libraryName = 'wpilib'
-                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
+                clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv"
                 clib.targetPlatforms = ['desktop']
                 null
             }

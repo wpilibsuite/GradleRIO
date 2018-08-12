@@ -39,15 +39,5 @@ class WPIPlugin implements Plugin<Project> {
                 }
             }
         }
-
-        // TODO: Remove for stable, update for 2019 corelibs when appropriate
-        project.afterEvaluate {
-            def style = StyledTextOutput.Style.SuccessHeader
-            logger.withLock {
-                logger.logStyle("NOTE: You are using an ALPHA version of GradleRIO, designed for the 2019 Season!", style)
-                logger.logStyle("This release uses the 2018 Core Libraries, however all tooling (GradleRIO + IDE support) is incubating for 2019", style)
-                logger.logStyle("If you encounter any issues and/or bugs, please report them to https://github.com/wpilibsuite/GradleRIO", style)
-            }
-        }
     }
 }
