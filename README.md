@@ -33,7 +33,7 @@ _These IDEs are unofficially supported, so CSA support is not guaranteed. It is 
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+    gradleVersion = '4.9'
 }
 ```
 
@@ -41,7 +41,7 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "jaci.openrio.gradle.GradleRIO" version "2018.06.21"
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
 ```
 
