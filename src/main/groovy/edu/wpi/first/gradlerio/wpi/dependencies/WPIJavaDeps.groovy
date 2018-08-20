@@ -125,11 +125,5 @@ class WPIJavaDeps implements Plugin<Project> {
             project.dependencies.add("nativeZip", project.dependencies.ext.pathfinderJni())
             ["jaci.pathfinder:Pathfinder-Java:${wpi.pathfinderVersion}"]
         }
-
-        project.dependencies.ext.openrio = [
-            powerup: [
-                matchData: { ["openrio.powerup:MatchData:${wpi.openrioMatchDataVersion}"] }
-            ]
-        ]
     }
 }

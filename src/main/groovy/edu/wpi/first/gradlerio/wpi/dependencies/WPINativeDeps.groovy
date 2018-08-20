@@ -41,12 +41,15 @@ class WPINativeDeps implements Plugin<Project> {
             )
 
             def createWpiLibrary = { String name, String mavenBase, String libname, boolean supportNative ->
+                def cfgName = "native_${name}"
                 libs.create("${name}_headers", NativeLib) { NativeLib lib ->
                     common(lib)
                     if (supportNative)
                         lib.targetPlatforms << 'desktop'
                     lib.headerDirs << ''
                     lib.maven = "${mavenBase}:headers@zip"
+                    lib.configuration = cfgName
+                    null
                 }
 
                 libs.create("${name}_athena", NativeLib) { NativeLib lib ->
@@ -55,6 +58,8 @@ class WPINativeDeps implements Plugin<Project> {
                     lib.sharedMatchers = ["**/lib${libname}.so".toString()]
                     lib.dynamicMatchers = lib.sharedMatchers
                     lib.maven = "${mavenBase}:linuxathena@zip"
+                    lib.configuration = cfgName
+                    null
                 }
 
                 libs.create("${name}_sources", NativeLib) { NativeLib lib ->
@@ -63,6 +68,8 @@ class WPINativeDeps implements Plugin<Project> {
                         lib.targetPlatforms << 'desktop'
                     lib.sourceDirs << ''
                     lib.maven = "${mavenBase}:sources@zip"
+                    lib.configuration = cfgName
+                    null
                 }
 
                 if (supportNative && nativeclassifier != null) {
@@ -75,6 +82,8 @@ class WPINativeDeps implements Plugin<Project> {
 
                         lib.dynamicMatchers = lib.sharedMatchers + "**/${libname}.dll".toString()
                         lib.maven = "${mavenBase}:${nativeclassifier}@zip"
+                        lib.configuration = "${cfgName}_desktop"
+                        null
                     }
                 }
 
@@ -100,17 +109,22 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.sharedMatchers = ['**/*.so*']
                 lib.dynamicMatchers = []    // NI Libs are not deployed to RIO
                 lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:linuxathena@zip"
+                lib.configuration = 'native_ni_libraries'
+                null
             }
 
             libs.create('ni_libraries_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
                 lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:headers@zip"
+                lib.configuration = 'native_ni_libraries'
+                null
             }
 
             libs.create('ni_libraries', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'ni_libraries_binaries' << 'ni_libraries_headers'
                 lib.targetPlatform = 'roborio'
+                null
             }
 
 
@@ -129,6 +143,8 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.targetPlatforms << 'desktop'
                 lib.headerDirs << ''
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
+                lib.configuration = 'native_opencv'
+                null
             }
 
             libs.create('opencv_athena', NativeLib) { NativeLib lib ->
@@ -137,6 +153,8 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.dynamicMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.sharedMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
+                lib.configuration = 'native_opencv'
+                null
             }
 
             if (nativeclassifier != null) {
@@ -148,6 +166,8 @@ class WPINativeDeps implements Plugin<Project> {
                     lib.sharedMatchers = ['**/*opencv*.so', '**/*opencv*.so.*', '**/*opencv*.dylib']
                     lib.dynamicMatchers = lib.sharedMatchers + '**/*opencv*.dll'
                     lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
+                    lib.configuration = 'native_opencv_desktop'
+                    null
                 }
             }
 
@@ -193,13 +213,16 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.ctre:CTRE-phoenix-cpp:${wpi.ctreVersion}@zip"
+                lib.configuration = 'native_ctre'
+                null
             }
 
             libs.create('ctre_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
                 lib.maven = "openrio.mirror.third.ctre:CTRE-phoenix-cpp:${wpi.ctreVersion}:headers@zip"
-
+                lib.configuration = 'native_ctre'
+                null
             }
 
             libs.create('ctre', CombinedNativeLib) { CombinedNativeLib lib ->
@@ -216,13 +239,16 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.ctre:CTRE-toolsuite-cpp:${wpi.ctreLegacyVersion}@zip"
+                lib.configuration = 'native_ctre_legacy'
+                null
             }
 
             libs.create('ctre_legacy_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
                 lib.maven = "openrio.mirror.third.ctre:CTRE-toolsuite-cpp:${wpi.ctreLegacyVersion}:headers@zip"
-
+                lib.configuration = 'native_ctre_legacy'
+                null
             }
 
             libs.create('ctre_legacy', CombinedNativeLib) { CombinedNativeLib lib ->
@@ -239,13 +265,16 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.headerDirs = []
                 lib.staticMatchers = ['*.a']
                 lib.maven = "openrio.mirror.third.kauailabs:navx-cpp:${wpi.navxVersion}@zip"
+                lib.configuration = 'native_navx'
+                null
             }
 
             libs.create('navx_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
                 lib.maven = "openrio.mirror.third.kauailabs:navx-cpp:${wpi.navxVersion}:headers@zip"
-
+                lib.configuration = 'native_navx'
+                null
             }
 
             libs.create('navx', CombinedNativeLib) { CombinedNativeLib lib ->
@@ -261,24 +290,22 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.libraryName = 'pathfinder_binaries'
                 lib.staticMatchers = ['*.a']
                 lib.maven = "jaci.pathfinder:Pathfinder-Core:${wpi.pathfinderVersion}:athena@zip"
+                lib.configuration = 'native_pathfinder'
+                null
             }
 
             libs.create('pathfinder_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
                 lib.maven = "jaci.pathfinder:Pathfinder-Core:${wpi.pathfinderVersion}:headers@zip"
+                lib.configuration = 'native_pathfinder'
+                null
             }
 
             libs.create('pathfinder', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'pathfinder_binaries' << 'pathfinder_headers'
                 lib.targetPlatforms = ['roborio']
                 null
-            }
-
-            libs.create('openrio.powerup.matchData', NativeLib) { NativeLib lib ->
-                lib.targetPlatforms = ['roborio']
-                lib.headerDirs = ['']
-                lib.maven = "openrio.powerup:MatchData:${wpi.openrioMatchDataVersion}:headers@zip"
             }
         }
     }

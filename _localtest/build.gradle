@@ -10,8 +10,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
-//        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2018.05.19'
-        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.07.21b'
+//        classpath group: 'jaci.gradle', name: 'EmbeddedTools', version: '2018.08.21'
+        classpath group: 'gradle.plugin.jaci.gradle', name: 'DeployTools', version: '2018.08.21'
         classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2019.0.0-alpha-3'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
@@ -87,7 +87,6 @@ dependencies {
 //    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
     compile ctre()
     compile navx()
-    compile openrio.powerup.matchData()
     compile pathfinder()
     simulation sim.nt_ds()
     simulation sim.nt_readout()
@@ -101,7 +100,7 @@ wpi {
 }
 
 jar {
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest('test.MyClass')
 }
 

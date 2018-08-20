@@ -24,8 +24,8 @@ import org.gradle.model.Defaults
 import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
-import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.SharedLibraryBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.platform.NativePlatform
