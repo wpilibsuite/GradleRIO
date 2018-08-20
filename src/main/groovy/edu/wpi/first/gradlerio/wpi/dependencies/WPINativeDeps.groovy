@@ -22,6 +22,12 @@ class WPINativeDeps implements Plugin<Project> {
 
     static class WPIDepRules extends RuleSource {
 
+        // Note that throughout here we assign lib.configuration,
+        // which specifies which configuration each library artifact belongs
+        // in. We group them according to which library they represent, which
+        // speeds up dependency resolution. When one dependency in a configuration
+        // is downloaded, all are downloaded. Unused configurations are not downloaded
+
         @Mutate
         void addWPILibraries(NativeDepsSpec libs, final ExtensionContainer extensionContainer) {
             def wpi = extensionContainer.getByType(WPIExtension)
