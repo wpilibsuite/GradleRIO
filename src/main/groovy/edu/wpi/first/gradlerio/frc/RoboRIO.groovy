@@ -46,18 +46,22 @@ class RoboRIO extends FRCCompatibleTarget {
     void setAddresses(String... addresses) {
         this.locations.clear()
         addresses.each { String addr ->
-            this.getLocations().location(SshDeployLocation) { SshDeployLocation loc ->
-                loc.setAddress(addr)
-                loc.setIpv6(false)
-                loc.setUser("admin")
-                loc.setPassword("")
-            }
+            this.addAddress(addr)
         }
 
         this.getLocations().location(DSDeployLocation) { DSDeployLocation ds ->
             ds.setUser("admin")
             ds.setPassword("")
             ds.setIpv6(false)
+        }
+    }
+
+    void addAddress(String address) {
+        this.getLocations().location(SshDeployLocation) { SshDeployLocation loc ->
+            loc.setAddress(address)
+            loc.setIpv6(false)
+            loc.setUser("admin")
+            loc.setPassword("")
         }
     }
 
