@@ -30,7 +30,17 @@ class RoboRIO extends FRCCompatibleTarget {
     int team
     void setTeam(int team) {
         this.team = team
-        setAddresses("roborio-${team}-FRC.local".toString(), "10.${(int)(team / 100)}.${team % 100}.2".toString(), "172.22.11.2")
+        setAddresses(
+            // These 3 should catch the RoboRIO when it's connected to a radio or to the computer via USB
+            "roborio-${team}-FRC.local".toString(),                 // Default mDNS
+            "10.${(int)(team / 100)}.${team % 100}.2".toString(),   // 10.TE.AM.2 (default RIO IP)
+            "172.22.11.2",                                          // USB
+
+            // Remaining cases are for weird environments, like a home network, practice field or otherwise.
+            "roborio-${team}-FRC".toString(),                       // Default DNS
+            "roborio-${team}-FRC.lan".toString(),                   // LAN mDNS/DNS
+            "roborio-${team}-FRC.frc-field.local".toString()        // Practice Field mDNS
+        )
     }
 
     void setAddresses(String... addresses) {
