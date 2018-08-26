@@ -36,11 +36,13 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
     FileCollection call() {
         def conf = configuration.resolvedConfiguration
         if (zipped) {
-            conf.files.collect { File file ->
+            def allfiles = conf.files.collect { File file ->
                 project.zipTree(file).matching(filter)
-            }.findAll { it != null }.inject { a, b -> a + b}
+            }.findAll { it != null }
+
+            return allfiles.empty ? project.files() : allfiles.inject { a, b -> a + b }
         } else {
-            project.files(conf.files)
+            return project.files(conf.files)
         }
     }
 }
