@@ -1,6 +1,5 @@
 package edu.wpi.first.gradlerio.frc
 
-
 import edu.wpi.first.gradlerio.frc.riolog.RiologPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
@@ -13,10 +12,10 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.util.PatternFilterable
+import org.gradle.language.nativeplatform.DependentSourceSet
 import org.gradle.model.ModelMap
 import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
-import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.platform.base.BinaryTasks
 
 import java.util.function.Function
@@ -141,15 +140,22 @@ class FRCPlugin implements Plugin<Project> {
         void createNativeLibraryDeployTasks(final ModelMap<Task> tasks, final ExtensionContainer ext, final NativeBinarySpec binary) {
             def deployExt = ext.getByType(DeployExtension)
             def artifacts = deployExt.artifacts
-            binary.libs.each { NativeDependencySet set ->
-                if (set instanceof DelegatedDependencySet) {
-                    def delegSet = set as DelegatedDependencySet
-                    artifacts.nativeLibraryArtifact(delegSet.getName()) { NativeLibraryArtifact nla ->
-                        FRCPlugin.allFrcTargets(deployExt, nla)
-                        nla.directory = '/usr/local/frc/lib'
-                        nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
-                        nla.library = delegSet.name
-                        nla.targetPlatform = 'roborio'
+
+            // We can't use binary.libs because that forces a reenumeration of all libraries,
+            // which breaks multiproject builds. Instead, we have to resolve manually
+            binary.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
+                dss.libs.each { Object lib ->
+                    if (lib instanceof DelegatedDependencySet) {
+                        DelegatedDependencySet set = (DelegatedDependencySet)lib
+                        if (artifacts.findByName(set.getName()) == null) {
+                            artifacts.nativeLibraryArtifact(set.getName()) { NativeLibraryArtifact nla ->
+                                FRCPlugin.allFrcTargets(deployExt, nla)
+                                nla.directory = '/usr/local/frc/lib'
+                                nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
+                                nla.library = set.name
+                                nla.targetPlatform = 'roborio'
+                            }
+                        }
                     }
                 }
             }

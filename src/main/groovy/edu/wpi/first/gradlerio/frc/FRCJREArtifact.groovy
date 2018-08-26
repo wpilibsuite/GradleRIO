@@ -8,7 +8,6 @@ import jaci.gradle.deploy.context.DeployContext
 import org.gradle.api.Project
 
 import java.util.function.Function
-import java.util.function.Supplier
 
 @CompileStatic
 class FRCJREArtifact extends FileArtifact {

@@ -2,15 +2,10 @@ package edu.wpi.first.gradlerio.frc
 
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.artifact.FileCollectionArtifact
-import jaci.gradle.deploy.artifact.TaskHungryArtifact
 import jaci.gradle.deploy.context.DeployContext
 import org.gradle.api.Action
-import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.util.PatternFilterable
 
