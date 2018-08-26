@@ -33,7 +33,7 @@ buildScanRecipes {
 
 group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2019.0.0-alpha-4"
+version = "2019.0.0-alpha-4-pre1"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
