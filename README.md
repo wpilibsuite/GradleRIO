@@ -29,6 +29,19 @@ _These IDEs are unofficially supported, so CSA support is not guaranteed. It is 
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
+## Installing Gradle on Non-Standard OSes
+These platforms are not supported and have a chance of not working if not configured properly. You have been warned.
+
+### Windows Subsystem for Linux
+To install gradle in WSL, clone this repo, then run `bash ./wsl_install_java.sh`
+
+### ChromeOS
+To install gradle on ChromeOS, your device must first be in developer mode (some schools disable this on their chromebooks, talk to an IT admin to get it enabled). Instructions on how to enable developer mode can be found on the chromium developer website, [HERE](https://www.chromium.org/chromium-os/poking-around-your-chrome-os-device?tmpl=%2Fsystem%2Fapp%2Ftemplates%2Fprint%2F&showPrintDialog=1)
+
+Once in developer mode, clone this repo, then run `bash ./chromeos_install_gradle.sh`
+
+This will grab all required files from the community package manager, then install them.
+
 ## Upgrading
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
