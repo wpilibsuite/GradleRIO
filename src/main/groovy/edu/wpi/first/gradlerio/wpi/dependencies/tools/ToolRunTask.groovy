@@ -36,7 +36,7 @@ class ToolRunTask extends DefaultTask {
 
     void runToolWindows() {
         def iTask = installTask.get()
-        def outputFile = new File(iTask.outputFolder, iTask.toolName + '.vbs')
+        def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.vbs')
         project.exec {
             def execer = (ExecSpec)it
             execer.executable = 'wscript.exe'

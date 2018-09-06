@@ -1,5 +1,8 @@
 package edu.wpi.first.gradlerio.wpi.dependencies.tools
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
@@ -19,24 +22,95 @@ class ToolInstallTask extends DefaultTask {
     Configuration configuration
     @Internal
     Dependency dependency
-    @Internal
-    String outputFolder
+    static String toolsFolder
+
+    private static class ToolJson {
+        String name
+        String version
+    }
 
     @Inject
-    ToolInstallTask(String toolName, String outputFolder, Configuration configuration, Dependency dep) {
+    ToolInstallTask(String toolName, Configuration configuration, Dependency dep) {
         group = 'GradleRIO'
         description = "Install the tool $toolName"
 
         this.toolName = toolName
         this.configuration = configuration
         this.dependency = dep
-        this.outputFolder = outputFolder
+    }
+
+    static synchronized ToolJson getExistingToolVersion(String toolName) {
+        // Load JSON file
+        def toolFile = new File(toolsFolder, 'tools.json')
+        if (toolFile.exists()) {
+            def toolTxt = toolFile.text
+            Gson gson = new Gson()
+            ToolJson[] tools = gson.fromJson(toolTxt, ToolJson[].class)
+            ToolJson tool = tools.find {
+                it.name == toolName
+            }
+            return tool
+        } else {
+            return null
+        }
+    }
+
+    @CompileDynamic
+    static synchronized void setToolVersion(ToolJson tool) {
+        def toolFile = new File(toolsFolder, 'tools.json')
+        def gson = new Gson()
+        def builder = new GsonBuilder()
+        builder.setPrettyPrinting()
+        if (toolFile.exists()) {
+            def toolTxt = toolFile.text
+            def tools = gson.fromJson(toolTxt, Object[].class).toList()
+            tools.removeIf {
+                it.name == tool.name
+            }
+            tools << tool
+            def json = builder.create().toJson(tools)
+            toolFile.text = json
+        } else {
+            ToolJson[] tools = [tool]
+            def json = builder.create().toJson(tools)
+            toolFile.text = json
+        }
+    }
+
+    private File getScriptFile() {
+        return new File(toolsFolder, toolName + '.vbs')
     }
 
     @TaskAction
     void installTool() {
+        // First check to see if both script and jar exist
+        def jarExists = new File(toolsFolder, toolName + '.jar').exists()
+        def scriptExists = scriptFile.exists()
+
+        if (!jarExists || !scriptExists) {
+            extractAndInstall()
+            return
+        }
+
+        def existingVersion = getExistingToolVersion(toolName)
+        if (existingVersion == null) {
+            extractAndInstall()
+            return
+        }
+
+        if (existingVersion != null) {
+            // Check version
+            if (dependency.version > existingVersion.version) {
+                extractAndInstall()
+            }
+        }
+
+
+    }
+
+    private void extractAndInstall() {
         File jarfile = configuration.files(dependency).first()
-        def of = new File(outputFolder)
+        def of = new File(toolsFolder)
         of.mkdirs()
         project.copy {
             def cp = (CopySpec)it
@@ -47,15 +121,25 @@ class ToolInstallTask extends DefaultTask {
             }
         }
         if (OperatingSystem.current().isWindows()) {
-            extractScript()
+            extractScriptWindows()
+        } else {
+            extractScriptUnix()
+        }
+        def toolJson = new ToolJson()
+        toolJson.name = toolName
+        toolJson.version = dependency.version
+        setToolVersion(toolJson)
+    }
+
+    private void extractScriptWindows() {
+
+        ToolInstallTask.class.getResourceAsStream('/ScriptBase.vbs').withCloseable {
+            def outputFile = new File(toolsFolder, toolName + '.vbs')
+            outputFile.text = it.text
         }
     }
 
-    void extractScript() {
+    private void extractScriptUnix() {
 
-        ToolInstallTask.class.getResourceAsStream('/ScriptBase.vbs').withCloseable {
-            def outputFile = new File(outputFolder, toolName + '.vbs')
-            outputFile.text = it.text
-        }
     }
 }

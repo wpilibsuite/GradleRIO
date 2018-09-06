@@ -13,10 +13,10 @@ class WPITool {
 
     String version
 
-    WPITool(Project project, String name, String version, String artifactId, String extractonFolder) {
+    WPITool(Project project, String name, String version, String artifactId) {
         def config = project.configurations.getByName("wpiTools")
         def dependency = project.dependencies.add("wpiTools", artifactId)
-        toolInstallTask = project.tasks.register("${name}Install".toString(), ToolInstallTask, name, extractonFolder, config, dependency)
+        toolInstallTask = project.tasks.register("${name}Install".toString(), ToolInstallTask, name, config, dependency)
         toolRunTask = project.tasks.register(name, ToolRunTask, name, toolInstallTask)
         this.name = name
         this.version = version
