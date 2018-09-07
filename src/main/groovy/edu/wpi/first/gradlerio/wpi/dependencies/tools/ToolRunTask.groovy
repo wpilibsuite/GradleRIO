@@ -37,14 +37,17 @@ class ToolRunTask extends DefaultTask {
     void runToolWindows() {
         def iTask = installTask.get()
         def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.vbs')
-        project.exec {
-            def execer = (ExecSpec)it
-            execer.executable = 'wscript.exe'
-            execer.args outputFile
+        project.exec { ExecSpec spec ->
+            spec.executable = 'wscript.exe'
+            spec.args outputFile
         }
     }
 
     void runToolUnix() {
-
+        def iTask = installTask.get()
+        def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.sh')
+        project.exec { ExecSpec spec ->
+            spec.executable = outputFile.absolutePath
+        }
     }
 }

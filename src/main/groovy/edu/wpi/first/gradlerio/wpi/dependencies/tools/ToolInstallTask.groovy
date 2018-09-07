@@ -11,6 +11,7 @@ import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.process.ExecSpec
 
 import javax.inject.Inject
 
@@ -140,6 +141,13 @@ class ToolInstallTask extends DefaultTask {
     }
 
     private void extractScriptUnix() {
-
+        def outputFile = new File(toolsFolder, toolName + '.sh')
+        ToolInstallTask.class.getResourceAsStream('/ScriptBase.sh').withCloseable {
+            outputFile.text = it.text
+        }
+        project.exec { ExecSpec spec ->
+            spec.commandLine "chmod"
+            spec.args("0755", outputFile.absolutePath)
+        }
     }
 }
