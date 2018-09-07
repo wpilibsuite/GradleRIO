@@ -28,6 +28,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String name
         String version
         String uuid
+        String[] mavenUrls
+        String jsonUrl
         Artifact[] javaDependencies
         Artifact[] jniDependencies
         Artifact[] cppDependencies
@@ -59,10 +61,19 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     def slurped = slurper.parse(it)
                     def dep = constructJsonDependency(slurped)
                     if (dep == null) {
-                        //TODO Throw an error
+                        //TODO Display an error
                     } else {
                         dependencies << dep
                     }
+                }
+            }
+        }
+
+        // Add all URLs from dependencies
+        dependencies.each { JsonDependency dep ->
+            dep.mavenUrls.each { url ->
+                project.repositories.maven { repo ->
+                    repo.url = url
                 }
             }
         }
