@@ -2,6 +2,9 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import com.google.gson.Gson
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import groovy.io.FileType
+import groovy.json.JsonSlurper
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -23,24 +26,44 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     static class JsonDependency {
         String name
+        String version
         String uuid
         Artifact[] javaDependencies
         Artifact[] jniDependencies
         Artifact[] cppDependencies
     }
 
-    JsonDependency[] dependencies
+    List<JsonDependency> dependencies = []
+
+    @CompileDynamic
+    private JsonDependency constructJsonDependency(Object slurped) {
+        try {
+            return new JsonDependency(slurped)
+        } catch (def e) {
+            return null
+        }
+    }
 
     @Override
     void apply(Project project) {
         def wpi = project.extensions.getByType(WPIExtension)
 
-        // Try to load dependencies JSON file
-        File jsonDepFile = project.file('dependencies.json')
-        if (jsonDepFile.exists()) {
+        def jsonDepFolder = project.file('vendordeps')
+        JsonSlurper slurper = new JsonSlurper()
 
-            jsonDepFile.withReader {
-                dependencies = new Gson().fromJson(it, JsonDependency[])
+        // Try to load dependencies JSON files
+        if (jsonDepFolder.exists()) {
+            jsonDepFolder.eachFileMatch FileType.FILES,~/.*\.json/, { File file ->
+                println file
+                file.withReader {
+                    def slurped = slurper.parse(it)
+                    def dep = constructJsonDependency(slurped)
+                    if (dep == null) {
+                        //TODO Throw an error
+                    } else {
+                        dependencies << dep
+                    }
+                }
             }
         }
 
