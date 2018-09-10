@@ -21,6 +21,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String groupId
         String artifactId
         String version
+        boolean isHeaderOnly
+        boolean isJar
         String[] validClassifiers
     }
 
@@ -30,6 +32,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String uuid
         String[] mavenUrls
         String jsonUrl
+        String fileName
         Artifact[] javaDependencies
         Artifact[] jniDependencies
         Artifact[] cppDependencies
