@@ -30,6 +30,8 @@ class WPIExtension {
     String pathfinderVersion = "1.8"
     String openrioMatchDataVersion = "2018.01.07"
 
+    String frcYear = '2018'
+
     final Project project
 
     WPIExtension(Project project) {

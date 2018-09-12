@@ -2,7 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIJavaDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDeps
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIToolsPlugin
+import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLogger
