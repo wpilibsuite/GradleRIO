@@ -123,10 +123,23 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             if (dependencies != null) {
                 dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
                     dep.jniDependencies.find{it.validClassifiers.contains('linuxathena')}.each { JniArtifact art ->
-                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${'linuxathena'}@zip")
+                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${'linuxathena'}@${art.isJar ? 'jar' : 'zip'}")
                     }
                 }
             }
+            return returns
+        })
+
+        project.extensions.add('jniClassifierVendorLibraries', { String classifier, String... ignoreLibraries ->
+            def returns = []
+            if (dependencies != null) {
+                dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
+                    dep.jniDependencies.find{it.validClassifiers.contains(classifier)}.each { JniArtifact art ->
+                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${classifier}@${art.isJar ? 'jar' : 'zip'}")
+                    }
+                }
+            }
+            return returns
         })
 
         project.extensions.add('jniDesktopVendorLibraries', { String... ignoreLibraries ->
@@ -134,10 +147,11 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             if (dependencies != null) {
                 dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
                     dep.jniDependencies.find{it.validClassifiers.contains(nativeclassifier)}.each { JniArtifact art ->
-                        project.dependencies.add('nativeDesktopZip', "${art.groupId}:${art.artifactId}:${art.version}:${nativeclassifier}@zip")
+                        project.dependencies.add('nativeDesktopZip', "${art.groupId}:${art.artifactId}:${art.version}:${nativeclassifier}@${art.isJar ? 'jar' : 'zip'}")
                     }
                 }
             }
+            return returns
         })
 
         project.extensions.add('useCppVendorLibraries', { Object closureArg, String... ignoreLibraries ->
