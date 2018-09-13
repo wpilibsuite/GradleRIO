@@ -38,6 +38,8 @@ class WPIToolsPlugin implements Plugin<Project> {
             ToolInstallTask.toolsFolder = toolFolder
             tools << new WPITool(project, "SmartDashboard", wpi.smartDashboardVersion, "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}")
             tools << new WPITool(project, "ShuffleBoard", wpi.shuffleboardVersion, "edu.wpi.first.shuffleboard:app:${wpi.shuffleboardVersion}")
+            tools << new WPITool(project, "OutlineViewer", wpi.outlineViewerVersion, "edu.wpi.first.wpilib:OutlineViewer:${wpi.outlineViewerVersion}")
+            tools << new WPITool(project, "RobotBuilder", wpi.robotBuilderVersion, "edu.wpi.first.wpilib:RobotBuilder:${wpi.robotBuilderVersion}")
 
             project.tasks.register("InstallAllTools") { Task task->
                 task.group = 'GradleRIO'
