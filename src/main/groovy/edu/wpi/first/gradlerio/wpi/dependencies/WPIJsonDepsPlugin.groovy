@@ -10,6 +10,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.TargetedNativeComponent
@@ -17,12 +18,26 @@ import org.gradle.nativeplatform.TargetedNativeComponent
 @CompileStatic
 class WPIJsonDepsPlugin implements Plugin<Project> {
 
-    static class Artifact {
+    static class JavaArtifact {
+        String groupId
+        String artifactId
+        String version
+    }
+
+    static class JniArtifact {
+        String groupId
+        String artifactId
+        String version
+        boolean isJar
+        String[] validClassifiers
+    }
+
+    static class CppArtifact {
         String groupId
         String artifactId
         String version
         boolean isHeaderOnly
-        boolean isJar
+        String headerClassifier
         String[] validClassifiers
     }
 
@@ -33,9 +48,9 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String[] mavenUrls
         String jsonUrl
         String fileName
-        Artifact[] javaDependencies
-        Artifact[] jniDependencies
-        Artifact[] cppDependencies
+        JavaArtifact[] javaDependencies
+        JniArtifact[] jniDependencies
+        CppArtifact[] cppDependencies
     }
 
     List<JsonDependency> dependencies = []
@@ -52,6 +67,14 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         def wpi = project.extensions.getByType(WPIExtension)
+
+        def nativeclassifier = (
+                OperatingSystem.current().isWindows() ?
+                        System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
+                        OperatingSystem.current().isMacOsX() ? "osxx86-64" :
+                                OperatingSystem.current().isLinux() ? "linuxx86-64" :
+                                        null
+        )
 
         def jsonDepFolder = project.file('vendordeps')
         JsonSlurper slurper = new JsonSlurper()
@@ -75,7 +98,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         // Add all URLs from dependencies
         dependencies.each { JsonDependency dep ->
             dep.mavenUrls.each { url ->
-                project.repositories.maven { repo ->
+                project.repositories.maven { MavenArtifactRepository repo ->
                     repo.url = url
                 }
             }
@@ -87,17 +110,34 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             def returns = []
             if (dependencies != null) {
                 dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
-                    dep.javaDependencies.each { Artifact art ->
+                    dep.javaDependencies.each { JavaArtifact art ->
                         returns << "${art.groupId}:${art.artifactId}:${art.version}"
-                    }
-                    dep.jniDependencies.each { Artifact art ->
-                        art.validClassifiers.each {
-                            project.dependencies.add('wpiJsonJni', "${art.groupId}:${art.artifactId}:${art.version}:${it}@zip")
-                        }
                     }
                 }
             }
             return returns
+        })
+
+        project.extensions.add('jniRoboRIOVendorLibraries', { String... ignoreLibraries ->
+            def returns = []
+            if (dependencies != null) {
+                dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
+                    dep.jniDependencies.find{it.validClassifiers.contains('linuxathena')}.each { JniArtifact art ->
+                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${'linuxathena'}@zip")
+                    }
+                }
+            }
+        })
+
+        project.extensions.add('jniDesktopVendorLibraries', { String... ignoreLibraries ->
+            def returns = []
+            if (dependencies != null) {
+                dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
+                    dep.jniDependencies.find{it.validClassifiers.contains(nativeclassifier)}.each { JniArtifact art ->
+                        project.dependencies.add('nativeDesktopZip', "${art.groupId}:${art.artifactId}:${art.version}:${nativeclassifier}@zip")
+                    }
+                }
+            }
         })
 
         project.extensions.add('useCppVendorLibraries', { Object closureArg, String... ignoreLibraries ->
