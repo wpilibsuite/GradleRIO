@@ -57,8 +57,8 @@ class WPIExtension {
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
-            "outlineViewerVersion" : new Tuple("OutlineViewer", smartDashboardVersion, "outlineviewer"),
-            "robotBuilderVersion" : new Tuple("RobotBuilder", shuffleboardVersion, "robotbuilder"),
+            "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
+            "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
 
             "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain"),
 
