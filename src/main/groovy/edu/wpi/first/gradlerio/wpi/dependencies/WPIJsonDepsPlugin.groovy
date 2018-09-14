@@ -6,6 +6,7 @@ import groovy.io.FileType
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import jaci.gradle.nativedeps.NativeDepsPlugin
 import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
@@ -68,6 +69,12 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     static class WPIJsonDepsExtension {
         List<JsonDependency> dependencies = []
+
+        final Project project
+
+        WPIJsonDepsExtension(Project project) {
+            this.project = project
+        }
     }
 
 
@@ -83,6 +90,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        project.pluginManager.apply(NativeDepsPlugin)
         def wpi = project.extensions.getByType(WPIExtension)
 
         def jsonExtension = project.extensions.create('wpiJsonDeps', WPIJsonDepsExtension, project)
@@ -173,7 +181,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             return returns
         })
 
-        DependencySpecExtension dse = project.extensions.create("ETDependencySpecs", DependencySpecExtension)
+        DependencySpecExtension dse = project.extensions.getByType(DependencySpecExtension)
 
         project.extensions.add('useCppVendorLibraries', { Object closureArg, String... ignoreLibraries ->
             if (closureArg in TargetedNativeComponent) {
@@ -217,6 +225,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                 lib.headerDirs = []
                 lib.sourceDirs = []
                 lib.staticMatchers = []
+                lib.sharedMatchers = []
+                lib.dynamicMatchers = []
             }
 
             def nativeclassifier = (
@@ -247,6 +257,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     if (art.isHeaderOnly) {
                         return
                     }
+                    return;
 
                     if (supportAthena) {
                         libs.create("${name}_athena", NativeLib) { NativeLib lib ->
