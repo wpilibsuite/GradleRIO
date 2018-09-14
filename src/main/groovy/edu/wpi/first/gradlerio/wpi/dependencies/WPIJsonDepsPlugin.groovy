@@ -52,6 +52,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String sourcesClassifier
         boolean sharedLibrary
         String libName
+        boolean skipOnUnknownClassifier
         String[] validClassifiers
     }
 
@@ -109,7 +110,6 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         // Try to load dependencies JSON files
         if (jsonDepFolder.exists()) {
             jsonDepFolder.eachFileMatch FileType.FILES,~/.*\.json/, { File file ->
-                println file
                 file.withReader {
                     def slurped = slurper.parse(it)
                     def dep = constructJsonDependency(slurped)
@@ -240,8 +240,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             jsonExtension.dependencies.each { JsonDependency dep ->
                 dep.cppDependencies.each { CppArtifact art ->
                     def name = dep.uuid
-                    def supportNative = dep.cppDependencies.contains(nativeclassifier)
-                    def supportAthena = dep.cppDependencies.contains('linuxathena')
+                    def supportNative = art.validClassifiers.contains(nativeclassifier)
+                    def supportAthena = art.validClassifiers.contains('linuxathena')
                     def mavenBase = "${art.groupId}:${art.artifactId}:${art.version}"
                     def cfgName = "native_${name}"
                     libs.create("${name}_headers", NativeLib) { NativeLib lib ->
@@ -255,9 +255,16 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     }
 
                     if (art.isHeaderOnly) {
+                        // Create header only lib
+                        libs.create(name, CombinedNativeLib) { CombinedNativeLib lib ->
+                            lib.libs << "${name}_headers".toString()
+                            lib.targetPlatforms = ['roborio']
+                            if (supportNative)
+                                lib.targetPlatforms << 'desktop'
+                            null
+                        }
                         return
                     }
-                    return;
 
                     if (supportAthena) {
                         libs.create("${name}_athena", NativeLib) { NativeLib lib ->
@@ -276,7 +283,6 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     }
 
                     if (art.hasSources) {
-
                         libs.create("${name}_sources", NativeLib) { NativeLib lib ->
                             common(lib)
                             if (supportNative)
@@ -308,7 +314,10 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     }
 
                     libs.create(name, CombinedNativeLib) { CombinedNativeLib lib ->
-                        lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
+                        lib.libs << "${name}_binaries".toString() << "${name}_headers".toString()
+                        if (art.hasSources) {
+                            lib.libs << "${name}_sources".toString()
+                        }
                         lib.targetPlatforms = ['roborio']
                         if (supportNative)
                             lib.targetPlatforms << 'desktop'
