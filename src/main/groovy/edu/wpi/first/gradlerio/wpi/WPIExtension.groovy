@@ -21,6 +21,8 @@ class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "3.0.0"
     String shuffleboardVersion = "1.3.1"
+    String outlineViewerVersion = "2.0.7"
+    String robotBuilderVersion = "3.0.1"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
     String toolchainVersion = "2018-5.5"
@@ -77,6 +79,8 @@ class WPIExtension {
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
+            "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
+            "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
 
             "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain"),
 
