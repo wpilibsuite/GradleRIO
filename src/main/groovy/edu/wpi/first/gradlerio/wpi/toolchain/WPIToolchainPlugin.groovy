@@ -44,7 +44,6 @@ import org.gradle.util.TreeVisitor
 @CompileStatic
 class WPIToolchainPlugin implements Plugin<Project> {
 
-    static final String homeEnv = "FRC_2018ALPHA_HOME"
     static final String discovererGradleRIO = "GradleRIO Home"
     static final String notoolchainMessage = "No valid RoboRIO toolchain(s) found! Run `./gradlew installToolchain`, or run with `--info` for more details."
 
@@ -107,8 +106,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
         WPIExtension wpiExtension = project.extensions.getByType(WPIExtension)
 
         // FRC Home
-        def envvar = System.getenv(homeEnv)
-        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, envvar == null ? null : new File(envvar))
+        def frcHome = wpiExtension.frcHome
+        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome))
 
         // GradleRIO ~/.gradle/gradlerio
         toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))

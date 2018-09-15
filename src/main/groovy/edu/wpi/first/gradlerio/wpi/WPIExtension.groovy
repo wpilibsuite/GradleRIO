@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 
 @CompileStatic
 class WPIExtension {
@@ -36,6 +37,27 @@ class WPIExtension {
 
     WPIExtension(Project project) {
         this.project = project
+    }
+
+    private String frcHomeCache
+
+    String getFrcHome() {
+        if (frcHomeCache != null) {
+            return this.frcHomeCache
+        }
+        def frcHome = System.getenv("FRC_${this.frcYear}_HOME")
+
+        if (frcHome == null) {
+            if (OperatingSystem.current().isWindows()) {
+                frcHome = "C:\\Users\\Public\\frc${this.frcYear}"
+            } else {
+                def userFolder = System.getProperty("user.home")
+                frcHome = new File(userFolder, "wpilib${this.frcYear}").toString()
+            }
+            // TODO Figure out how to sent the frc home variable
+        }
+        frcHomeCache = frcHome
+        return frcHomeCache
     }
 
     Map<String, Tuple> versions() {
