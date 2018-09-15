@@ -74,6 +74,8 @@ gradlePlugin {
     }
 }
 
+apply from: 'versionupdates.gradle'
+
 wrapper {
     gradleVersion = '4.9'
 }
