@@ -70,6 +70,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     static class WPIJsonDepsExtension {
         List<JsonDependency> dependencies = []
+        final List<DelegatedDependencySet> nativeDependenciesList = []
 
         final Project project
 
@@ -77,8 +78,6 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             this.project = project
         }
     }
-
-
 
     @CompileDynamic
     private JsonDependency constructJsonDependency(Object slurped) {
@@ -121,6 +120,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                 }
             }
         }
+
+         DependencySpecExtension dse = project.extensions.getByType(DependencySpecExtension)
 
         // Add all URLs from dependencies
         jsonExtension.dependencies.each { JsonDependency dep ->
@@ -181,15 +182,20 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             return returns
         })
 
-        DependencySpecExtension dse = project.extensions.getByType(DependencySpecExtension)
+
+
+
 
         project.extensions.add('useCppVendorLibraries', { Object closureArg, String... ignoreLibraries ->
             if (closureArg in TargetedNativeComponent) {
                 TargetedNativeComponent component = (TargetedNativeComponent)closureArg
                 component.binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
-                    Set<DelegatedDependencySet> dds = jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collect { JsonDependency dep ->
-                        new DelegatedDependencySet(dep.uuid, bin, dse)
-                    } as Set
+                    Set<DelegatedDependencySet> dds = []
+                    jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
+                        dep.cppDependencies.collect { CppArtifact art ->
+                            dds << new DelegatedDependencySet(dep.uuid + art.libName, bin, dse, art.skipOnUnknownClassifier)
+                        }
+                    }
 
                     bin.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
                         dds.each { DelegatedDependencySet set ->
@@ -200,9 +206,12 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                 }
             } else if (closureArg in NativeBinarySpec) {
                 NativeBinarySpec bin = (NativeBinarySpec) closureArg
-                Set<DelegatedDependencySet> dds = jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collect { JsonDependency dep ->
-                    new DelegatedDependencySet(dep.uuid, bin, dse)
-                } as Set
+                Set<DelegatedDependencySet> dds = []
+                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
+                    dep.cppDependencies.collect { CppArtifact art ->
+                        dds << new DelegatedDependencySet(dep.uuid + art.libName, bin, dse, art.skipOnUnknownClassifier)
+                    }
+                }
 
                 bin.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
                     dds.each { DelegatedDependencySet set ->
@@ -239,7 +248,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
             jsonExtension.dependencies.each { JsonDependency dep ->
                 dep.cppDependencies.each { CppArtifact art ->
-                    def name = dep.uuid
+                    def name = dep.uuid + art.libName
                     def supportNative = art.validClassifiers.contains(nativeclassifier)
                     def supportAthena = art.validClassifiers.contains('linuxathena')
                     def mavenBase = "${art.groupId}:${art.artifactId}:${art.version}"
