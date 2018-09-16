@@ -32,8 +32,6 @@ repositories {
 // and NavX.
 dependencies {
     compile wpilib()
-    compile ctre()
-    compile navx()
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     compile "org.jetbrains.kotlin:kotlin-stdlib"
