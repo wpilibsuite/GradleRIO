@@ -11,8 +11,6 @@ class WPIJavaDeps implements Plugin<Project> {
 
         def wpiext = project.extensions.getByType(WPIExtension)
         apply_wpi_dependencies(project, wpiext)
-        apply_third_party_drivers(project, wpiext)
-        apply_openrio(project, wpiext)
     }
 
     void apply_wpi_dependencies(Project project, WPIExtension wpi) {
@@ -71,59 +69,6 @@ class WPIJavaDeps implements Plugin<Project> {
              "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpiutilVersion}:sources",
              "org.opencv:opencv-java:${wpi.opencvVersion}:sources",
              "edu.wpi.first.cscore:cscore-java:${wpi.cscoreVersion}:sources"]
-        }
-    }
-
-    void apply_third_party_drivers(Project project, WPIExtension wpi) {
-
-        // Java:
-        // dependencies {
-        //     compile ctre()
-        //     compile navx()
-        //
-        //     // Use this to include a device library we don't provide, from your file system.
-        //     compile fileTree(dir: 'libs', include: '**/*.jar')
-        //     nativeLib  fileTree(dir: 'libs', include: '**/*.so')
-        // }
-
-        // TODO: 2019
-        // Bare is passed as a configuration closure to navx (and other dependencies) in order to prevent
-        // transitive wpilib dependencies that could potentially conflict with our own versions.
-//        project.dependencies.ext.bare = {
-//            exclude module: 'athena'
-//            exclude module: 'wpilibj-java'
-//        }
-
-        project.dependencies.ext.ctreJni = {
-            "openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}:native@zip"
-        }
-
-        project.dependencies.ext.ctre = {
-            project.dependencies.add("nativeZip", project.dependencies.ext.ctreJni())
-            ["openrio.mirror.third.ctre:CTRE-phoenix-java:${wpi.ctreVersion}"]
-        }
-
-        project.dependencies.ext.ctreLegacyJni = {
-            "openrio.mirror.third.ctre:CTRE-toolsuite-java:${wpi.ctreLegacyVersion}:native@zip"
-        }
-
-        project.dependencies.ext.ctreLegacy = {
-            project.dependencies.add("nativeZip", project.dependencies.ext.ctreLegacyJni())
-            ["openrio.mirror.third.ctre:CTRE-toolsuite-java:${wpi.ctreLegacyVersion}"]
-        }
-
-        project.dependencies.ext.navx = {
-            ["openrio.mirror.third.kauailabs:navx-java:${wpi.navxVersion}"]
-        }
-    }
-
-    void apply_openrio(Project project, WPIExtension wpi) {
-        project.dependencies.ext.pathfinderJni = {
-            "jaci.pathfinder:Pathfinder-JNI:1.8:athena@zip"
-        }
-        project.dependencies.ext.pathfinder = {
-            project.dependencies.add("nativeZip", project.dependencies.ext.pathfinderJni())
-            ["jaci.pathfinder:Pathfinder-Java:${wpi.pathfinderVersion}"]
         }
     }
 }

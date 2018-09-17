@@ -6,26 +6,26 @@ robotics competition to produce and build their code.
 
 GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, CTRE Toolsuite (Talon SRX) and NavX libraries, and you can even add your own libraries!
 
-For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the WPILib extension. 
+For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the WPILib extension.
 
 Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also supported, unofficially. You may also use this tool exclusively from the command line, allowing use of any IDE or text editor (like Sublime Text, Atom or Vim).
 
-## Commands  
-Windows Users: It is recommended to use Powershell instead of CMD.  
-- ```./gradlew build``` will build your Robot Code  
-- ```./gradlew deploy``` will build and deploy your code.    
-- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).  
+## Commands
+Windows Users: It is recommended to use Powershell instead of CMD.
+- ```./gradlew build``` will build your Robot Code
+- ```./gradlew deploy``` will build and deploy your code.
+- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).
 
-- ```./gradlew smartDashboard``` will launch Smart Dashboard  
-- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.  
+- ```./gradlew smartDashboard``` will launch Smart Dashboard
+- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
 - ```./gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
 
 ## IDE Commands
 _These IDEs are unofficially supported, so CSA support is not guaranteed. It is recommended to use VSCode, however these options are available if you wish._
-- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)  
-- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)  
+- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)
+- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)
 - ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
 - ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
 
@@ -103,10 +103,6 @@ wpi {
     cscoreVersion = '...'
     wpiutilVersion = '...'
 
-    ctreVersion = '...'
-    ctreLegacyVersion = '...'   // NOTE: Legacy Toolsuite
-    navxVersion = '...'
-
     smartDashboardVersion = '...'
     shuffleboardVersion = '...'
 
@@ -115,18 +111,14 @@ wpi {
 
 // Set the dependencies you want to use in your JAVA project.
 // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-// CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
-// NavX adds the NavX IMU library.
 dependencies {
     compile wpilib()
-    compile navx()
-    compile ctre()
 }
 
 // Java only. Setup your Jar File.
 jar {
     // Compile a 'fat jar' (libraries included)
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     // Include your Manifest. Arguments are your Robot Main Class.
     manifest GradleRIOPlugin.javaManifest('test.myClass')
 }
@@ -143,9 +135,7 @@ model {
             }
             // Add the libraries you wish to use in your NATIVE project.
             // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-            // CTRE adds the CTRE Toolsuite (i.e. Talon SRX)
-            // NavX adds the NavX IMU library.
-            useLibrary(it, "wpilib", "navx", "ctre")
+            useLibrary(it, "wpilib")
         }
     }
 }

@@ -13,11 +13,6 @@ class WPIExtension {
     String cscoreVersion = "1.3.0"
     String wpiutilVersion = "3.2.0"
 
-    // Third Party (dev.imjac.in/maven/thirdparty) libs
-    String ctreVersion = "5.5.1.0"
-    String ctreLegacyVersion = "4_Legacy"
-    String navxVersion = "3.0.348"
-
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "3.0.0"
     String shuffleboardVersion = "1.3.1"
@@ -28,10 +23,6 @@ class WPIExtension {
     String toolchainVersion = "2018-5.5"
     String toolchainVersionLow = "5.5"
     String toolchainVersionHigh = "5.5"
-
-    // OpenRIO Dependencies
-    String pathfinderVersion = "1.8"
-    String openrioMatchDataVersion = "2018.01.07"
 
     String frcYear = '2018'
 
@@ -73,19 +64,12 @@ class WPIExtension {
 
             "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
 
-            "ctreVersion" : new Tuple("CTRE", ctreVersion, "ctre"),
-            "ctreLegacyVersion": new Tuple("CTRE (Legacy)", ctreLegacyVersion, "ctreLegacy"),
-            "navxVersion" : new Tuple("NavX", navxVersion, "navx"),
-
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
             "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
             "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
 
             "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain"),
-
-            "pathfinderVersion": new Tuple("Pathfinder", pathfinderVersion, "pathfinder"),
-            "openrioMatchDataVersion" : new Tuple("OpenRIO:MatchData", openrioMatchDataVersion, "openrioMatchData")
         ]
     }
 }

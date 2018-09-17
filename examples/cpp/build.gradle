@@ -39,9 +39,8 @@ model {
                 }
             }
 
-            // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
-            // and NavX.
-            useLibrary(it, "wpilib", "ctre", "navx")
+            // Defining my dependencies. In this case, WPILib (+ friends)
+            useLibrary(it, "wpilib")
         }
     }
 }
