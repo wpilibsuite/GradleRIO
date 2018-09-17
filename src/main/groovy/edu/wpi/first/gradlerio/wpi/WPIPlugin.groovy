@@ -4,6 +4,7 @@ import edu.wpi.first.gradlerio.wpi.dependencies.WPIJavaDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
@@ -28,6 +29,7 @@ class WPIPlugin implements Plugin<Project> {
             logger.info("DeployTools Native Project Detected".toString())
             project.pluginManager.apply(WPINativeDeps)
             project.pluginManager.apply(WPIToolchainPlugin)
+            project.pluginManager.apply(GradleVsCode)
         }
 
         project.tasks.register("wpi") { Task task ->
