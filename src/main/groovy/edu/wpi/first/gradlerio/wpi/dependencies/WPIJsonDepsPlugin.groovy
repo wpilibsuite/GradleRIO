@@ -39,6 +39,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String artifactId
         String version
         boolean isJar
+        boolean skipOnUnknownClassifier
         String[] validClassifiers
     }
 
@@ -68,6 +69,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         CppArtifact[] cppDependencies
     }
 
+    @CompileStatic
     static class WPIJsonDepsExtension {
         List<JsonDependency> dependencies = []
         final List<DelegatedDependencySet> nativeDependenciesList = []
@@ -76,6 +78,20 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
         WPIJsonDepsExtension(Project project) {
             this.project = project
+        }
+    }
+
+    @CompileStatic
+    static class MissingJniDependencyException extends RuntimeException {
+        String dependencyName
+        String classifier
+        JniArtifact artifact
+
+        MissingJniDependencyException(String name, String classifier, JniArtifact artifact) {
+            super("Cannot find jni dependency: ${name} for classifier: ${classifier}".toString())
+            this.dependencyName = name
+            this.classifier = classifier
+            this.artifact = artifact
         }
     }
 
@@ -114,6 +130,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     def dep = constructJsonDependency(slurped)
                     if (dep == null) {
                         //TODO Display an error
+                        println "Error loading Vendor File ${file.toString()}"
                     } else {
                         jsonExtension.dependencies << dep
                     }
@@ -121,7 +138,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             }
         }
 
-         DependencySpecExtension dse = project.extensions.getByType(DependencySpecExtension)
+        DependencySpecExtension dse = project.extensions.getByType(DependencySpecExtension)
 
         // Add all URLs from dependencies
         jsonExtension.dependencies.each { JsonDependency dep ->
@@ -131,60 +148,71 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                 }
             }
         }
-
-        project.configurations.maybeCreate('wpiJsonJni')
-
         project.extensions.add('javaVendorLibraries', { String... ignoreLibraries ->
-            def returns = []
             if (jsonExtension.dependencies != null) {
-                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
-                    dep.javaDependencies.each { JavaArtifact art ->
-                        returns << "${art.groupId}:${art.artifactId}:${art.version}"
-                    }
+                return jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collectMany { JsonDependency dep ->
+                    dep.javaDependencies.collect { JavaArtifact art -> "${art.groupId}:${art.artifactId}:${art.version}" } as Collection
                 }
+            } else {
+                return []
             }
-            return returns
         })
 
         project.extensions.add('jniRoboRIOVendorLibraries', { String... ignoreLibraries ->
-            def returns = []
+            def classifier = 'linuxathena'
             if (jsonExtension.dependencies != null) {
-                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
-                    dep.jniDependencies.find{it.validClassifiers.contains('linuxathena')}.each { JniArtifact art ->
-                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${'linuxathena'}@${art.isJar ? 'jar' : 'zip'}")
-                    }
+                return jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collectMany { JsonDependency dep ->
+                    dep.jniDependencies.find { JniArtifact art ->
+                        def containsClassifier = art.validClassifiers.contains(classifier)
+                        if (!containsClassifier && !art.skipOnUnknownClassifier) {
+                            throw new MissingJniDependencyException(dep.name, classifier, art)
+                        }
+                        return containsClassifier
+                    }.collect { JniArtifact art ->
+                        "${art.groupId}:${art.artifactId}:${art.version}:${classifier}@${art.isJar ? 'jar' : 'zip'}"
+                    } as Collection
                 }
+            } else {
+                return []
             }
-            return returns
         })
 
         project.extensions.add('jniClassifierVendorLibraries', { String classifier, String... ignoreLibraries ->
-            def returns = []
             if (jsonExtension.dependencies != null) {
-                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
-                    dep.jniDependencies.find{it.validClassifiers.contains(classifier)}.each { JniArtifact art ->
-                        project.dependencies.add('nativeZip', "${art.groupId}:${art.artifactId}:${art.version}:${classifier}@${art.isJar ? 'jar' : 'zip'}")
-                    }
+                return jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collectMany { JsonDependency dep ->
+                    dep.jniDependencies.find { JniArtifact art ->
+                        def containsClassifier = art.validClassifiers.contains(classifier)
+                        if (!containsClassifier && !art.skipOnUnknownClassifier) {
+                            throw new MissingJniDependencyException(dep.name, classifier, art)
+                        }
+                        return containsClassifier
+                    }.collect { JniArtifact art ->
+                        "${art.groupId}:${art.artifactId}:${art.version}:${classifier}@${art.isJar ? 'jar' : 'zip'}"
+                    } as Collection
                 }
+            } else {
+                return []
             }
-            return returns
         })
 
         project.extensions.add('jniDesktopVendorLibraries', { String... ignoreLibraries ->
-            def returns = []
+            def classifier = nativeclassifier
             if (jsonExtension.dependencies != null) {
-                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) } each { JsonDependency dep ->
-                    dep.jniDependencies.find{it.validClassifiers.contains(nativeclassifier)}.each { JniArtifact art ->
-                        project.dependencies.add('nativeDesktopZip', "${art.groupId}:${art.artifactId}:${art.version}:${nativeclassifier}@${art.isJar ? 'jar' : 'zip'}")
-                    }
+                return jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collectMany { JsonDependency dep ->
+                    dep.jniDependencies.find { JniArtifact art ->
+                        def containsClassifier = art.validClassifiers.contains(classifier)
+                        if (!containsClassifier && !art.skipOnUnknownClassifier) {
+                            throw new MissingJniDependencyException(dep.name, classifier, art)
+                        }
+                        return containsClassifier
+                    }.collect { JniArtifact art ->
+                        "${art.groupId}:${art.artifactId}:${art.version}:${classifier}@${art.isJar ? 'jar' : 'zip'}"
+                    } as Collection
                 }
+            } else {
+                return []
             }
-            return returns
         })
-
-
-
-
 
         project.extensions.add('useCppVendorLibraries', { Object closureArg, String... ignoreLibraries ->
             if (closureArg in TargetedNativeComponent) {
