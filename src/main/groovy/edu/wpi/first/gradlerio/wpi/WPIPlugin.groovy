@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIJavaDeps
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIJsonDepsPlugin
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDeps
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
@@ -24,6 +25,7 @@ class WPIPlugin implements Plugin<Project> {
 
         project.pluginManager.apply(WPIJavaDeps)
         project.pluginManager.apply(WPIToolsPlugin)
+        project.pluginManager.apply(WPIJsonDepsPlugin)
 
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
