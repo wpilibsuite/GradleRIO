@@ -7,11 +7,12 @@ import org.gradle.internal.os.OperatingSystem
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
-    String wpilibVersion = "2018.4.1"
-    String ntcoreVersion = "4.1.0"
+    String wpilibVersion = "2018.4.1-20180902173235-1178-g0b113ad"
     String opencvVersion = "3.2.0"
-    String cscoreVersion = "1.3.0"
-    String wpiutilVersion = "3.2.0"
+
+    String wpilibYear = '2018'
+
+    String googleTestVersion = "1.8.0-1-4e4df22"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "3.0.0"
@@ -58,11 +59,9 @@ class WPIExtension {
         // property: [ PrettyName, Version, RecommendedKey ]
         return [
             "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
-            "ntcoreVersion" : new Tuple("NTCore", ntcoreVersion, "ntcore"),
             "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
-            "cscoreVersion" : new Tuple("CSCore", cscoreVersion, "cscore"),
-
-            "wpiutilVersion" : new Tuple("WPIUtil (C++)", wpiutilVersion, "wpiutil"),
+            "wpilibYear" : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
+            "googleTestVersion" : new Tuple("Google Test", googleTestVersion, "googleTest"),
 
             "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
             "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
