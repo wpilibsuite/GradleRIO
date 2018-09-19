@@ -1,26 +1,25 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.1.51"
-    id "eclipse"
-    id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.14"
+    id "org.jetbrains.kotlin.jvm" version "1.2.50"
+    id "edu.wpi.first.GradleRIO" version "2018.06.21"
 }
 
-def TEAM = 5333
 def ROBOT_CLASS = "frc.team0000.robot.Robot"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
-        target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
+        target("roborio", edu.wpi.first.gradlerio.frc.RoboRIO) {
+            // Team can be overridden by command line, for use with VSCode
+            team = getTeamOrDefault(5333)
         }
     }
     artifacts {
         // We still use FRCJavaArtifact since kotlin does respond as a Java build.
-        artifact('frcKotlin', jaci.openrio.gradle.frc.FRCJavaArtifact) {
+        artifact('frcKotlin', edu.wpi.first.gradlerio.frc.FRCJavaArtifact) {
             targets << "roborio"
-            jar = 'jar'
+            // Debug can be overridden by command line, for use with VSCode
+            debug = getDebugOrDefault(false)
         }
     }
 }
@@ -33,8 +32,6 @@ repositories {
 // and NavX.
 dependencies {
     compile wpilib()
-    compile ctre()
-    compile navx()
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     compile "org.jetbrains.kotlin:kotlin-stdlib"
@@ -45,9 +42,9 @@ dependencies {
 // knows where to look for our Robot Class.
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.7'
 }

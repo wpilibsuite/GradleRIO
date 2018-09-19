@@ -15,3 +15,9 @@ CMakeLists.txt
 .vs
 cmake-build-debug
 _localtest/libs
+bin/
+.settings/
+.project
+.classpath
+out/
+hs_err_*

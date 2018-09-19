@@ -1,0 +1,44 @@
+
+def versionMap = [
+  wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
+  smartDashboardVersion: 'edu.wpi.first.wpilib:SmartDashboard:+',
+  outlineViewerVersion: 'edu.wpi.first.wpilib:OutlineViewer:+',
+  robotBuilderVersion: 'edu.wpi.first.wpilib:RobotBuilder:+',
+  shuffleboardVersion: 'edu.wpi.first.shuffleboard:app:+',
+  opencvVersion: 'org.opencv:opencv-java:+'
+]
+
+configurations {
+  gradleRioVersions
+}
+
+project.repositories.maven { repo ->
+    repo.name = "WPI"
+    repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
+}
+
+dependencies {
+  versionMap.each { key, value ->
+    gradleRioVersions value
+  }
+}
+
+String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
+
+
+tasks.register('UpdateVersions') {
+  doLast {
+    def extFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIExtension.groovy')
+    def extText = extFile.text
+    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
+      versionMap.each { key, value ->
+        def id = it.moduleVersion.id
+        if (value == "${id.group}:${it.name}:+".toString()) {
+          def localRegex = regex.replace('placeholder', key)
+          extText = extText.replaceAll(localRegex, "String ${key} = \"${id.version}\"".toString())
+        }
+      }
+    }
+    extFile.text = extText
+  }
+}
