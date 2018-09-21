@@ -22,22 +22,6 @@ class WPICommonDeps implements Plugin<Project> {
                 repo.name = "WPI"
                 repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"
             }
-
-            project.repositories.maven { MavenArtifactRepository repo ->
-                repo.name = "OpenRIO"
-                repo.url = "https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2"
-            }
-
-            project.repositories.maven { MavenArtifactRepository repo ->
-                repo.name = "Jaci"
-                repo.url = "http://dev.imjac.in/maven/"
-            }
-
-            // TODO: 2019
-//        project.repositories.maven { repo ->
-//            repo.name = "KauaiLabs"
-//            repo.url = "http://www.kauailabs.com/maven2"
-//        }
         }
 
         apply_halsim_extensions(project, project.extensions.getByType(WPIExtension))
