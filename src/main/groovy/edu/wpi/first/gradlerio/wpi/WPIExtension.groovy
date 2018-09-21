@@ -6,7 +6,7 @@ import org.gradle.internal.os.OperatingSystem
 
 @CompileStatic
 class WPIExtension {
-    // WPILib (first.wpi.edu/FRC/roborio/maven/release) libs
+    // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2018.4.1-20180902173235-1178-g0b113ad"
     String opencvVersion = "3.2.0"
 

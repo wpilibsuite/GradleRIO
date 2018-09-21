@@ -7,6 +7,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLoggerFactory
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.apache.log4j.Logger
+import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -64,10 +65,10 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def rootInstallTask = project.tasks.register("installToolchain", ToolchainInstallTask) { ToolchainInstallTask task ->
+        def rootInstallTask = project.tasks.register("installToolchain", ToolchainInstallTask, { ToolchainInstallTask task ->
             task.group = "GradleRIO"
             task.description = "Install the C++ FRC Toolchain for this system"
-        }
+        } as Action<? extends ToolchainInstallTask>)
 
         project.extensions.create("wpiToolchain", WPIToolchainExtension)
 
@@ -107,7 +108,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
         // FRC Home
         def frcHome = wpiExtension.frcHome
-        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome))
+        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome, 'gcc'))
 
         // GradleRIO ~/.gradle/gradlerio
         toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))
@@ -280,7 +281,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
         @Mutate
         void addBinaryFlags(BinaryContainer binaries) {
-            binaries.withType(NativeBinarySpec) { NativeBinarySpec bin ->
+            binaries.withType(NativeBinarySpec, { NativeBinarySpec bin ->
                 if (!(bin.toolChain in VisualCpp)) {
                     bin.cppCompiler.args << "-std=c++14" << '-g'
                 } else {
@@ -288,7 +289,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
                     bin.linker.args << '/DEBUG:FULL'
                 }
                 null
-            }
+            } as Action<? extends NativeBinarySpec>)
         }
     }
 }
