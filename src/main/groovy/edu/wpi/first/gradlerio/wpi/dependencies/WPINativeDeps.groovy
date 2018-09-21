@@ -110,25 +110,42 @@ class WPINativeDeps implements Plugin<Project> {
 
 
             // NI LIBS
-            libs.create('ni_libraries_binaries', NativeLib) { NativeLib lib ->
+            libs.create('ni_chipobject_binaries', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.sharedMatchers = ['**/*.so*']
                 lib.dynamicMatchers = []    // NI Libs are not deployed to RIO
-                lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:linuxathena@zip"
+                lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:linuxathena@zip"
                 lib.configuration = 'native_ni_libraries'
                 null
             }
 
-            libs.create('ni_libraries_headers', NativeLib) { NativeLib lib ->
+            libs.create('ni_chipobject_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.headerDirs << ''
-                lib.maven = "edu.wpi.first.ni-libraries:ni-libraries:${wpi.wpilibVersion}:headers@zip"
+                lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:headers@zip"
+                lib.configuration = 'native_ni_libraries'
+                null
+            }
+
+            libs.create('ni_netcomm_binaries', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.sharedMatchers = ['**/*.so*']
+                lib.dynamicMatchers = []    // NI Libs are not deployed to RIO
+                lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:linuxathena@zip"
+                lib.configuration = 'native_ni_libraries'
+                null
+            }
+
+            libs.create('ni_netcomm_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.headerDirs << ''
+                lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:headers@zip"
                 lib.configuration = 'native_ni_libraries'
                 null
             }
 
             libs.create('ni_libraries', CombinedNativeLib) { CombinedNativeLib lib ->
-                lib.libs << 'ni_libraries_binaries' << 'ni_libraries_headers'
+                lib.libs << 'ni_chipobject_binaries' << 'ni_chipobject_headers' << 'ni_netcomm_binaries' << 'ni_netcomm_headers'
                 lib.targetPlatform = 'roborio'
                 null
             }
