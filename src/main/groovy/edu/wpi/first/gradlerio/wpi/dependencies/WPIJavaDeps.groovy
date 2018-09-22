@@ -21,13 +21,7 @@ class WPIJavaDeps implements Plugin<Project> {
         //     compile wpilib()
         // }
 
-        def nativeclassifier = (
-            OperatingSystem.current().isWindows() ?
-            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
-            OperatingSystem.current().isMacOsX() ? "osxx86-64" :
-            OperatingSystem.current().isLinux() ? "linuxx86-64" :
-            null
-        )
+        def nativeclassifier = wpi.nativeClassifier
 
         project.dependencies.ext.wpilibDesktopJni = {
              ["org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",

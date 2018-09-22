@@ -29,9 +29,25 @@ class WPIExtension {
     String frcYear = '2018'
 
     final Project project
+    final String nativeClassifier
+    final String toolsClassifier
 
     WPIExtension(Project project) {
         this.project = project
+        this.nativeClassifier = (
+                OperatingSystem.current().isWindows() ?
+                        System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
+                        OperatingSystem.current().isMacOsX() ? "osxx86-64" :
+                                OperatingSystem.current().isLinux() ? "linuxx86-64" :
+                                        null
+        )
+        this.toolsClassifier = (
+                OperatingSystem.current().isWindows() ?
+                        System.getProperty("os.arch") == 'amd64' ? 'win64' : 'win32' :
+                        OperatingSystem.current().isMacOsX() ? "mac64" :
+                                OperatingSystem.current().isLinux() ? "linux64" :
+                                        null
+        )
     }
 
     private String frcHomeCache
@@ -59,17 +75,17 @@ class WPIExtension {
         // Format:
         // property: [ PrettyName, Version, RecommendedKey ]
         return [
-            "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
-            "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
-            "wpilibYear" : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
-            "googleTestVersion" : new Tuple("Google Test", googleTestVersion, "googleTest"),
+                "wpilibVersion"        : new Tuple("WPILib", wpilibVersion, "wpilib"),
+                "opencvVersion"        : new Tuple("OpenCV", opencvVersion, "opencv"),
+                "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
+                "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
 
-            "smartDashboardVersion" : new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
-            "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
-            "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
-            "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
+                "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
+                "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
+                "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
+                "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
 
-            "toolchainVersion" : new Tuple("Toolchain", toolchainVersion, "toolchain"),
+                "toolchainVersion"     : new Tuple("Toolchain", toolchainVersion, "toolchain"),
         ]
     }
 }
