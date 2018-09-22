@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-//    compile 'jaci.gradle:EmbeddedTools:2018.09.16'
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.09.16'
+//    compile 'jaci.gradle:EmbeddedTools:2018.09.21'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.09.21'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'gradle.plugin.edu.wpi.first:gradle-cpp-vscode:0.4.2'
