@@ -26,6 +26,8 @@ class WPIExtension {
     String toolchainVersionLow = "5.5"
     String toolchainVersionHigh = "5.5"
 
+    boolean developmentBranch
+
     String frcYear = '2018'
 
     final Project project
@@ -48,6 +50,7 @@ class WPIExtension {
                                 OperatingSystem.current().isLinux() ? "linux64" :
                                         null
         )
+        this.developmentBranch = true
     }
 
     private String frcHomeCache
