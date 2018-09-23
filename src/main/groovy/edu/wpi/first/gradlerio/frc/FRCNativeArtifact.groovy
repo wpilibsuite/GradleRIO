@@ -28,9 +28,9 @@ class FRCNativeArtifact extends NativeArtifact {
         }
 
         postdeploy << { DeployContext ctx ->
-            def artifactName = filename ?: file.get().name
+            def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
-            ctx.execute("chmod +x ${artifactName}; chown lvuser ${artifactName}")
+            ctx.execute("chmod +x \"${binFile}\"; chown lvuser \"${binFile}\"")
             ctx.execute("sync")
             ctx.execute("ldconfig")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
@@ -42,7 +42,7 @@ class FRCNativeArtifact extends NativeArtifact {
     int debugPort = 8348
 
     def robotCommand = { DeployContext ctx, FRCNativeArtifact self ->
-        "${self.debug ? "gdbserver host:${self.debugPort}" : ''} <<BINARY>> ${self.arguments.join(" ")}"
+        "${self.debug ? "gdbserver host:${self.debugPort}" : ''} \"<<BINARY>>\" ${self.arguments.join(" ")}"
     }
 
     NativeBinarySpec _bin

@@ -19,9 +19,9 @@ class FRCJavaArtifact extends JavaArtifact {
         }
 
         postdeploy << { DeployContext ctx ->
-            def artifactName = filename ?: file.get().name
+            def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
-            ctx.execute("chmod +x ${artifactName}; chown lvuser ${artifactName}")
+            ctx.execute("chmod +x \"${binFile}\"; chown lvuser \"${binFile}\"")
             ctx.execute("sync")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
         }
@@ -34,7 +34,7 @@ class FRCJavaArtifact extends JavaArtifact {
     String debugFlags = "-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=${debugPort},server=y,suspend=y"
 
     def robotCommand = {
-        "/usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib/ ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -jar <<BINARY>> ${arguments.join(" ")}"
+        "/usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib/ ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -jar \"<<BINARY>>\" ${arguments.join(" ")}"
     }
 
     @Override
