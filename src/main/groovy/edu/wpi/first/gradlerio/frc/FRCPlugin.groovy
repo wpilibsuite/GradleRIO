@@ -15,6 +15,7 @@ import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.language.nativeplatform.DependentSourceSet
 import org.gradle.model.ModelMap
 import org.gradle.model.RuleSource
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.BinaryTasks
 
@@ -69,6 +70,32 @@ class FRCPlugin implements Plugin<Project> {
             addJreArtifact(project)
             addCommandArtifacts(project)
         }
+
+        def deployExtension = project.extensions.getByType(DeployExtension)
+        def artifactExtensionAware = deployExtension.artifacts as ExtensionAware
+        def targetExtensionAware = deployExtension.targets as ExtensionAware
+        def artifactExtension = deployExtension.artifacts
+        def targetExtension = deployExtension.targets
+
+        artifactExtensionAware.extensions.add('frcJavaArtifact', { String name, Closure closure->
+            return artifactExtension.artifact(name, FRCJavaArtifact, closure)
+        })
+
+        artifactExtensionAware.extensions.add('frcNativeArtifact', { String name, Closure closure->
+            return artifactExtension.artifact(name, FRCNativeArtifact, closure)
+        })
+
+        artifactExtensionAware.extensions.add('frcNativeLibraryArtifact', { String name, Closure closure->
+            return artifactExtension.artifact(name, FRCNativeLibraryArtifact, closure)
+        })
+
+        targetExtensionAware.extensions.add('roboRIO', { String name, Closure closure ->
+            targetExtension.target(name, RoboRIO, closure)
+        })
+
+        targetExtensionAware.extensions.add('frcCompatibleTarget', { String name, Closure closure ->
+            targetExtension.target(name, FRCCompatibleTarget, closure)
+        })
     }
 
     public static DeployExtension deployExtension(Project project) {
