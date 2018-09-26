@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio
 
+import edu.wpi.first.gradlerio.caching.WrapperInspector
 import edu.wpi.first.gradlerio.frc.FRCPlugin
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
@@ -7,9 +8,12 @@ import edu.wpi.first.gradlerio.test.TestPlugin
 import edu.wpi.first.gradlerio.wpi.WPIPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
+import jaci.gradle.log.ETLoggerFactory
+import org.apache.log4j.Logger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.tasks.wrapper.Wrapper
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
@@ -37,6 +41,32 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.pluginManager.apply(TestPlugin)
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
+
+        project.tasks.withType(Wrapper).configureEach { Wrapper wrapper ->
+            if (!project.hasProperty('no-gradlerio-wrapper')) {
+                wrapper.setDistributionPath('permwrapper/dists')
+                wrapper.setArchivePath('permwrapper/dists')
+            }
+        }
+
+        project.gradle.taskGraph.whenReady {
+            try {
+                if (!project.hasProperty("skip-inspector"))
+                    inspector(project)
+            } catch (Exception e) {
+                Logger.getLogger(this.class).info("Inspector failed: ${e.message}")
+            }
+        }
+    }
+
+    void inspector(Project project) {
+        def logger = ETLoggerFactory.INSTANCE.create("GR_INSPECTOR")
+        project.allprojects.each { Project proj ->
+            if (!project.hasProperty("skip-inspector-${WrapperInspector.NAME}")) {
+                logger.info("Running ${WrapperInspector.NAME} inspector on project ${project.path}")
+                WrapperInspector.run(project, logger)
+            }
+        }
     }
 
     static Closure javaManifest(String robotClass) {
