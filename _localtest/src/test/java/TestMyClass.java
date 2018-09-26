@@ -1,5 +1,4 @@
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.hal.HAL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,7 @@ public class TestMyClass {
 
     @Test
     public void testOnePlusOne() {
-        RobotBase.initializeHardwareConfiguration();
+//        RobotBase.initializeHardwareConfiguration();
         Assert.assertEquals(new MyClass().onePlusOne(), 2);
     }
 
