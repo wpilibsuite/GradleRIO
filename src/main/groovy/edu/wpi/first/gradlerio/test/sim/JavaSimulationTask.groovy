@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test.sim
 
 import edu.wpi.first.gradlerio.ExternalLaunchTask
-import edu.wpi.first.gradlerio.test.TestPlugin
+import edu.wpi.first.gradlerio.test.JavaTestPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
@@ -18,7 +18,7 @@ class JavaSimulationTask extends ExternalLaunchTask {
     void run() {
         def env = SimulationPlugin.getHALExtensionsEnvVar(project)
         println "Using Environment: HALSIM_EXTENSIONS=${env}"
-        def ldpath = TestPlugin.jniExtractionDir(project).absolutePath
+        def ldpath = JavaTestPlugin.jniExtractionDir(project).absolutePath
 
         def java = OperatingSystem.current().isWindows() ? "java" : Jvm.current().getExecutable("java").absolutePath
 

@@ -7,11 +7,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLoggerFactory
 import jaci.openrio.gradle.wpi.toolchain.install.*
 import org.apache.log4j.Logger
-import org.gradle.api.Action
-import org.gradle.api.NamedDomainObjectFactory
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.ExtensionContainer
@@ -25,6 +21,7 @@ import org.gradle.model.Defaults
 import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
+import org.gradle.nativeplatform.BuildTypeContainer
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.SharedLibraryBinarySpec
@@ -267,6 +264,12 @@ class WPIToolchainPlugin implements Plugin<Project> {
         }
 
         @Mutate
+        void addBuildTypes(BuildTypeContainer bts) {
+            bts.maybeCreate('debug')
+            bts.maybeCreate('release')
+        }
+
+        @Mutate
         void addPlatform(PlatformContainer platforms) {
             def roborio = platforms.maybeCreate('roborio', NativePlatform)
             roborio.architecture('arm')
@@ -284,11 +287,19 @@ class WPIToolchainPlugin implements Plugin<Project> {
         @Mutate
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(NativeBinarySpec, { NativeBinarySpec bin ->
-                if (!(bin.toolChain in VisualCpp)) {
-                    bin.cppCompiler.args << "-std=c++14" << '-g'
+                if (bin.toolChain in VisualCpp) {
+                    bin.cppCompiler.args << '/std:c++14' << '/FS' << '/EHsc' << '/DNOMINMAX'
+
+                    if (bin.buildType.name.equals('debug')) {
+                        bin.cppCompiler.args << '/Zi'
+                        bin.linker.args << '/DEBUG' << '/DEBUG:FULL'
+                    }
                 } else {
-                    bin.cppCompiler.args << '/Zi' << '/EHsc' << '/DNOMINMAX'
-                    bin.linker.args << '/DEBUG:FULL'
+                    bin.cppCompiler.args << '-std=c++14' << '-g' << '-O2'
+                }
+
+                if (bin.buildType.name.equals('debug')) {
+                    bin.cppCompiler.define('DEBUG')
                 }
                 null
             } as Action<? extends NativeBinarySpec>)

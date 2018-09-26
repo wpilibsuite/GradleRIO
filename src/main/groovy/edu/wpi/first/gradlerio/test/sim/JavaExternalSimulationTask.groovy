@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test.sim
 
 import com.google.gson.GsonBuilder
-import edu.wpi.first.gradlerio.test.TestPlugin
+import edu.wpi.first.gradlerio.test.JavaTestPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
@@ -27,7 +27,7 @@ class JavaExternalSimulationTask extends DefaultTask {
             def mainClass = manifestAttributes['Main-Class']
             def robotClass = manifestAttributes['Robot-Class']
 
-            def libraryDir = TestPlugin.jniExtractionDir(project).absolutePath
+            def libraryDir = JavaTestPlugin.jniExtractionDir(project).absolutePath
 
             def cfg = [:]
 

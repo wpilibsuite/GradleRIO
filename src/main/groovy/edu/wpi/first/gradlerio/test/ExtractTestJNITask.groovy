@@ -41,7 +41,7 @@ class ExtractTestJNITask extends DefaultTask {
                     }
                 }
 
-        File dir = TestPlugin.jniExtractionDir(project)
+        File dir = JavaTestPlugin.jniExtractionDir(project)
         if (dir.exists()) dir.deleteDir()
         dir.parentFile.mkdirs()
 

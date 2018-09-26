@@ -3,7 +3,6 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.os.OperatingSystem
 
 class WPIJavaDeps implements Plugin<Project> {
     void apply(Project project) {

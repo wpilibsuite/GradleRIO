@@ -10,12 +10,12 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.language.nativeplatform.DependentSourceSet
 import org.gradle.model.ModelMap
 import org.gradle.model.RuleSource
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.BinaryTasks
 
