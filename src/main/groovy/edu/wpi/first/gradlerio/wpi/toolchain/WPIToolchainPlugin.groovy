@@ -273,7 +273,9 @@ class WPIToolchainPlugin implements Plugin<Project> {
             roborio.operatingSystem('linux')
 
             def desktop = platforms.maybeCreate('desktop', NativePlatform)
-            System.getProperty("os.arch") == 'amd64' ? desktop.architecture('x86_64') : desktop.architecture('x86')
+            def is64 = ['amd64', 'x86_64'].contains(System.getProperty("os.arch"))
+            Logger.getLogger(this.class).info("Desktop OS Arch: ${System.getProperty('os.arch')}, is64? ${is64}")
+            desktop.architecture(is64 ? 'x86_64' : 'x86')
 
             def anyArm = platforms.maybeCreate('anyArm', NativePlatform)
             anyArm.architecture('arm')
