@@ -1,21 +1,20 @@
 package edu.wpi.first.gradlerio
 
+import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecSpec
 
+@CompileStatic
 class ExternalLaunchTask extends DefaultTask {
 
-    private def _withBuilderClosures = [] as List<Closure>
     @Internal
     def environment = [:] as Map<String, String>
     @Internal
-    def persist = false
+    boolean scriptOnly = false
     @Internal
-    def scriptOnly = false
-    @Internal
-    def workingDir = null as File
+    File workingDir = null as File
 
     Process launch(String... cmd) {
         return this.launch(cmd as List<String>)
@@ -28,6 +27,8 @@ class ExternalLaunchTask extends DefaultTask {
         String fileContent = ""
         if (OperatingSystem.current().isWindows()) {
             fileContent += "@echo off\nsetlocal\n"
+        } else {
+            fileContent += "#!/bin/bash\n\n"
         }
         environment.each { String key, String value ->
             if (OperatingSystem.current().isWindows()) {
@@ -42,9 +43,7 @@ class ExternalLaunchTask extends DefaultTask {
             fileContent += "pushd ${workingDir.absolutePath}\n"
         }
 
-        def ccmd = cmd
-        String first = ccmd.remove(0)
-        fileContent += "${first + " " + ccmd.collect { "\"${it}\"" }.join(" ")}\n"
+        fileContent += "${cmd.join(" ")}\n"
 
         if (workingDir != null) {
             fileContent += "popd\n"

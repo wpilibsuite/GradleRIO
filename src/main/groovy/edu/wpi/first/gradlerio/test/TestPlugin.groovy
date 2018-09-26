@@ -1,9 +1,9 @@
 package edu.wpi.first.gradlerio.test
 
-import edu.wpi.first.gradlerio.test.sim.SimulationPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.nativeplatform.test.googletest.plugins.GoogleTestPlugin
 
@@ -12,13 +12,56 @@ class TestPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.pluginManager.apply(SimulationPlugin)
+        project.configurations.maybeCreate("simulation")
 
         project.pluginManager.apply(JavaTestPlugin)
 
         project.plugins.withType(GoogleTestPlugin).whenPluginAdded {
             project.pluginManager.apply(NativeTestPlugin)
         }
+    }
+
+    static List<String> getHALExtensions(Project project) {
+        def cfg = project.configurations.getByName("simulation")
+        def ext = OperatingSystem.current().sharedLibrarySuffix
+        def allFiles = cfg.dependencies.collectMany({
+            cfg.files(it)
+        }) as Set<File>
+
+        List<String> rtLibs = []
+
+        allFiles.each { File f ->
+            if (f.absolutePath.endsWith(".zip")) {
+                rtLibs += (project.zipTree(f).matching { PatternFilterable pat ->
+                    pat.include("**/*${ext}")
+                }.files as Set<File>).collect { it.absolutePath }
+            } else if (f.directory) {
+                rtLibs += (project.fileTree(f).matching { PatternFilterable pat ->
+                    pat.include("**/*${ext}")
+                }.files as Set<File>).collect { it.absolutePath }
+            } else {
+                // Assume it's a native file already
+                rtLibs += f.toString()
+            }
+        }
+        return rtLibs
+    }
+
+    static String getHALExtensionsEnvVar(Project project) {
+        def rtLibs = getHALExtensions(project)
+        return rtLibs.join(envDelimiter())
+    }
+
+    static Map<String, String> getSimLaunchEnv(Project project, String ldpath) {
+        def env = [:] as Map<String, String>
+        env["HALSIM_EXTENSIONS"] = getHALExtensionsEnvVar(project)
+        if (OperatingSystem.current().isUnix()) {
+            env["LD_LIBRARY_PATH"] = ldpath
+            env["DYLD_FALLBACK_LIBRARY_PATH"] = ldpath // On Mac it isn't 'safe' to override the non-fallback version.
+        } else if (OperatingSystem.current().isWindows()) {
+            env["PATH"] = System.getenv("PATH") + envDelimiter() + ldpath
+        }
+        return env
     }
 
     static String envDelimiter() {
