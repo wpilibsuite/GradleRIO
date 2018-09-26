@@ -15,6 +15,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.language.nativeplatform.DependentSourceSet
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.TargetedNativeComponent
+import org.gradle.platform.base.VariantComponentSpec
 
 @CompileStatic
 class WPIJsonDepsPlugin implements Plugin<Project> {
@@ -203,8 +204,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     private void useCppVendorLibraries(Project project, WPIJsonDepsExtension jsonExtension, Object closureArg, String... ignoreLibraries) {
         def dse = project.extensions.getByType(DependencySpecExtension)
-        if (closureArg in TargetedNativeComponent) {
-            TargetedNativeComponent component = (TargetedNativeComponent)closureArg
+        if (closureArg in VariantComponentSpec) {
+            VariantComponentSpec component = (VariantComponentSpec)closureArg
             component.binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
                 Set<DelegatedDependencySet> dds = []
                 jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
@@ -213,10 +214,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                     }
                 }
 
-                bin.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
-                    dds.each { DelegatedDependencySet set ->
-                        dss.lib(set)
-                    }
+                dds.each { DelegatedDependencySet set ->
+                    bin.lib(set)
                 }
 
             }
@@ -229,10 +228,8 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
                 }
             }
 
-            bin.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
-                dds.each { DelegatedDependencySet set ->
-                    dss.lib(set)
-                }
+            dds.each { DelegatedDependencySet set ->
+                bin.lib(set)
             }
         } else {
             throw new GradleException('Unknown type for useVendorLibraries target. You put this declaration in a weird place.')
