@@ -8,7 +8,6 @@ import jaci.gradle.nativedeps.NativeLib
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.internal.os.OperatingSystem
 import org.gradle.language.base.plugins.ComponentModelBasePlugin
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource

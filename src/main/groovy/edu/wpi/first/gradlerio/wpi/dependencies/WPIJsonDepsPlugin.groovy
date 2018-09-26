@@ -1,27 +1,18 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
-import com.google.gson.Gson
+
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.io.FileType
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import jaci.gradle.nativedeps.NativeDepsPlugin
-import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
-import jaci.gradle.nativedeps.NativeDepsSpec
-import jaci.gradle.nativedeps.NativeLib
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
-import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.internal.os.OperatingSystem
 import org.gradle.language.nativeplatform.DependentSourceSet
-import org.gradle.model.Mutate
-import org.gradle.model.RuleSource
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.nativeplatform.TargetedNativeComponent
 

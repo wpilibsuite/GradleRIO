@@ -3,7 +3,6 @@ package edu.wpi.first.gradlerio.wpi.dependencies.tools
 import edu.wpi.first.gradlerio.SingletonTask
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
-import org.gradle.api.Named
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider

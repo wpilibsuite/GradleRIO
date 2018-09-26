@@ -35,6 +35,8 @@ class FRCNativeArtifact extends NativeArtifact {
             ctx.execute("ldconfig")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
         }
+
+        buildType = '<<GR_AUTO>>'
     }
 
     List<String> arguments = []
@@ -46,6 +48,15 @@ class FRCNativeArtifact extends NativeArtifact {
     }
 
     NativeBinarySpec _bin
+
+    @Override
+    String getBuildType() {
+        def sup = super.getBuildType()
+        if (!sup.equals('<<GR_AUTO>>'))
+            return sup
+
+        return debug ? 'debug' : 'release'
+    }
 
     @Override
     void deploy(DeployContext ctx) {

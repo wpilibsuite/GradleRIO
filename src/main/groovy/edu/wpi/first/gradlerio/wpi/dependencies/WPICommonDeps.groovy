@@ -6,7 +6,6 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
-import org.gradle.internal.os.OperatingSystem
 
 @CompileStatic
 class WPICommonDeps implements Plugin<Project> {
