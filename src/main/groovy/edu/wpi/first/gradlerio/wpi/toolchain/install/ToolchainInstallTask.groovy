@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.toolchain.install
 
+import edu.wpi.first.gradlerio.SingletonTask
 import edu.wpi.first.gradlerio.wpi.toolchain.ToolchainDiscoverer
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
@@ -7,7 +8,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
-class ToolchainInstallTask extends DefaultTask {
+class ToolchainInstallTask extends DefaultTask implements SingletonTask {
 
     boolean needsInstall() {
         def plugin = project.plugins.getPlugin(WPIToolchainPlugin)
@@ -33,4 +34,8 @@ class ToolchainInstallTask extends DefaultTask {
         }
     }
 
+    @Override
+    String singletonName() {
+        return "installToolchain"
+    }
 }
