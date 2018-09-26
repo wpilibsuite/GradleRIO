@@ -19,7 +19,6 @@ class JavaTestPlugin implements Plugin<Project> {
             t.description = "Extract Test JNI Native Libraries (nativeDesktopLib, nativeDesktopZip)"
         } as Action<ExtractTestJNITask>)
 
-        // TODO 4.9
         // Java Unit Tests
         project.tasks.withType(Test).configureEach { Test t ->
             t.dependsOn("extractTestJNI")
