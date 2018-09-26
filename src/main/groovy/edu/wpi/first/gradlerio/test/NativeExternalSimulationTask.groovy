@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.test.sim
+package edu.wpi.first.gradlerio.test
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
@@ -22,7 +22,7 @@ class NativeExternalSimulationTask extends DefaultTask {
     @TaskAction
     void create() {
         def cfgs = []
-        def extensions = SimulationPlugin.getHALExtensions(project)
+        def extensions = TestPlugin.getHALExtensions(project)
         for (NativeExecutableBinarySpec binary : binaries) {
             def cfg = [:]
             def installTask = (InstallExecutable)binary.tasks.install
@@ -58,8 +58,6 @@ class NativeExternalSimulationTask extends DefaultTask {
         def gbuilder = new GsonBuilder()
         gbuilder.setPrettyPrinting()
         def json = gbuilder.create().toJson(cfgs)
-
-        println(json)
 
         def outfile = new File(project.buildDir, "debug/desktopinfo.json")
         outfile.parentFile.mkdirs()

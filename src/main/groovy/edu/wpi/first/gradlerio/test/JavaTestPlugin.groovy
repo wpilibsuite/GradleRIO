@@ -8,6 +8,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLogging
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.jvm.tasks.Jar
 
 @CompileStatic
 class JavaTestPlugin implements Plugin<Project> {
@@ -18,6 +19,22 @@ class JavaTestPlugin implements Plugin<Project> {
             t.group = "GradleRIO"
             t.description = "Extract Test JNI Native Libraries (nativeDesktopLib, nativeDesktopZip)"
         } as Action<ExtractTestJNITask>)
+
+        project.tasks.register("simulateExternalJava", JavaExternalSimulationTask, { JavaExternalSimulationTask task ->
+            task.group = "GradleRIO"
+            task.description = "Simulate External Task for Java/Kotlin/JVM. Exports a JSON file for use by editors / tools"
+
+            task.dependsOn("extractTestJNI")
+            task.dependsOn(project.tasks.withType(Jar))
+        } as Action<JavaExternalSimulationTask>)
+
+        project.tasks.register("simulateJava", JavaSimulationTask, { JavaSimulationTask task ->
+            task.group = "GradleRIO"
+            task.description = "Launch simulation for Java/Kotlin/JVM"
+
+            task.dependsOn("extractTestJNI")
+            task.dependsOn(project.tasks.withType(Jar))
+        } as Action<JavaSimulationTask>)
 
         // Java Unit Tests
         project.tasks.withType(Test).configureEach { Test t ->
