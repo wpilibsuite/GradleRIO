@@ -90,8 +90,7 @@ class GradleRIOPlugin implements Plugin<Project> {
 
     static Closure javaManifest(String robotClass) {
         return { DefaultManifest mf ->
-            mf.attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
-            mf.attributes 'Robot-Class': robotClass
+            mf.attributes 'Main-Class': 'Main'
         }
     }
 
