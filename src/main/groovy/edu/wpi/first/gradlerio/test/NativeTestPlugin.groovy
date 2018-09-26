@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -47,6 +48,7 @@ class NativeTestPlugin implements Plugin<Project> {
 
     static class NativeTestRules extends RuleSource {
         @Mutate
+        @CompileDynamic
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(GoogleTestTestSuiteBinarySpec) { GoogleTestTestSuiteBinarySpec bin ->
                 if (!bin.targetPlatform.name.equals('desktop'))
