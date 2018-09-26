@@ -99,14 +99,6 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                             a << '--sysroot' << sysroot
                         } as Action<? super List<String>>)
                     }
-
-                    target.cppCompiler.withArguments ({ List<String> a ->
-                        a << '-pthread'
-                    } as Action<? super List<String>>)
-
-                    target.linker.withArguments ({ List<String> a ->
-                        a << '-pthread' << '-rdynamic'
-                    } as Action<? super List<String>>)
                 }
             })
 

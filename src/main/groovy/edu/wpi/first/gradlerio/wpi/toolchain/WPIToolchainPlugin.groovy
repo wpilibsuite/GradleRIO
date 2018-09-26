@@ -290,12 +290,19 @@ class WPIToolchainPlugin implements Plugin<Project> {
                 if (bin.toolChain in VisualCpp) {
                     bin.cppCompiler.args << '/std:c++14' << '/FS' << '/EHsc' << '/DNOMINMAX'
 
-                    if (bin.buildType.name.equals('debug')) {
-                        bin.cppCompiler.args << '/Zi'
-                        bin.linker.args << '/DEBUG' << '/DEBUG:FULL'
+                    // Both release and debug should enable the the debugging options
+                    // and MT crt mode. Debugging here is always safe
+                    bin.cppCompiler.args << '/Zi' << '/Zc:inline' << '/MT'
+                    bin.linker.args << '/DEBUG:FULL'
+
+                    // Build release in optimized mode.
+                    if (bin.buildType.name.equals('release')) {
+                        bin.cppCompiler.args << '/O2'
+                        bin.linker.args << '/OPT:REF' << '/OPT:ICF'
                     }
                 } else {
-                    bin.cppCompiler.args << '-std=c++14' << '-g' << '-O2'
+                    bin.cppCompiler.args << '-std=c++14' << '-g' << '-rdynamic' << '-pthread' << '-Og'
+                    bin.linker.args << '-pthread'
                 }
 
                 if (bin.buildType.name.equals('debug')) {

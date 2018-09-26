@@ -55,9 +55,6 @@ class NativeTestPlugin implements Plugin<Project> {
                     bin.buildable = false
 
                 bin.cppCompiler.define('RUNNING_FRC_TESTS')
-
-                if (!(bin.toolChain instanceof VisualCpp))
-                    bin.linker.args('-pthread')
             }
         }
 
