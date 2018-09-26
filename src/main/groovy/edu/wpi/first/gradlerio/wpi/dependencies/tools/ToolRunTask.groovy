@@ -1,7 +1,9 @@
 package edu.wpi.first.gradlerio.wpi.dependencies.tools
 
+import edu.wpi.first.gradlerio.SingletonTask
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
+import org.gradle.api.Named
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
@@ -11,15 +13,18 @@ import org.gradle.process.ExecSpec
 import javax.inject.Inject
 
 @CompileStatic
-class ToolRunTask extends DefaultTask {
+class ToolRunTask extends DefaultTask implements SingletonTask {
     @Internal
     TaskProvider<ToolInstallTask> installTask
+
+    String toolName
 
     @Inject
     ToolRunTask(String name, TaskProvider<ToolInstallTask> installTask) {
         group = 'GradleRIO'
         description = "Run the tool $name"
 
+        this.toolName = name
         this.installTask = installTask
         dependsOn(installTask)
     }
@@ -49,5 +54,10 @@ class ToolRunTask extends DefaultTask {
         project.exec { ExecSpec spec ->
             spec.executable = outputFile.absolutePath
         }
+    }
+
+    @Override
+    String singletonName() {
+        return toolName
     }
 }

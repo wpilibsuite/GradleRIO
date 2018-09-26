@@ -12,6 +12,8 @@ import jaci.gradle.log.ETLoggerFactory
 import org.apache.log4j.Logger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.wrapper.Wrapper
 
@@ -49,13 +51,14 @@ class GradleRIOPlugin implements Plugin<Project> {
             }
         }
 
-        project.gradle.taskGraph.whenReady {
+        project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
             try {
                 if (!project.hasProperty("skip-inspector"))
                     inspector(project)
             } catch (Exception e) {
                 Logger.getLogger(this.class).info("Inspector failed: ${e.message}")
             }
+            ensureSingletons(project, graph)
         }
     }
 
@@ -65,6 +68,22 @@ class GradleRIOPlugin implements Plugin<Project> {
             if (!project.hasProperty("skip-inspector-${WrapperInspector.NAME}")) {
                 logger.info("Running ${WrapperInspector.NAME} inspector on project ${project.path}")
                 WrapperInspector.run(project, logger)
+            }
+        }
+    }
+
+    void ensureSingletons(Project project, TaskExecutionGraph graph) {
+        Map<String, Task> singletonMap = [:]
+        graph.getAllTasks().each { Task t ->
+            if (t instanceof SingletonTask) {
+                String singletonName = (t as SingletonTask).singletonName()
+                if (singletonMap.containsKey(singletonName)) {
+                    Logger.getLogger(this.class).info("Singleton task on graph, disabling: ${t} for ${singletonName}")
+                    t.setEnabled(false)
+                } else {
+                    Logger.getLogger(this.class).info("Singleton task on graph, using: ${t} for ${singletonName}")
+                    singletonMap.put(singletonName, t)
+                }
             }
         }
     }
