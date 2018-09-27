@@ -30,11 +30,11 @@ class ExternalLaunchTask extends DefaultTask {
         } else {
             fileContent += "#!/bin/bash\n\n"
         }
-        environment.each { String key, String value ->
+        environment.each { Map.Entry<String, String> entry ->
             if (OperatingSystem.current().isWindows()) {
-                fileContent += "set ${key}=${value}\n"
+                fileContent += "set ${entry.key}=${entry.value}\n"
             } else {
-                fileContent += "export ${key}=${value}\n"
+                fileContent += "export ${entry.key}=${entry.value}\n"
             }
         }
 

@@ -21,6 +21,7 @@ import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.platform.base.BinaryContainer
 import org.gradle.platform.base.BinaryTasks
 import org.gradle.platform.base.ComponentSpecContainer
+import org.gradle.platform.base.internal.BinarySpecInternal
 
 @CompileStatic
 class NativeTestPlugin implements Plugin<Project> {
@@ -61,15 +62,21 @@ class NativeTestPlugin implements Plugin<Project> {
             }
         }
 
-        @BinaryTasks
-        void addSimulationTasks(ModelMap<Task> tasks, NativeExecutableBinarySpec spec) {
-            tasks.create("simulate${spec.component.name.capitalize()}".toString(), NativeSimulationTask, { NativeSimulationTask task ->
-                task.group = "GradleRIO"
-                task.description = "Launch simulation for native component ${spec.component.name}"
-                task.binary = spec
-
-                task.dependsOn(spec.tasks.link)
-            } as Action<NativeSimulationTask>)
+        @Mutate
+        void addSimulationTasks(ModelMap<Task> tasks, ComponentSpecContainer components) {
+            components.withType(NativeExecutableSpec).each { NativeExecutableSpec component ->
+                component.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
+                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals('roborio')) {
+                        def name = "simulate${((BinarySpecInternal) bin).getProjectScopedName().capitalize()}".toString()
+                        tasks.create(name, NativeSimulationTask, { NativeSimulationTask task ->
+                            task.group = "GradleRIO"
+                            task.description = "Launch simulation for native component ${component.name}"
+                            task.binary = bin
+                            task.dependsOn(bin.tasks.link)
+                        } as Action<NativeSimulationTask>)
+                    }
+                }
+            }
         }
 
         @Validate
