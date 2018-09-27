@@ -88,9 +88,9 @@ class GradleRIOPlugin implements Plugin<Project> {
         }
     }
 
-    static Closure javaManifest(String robotClass) {
+    static Closure javaManifest(String robotMainClass) {
         return { DefaultManifest mf ->
-            mf.attributes 'Main-Class': 'Main'
+            mf.attributes 'Main-Class': robotMainClass
         }
     }
 
