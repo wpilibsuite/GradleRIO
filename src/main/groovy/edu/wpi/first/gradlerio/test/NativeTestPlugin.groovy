@@ -72,7 +72,7 @@ class NativeTestPlugin implements Plugin<Project> {
                             task.group = "GradleRIO"
                             task.description = "Launch simulation for native component ${component.name}"
                             task.binary = bin
-                            task.dependsOn(bin.tasks.link)
+                            task.dependsOn(bin.tasks.install)
                         } as Action<NativeSimulationTask>)
                     }
                 }

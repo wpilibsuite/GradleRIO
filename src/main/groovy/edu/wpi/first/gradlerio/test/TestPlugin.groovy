@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
 import groovy.transform.CompileStatic
+import jaci.gradle.toolchains.ToolchainsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternFilterable
@@ -16,7 +17,7 @@ class TestPlugin implements Plugin<Project> {
 
         project.pluginManager.apply(JavaTestPlugin)
 
-        project.plugins.withType(GoogleTestPlugin).whenPluginAdded {
+        project.plugins.withType(ToolchainsPlugin).all {
             project.pluginManager.apply(NativeTestPlugin)
         }
     }
