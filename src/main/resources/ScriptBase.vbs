@@ -23,9 +23,10 @@ shellScript = """" + jdkDir + """ -jar """ + fullJarPath + """"
 
 'Create Shell Object
 Set objShell = WScript.CreateObject( "WScript.Shell" )
+dim runObject
 ' Allow us to catch a script run failure
 On Error Resume Next
-objShell.Run(shellScript)
+Set runObj = objShell.Exec(shellScript)
 If Err.Number <> 0 Then
 	' If script failed, try getting java home
 	javaHomeEnv = "%JAVA_HOME%"
@@ -38,7 +39,7 @@ If Err.Number <> 0 Then
 		shellScript = """" + javaHome + "\\bin\\javaw.exe"" -jar """ + fullJarPath + """"
 	End If
 	Err.Clear
-	objShell.Run(shellScript)
+	Set runObj = objShell.Exec(shellScript)
 	If Err.Number <> 0 Then
 		If WScript.Arguments.Count > 0 Then
 			If (WScript.Arguments(0) <> "silent") Then
@@ -47,11 +48,29 @@ If Err.Number <> 0 Then
 		Else
 			WScript.Echo "Error Launching Tool"
 		End If
+		Set runObj = Nothing
 		Set objShell = Nothing
 		Set fso = Nothing
 		WScript.Quit(1)
 	End If
 End If
+
+WScript.Sleep 3000
+If (runObj.Status <> 0) Then
+	If WScript.Arguments.Count > 0 Then
+		If (WScript.Arguments(0) <> "silent") Then
+			WScript.Echo "Tool Failed To Start"
+		End If
+	Else
+		WScript.Echo "Tool Failed To Start"
+	End If
+	Set runObj = Nothing
+	Set objShell = Nothing
+	Set fso = Nothing
+	WScript.Quit(2)
+End If
+
+Set runObj = Nothing
 Set objShell = Nothing
 Set fso = Nothing
 WScript.Quit(0)
