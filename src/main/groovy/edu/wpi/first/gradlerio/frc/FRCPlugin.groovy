@@ -168,25 +168,6 @@ class FRCPlugin implements Plugin<Project> {
             def deployExt = ext.getByType(DeployExtension)
             def artifacts = deployExt.artifacts
 
-            // We can't use binary.libs because that forces a reenumeration of all libraries,
-            // which breaks multiproject builds. Instead, we have to resolve manually
-            binary.inputs.withType(DependentSourceSet) { DependentSourceSet dss ->
-                dss.libs.each { Object lib ->
-                    if (lib instanceof DelegatedDependencySet) {
-                        DelegatedDependencySet set = (DelegatedDependencySet)lib
-                        if (artifacts.findByName(set.getName()) == null) {
-                            artifacts.nativeLibraryArtifact(set.getName()) { NativeLibraryArtifact nla ->
-                                FRCPlugin.allFrcTargets(deployExt, nla)
-                                nla.directory = '/usr/local/frc/lib'
-                                nla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
-                                nla.library = set.name
-                                nla.targetPlatform = 'roborio'
-                            }
-                        }
-                    }
-                }
-            }
-
             deployExt.artifacts
                     .withType(FRCNativeArtifact)
                     .matching { FRCNativeArtifact art ->

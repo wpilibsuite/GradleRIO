@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-//    compile 'jaci.gradle:EmbeddedTools:2018.09.21'
-    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.09.28a'
+//    compile 'jaci.gradle:EmbeddedTools:2018.09.30b'
+    compile 'gradle.plugin.jaci.gradle:DeployTools:2018.09.30b'
     compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'gradle.plugin.edu.wpi.first:gradle-cpp-vscode:0.4.2'
@@ -41,7 +41,7 @@ buildScanRecipes {
 
 group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2019.0.0-alpha-4-pre2"
+version = "2019.0.0-beta0-pre2"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

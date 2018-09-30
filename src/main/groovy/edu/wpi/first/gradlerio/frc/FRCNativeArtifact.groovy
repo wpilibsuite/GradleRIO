@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
+import jaci.gradle.deploy.artifact.BinaryLibraryArtifact
 import jaci.gradle.deploy.artifact.NativeArtifact
 import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.sessions.IPSessionController
@@ -56,6 +57,13 @@ class FRCNativeArtifact extends NativeArtifact {
             return sup
 
         return debug ? 'debug' : 'release'
+    }
+
+    @Override
+    void configureLibsArtifact(BinaryLibraryArtifact bla) {
+        super.configureLibsArtifact(bla)
+        bla.setDirectory('/usr/local/frc/lib')
+        bla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
     }
 
     @Override
