@@ -9,9 +9,14 @@ import spock.lang.Specification
 class GradleRioInitializationTest extends Specification {
     @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
     File buildFile
+    File buildFile2
+    File settingsFile
 
     def setup() {
         buildFile = testProjectDir.newFile('build.gradle')
+        testProjectDir.newFolder('sub')
+        buildFile2 = testProjectDir.newFile('sub/build.gradle')
+        settingsFile = testProjectDir.newFile('settings.gradle')
     }
 
     def "Cpp Project Initializes Correctly"() {
@@ -22,6 +27,8 @@ plugins {
     id 'edu.wpi.first.GradleRIO'
 }
 """
+        buildFile2 << ""
+        settingsFile << ""
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
@@ -41,6 +48,50 @@ plugins {
     id 'edu.wpi.first.GradleRIO'
 }
 """
+        buildFile2 << ""
+        settingsFile << ""
+        when:
+        def result = GradleRunner.create()
+            .withProjectDir(testProjectDir.root)
+            .withArguments('tasks')
+            .withPluginClasspath()
+            .build()
+
+        then:
+        result.task(':tasks').outcome == SUCCESS
+    }
+
+    def "Cpp SubProject Initializes Correctly"() {
+        given:
+        buildFile2 << """
+plugins {
+    id 'cpp'
+    id 'edu.wpi.first.GradleRIO'
+}
+"""
+        buildFile << ""
+        settingsFile << "include 'sub'"
+        when:
+        def result = GradleRunner.create()
+            .withProjectDir(testProjectDir.root)
+            .withArguments('tasks')
+            .withPluginClasspath()
+            .build()
+
+        then:
+        result.task(':tasks').outcome == SUCCESS
+    }
+
+    def "Java SubProject Initializes Correctly"() {
+        given:
+        buildFile2 << """
+plugins {
+    id 'java'
+    id 'edu.wpi.first.GradleRIO'
+}
+"""
+        buildFile << ""
+        settingsFile << "include 'sub'"
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
