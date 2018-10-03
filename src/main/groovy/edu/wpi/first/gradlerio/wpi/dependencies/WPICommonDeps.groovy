@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
-import edu.wpi.first.gradlerio.wpi.WPIMirror
+import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
@@ -27,7 +27,7 @@ class WPICommonDeps implements Plugin<Project> {
             // If enabled, the development branch should have a higher weight than the release
             // branch.
             if (wpi.maven.useDevelopment) {
-                sortedMirrors.each { WPIMirror mirror ->
+                sortedMirrors.each { WPIMavenRepo mirror ->
                     if (mirror.development != null)
                         project.repositories.maven { MavenArtifactRepository repo ->
                             repo.name = "WPI${mirror.name}Development"
@@ -36,7 +36,7 @@ class WPICommonDeps implements Plugin<Project> {
                 }
             }
 
-            sortedMirrors.each { WPIMirror mirror ->
+            sortedMirrors.each { WPIMavenRepo mirror ->
                 if (mirror.release != null)
                     project.repositories.maven { MavenArtifactRepository repo ->
                         repo.name = "WPI${mirror.name}Release"

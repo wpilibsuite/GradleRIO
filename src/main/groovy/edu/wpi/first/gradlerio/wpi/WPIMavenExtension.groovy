@@ -6,7 +6,7 @@ import org.gradle.api.internal.DefaultNamedDomainObjectSet
 import org.gradle.internal.reflect.DirectInstantiator
 
 @CompileStatic
-class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMirror> {
+class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
     final Project project
 
@@ -14,36 +14,56 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMirror> {
     boolean useLocal
 
     WPIMavenExtension(Project project) {
-        super(WPIMirror.class, DirectInstantiator.INSTANCE)
+        super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
         this.project = project
 
         this.useDevelopment = true
         this.useLocal = true
 
-        mirror("Official") { WPIMirror mirror ->
+        mirror("Official") { WPIMavenRepo mirror ->
             mirror.release = "http://first.wpi.edu/FRC/roborio/maven/release"
             mirror.development = "http://first.wpi.edu/FRC/roborio/maven/development"
-            mirror.priority = 150
+            mirror.priority = WPIMavenRepo.PRIORITY_OFFICIAL
         }
 
-        mirror("AU") { WPIMirror mirror ->
+        mirror("AU") { WPIMavenRepo mirror ->
             mirror.release = "http://wpimirror.imjac.in/m2/release"
             mirror.development = "http://wpimirror.imjac.in/m2/development"
-            mirror.priority = 200
         }
     }
 
-    WPIMirror mirror(String name, final Closure config) {
-        def mirr = new WPIMirror(name);
+    // Mirror = source for WPILib artifacts
+    // Repo = source for any artifacts
+
+    // Repo should always take precedence over mirror in the case they want
+    // to provide custom builds of WPILib artifacts.
+
+    WPIMavenRepo mirror(String name, final Closure config) {
+        def mirr = new WPIMavenRepo(name)
+        mirr.priority = WPIMavenRepo.PRIORITY_MIRROR
+        project.configure(mirr, config)
+        this << (mirr)
+        return mirr
+    }
+
+    WPIMavenRepo repo(String name, final Closure config) {
+        def mirr = new WPIMavenRepo(name)
         project.configure(mirr, config)
         this << (mirr)
         return mirr
     }
 
     void useMirror(String name) {
-        all { WPIMirror m ->
+        all { WPIMavenRepo m ->
             if (m.name == name)
-                m.priority = 120
+                m.priority = WPIMavenRepo.PRIORITY_MIRROR_INUSE
+        }
+    }
+
+    void useRepo(String name) {
+        all { WPIMavenRepo m ->
+            if (m.name == name)
+                m.priority = WPIMavenRepo.PRIORITY_REPO_INUSE
         }
     }
 }
