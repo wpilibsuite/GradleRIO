@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.gradlerio.wpi.WPIMirror
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
@@ -12,25 +13,35 @@ class WPICommonDeps implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.afterEvaluate {
-            if (!project.hasProperty("wpi-no-local-maven")) {
+            def wpi = project.extensions.getByType(WPIExtension)
+
+            if (wpi.maven.useLocal) {
                 project.repositories.maven { MavenArtifactRepository repo ->
                     repo.name = "WPILocal"
                     repo.url = "${project.extensions.getByType(WPIExtension).getFrcHome()}/maven"
                 }
             }
 
-            def wpi = project.extensions.getByType(WPIExtension)
+            def sortedMirrors = wpi.maven.sort { it.priority }
 
-            if (wpi.developmentBranch) {
-                project.repositories.maven { MavenArtifactRepository repo ->
-                    repo.name = "WPI"
-                    repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"
+            // If enabled, the development branch should have a higher weight than the release
+            // branch.
+            if (wpi.maven.useDevelopment) {
+                sortedMirrors.each { WPIMirror mirror ->
+                    if (mirror.development != null)
+                        project.repositories.maven { MavenArtifactRepository repo ->
+                            repo.name = "WPI${mirror.name}Development"
+                            repo.url = mirror.development
+                        }
                 }
-            } else {
-                project.repositories.maven { MavenArtifactRepository repo ->
-                    repo.name = "WPI"
-                    repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
-                }
+            }
+
+            sortedMirrors.each { WPIMirror mirror ->
+                if (mirror.release != null)
+                    project.repositories.maven { MavenArtifactRepository repo ->
+                        repo.name = "WPI${mirror.name}Release"
+                        repo.url = mirror.release
+                    }
             }
         }
 

@@ -22,7 +22,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'gradle.plugin.edu.wpi.first:gradle-cpp-vscode:0.4.2'
 
-//    compile 'com.jcraft:jsch:0.1.53'
+    compile 'com.jcraft:jsch:0.1.53'
 
     testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
