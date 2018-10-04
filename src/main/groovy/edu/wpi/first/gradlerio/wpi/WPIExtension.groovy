@@ -15,6 +15,8 @@ class WPIExtension {
 
     String googleTestVersion = "1.8.0-1-4e4df22"
 
+    String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.0u28-1"
+
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "3.0.0"
     String shuffleboardVersion = "1.3.1"
