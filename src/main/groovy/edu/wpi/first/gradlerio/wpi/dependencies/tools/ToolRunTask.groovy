@@ -15,7 +15,7 @@ import javax.inject.Inject
 class ToolRunTask extends DefaultTask implements SingletonTask {
     @Internal
     TaskProvider<ToolInstallTask> installTask
-
+    @Internal
     String toolName
 
     @Inject
