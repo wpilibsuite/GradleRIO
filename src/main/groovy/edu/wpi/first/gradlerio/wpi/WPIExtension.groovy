@@ -59,16 +59,16 @@ class WPIExtension {
         if (frcHomeCache != null) {
             return this.frcHomeCache
         }
-        def frcHome = System.getenv("FRC_${this.frcYear}_HOME")
-
-        if (frcHome == null) {
-            if (OperatingSystem.current().isWindows()) {
-                frcHome = "C:\\Users\\Public\\frc${this.frcYear}"
-            } else {
-                def userFolder = System.getProperty("user.home")
-                frcHome = new File(userFolder, "wpilib${this.frcYear}").toString()
+        String frcHome = ''
+        if (OperatingSystem.current().isWindows()) {
+            String publicFolder = System.getenv('PUBLIC')
+            if (publicFolder == null) {
+                publicFolder = "C:\\Users\\Public"
             }
-            // TODO Figure out how to sent the frc home variable
+            frcHome = new File(publicFolder, "frc${this.frcYear}").toString()
+        } else {
+            def userFolder = System.getProperty("user.home")
+            frcHome = new File(userFolder, "frc${this.frcYear}").toString()
         }
         frcHomeCache = frcHome
         return frcHomeCache
