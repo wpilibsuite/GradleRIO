@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
 
 @CompileStatic
@@ -28,7 +29,7 @@ class WPIExtension {
     String toolchainVersionLow = "5.5"
     String toolchainVersionHigh = "5.5"
 
-    boolean developmentBranch
+    WPIMavenExtension maven
 
     String frcYear = '2018'
 
@@ -38,6 +39,8 @@ class WPIExtension {
 
     WPIExtension(Project project) {
         this.project = project
+        maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
+
         this.nativeClassifier = (
                 OperatingSystem.current().isWindows() ?
                         System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
@@ -52,7 +55,6 @@ class WPIExtension {
                                 OperatingSystem.current().isLinux() ? "linux64" :
                                         null
         )
-        this.developmentBranch = true
     }
 
     private String frcHomeCache
