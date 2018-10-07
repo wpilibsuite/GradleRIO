@@ -108,7 +108,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
         toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome, 'gcc'))
 
         // GradleRIO ~/.gradle/gradlerio
-        toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, new File(GradleRIOPlugin.globalDirectory, "toolchains"))
+        toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear))
 
         // System Path
         def os = new ByteArrayOutputStream()
@@ -166,7 +166,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
         return new File(GradleRIOPlugin.globalDirectory, "cache/toolchains/extract")
     }
 
-    public static File toolchainInstallDirectory() {
+    public static File toolchainInstallDirectory(String frcYear) {
         return new File(GradleRIOPlugin.globalDirectory, "toolchains")
     }
 
