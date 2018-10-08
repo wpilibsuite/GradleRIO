@@ -42,20 +42,29 @@ class WPIExtension {
         this.project = project
         maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
 
-        this.nativeClassifier = (
+        if (project.hasProperty('forceNativeClassifier')) {
+            this.nativeClassifier = project.findProperty('forceNativeClassifier')
+        } else {
+            this.nativeClassifier = (
                 OperatingSystem.current().isWindows() ?
                         System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
                         OperatingSystem.current().isMacOsX() ? "osxx86-64" :
                                 OperatingSystem.current().isLinux() ? "linuxx86-64" :
                                         null
-        )
-        this.toolsClassifier = (
-                OperatingSystem.current().isWindows() ?
-                        System.getProperty("os.arch") == 'amd64' ? 'win64' : 'win32' :
-                        OperatingSystem.current().isMacOsX() ? "mac64" :
-                                OperatingSystem.current().isLinux() ? "linux64" :
-                                        null
-        )
+            )
+        }
+
+        if (project.hasProperty('forceToolsClassifier')) {
+            this.toolsClassifier = project.findProperty('forceToolsClassifier')
+        } else {
+            this.toolsClassifier = (
+                    OperatingSystem.current().isWindows() ?
+                            System.getProperty("os.arch") == 'amd64' ? 'win64' : 'win32' :
+                            OperatingSystem.current().isMacOsX() ? "mac64" :
+                                    OperatingSystem.current().isLinux() ? "linux64" :
+                                            null
+            )
+        }
     }
 
     private String frcHomeCache
