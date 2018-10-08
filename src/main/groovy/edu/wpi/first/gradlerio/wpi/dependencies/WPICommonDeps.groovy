@@ -22,6 +22,20 @@ class WPICommonDeps implements Plugin<Project> {
                 }
             }
 
+            if (wpi.maven.useFrcMavenLocalDevelopment) {
+                project.repositories.maven { MavenArtifactRepository repo ->
+                    repo.name = "FRCDevelopmentLocal"
+                    repo.url = "${System.getProperty('user.home')}/releases/maven/development"
+                }
+            }
+
+            if (wpi.maven.useFrcMavenLocalRelease) {
+                project.repositories.maven { MavenArtifactRepository repo ->
+                    repo.name = "FRCReleaseLocal"
+                    repo.url = "${System.getProperty('user.home')}/releases/maven/release"
+                }
+            }
+
             def sortedMirrors = wpi.maven.sort { it.priority }
 
             // If enabled, the development branch should have a higher weight than the release

@@ -12,6 +12,8 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
     boolean useDevelopment
     boolean useLocal
+    boolean useFrcMavenLocalDevelopment
+    boolean useFrcMavenLocalRelease
 
     WPIMavenExtension(Project project) {
         super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
@@ -19,6 +21,8 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
         this.useDevelopment = true
         this.useLocal = true
+        this.useFrcMavenLocalDevelopment = false
+        this.useFrcMavenLocalRelease = false
 
         mirror("Official") { WPIMavenRepo mirror ->
             mirror.release = "http://first.wpi.edu/FRC/roborio/maven/release"
