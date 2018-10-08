@@ -25,13 +25,13 @@ class WPIExtension {
     String robotBuilderVersion = "3.0.1"
 
     // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
-    String toolchainVersion = "2018-5.5"
-    String toolchainVersionLow = "5.5"
-    String toolchainVersionHigh = "5.5"
+    String toolchainVersion = "2019-6.3.0"
+    String toolchainVersionLow = "6.3"
+    String toolchainVersionHigh = "6.3"
 
     WPIMavenExtension maven
 
-    String frcYear = '2018'
+    String frcYear = '2019'
 
     final Project project
     final String nativeClassifier

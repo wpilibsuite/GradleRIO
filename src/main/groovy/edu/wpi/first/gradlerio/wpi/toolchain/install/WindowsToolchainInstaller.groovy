@@ -10,9 +10,12 @@ import org.gradle.internal.os.OperatingSystem
 
 @CompileStatic
 class WindowsToolchainInstaller extends AbstractToolchainInstaller {
+    private WPIExtension wpiExtension
+
     @Override
     void install(Project project) {
-        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-") as List<String>
+        wpiExtension = project.extensions.getByType(WPIExtension)
+        List<String> desiredVersion = wpiExtension.toolchainVersion.split("-") as List<String>
         URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-Windows-Toolchain-${desiredVersion.last()}.zip")
         File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "win-${desiredVersion.join("-")}.zip")
         dst.parentFile.mkdirs()
@@ -40,12 +43,12 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
         }
 
         println "Copying..."
-        File installDir = WPIToolchainPlugin.toolchainInstallDirectory()
+        File installDir = WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear)
         if (installDir.exists()) installDir.deleteDir()
         installDir.mkdirs()
 
         project.copy { CopySpec c ->
-            c.from(new File(extrDir, "frc"))
+            c.from(new File(extrDir, "frc${desiredVersion.first()}/roborio"))
             c.into(installDir)
         }
 
@@ -64,6 +67,6 @@ class WindowsToolchainInstaller extends AbstractToolchainInstaller {
 
     @Override
     File sysrootLocation() {
-        return WPIToolchainPlugin.toolchainInstallDirectory()
+        return WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear)
     }
 }

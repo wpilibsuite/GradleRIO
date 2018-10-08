@@ -7,16 +7,17 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.process.ExecSpec
 
 @CompileStatic
 class MacOSToolchainInstaller extends AbstractToolchainInstaller {
+    private WPIExtension wpiExtension
 
     @Override
     void install(Project project) {
-        List<String> desiredVersion = project.extensions.getByType(WPIExtension).toolchainVersion.split("-") as List<String>
-        URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-OSX-Toolchain-${desiredVersion.last()}.pkg.tar.gz")
-        File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.pkg.tar.gz")
+        wpiExtension = project.extensions.getByType(WPIExtension)
+        List<String> desiredVersion = wpiExtension.toolchainVersion.split("-") as List<String>
+        URL src = WPIToolchainPlugin.toolchainDownloadURL("FRC-${desiredVersion.first()}-Mac-Toolchain-${desiredVersion.last()}.tar.gz")
+        File dst = new File(WPIToolchainPlugin.toolchainDownloadDirectory(), "macOS-${desiredVersion.join("-")}.tar.gz")
         dst.parentFile.mkdirs()
 
 
@@ -42,28 +43,13 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
             c.into(extrDir)
         }
 
-        File archiveFile = new File(extrDir, "Archive.pax")
-        project.resources.gzip(new File(extrDir, "FRC ARM Toolchain.pkg/Contents/Archive.pax.gz")).read().with { i ->
-            archiveFile.withOutputStream { o -> o << i }
-        }
-
-        File paxDir = new File(extrDir, "unpack")
-        if (paxDir.exists()) paxDir.deleteDir()
-        paxDir.mkdirs()
-
-        project.exec { ExecSpec e ->
-            e.commandLine('pax')
-            e.workingDir(paxDir)
-            e.args('-r', '-f', archiveFile.absolutePath)
-        }
-
         println "Copying..."
-        File installDir = WPIToolchainPlugin.toolchainInstallDirectory()
+        File installDir = WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear)
         if (installDir.exists()) installDir.deleteDir()
         installDir.mkdirs()
 
         project.copy { CopySpec c ->
-            c.from(new File(paxDir, "usr/local"))
+            c.from(new File(extrDir, "frc${desiredVersion.first()}/roborio"))
             c.into(installDir)
         }
 
@@ -82,6 +68,6 @@ class MacOSToolchainInstaller extends AbstractToolchainInstaller {
 
     @Override
     File sysrootLocation() {
-        return new File(WPIToolchainPlugin.toolchainInstallDirectory(),'arm-frc-linux-gnueabi')
+        return WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear)
     }
 }
