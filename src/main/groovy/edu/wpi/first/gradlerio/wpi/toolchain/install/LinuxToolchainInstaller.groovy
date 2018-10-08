@@ -12,7 +12,7 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
             '#!/bin/bash',
             'apt-add-repository ppa:wpilib/toolchain',
             'apt update',
-            'apt install frc-toolchain'
+            'apt install frc2019-toolchain'
         ]
         def file = project.rootProject.file('build/LINUX_TOOLCHAIN_INSTALL.sh')
         file.parentFile.mkdirs()

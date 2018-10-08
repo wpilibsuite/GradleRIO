@@ -12,7 +12,7 @@ class WPIExtension {
     String niLibrariesVersion = "2018.17.1"
     String opencvVersion = "3.2.0"
 
-    String wpilibYear = '2018'
+    String wpilibYear = '2019'
 
     String googleTestVersion = "1.8.0-1-4e4df22"
 
