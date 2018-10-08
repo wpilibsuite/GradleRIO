@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.wpi.toolchain
+WPIToolchainPluginpackage edu.wpi.first.gradlerio.wpi.toolchain
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.wpi.WPIExtension
@@ -167,7 +167,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
     }
 
     public static File toolchainInstallDirectory(String frcYear) {
-        return new File(GradleRIOPlugin.globalDirectory, "toolchains")
+        return new File(GradleRIOPlugin.globalDirectory, "toolchains/${frcYear}")
     }
 
     String explainToolchains() {
