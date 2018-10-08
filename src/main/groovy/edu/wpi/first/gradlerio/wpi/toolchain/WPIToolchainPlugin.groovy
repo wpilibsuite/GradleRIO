@@ -1,4 +1,4 @@
-WPIToolchainPluginpackage edu.wpi.first.gradlerio.wpi.toolchain
+package edu.wpi.first.gradlerio.wpi.toolchain
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.gradlerio.wpi.WPIExtension
