@@ -27,14 +27,14 @@ class ToolInstallTask extends DefaultTask {
         description = "Install the tool $tool.name"
     }
 
-    static synchronized ToolJson getExistingToolVersion(String toolName) {
+    static synchronized WPIToolInfo getExistingToolVersion(String toolName) {
         // Load JSON file
         def toolFile = new File(toolsFolder, 'tools.json')
         if (toolFile.exists()) {
             def toolTxt = toolFile.text
             Gson gson = new Gson()
-            ToolJson[] tools = gson.fromJson(toolTxt, ToolJson[].class)
-            ToolJson tool = tools.find {
+            WPIToolInfo[] tools = gson.fromJson(toolTxt, WPIToolInfo[].class)
+            WPIToolInfo tool = tools.find {
                 it.name == toolName
             }
             return tool
@@ -44,7 +44,7 @@ class ToolInstallTask extends DefaultTask {
     }
 
     @CompileDynamic
-    static synchronized void setToolVersion(ToolJson tool) {
+    static synchronized void setToolVersion(WPIToolInfo tool) {
         def toolFile = new File(toolsFolder, 'tools.json')
         def gson = new Gson()
         def builder = new GsonBuilder()
@@ -59,7 +59,7 @@ class ToolInstallTask extends DefaultTask {
             def json = builder.create().toJson(tools)
             toolFile.text = json
         } else {
-            ToolJson[] tools = [tool]
+            WPIToolInfo[] tools = [tool]
             def json = builder.create().toJson(tools)
             toolFile.text = json
         }
@@ -114,7 +114,7 @@ class ToolInstallTask extends DefaultTask {
             extractScriptUnix()
         }
 
-        setToolVersion(tool.toolJson)
+        setToolVersion(tool.WPIToolInfo)
     }
 
     private void extractScriptWindows() {

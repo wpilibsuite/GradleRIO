@@ -1,19 +1,19 @@
 package edu.wpi.first.gradlerio.tooling
 
 import groovy.transform.CompileStatic
+import edu.wpi.first.vscode.tooling.models.ToolChains
+import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolInfo
 import java.io.Serializable
 
 @CompileStatic
 class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
-  private static final long serialVersionUID = 6218239197021120278L;
-
-  private final String cppConfiguration;
+  private final Set<ToolChains> cppConfiguration;
   private final boolean hasJava;
   private final boolean hasNative;
-  private final String tools;
+  private final List<WPIToolInfo> tools;
 
-  DefaultGradleRIOModel(String cppConfiguration, boolean hasJava, boolean hasNative,
-                               String tools) {
+  DefaultGradleRIOModel(Set<ToolChains> cppConfiguration, boolean hasJava, boolean hasNative,
+                              List<WPIToolInfo> tools) {
     this.cppConfiguration = cppConfiguration;
     this.hasJava = hasJava;
     this.hasNative = hasNative;
@@ -21,7 +21,7 @@ class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
   }
 
   @Override
-  String getCppConfigurations() {
+  Set<ToolChains> getCppConfigurations() {
     return cppConfiguration;
   }
 
@@ -36,7 +36,7 @@ class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
   }
 
   @Override
-  String getTools() {
+  List<WPIToolInfo> getTools() {
     return tools;
   }
 }

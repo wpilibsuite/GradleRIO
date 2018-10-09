@@ -9,15 +9,15 @@ import org.gradle.api.tasks.TaskProvider
 
 @CompileStatic
 class WPITool {
-    TaskProvider<ToolInstallTask> toolInstallTask
-    TaskProvider<ToolRunTask> toolRunTask
+    final TaskProvider<ToolInstallTask> toolInstallTask
+    final TaskProvider<ToolRunTask> toolRunTask
 
-    Configuration configuration
-    Dependency dependency
+    final Configuration configuration
+    final Dependency dependency
 
-    String name
-
-    String version
+    final String name
+    final String version
+    final String installTaskName
 
     WPITool(Project project, String name, String version, String artifactId, boolean platformJars) {
         configuration = project.configurations.getByName("wpiTools")
@@ -26,16 +26,18 @@ class WPITool {
             artifactId += ":${toolsClassifier}"
         }
         dependency = project.dependencies.add("wpiTools", artifactId)
-        toolInstallTask = project.tasks.register("${name}Install".toString(), ToolInstallTask, this)
+        installTaskName = "${name}Install".toString()
+        toolInstallTask = project.tasks.register(installTaskName, ToolInstallTask, this)
         toolRunTask = project.tasks.register(name, ToolRunTask, name, toolInstallTask)
         this.name = name
         this.version = version
     }
 
-    ToolJson getToolJson() {
-        def toolJson = new ToolJson()
-        toolJson.name = name
-        toolJson.version = dependency.version
-        return toolJson
+    WPIToolInfo getWPIToolInfo() {
+        def toolInfo = new DefaultWPIToolInfo()
+        toolInfo.name = name
+        toolInfo.version = dependency.version
+        toolInfo.installTaskName = installTaskName
+        return toolInfo
     }
 }

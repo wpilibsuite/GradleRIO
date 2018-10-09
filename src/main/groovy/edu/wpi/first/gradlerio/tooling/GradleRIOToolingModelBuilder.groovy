@@ -9,13 +9,14 @@ import org.gradle.tooling.provider.model.ToolingModelBuilder
 
 import edu.wpi.first.vscode.GradleVsCode
 import edu.wpi.first.vscode.tooling.ToolChainGenerator
+import edu.wpi.first.vscode.tooling.models.ToolChains
 
 @CompileStatic
 class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
 
   @Override
   Object buildAll(String modelName, Project project) {
-    String toolChains = "";
+    Set<ToolChains> toolChains = null;
     boolean hasNative = false;
     def plugins = project.plugins;
     def toolExtension = project.extensions.getByType(GradleRIOToolingExtension)
@@ -33,10 +34,9 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
 
     def hasJava = plugins.hasPlugin(JavaPlugin);
 
-    def tools = toolExtension.tools.collect { it.toolJson }
-    def json = new GsonBuilder().create().toJson(tools)
+    def tools = toolExtension.tools.collect { it.WPIToolInfo }
 
-    return new DefaultGradleRIOModel(toolChains, hasNative, hasJava, json);
+    return new DefaultGradleRIOModel(toolChains, hasNative, hasJava, tools);
   }
 
   @Override
