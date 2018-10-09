@@ -18,26 +18,13 @@ import javax.inject.Inject
 @CompileStatic
 class ToolInstallTask extends DefaultTask {
     @Internal
-    String toolName
-    @Internal
-    Configuration configuration
-    @Internal
-    Dependency dependency
+    WPITool tool
     static String toolsFolder
 
-    private static class ToolJson {
-        String name
-        String version
-    }
-
     @Inject
-    ToolInstallTask(String toolName, Configuration configuration, Dependency dep) {
+    ToolInstallTask(WPITool tool) {
         group = 'GradleRIO'
-        description = "Install the tool $toolName"
-
-        this.toolName = toolName
-        this.configuration = configuration
-        this.dependency = dep
+        description = "Install the tool $tool.name"
     }
 
     static synchronized ToolJson getExistingToolVersion(String toolName) {
@@ -79,13 +66,13 @@ class ToolInstallTask extends DefaultTask {
     }
 
     private File getScriptFile() {
-        return new File(toolsFolder, toolName + '.vbs')
+        return new File(toolsFolder, tool.name + '.vbs')
     }
 
     @TaskAction
     void installTool() {
         // First check to see if both script and jar exist
-        def jarExists = new File(toolsFolder, toolName + '.jar').exists()
+        def jarExists = new File(toolsFolder, tool.name + '.jar').exists()
         def scriptExists = scriptFile.exists()
 
         if (!jarExists || !scriptExists) {
@@ -93,7 +80,7 @@ class ToolInstallTask extends DefaultTask {
             return
         }
 
-        def existingVersion = getExistingToolVersion(toolName)
+        def existingVersion = getExistingToolVersion(tool.name)
         if (existingVersion == null) {
             extractAndInstall()
             return
@@ -101,7 +88,7 @@ class ToolInstallTask extends DefaultTask {
 
         if (existingVersion != null) {
             // Check version
-            if (dependency.version > existingVersion.version) {
+            if (tool.dependency.version > existingVersion.version) {
                 extractAndInstall()
             }
         }
@@ -110,7 +97,7 @@ class ToolInstallTask extends DefaultTask {
     }
 
     private void extractAndInstall() {
-        File jarfile = configuration.files(dependency).first()
+        File jarfile = tool.configuration.files(tool.dependency).first()
         def of = new File(toolsFolder)
         of.mkdirs()
         project.copy {
@@ -118,7 +105,7 @@ class ToolInstallTask extends DefaultTask {
             cp.from jarfile
             cp.into of
             cp.rename {
-                toolName + ".jar"
+                tool.name + ".jar"
             }
         }
         if (OperatingSystem.current().isWindows()) {
@@ -126,22 +113,20 @@ class ToolInstallTask extends DefaultTask {
         } else {
             extractScriptUnix()
         }
-        def toolJson = new ToolJson()
-        toolJson.name = toolName
-        toolJson.version = dependency.version
-        setToolVersion(toolJson)
+
+        setToolVersion(tool.toolJson)
     }
 
     private void extractScriptWindows() {
 
         ToolInstallTask.class.getResourceAsStream('/ScriptBase.vbs').withCloseable {
-            def outputFile = new File(toolsFolder, toolName + '.vbs')
+            def outputFile = new File(toolsFolder, tool.name + '.vbs')
             outputFile.text = it.text
         }
     }
 
     private void extractScriptUnix() {
-        def outputFile = new File(toolsFolder, toolName + '.sh')
+        def outputFile = new File(toolsFolder, tool.name + '.sh')
         ToolInstallTask.class.getResourceAsStream('/ScriptBase.sh').withCloseable {
             outputFile.text = it.text
         }

@@ -1,10 +1,14 @@
 package edu.wpi.first.gradlerio
 
+import javax.inject.Inject
+
 import edu.wpi.first.gradlerio.caching.WrapperInspector
 import edu.wpi.first.gradlerio.frc.FRCPlugin
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
+import edu.wpi.first.gradlerio.tooling.GradleRIOToolingExtension
+import edu.wpi.first.gradlerio.tooling.GradleRIOToolingModelBuilder
 import edu.wpi.first.gradlerio.wpi.WPIPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
@@ -16,6 +20,7 @@ import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.wrapper.Wrapper
+import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
@@ -26,7 +31,18 @@ class GradleRIOPlugin implements Plugin<Project> {
         ProjectWrapper(Project project) { this.project = project }
     }
 
+    private final ToolingModelBuilderRegistry registry;
+
+    @Inject
+    GradleRIOPlugin(ToolingModelBuilderRegistry registry) {
+        this.registry = registry;
+    }
+
     void apply(Project project) {
+        // Register GradleRIO model
+        project.extensions.create('gradleRioTooling', GradleRIOToolingExtension)
+        registry.register(new GradleRIOToolingModelBuilder())
+
         // These configurations only act for the JAVA portion of GradleRIO
         // Native libraries have their own dependency management system
         project.configurations.maybeCreate("nativeLib")

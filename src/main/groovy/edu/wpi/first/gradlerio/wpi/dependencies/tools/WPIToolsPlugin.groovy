@@ -1,5 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies.tools
 
+import com.google.gson.GsonBuilder
+import edu.wpi.first.gradlerio.tooling.GradleRIOToolingExtension
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
@@ -15,7 +17,7 @@ class WPIToolsPlugin implements Plugin<Project> {
 
         def wpi = project.extensions.getByType(WPIExtension)
         project.afterEvaluate {
-            List<WPITool> tools = []
+            List<WPITool> tools = project.extensions.getByType(GradleRIOToolingExtension).tools
 
             def frcHome = wpi.frcHome
             String toolFolder = new File(frcHome, 'tools').toString()

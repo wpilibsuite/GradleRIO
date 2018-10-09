@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi
 
+import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
