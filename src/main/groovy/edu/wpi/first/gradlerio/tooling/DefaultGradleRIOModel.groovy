@@ -10,13 +10,15 @@ class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
   private final Set<ToolChains> cppConfiguration;
   private final boolean hasJava;
   private final boolean hasNative;
+  private final String roboRIOCompiler;
   private final List<WPIToolInfo> tools;
 
   DefaultGradleRIOModel(Set<ToolChains> cppConfiguration, boolean hasJava, boolean hasNative,
-                              List<WPIToolInfo> tools) {
+                            String roboRIOCompiler, List<WPIToolInfo> tools) {
     this.cppConfiguration = cppConfiguration;
     this.hasJava = hasJava;
     this.hasNative = hasNative;
+    this.roboRIOCompiler = roboRIOCompiler;
     this.tools = tools;
   }
 
@@ -33,6 +35,11 @@ class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
   @Override
   boolean getHasNative() {
     return hasNative;
+  }
+
+  @Override
+  String getRoboRIOCompiler() {
+
   }
 
   @Override

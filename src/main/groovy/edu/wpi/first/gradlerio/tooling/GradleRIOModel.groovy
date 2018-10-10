@@ -10,5 +10,6 @@ public interface GradleRIOModel extends Model {
   Set<ToolChains> getCppConfigurations();
   boolean getHasJava();
   boolean getHasNative();
+  String getRoboRIOCompiler();
   List<WPIToolInfo> getTools();
 }
