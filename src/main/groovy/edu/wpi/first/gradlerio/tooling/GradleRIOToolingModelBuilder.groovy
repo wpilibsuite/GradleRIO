@@ -33,7 +33,7 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
       }
 
       def discoverer = plugins.getPlugin(WPIToolchainPlugin).maybeDiscoverRoborioToolchain()
-      if (discoverer.valid()) {
+      if (discoverer != null && discoverer.valid()) {
         def gccFile = discoverer.gccFile()
         if (gccFile.isPresent()) {
           roboRIOCompiler = gccFile.get().toString();

@@ -13,7 +13,7 @@ class DefaultGradleRIOModel implements GradleRIOModel, Serializable {
   private final String roboRIOCompiler;
   private final List<WPIToolInfo> tools;
 
-  DefaultGradleRIOModel(Set<ToolChains> cppConfiguration, boolean hasJava, boolean hasNative,
+  DefaultGradleRIOModel(Set<ToolChains> cppConfiguration, boolean hasNative, boolean hasJava,
                             String roboRIOCompiler, List<WPIToolInfo> tools) {
     this.cppConfiguration = cppConfiguration;
     this.hasJava = hasJava;
