@@ -1,6 +1,5 @@
 package edu.wpi.first.gradlerio.frc
 
-import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.target.location.SshDeployLocation
@@ -15,13 +14,9 @@ class RoboRIO extends FRCCompatibleTarget {
 
     private Logger log;
 
-    private WPIExtension wpiExtension;
-
     RoboRIO(String name, Project project) {
         super(name, project)
         log = Logger.getLogger(this.toString())
-
-        wpiExtension = project.extensions.getByType(WPIExtension)
 
         this.directory = '/home/lvuser'
 
@@ -72,7 +67,7 @@ class RoboRIO extends FRCCompatibleTarget {
 
     boolean verifyOnlyIf(DeployContext ctx) {
         ctx.logger.silent(true)
-        if (wpiExtension.checkImage) {
+        if (checkImage) {
             log.info("Checking image...")
             readAndVerifyImage(ctx);
         }
@@ -103,9 +98,12 @@ class RoboRIO extends FRCCompatibleTarget {
         }
     }
 
+    boolean checkImage = true
+    List<String> validImageVersions = ['2019_v4']
+
     void verifyImageVersion(String image) {
-        if (!wpiExtension.validImageVersions.contains(image))
-            throw new InvalidImageException(image, wpiExtension.validImageVersions)
+        if (!validImageVersions.contains(image))
+            throw new InvalidImageException(image, validImageVersions)
     }
 
     @Override
