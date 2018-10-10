@@ -9,15 +9,12 @@ import org.gradle.tooling.provider.model.ToolingModelBuilder
 
 import jaci.gradle.toolchains.ToolchainsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
-import edu.wpi.first.vscode.tooling.ToolChainGenerator
-import edu.wpi.first.vscode.tooling.models.ToolChains
 
 @CompileStatic
 class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
 
   @Override
   Object buildAll(String modelName, Project project) {
-    Set<ToolChains> toolChains = null;
     boolean hasNative = false;
     String roboRIOCompiler = null;
     def plugins = project.plugins;
@@ -26,12 +23,6 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
     // If VS Code plugin is applied, generate toolchains
     // Any native project applies it, so also implies native
     if (plugins.hasPlugin(ToolchainsPlugin)) {
-      try {
-        toolChains = ToolChainGenerator.generateToolChains(project);
-      } catch (Exception ex) {
-        // Catch any exception generating toolchains
-      }
-
       def discoverer = plugins.getPlugin(WPIToolchainPlugin).maybeDiscoverRoborioToolchain()
       if (discoverer != null && discoverer.valid()) {
         def gccFile = discoverer.gccFile()
@@ -46,7 +37,7 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
 
     def tools = toolExtension.tools.collect { it.WPIToolInfo }
 
-    return new DefaultGradleRIOModel(toolChains, hasNative, hasJava, roboRIOCompiler, tools);
+    return new DefaultGradleRIOModel(hasNative, hasJava, roboRIOCompiler, tools);
   }
 
   @Override
