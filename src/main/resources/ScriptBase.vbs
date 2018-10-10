@@ -43,10 +43,13 @@ If Err.Number <> 0 Then
 	If Err.Number <> 0 Then
 		If WScript.Arguments.Count > 0 Then
 			If (WScript.Arguments(0) <> "silent") Then
-				WScript.Echo "Error Launching Tool"
+				WScript.Echo "Error Launching Tool" + vbCrLf + Err.Description
+			Else
+				WScript.StdOut.Write("Error Launching Tool")
+				WScript.StdOut.Write(Error.Description)
 			End If
 		Else
-			WScript.Echo "Error Launching Tool"
+			WScript.Echo "Error Launching Tool"  + vbCrLf + Err.Description
 		End If
 		Set runObj = Nothing
 		Set objShell = Nothing
@@ -57,12 +60,17 @@ End If
 
 WScript.Sleep 3000
 If (runObj.Status <> 0) Then
+	outputStd = runObj.StdOut.ReadAll()
+	outputErr = runObj.StdErr.ReadAll()
 	If WScript.Arguments.Count > 0 Then
 		If (WScript.Arguments(0) <> "silent") Then
-			WScript.Echo "Tool Failed To Start"
+			WScript.Echo "Tool Failed To Start" + vbCrLf + outputStd + vbCrLf + outputErr
+		Else
+			WScript.StdOut.Write(output)
+			WScript.StdErr.Write(outputErr)
 		End If
 	Else
-		WScript.Echo "Tool Failed To Start"
+		WScript.Echo "Tool Failed To Start" + vbCrLf + outputStd + vbCrLf + outputErr
 	End If
 	Set runObj = Nothing
 	Set objShell = Nothing
