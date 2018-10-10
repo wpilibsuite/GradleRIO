@@ -34,6 +34,9 @@ class WPIExtension {
 
     String frcYear = '2019'
 
+    boolean checkImage = true
+    List<String> validImageVersions = ['2019_v4']
+
     final Project project
     final String nativeClassifier
     final String toolsClassifier
