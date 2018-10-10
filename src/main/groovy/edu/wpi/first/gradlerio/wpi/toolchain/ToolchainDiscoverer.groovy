@@ -104,7 +104,8 @@ class ToolchainDiscoverer {
     Optional<GccMetadata> metadata(File file, TreeVisitor<? extends String> visitor = null) {
         if (file == null || !file.exists())
             return Optional.empty()
-        def searchresult = metadataProvider.getCompilerMetaData(file, [])
+        // Search path for cygwin, so not needed
+        def searchresult = metadataProvider.getCompilerMetaData(file, [], [])
         if (visitor != null)
             searchresult.explain(visitor)
         return Optional.of(searchresult.component)

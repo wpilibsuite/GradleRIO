@@ -37,7 +37,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
 
         logger = ETLoggerFactory.INSTANCE.create(this.class.simpleName)
 
-        WPIToolchainPlugin plugin = project.plugins.getPlugin(WPIToolchainPlugin)
+        WPIToolchainPlugin plugin = (WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)
         ToolchainDiscoverer toolchainDiscoverer = plugin.maybeDiscoverRoborioToolchain()
         if (toolchainDiscoverer == null) {
             logger.info(plugin.explainToolchains())

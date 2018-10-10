@@ -123,7 +123,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 def ip = (IPSessionController)ctx.controller
                 def filepath = file.get().absolutePath.replaceAll("\\\\", "/")
                 def target = ip.host + ":" + debugPort
-                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
+                def toolchainD = ((WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)).discoverRoborioToolchain()
 
                 def gdbpath = toolchainD.gdbFile().get().absolutePath
                 def sysroot = toolchainD.sysroot().orElse(null).absolutePath

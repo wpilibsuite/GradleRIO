@@ -23,7 +23,7 @@ class EditorConfigurationTask extends DefaultTask {
         def cfg = [:]
 
         // Compiler
-        def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin).discoverRoborioToolchain()
+        def toolchainD = ((WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)).discoverRoborioToolchain()
         def dCompiler = [
             toolchainDir     : toolchainD.rootDir().get().absolutePath,
             gdbPath          : toolchainD.gdbFile().get().absolutePath,

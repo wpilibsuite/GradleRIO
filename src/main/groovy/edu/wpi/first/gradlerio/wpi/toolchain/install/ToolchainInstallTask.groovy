@@ -11,7 +11,7 @@ import org.gradle.api.tasks.TaskAction
 class ToolchainInstallTask extends DefaultTask implements SingletonTask {
 
     boolean needsInstall() {
-        def plugin = project.plugins.getPlugin(WPIToolchainPlugin)
+        def plugin = (WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)
         def discoverer = plugin.toolchainDiscoverers.find { ToolchainDiscoverer d -> d.name.equals(WPIToolchainPlugin.discovererGradleRIO) }
         def override = project.hasProperty("toolchain-install-force")
 

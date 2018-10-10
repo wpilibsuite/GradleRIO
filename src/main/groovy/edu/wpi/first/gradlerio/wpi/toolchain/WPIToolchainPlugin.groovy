@@ -73,9 +73,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
         project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
             def installTask = graph.allTasks.find { Task t -> t instanceof ToolchainInstallTask } as ToolchainInstallTask
             if (installTask != null && installTask.needsInstall()) {
-                project.tasks.each { Task t ->
-                    if (!(t instanceof ToolchainInstallTask))
-                        t.setEnabled(false)
+                project.tasks.findAll { !(it instanceof ToolchainInstallTask) }.each { Task t ->
+                    t.setEnabled(false)
                 }
 
                 def cancelled = graph.allTasks.findAll { Task t -> !(t instanceof ToolchainInstallTask) }
@@ -195,7 +194,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
             final Project project = extContainer.getByType(GradleRIOPlugin.ProjectWrapper).project
 
-            project.plugins.getPlugin(WPIToolchainPlugin).createToolchainDiscoverers(project)
+            ((WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)).createToolchainDiscoverers(project)
 
             toolChainRegistry.registerFactory(WPIRoboRioGcc.class, new NamedDomainObjectFactory<WPIRoboRioGcc>() {
                 public WPIRoboRioGcc create(String name) {
@@ -235,7 +234,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
                     def mainFileStr = mainFile.toString()
                     def debugFile = mainFileStr + '.debug'
 
-                    WPIToolchainPlugin plugin = project.plugins.getPlugin(WPIToolchainPlugin)
+                    WPIToolchainPlugin plugin = (WPIToolchainPlugin)project.plugins.getPlugin(WPIToolchainPlugin.class)
                     def tc = plugin.discoverRoborioToolchain()
                     def binDir = tc.binDir().get().toString()
 

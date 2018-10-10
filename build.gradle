@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.build-scan' version '1.9.1'
+    id 'com.gradle.build-scan' version '1.15.1'
     id 'com.gradle.plugin-publish' version '0.9.9'
     id 'me.champeau.buildscan-recipes' version '0.2.0'
     id 'java-gradle-plugin'
@@ -24,7 +24,7 @@ dependencies {
 
     compile 'com.jcraft:jsch:0.1.53'
 
-    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
     }
     testCompile gradleTestKit()
@@ -85,5 +85,5 @@ gradlePlugin {
 apply from: 'versionupdates.gradle'
 
 wrapper {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0-milestone-1'
 }

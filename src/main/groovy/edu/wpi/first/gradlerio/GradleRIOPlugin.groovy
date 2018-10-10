@@ -82,7 +82,7 @@ class GradleRIOPlugin implements Plugin<Project> {
                     t.setEnabled(false)
                 } else {
                     Logger.getLogger(this.class).info("Singleton task on graph, using: ${t} for ${singletonName}")
-                    singletonMap.put(singletonName, t)
+                    singletonMap.put(singletonName, (Task)t)
                 }
             }
         }
