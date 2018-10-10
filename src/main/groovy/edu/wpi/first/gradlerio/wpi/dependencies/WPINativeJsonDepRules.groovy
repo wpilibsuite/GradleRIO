@@ -6,7 +6,6 @@ import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.NativeDepsSpec
 import jaci.gradle.nativedeps.NativeLib
 import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.internal.os.OperatingSystem
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 
@@ -25,13 +24,7 @@ class WPINativeJsonDepRules extends RuleSource {
                 lib.dynamicMatchers = []
             }
 
-            def nativeclassifier = (
-                    OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
-                            OperatingSystem.current().isMacOsX() ? "osxx86-64" :
-                                    OperatingSystem.current().isLinux() ? "linuxx86-64" :
-                                            null
-            )
+            def nativeclassifier = wpi.nativeClassifier
 
             jsonExtension.dependencies.each { WPIJsonDepsPlugin.JsonDependency dep ->
                 dep.cppDependencies.each { WPIJsonDepsPlugin.CppArtifact art ->
