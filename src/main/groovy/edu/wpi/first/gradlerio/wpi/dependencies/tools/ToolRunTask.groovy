@@ -41,9 +41,13 @@ class ToolRunTask extends DefaultTask implements SingletonTask {
     void runToolWindows() {
         def iTask = installTask.get()
         def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.vbs')
-        project.exec { ExecSpec spec ->
-            spec.executable = 'wscript.exe'
-            spec.args outputFile
+        ProcessBuilder builder = new ProcessBuilder('wscript.exe', outputFile.absolutePath, 'silent')
+        Process proc = builder.start()
+        int result = proc.waitFor()
+        if (result != 0) {
+            def stdOut = proc.getInputStream().text;
+            def stdErr = proc.getErrorStream().text;
+            throw new ToolRunException(stdOut, stdErr)
         }
     }
 
