@@ -20,7 +20,7 @@ deploy {
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
-            // Target the RoboRIO (arm-frc-linux-gnueabihf)
+            // Target the RoboRIO (arm-frc2019-linux-gnueabihf)
             targetPlatform 'roborio'
             sources.cpp {
                 // This is where our source files are located (src/cpp for C++ files, src/include for headers)

@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.toolchain
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.toolchain.install.ToolchainInstallTask
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLogger
@@ -70,16 +71,17 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
             // assume it's on the system path
             boolean customPath = toolchainDiscoverer.sysroot().isPresent()
 
+            def frcYear = project.extensions.getByType(WPIExtension).frcYear
+
             setTargets('roborio')
             eachPlatform(new Action<GccPlatformToolChain>() {
                 @Override
                 void execute(GccPlatformToolChain target) {
-                    target.cCompiler.executable =           toolchainDiscoverer.composeTool("gcc")
-                    target.cppCompiler.executable =         toolchainDiscoverer.composeTool("g++")
-                    target.linker.executable =              toolchainDiscoverer.composeTool("g++")
-                    target.assembler.executable =           toolchainDiscoverer.composeTool("as")
-                    target.staticLibArchiver.executable =   toolchainDiscoverer.composeTool("ar")
-
+                    target.cCompiler.executable =           toolchainDiscoverer.composeTool("gcc", frcYear)
+                    target.cppCompiler.executable =         toolchainDiscoverer.composeTool("g++", frcYear)
+                    target.linker.executable =              toolchainDiscoverer.composeTool("g++", frcYear)
+                    target.assembler.executable =           toolchainDiscoverer.composeTool("as", frcYear)
+                    target.staticLibArchiver.executable =   toolchainDiscoverer.composeTool("ar", frcYear)
 
                     if (customPath) {
                         // Sysroot is usually /frc, but since we're overriding the default install directory,

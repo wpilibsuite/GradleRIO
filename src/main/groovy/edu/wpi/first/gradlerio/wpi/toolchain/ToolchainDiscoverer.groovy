@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.toolchain
 
 import groovy.transform.CompileStatic
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.IdentityFileResolver
@@ -21,6 +22,7 @@ class ToolchainDiscoverer {
     Optional<File> rootDir
     String versionLo, versionHi
     Project project
+    WPIExtension wpiExtension
 
     ToolchainDiscoverer(String name, Project project, File rootDir) {
         this.name = name
@@ -32,6 +34,7 @@ class ToolchainDiscoverer {
         FileResolver fileResolver = new IdentityFileResolver()
         ExecActionFactory execActionFactory = new DefaultExecActionFactory(fileResolver)
         this.metadataProvider = GccMetadataProvider.forGcc(execActionFactory)
+        this.wpiExtension = project.extensions.getByType(WPIExtension)
     }
 
     void configureVersionChecking(String low, String high) {
@@ -74,7 +77,7 @@ class ToolchainDiscoverer {
     }
 
     Optional<File> tool(String tool) {
-        return join(binDir(), composeTool(tool))
+        return join(binDir(), composeTool(tool, wpiExtension.frcYear))
     }
 
     Optional<File> gccFile() {
@@ -86,12 +89,7 @@ class ToolchainDiscoverer {
     }
 
     Optional<File> sysroot() {
-        if (OperatingSystem.current().isLinux())
-            return Optional.empty()
-        else if (OperatingSystem.current().isMacOsX())
-            return rootDir().map { File f -> new File(f, "arm-frc-linux-gnueabi") } as Optional<File>
-        else
-            return rootDir()
+        return rootDir()
     }
 
     Optional<GccMetadata> metadata(TreeVisitor<? extends String> visitor = null) {
@@ -173,16 +171,16 @@ class ToolchainDiscoverer {
         }
     }
 
-    static String prefix() {
-        return "arm-frc-linux-gnueabi-"
+    static String prefix(String frcYear) {
+        return "arm-frc${frcYear}-linux-gnueabi-"
     }
 
     static String suffix() {
         return OperatingSystem.current().isWindows() ? ".exe" : ""
     }
 
-    static String composeTool(String name) {
-        return prefix() + name + suffix()
+    static String composeTool(String name, String frcYear) {
+        return prefix(frcYear) + name + suffix()
     }
 
     protected static Optional<File> join(Optional<File> f, String join) {

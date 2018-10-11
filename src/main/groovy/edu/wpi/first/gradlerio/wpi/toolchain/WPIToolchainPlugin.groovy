@@ -105,7 +105,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
         // FRC Home
         def frcHome = wpiExtension.frcHome
-        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome, 'gcc'))
+        toolchainDiscoverers << new ToolchainDiscoverer("FRC Home", project, new File(frcHome, 'roborio'))
 
         // GradleRIO ~/.gradle/gradlerio
         toolchainDiscoverers << new ToolchainDiscoverer(discovererGradleRIO, project, WPIToolchainPlugin.toolchainInstallDirectory(wpiExtension.frcYear))
@@ -113,7 +113,7 @@ class WPIToolchainPlugin implements Plugin<Project> {
         // System Path
         def os = new ByteArrayOutputStream()
         project.exec { ExecSpec spec ->
-            def tool = ToolchainDiscoverer.composeTool("g++")
+            def tool = ToolchainDiscoverer.composeTool("g++", wpiExtension.frcYear)
             if (OperatingSystem.current().isWindows())
                 spec.commandLine("where.exe", tool)
             else
