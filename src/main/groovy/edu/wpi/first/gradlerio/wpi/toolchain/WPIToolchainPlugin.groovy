@@ -154,8 +154,8 @@ class WPIToolchainPlugin implements Plugin<Project> {
         return d
     }
 
-    public static URL toolchainDownloadURL(String file) {
-        return new URL("http://first.wpi.edu/FRC/roborio/toolchains/${file}")
+    public static URL toolchainDownloadURL(String tag, String file) {
+        return new URL("https://github.com/wpilibsuite/toolchain-builder/releases/download/${tag}/${file}")
     }
 
     public static File toolchainDownloadDirectory() {
