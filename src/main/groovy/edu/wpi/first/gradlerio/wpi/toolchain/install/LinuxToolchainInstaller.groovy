@@ -34,7 +34,7 @@ class LinuxToolchainInstaller extends AbstractToolchainInstaller {
         }
 
         println "Extracting..."
-        File extrDir = new File(WPIToolchainPlugin.toolchainExtractDirectory(), "linxu")
+        File extrDir = new File(WPIToolchainPlugin.toolchainExtractDirectory(), "linux")
         if (extrDir.exists()) extrDir.deleteDir()
         extrDir.mkdirs()
 
