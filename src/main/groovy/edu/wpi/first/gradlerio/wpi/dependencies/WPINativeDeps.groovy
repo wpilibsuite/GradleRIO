@@ -76,7 +76,7 @@ class WPINativeDeps implements Plugin<Project> {
                         common(lib)
                         lib.libraryName = "${name}_binaries"
                         lib.targetPlatforms = ['desktop']
-                        lib.staticMatchers = ["**/*${libname}.lib".toString()]
+                        lib.staticMatchers = ["**/*${libname}.lib".toString(), "**/*${libname}.a".toString()]
                         lib.sharedMatchers = ["**/*${libname}.so".toString(), "**/*${libname}.dylib".toString()]
 
                         lib.dynamicMatchers = lib.sharedMatchers + "**/${libname}.dll".toString()
