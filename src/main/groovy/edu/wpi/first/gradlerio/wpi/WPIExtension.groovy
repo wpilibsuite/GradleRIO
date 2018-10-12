@@ -25,7 +25,8 @@ class WPIExtension {
     String robotBuilderVersion = "3.0.1"
     String pathWeaverVersion = "v0.0.0"
 
-    // WPILib Toolchain (first.wpi.edu/FRC/roborio/toolchains) version
+    // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
+    String toolchainTag = 'v2019-2'
     String toolchainVersion = "2019-6.3.0"
     String toolchainVersionLow = "6.3"
     String toolchainVersionHigh = "6.3"
