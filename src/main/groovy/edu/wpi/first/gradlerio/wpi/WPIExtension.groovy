@@ -8,9 +8,9 @@ import org.gradle.internal.os.OperatingSystem
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2018.4.1-20180921151738-1194-gf89274f"
-    String niLibrariesVersion = "2018.17.1"
-    String opencvVersion = "3.2.0"
+    String wpilibVersion = "2018.4.1-20181003000242-1213-gfd82153"
+    String niLibrariesVersion = "2019.4.1"
+    String opencvVersion = "3.4.3"
 
     String wpilibYear = '2019'
 
@@ -19,11 +19,11 @@ class WPIExtension {
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.0u28-1"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "3.0.0"
-    String shuffleboardVersion = "1.424242.3.1-20181007163852-59-gc57db86"
-    String outlineViewerVersion = "2.424242.0.4-20181007161343-8-g71b005c"
-    String robotBuilderVersion = "3.0.1"
-    String pathWeaverVersion = "v0.0.0"
+    String smartDashboardVersion = "3.0.1-3-ga271736"
+    String shuffleboardVersion = "1.3.1-61-gac4305a"
+    String outlineViewerVersion = "2.0.4-2-g0161ee6"
+    String robotBuilderVersion = "3.0.1-5-g61cc7b4"
+    String pathWeaverVersion = "2019.0.0-alpha-0"
 
     // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
     String toolchainTag = 'v2019-2'
