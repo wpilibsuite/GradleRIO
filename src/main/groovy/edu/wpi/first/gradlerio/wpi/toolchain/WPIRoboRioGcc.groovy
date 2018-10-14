@@ -82,25 +82,6 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                     target.linker.executable =              toolchainDiscoverer.composeTool("g++", frcYear)
                     target.assembler.executable =           toolchainDiscoverer.composeTool("as", frcYear)
                     target.staticLibArchiver.executable =   toolchainDiscoverer.composeTool("ar", frcYear)
-
-                    if (customPath) {
-                        // Sysroot is usually /frc, but since we're overriding the default install directory,
-                        // we can modify the sysroot in order to support the location. This is the base for system libs
-                        // and such.
-                        def sysroot = toolchainDiscoverer.sysroot().get().absolutePath
-
-                        target.cCompiler.withArguments ({ List<String> a ->
-                            a << '--sysroot' << sysroot
-                        } as Action<? super List<String>>)
-
-                        target.cppCompiler.withArguments ({ List<String> a ->
-                            a << '--sysroot' << sysroot
-                        } as Action<? super List<String>>)
-
-                        target.linker.withArguments ({ List<String> a ->
-                            a << '--sysroot' << sysroot
-                        } as Action<? super List<String>>)
-                    }
                 }
             })
 

@@ -2,10 +2,13 @@
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
   smartDashboardVersion: 'edu.wpi.first.wpilib:SmartDashboard:+',
-  outlineViewerVersion: 'edu.wpi.first.wpilib:OutlineViewer:+',
+  outlineViewerVersion: 'edu.wpi.first.wpilib:OutlineViewer:+:win64',
   robotBuilderVersion: 'edu.wpi.first.wpilib:RobotBuilder:+',
-  shuffleboardVersion: 'edu.wpi.first.shuffleboard:app:+',
-  opencvVersion: 'org.opencv:opencv-java:+'
+  shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
+  pathWeaverVersion: 'edu.wpi.first.wpilib:PathWeaver:+:win64',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:+',
+  googleTestVersion: 'edu.wpi.first.thirdparty.frc2019:googletest:+:headers',
+  niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers'
 ]
 
 configurations {
@@ -14,7 +17,7 @@ configurations {
 
 project.repositories.maven { repo ->
     repo.name = "WPI"
-    repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
+    repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"
 }
 
 dependencies {
@@ -33,7 +36,7 @@ tasks.register('UpdateVersions') {
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       versionMap.each { key, value ->
         def id = it.moduleVersion.id
-        if (value == "${id.group}:${it.name}:+".toString()) {
+        if (value.startsWith("${id.group}:${it.name}:+".toString())) {
           def localRegex = regex.replace('placeholder', key)
           extText = extText.replaceAll(localRegex, "String ${key} = \"${id.version}\"".toString())
         }
