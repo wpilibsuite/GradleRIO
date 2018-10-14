@@ -26,7 +26,7 @@ class WPIExtension {
     String pathWeaverVersion = "2019.0.0-alpha-0"
 
     // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
-    String toolchainTag = 'v2019-2'
+    String toolchainTag = 'v2019-3'
     String toolchainVersion = "2019-6.3.0"
     String toolchainVersionLow = "6.3"
     String toolchainVersionHigh = "6.3"
