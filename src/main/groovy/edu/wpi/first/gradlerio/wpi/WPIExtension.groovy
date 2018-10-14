@@ -10,7 +10,7 @@ class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2018.4.1-1230-g7068551"
     String niLibrariesVersion = "2019.4.1"
-    String opencvVersion = "3.4.3"
+    String opencvVersion = "3.4.3-7"
 
     String wpilibYear = '2019'
 

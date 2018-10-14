@@ -23,7 +23,7 @@ class WPIJavaDeps implements Plugin<Project> {
         def nativeclassifier = wpi.nativeClassifier
 
         project.dependencies.ext.wpilibDesktopJni = {
-             ["org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",
+             ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",
              "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
              "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
              "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
@@ -33,7 +33,7 @@ class WPIJavaDeps implements Plugin<Project> {
         project.dependencies.ext.wpilibJni = {
             // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
             // libraries, while the -jni ones are standalone (have static libs embedded).
-            ["org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",
+            ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",
              "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:linuxathena@zip",
              "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:linuxathena@zip",
              "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:linuxathena@zip",
@@ -50,7 +50,7 @@ class WPIJavaDeps implements Plugin<Project> {
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}",
              "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}",
-             "org.opencv:opencv-java:${wpi.opencvVersion}",
+             "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}",
              "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}",
              "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}",
              "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}"]
@@ -60,7 +60,7 @@ class WPIJavaDeps implements Plugin<Project> {
             ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources",
              "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}:sources",
              "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}:sources",
-             "org.opencv:opencv-java:${wpi.opencvVersion}:sources",
+             "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}:sources",
              "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}:sources",
              "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}:sources",
              "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources"]

@@ -164,7 +164,7 @@ class WPINativeDeps implements Plugin<Project> {
                 common(lib)
                 lib.targetPlatforms << 'desktop'
                 lib.headerDirs << ''
-                lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
                 lib.configuration = 'native_opencv'
                 null
             }
@@ -174,7 +174,7 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.libraryName = 'opencv_binaries'
                 lib.dynamicMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
                 lib.sharedMatchers = ['**/libopencv*.so.*', '**/libopencv*.so']
-                lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
                 lib.configuration = 'native_opencv'
                 null
             }
@@ -185,9 +185,11 @@ class WPINativeDeps implements Plugin<Project> {
                     lib.libraryName = 'opencv_binaries'
                     lib.targetPlatforms = ['desktop']
                     lib.staticMatchers = ['**/*opencv*.lib']
-                    lib.sharedMatchers = ['**/*opencv*.so', '**/*opencv*.so.*', '**/*opencv*.dylib']
+                    // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
+                    // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
+                    lib.sharedMatchers = ['**/*opencv*.so', '**/*opencv*.so.*', '**/*opencv*.*.dylib']
                     lib.dynamicMatchers = lib.sharedMatchers + '**/*opencv*.dll'
-                    lib.maven = "org.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
+                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
                     lib.configuration = 'native_opencv_desktop'
                     null
                 }
