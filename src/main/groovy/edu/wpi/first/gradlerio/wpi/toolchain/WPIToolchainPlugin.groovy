@@ -303,6 +303,9 @@ class WPIToolchainPlugin implements Plugin<Project> {
                 } else {
                     bin.cppCompiler.args << '-std=c++14' << '-g' << '-rdynamic' << '-pthread' << '-Og'
                     bin.linker.args << '-pthread'
+                    if (!bin.targetPlatform.operatingSystem.isMacOsX()) {
+                        bin.linker.args << '-ldl'
+                    }
                 }
 
                 if (bin.buildType.name.equals('debug')) {
