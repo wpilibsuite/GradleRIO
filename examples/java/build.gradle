@@ -23,8 +23,7 @@ deploy {
     }
 }
 
-// Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
-// and NavX.
+// Defining my dependencies. In this case, WPILib (+ friends)
 dependencies {
     compile wpilib()
 }
