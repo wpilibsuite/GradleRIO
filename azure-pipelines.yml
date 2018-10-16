@@ -5,17 +5,13 @@
 
 resources:
   containers:
-  - container: ubuntu18
-    image: ubuntu:18.04
-  - container: wpilib2018
-    image: wpilib/roborio-cross-ubuntu:2018-17.10
   - container: wpilib2019
     image: wpilib/roborio-cross-ubuntu:2019-18.04
 
 pool:
   vmImage: 'Ubuntu 16.04'
 
-container: wpilib2018
+container: wpilib2019
 
 steps:
 - task: Gradle@2
@@ -25,5 +21,23 @@ steps:
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 'build publishToMavenLocal'
-    options: '--scan --stacktrace'
+    tasks: 'build publishToMavenLocal PatchExamples'
+    options: '--scan --stacktrace -PlocalPublish -PpublishVersion=4242.1.1-ci'
+
+- script: |
+    cd examples/cpp
+    chmod +x ./gradlew
+    ./gradlew build
+  displayName: 'Test Cpp Build'
+
+- script: |
+    cd examples/java
+    chmod +x ./gradlew
+    ./gradlew build
+  displayName: 'Test Java Build'
+
+- script: |
+    cd examples/kotlin
+    chmod +x ./gradlew
+    ./gradlew build
+  displayName: 'Test Kotlin Build'

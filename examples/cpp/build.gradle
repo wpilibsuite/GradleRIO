@@ -1,50 +1,85 @@
 plugins {
     id "cpp"
-    id "edu.wpi.first.GradleRIO" version "2018.06.21"
+    id "google-test-test-suite"
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-beta0-pre5"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
-        target("roborio", edu.wpi.first.gradlerio.frc.RoboRIO) {
-            // Team can be overridden by command line, for use with VSCode
-            team = getTeamOrDefault(5333)
+        roboRIO("roborio") {
+            // Team number is loaded either from the .wpilib/wpilib_preferences.json
+            // or from command line. If not found an exception will be thrown.
+            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+            // want to store a team number in this file.
+            team = getTeamNumber()
         }
     }
     artifacts {
-        artifact('frcCpp', edu.wpi.first.gradlerio.frc.FRCNativeArtifact) {
+        frcNativeArtifact('frcCpp') {
             targets << "roborio"
             component = 'frcUserProgram'
             // Debug can be overridden by command line, for use with VSCode
             debug = getDebugOrDefault(false)
         }
+        // Built in artifact to deploy arbitrary files to the roboRIO.
+        fileTreeArtifact('frcStaticFileDeploy') {
+            // The directory below is the local directory to deploy
+            files = fileTree(dir: 'src/main/deploy')
+            // Deploy to RoboRIO target, into /home/lvuser/deploy
+            targets << "roborio"
+            directory = '/home/lvuser/deploy'
+        }
     }
 }
+
+// Set this to true to include the src folder in the include directories passed
+// to the compiler. Some eclipse project imports depend on this behavior.
+// We recommend leaving this disabled if possible. Note for eclipse project
+// imports this is enabled by default. For new projects, its disabled
+def includeSrcInIncludeRoot = false
 
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
             targetPlatform 'roborio'
-
-            // -g is the debug information flag. You should leave this here, unless
-            // you have good reason to remove it.
-            binaries.all {
-                cppCompiler.args('-g')
-            }
+            targetPlatform 'desktop'
 
             sources.cpp {
                 source {
                     srcDir 'src/main/cpp'
                 }
+                exportedHeaders {
+                    srcDir 'src/main/include'
+                    if (includeSrcInIncludeRoot) {
+                        srcDir 'src/main/cpp'
+                    }
+                }
             }
 
-            // Defining my dependencies. In this case, WPILib (+ friends)
+            // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             useLibrary(it, "wpilib")
+            useCppVendorLibraries(it)
+        }
+    }
+    testSuites {
+        frcUserProgramTest(GoogleTestTestSuiteSpec) {
+            testing $.components.frcUserProgram
+
+            sources.cpp {
+                source {
+                    srcDir 'src/test/cpp'
+                    include '**/*.cpp'
+                }
+            }
+
+            useLibrary(it, "wpilib", "googletest")
+            useCppVendorLibraries(it)
         }
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.9'
 }
