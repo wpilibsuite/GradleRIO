@@ -76,7 +76,7 @@ class RoboRIO extends FRCCompatibleTarget {
 
     void readAndVerifyImage(DeployContext context) {
         final String imageFile = "/etc/natinst/share/scs_imagemetadata.ini"
-        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s=\\s\\\"FRC_roboRIO_([0-9]{4}_v[0-9]{2,})\\\"")
+        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s=\\s\\\"FRC_roboRIO_([0-9]{4}_v[0-9]+)\\\"")
 
         String content = context.execute("cat ${imageFile}")
         log.info("Received Image File: ")
@@ -84,6 +84,7 @@ class RoboRIO extends FRCCompatibleTarget {
 
         boolean imageFound = false
         content.split("\n").each { String line ->
+            log.info(line)
             Matcher matcher = pattern.matcher(line.trim())
             if (matcher.matches()) {
                 String imageGroup = matcher.group(1)

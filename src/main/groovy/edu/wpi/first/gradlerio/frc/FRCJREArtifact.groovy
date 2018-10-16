@@ -18,7 +18,9 @@ class FRCJREArtifact extends MavenArtifact {
         dependency = project.dependencies.add(name + 'frcjre', project.extensions.getByType(WPIExtension).jreArtifactLocation)
 
         onlyIf = { DeployContext ctx ->
-            buildRequiresJre.apply(ctx) && jreMissing(ctx)
+            def jreres = jreMissing(ctx)
+            println jreres
+            buildRequiresJre.apply(ctx) && jreres
         }
 
         predeploy << { DeployContext ctx ->
@@ -26,11 +28,11 @@ class FRCJREArtifact extends MavenArtifact {
         }
 
         directory = '/tmp'
-        filename = 'frcjre.ipk'
+        filename = 'roborio-2019-11.0.0u28-1.ipk'
 
         postdeploy << { DeployContext ctx ->
             ctx.logger.log('Installing JRE...')
-            ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
+            ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/roborio-2019-11.0.0u28-1.ipk; rm /tmp/roborio-2019-11.0.0u28-1.ipk')
             ctx.logger.log('JRE Deployed!')
         }
     }
