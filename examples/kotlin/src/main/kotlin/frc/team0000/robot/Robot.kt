@@ -1,8 +1,8 @@
 package frc.team0000.robot
 
-import edu.wpi.first.wpilibj.IterativeRobot
+import edu.wpi.first.wpilibj.TimedRobot
 
-class Robot : IterativeRobot() {
+class Robot : TimedRobot() {
     override fun robotInit() {
         println("Hello World from Kotlin!")
     }
