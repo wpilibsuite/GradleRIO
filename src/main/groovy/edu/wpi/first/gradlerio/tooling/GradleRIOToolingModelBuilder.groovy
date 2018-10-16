@@ -3,7 +3,7 @@ package edu.wpi.first.gradlerio.tooling
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.tooling.provider.model.ToolingModelBuilder
 
@@ -20,8 +20,7 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
     def plugins = project.plugins;
     def toolExtension = project.extensions.getByType(GradleRIOToolingExtension)
 
-    // If VS Code plugin is applied, generate toolchains
-    // Any native project applies it, so also implies native
+    // Having Toolchains means native projects were enabled
     if (plugins.hasPlugin(ToolchainsPlugin)) {
       def discoverer = plugins.getPlugin(WPIToolchainPlugin).maybeDiscoverRoborioToolchain()
       if (discoverer != null && discoverer.valid()) {
@@ -33,7 +32,7 @@ class GradleRIOToolingModelBuilder implements ToolingModelBuilder {
       hasNative = true;
     }
 
-    def hasJava = plugins.hasPlugin(JavaPlugin);
+    def hasJava = plugins.hasPlugin(JavaBasePlugin);
 
     def tools = toolExtension.tools.collect { it.WPIToolInfo }
 
