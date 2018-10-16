@@ -5,6 +5,8 @@ import org.gradle.api.Project
 import org.gradle.api.internal.DefaultNamedDomainObjectSet
 import org.gradle.internal.reflect.DirectInstantiator
 
+import javax.inject.Inject
+
 @CompileStatic
 class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
@@ -15,6 +17,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
     boolean useFrcMavenLocalDevelopment
     boolean useFrcMavenLocalRelease
 
+    @Inject
     WPIMavenExtension(Project project) {
         super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
         this.project = project
