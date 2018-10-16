@@ -18,9 +18,7 @@ class FRCJREArtifact extends MavenArtifact {
         dependency = project.dependencies.add(name + 'frcjre', project.extensions.getByType(WPIExtension).jreArtifactLocation)
 
         onlyIf = { DeployContext ctx ->
-            def jreres = jreMissing(ctx)
-            println jreres
-            buildRequiresJre.apply(ctx) && jreres
+            buildRequiresJre.apply(ctx) && jreMissing(ctx)
         }
 
         predeploy << { DeployContext ctx ->
@@ -28,7 +26,6 @@ class FRCJREArtifact extends MavenArtifact {
         }
 
         directory = '/tmp'
-        filename = 'roborio-2019-11.0.0u28-1.ipk'
 
         postdeploy << { DeployContext ctx ->
             ctx.logger.log('Installing JRE...')
@@ -38,6 +35,6 @@ class FRCJREArtifact extends MavenArtifact {
     }
 
     boolean jreMissing(DeployContext ctx) {
-        return ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi')
+        return ctx.execute('if [[ -f "/usr/local/frc/JRE/bin/java" ]]; then echo OK; else echo MISSING; fi').result.contains("MISSING")
     }
 }
