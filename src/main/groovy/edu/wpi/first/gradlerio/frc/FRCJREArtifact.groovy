@@ -26,10 +26,11 @@ class FRCJREArtifact extends MavenArtifact {
         }
 
         directory = '/tmp'
+        filename = 'frcjre.ipk'
 
         postdeploy << { DeployContext ctx ->
             ctx.logger.log('Installing JRE...')
-            ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/roborio-2019-11.0.0u28-1.ipk; rm /tmp/roborio-2019-11.0.0u28-1.ipk')
+            ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
             ctx.logger.log('JRE Deployed!')
         }
     }
