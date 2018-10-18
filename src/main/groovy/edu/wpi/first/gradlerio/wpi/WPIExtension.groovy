@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
 
 import javax.inject.Inject
@@ -43,9 +44,10 @@ class WPIExtension {
     @Inject
     WPIExtension(Project project) {
         this.project = project
-        def factory = project.objects
-
-        maven = factory.newInstance(WPIMavenExtension, project)
+        // Object factory breaks `wpi.maven {}`, hence instead we use extensions.create.
+//        def factory = project.objects
+//        maven = factory.newInstance(WPIMavenExtension, project)
+        maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
 
         if (project.hasProperty('forceNativeClassifier')) {
             this.nativeClassifier = project.findProperty('forceNativeClassifier')
