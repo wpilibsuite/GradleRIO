@@ -76,10 +76,61 @@ class WPINativeDeps implements Plugin<Project> {
                         common(lib)
                         lib.libraryName = "${name}_binaries"
                         lib.targetPlatforms = ['desktop']
-                        lib.staticMatchers = ["**/*${libname}.lib".toString(), "**/*${libname}.a".toString()]
-                        lib.sharedMatchers = ["**/*${libname}.so".toString(), "**/*${libname}.dylib".toString()]
+                        lib.sharedMatchers = ["**/shared/*${libname}.lib".toString(), "**/shared/*${libname}.so".toString(), "**/shared/*${libname}.dylib".toString()]
 
-                        lib.dynamicMatchers = lib.sharedMatchers + "**/${libname}.dll".toString()
+                        lib.dynamicMatchers = lib.sharedMatchers + "**/shared/${libname}.dll".toString()
+                        lib.maven = "${mavenBase}:${nativeclassifier}@zip"
+                        lib.configuration = "${cfgName}_desktop"
+                        null
+                    }
+                }
+
+                libs.create(name, CombinedNativeLib) { CombinedNativeLib lib ->
+                    lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
+                    lib.targetPlatforms = ['roborio']
+                    if (supportNative)
+                        lib.targetPlatforms << 'desktop'
+                    null
+                }
+            }
+
+            def createWpiStaticLibrary = { String name, String mavenBase, String libname, boolean supportNative ->
+                def cfgName = "native_${name}"
+                libs.create("${name}_headers", NativeLib) { NativeLib lib ->
+                    common(lib)
+                    if (supportNative)
+                        lib.targetPlatforms << 'desktop'
+                    lib.headerDirs << ''
+                    lib.maven = "${mavenBase}:headers@zip"
+                    lib.configuration = cfgName
+                    null
+                }
+
+                libs.create("${name}_athena", NativeLib) { NativeLib lib ->
+                    common(lib)
+                    lib.libraryName = "${name}_binaries"
+                    lib.staticMatchers = ["**/static/*${libname}.a".toString()]
+                    lib.maven = "${mavenBase}:linuxathena@zip"
+                    lib.configuration = cfgName
+                    null
+                }
+
+                libs.create("${name}_sources", NativeLib) { NativeLib lib ->
+                    common(lib)
+                    if (supportNative)
+                        lib.targetPlatforms << 'desktop'
+                    lib.sourceDirs << ''
+                    lib.maven = "${mavenBase}:sources@zip"
+                    lib.configuration = cfgName
+                    null
+                }
+
+                if (supportNative && nativeclassifier != null) {
+                    libs.create("${name}_native", NativeLib) { NativeLib lib ->
+                        common(lib)
+                        lib.libraryName = "${name}_binaries"
+                        lib.targetPlatforms = ['desktop']
+                        lib.staticMatchers = ["**/static/*${libname}.lib".toString(), "**/static/*${libname}.a".toString()]
                         lib.maven = "${mavenBase}:${nativeclassifier}@zip"
                         lib.configuration = "${cfgName}_desktop"
                         null
@@ -100,6 +151,12 @@ class WPINativeDeps implements Plugin<Project> {
 
             // HAL
             createWpiLibrary('hal', "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true)
+
+            // WPILIB C Static
+            createWpiStaticLibrary('wpilibc_static', "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true)
+
+            // HAL Static
+            createWpiStaticLibrary('hal_static', "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true)
 
 
             // NI LIBS
@@ -156,8 +213,21 @@ class WPINativeDeps implements Plugin<Project> {
             // CAMERASERVER
             createWpiLibrary('cameraserver', "edu.wpi.first.cameraserver:cameraserver-cpp:${wpi.wpilibVersion}", 'cameraserver', true)
 
+
+            // WPIUTIL
+            createWpiStaticLibrary('wpiutil_static', "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true)
+
+            // NTCORE
+            createWpiStaticLibrary('ntcore_static', "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true)
+
+            // CSCORE
+            createWpiStaticLibrary('cscore_static', "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}", 'cscore', true)
+
+            // CAMERASERVER
+            createWpiStaticLibrary('cameraserver_static', "edu.wpi.first.cameraserver:cameraserver-cpp:${wpi.wpilibVersion}", 'cameraserver', true)
+
             // GTEST
-            createWpiLibrary('googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true)
+            createWpiStaticLibrary('googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true)
 
             // OPENCV
             libs.create('opencv_headers', NativeLib) { NativeLib lib ->
@@ -172,8 +242,8 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('opencv_athena', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.libraryName = 'opencv_binaries'
-                lib.dynamicMatchers = ['**/libopencv*.so.*']
-                lib.sharedMatchers = ['**/libopencv*.so.*']
+                lib.dynamicMatchers = ['**/shared/libopencv*.so.*']
+                lib.sharedMatchers = ['**/shared/libopencv*.so.*']
                 lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
                 lib.configuration = 'native_opencv'
                 null
@@ -184,11 +254,33 @@ class WPINativeDeps implements Plugin<Project> {
                     common(lib)
                     lib.libraryName = 'opencv_binaries'
                     lib.targetPlatforms = ['desktop']
-                    lib.staticMatchers = ['**/*opencv*.lib']
+
+                    // Need special windows matchers because archive has bad file
+                    // Need to fix upstream, but no time before beta
+                    def windowsMatchers = [
+                        '**/shared/opencv_calib3d343.lib',
+                        '**/shared/opencv_core343.lib',
+                        '**/shared/opencv_dnn343.lib',
+                        '**/shared/opencv_features2d343.lib',
+                        '**/shared/opencv_flann343.lib',
+                        '**/shared/opencv_highgui343.lib',
+                        '**/shared/opencv_imgcodecs343.lib',
+                        '**/shared/opencv_imgproc343.lib',
+                        '**/shared/opencv_ml343.lib',
+                        '**/shared/opencv_objdetect343.lib',
+                        '**/shared/opencv_photo343.lib',
+                        '**/shared/opencv_shape343.lib',
+                        '**/shared/opencv_stitching343.lib',
+                        '**/shared/opencv_superres343.lib',
+                        '**/shared/opencv_video343.lib',
+                        '**/shared/opencv_videoio343.lib',
+                        '**/shared/opencv_videostab343.lib',
+                    ]
+
                     // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
                     // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
-                    lib.sharedMatchers = ['**/*opencv*.so.*', '**/*opencv*.*.dylib']
-                    lib.dynamicMatchers = lib.sharedMatchers + '**/*opencv*.dll'
+                    lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
+                    lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
                     lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
                     lib.configuration = 'native_opencv_desktop'
                     null
@@ -201,10 +293,54 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
+            // OPENCV Static
+            libs.create('opencv_static_headers', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.targetPlatforms << 'desktop'
+                lib.headerDirs << ''
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
+                lib.configuration = 'native_opencv'
+                null
+            }
+
+            libs.create('opencv_static_athena', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.libraryName = 'opencv_static_binaries'
+                lib.staticMatchers = ['**/static/libopencv*.a']
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip"
+                lib.configuration = 'native_opencv'
+                null
+            }
+
+            if (nativeclassifier != null) {
+                libs.create('opencv_static_native', NativeLib) { NativeLib lib ->
+                    common(lib)
+                    lib.libraryName = 'opencv_static_binaries'
+                    lib.targetPlatforms = ['desktop']
+
+                    lib.staticMatchers = ['**/static/*opencv*.a', '**/static/*opencv*.lib']
+                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
+                    lib.configuration = 'native_opencv_desktop'
+                    null
+                }
+            }
+
+            libs.create('opencv_static', CombinedNativeLib) { CombinedNativeLib lib ->
+                lib.libs << 'opencv_static_binaries' << 'opencv_static_headers'
+                lib.targetPlatforms = ['roborio', 'desktop']
+                null
+            }
+
             // MASTER WPILIB COMBINED LIB
 
             libs.create('wpilib', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv" << "ni_libraries"
+                clib.targetPlatforms = ['roborio']
+                null
+            }
+
+            libs.create('wpilib_static', CombinedNativeLib) { CombinedNativeLib clib ->
+                clib.libs << "wpilibc_static" << "hal_static" << "cameraserver_static" << "ntcore_static" << "cscore_static" << "wpiutil_static" << "opencv_static" << "ni_libraries"
                 clib.targetPlatforms = ['roborio']
                 null
             }
@@ -218,6 +354,13 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('wpilib_sim', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libraryName = 'wpilib'
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv"
+                clib.targetPlatforms = ['desktop']
+                null
+            }
+
+            libs.create('wpilib_static_sim', CombinedNativeLib) { CombinedNativeLib clib ->
+                clib.libraryName = 'wpilib_static'
+                clib.libs << "wpilibc_static" << "hal_static" << "cameraserver_static" << "ntcore_static" << "cscore_static" << "wpiutil_static" << "opencv_static"
                 clib.targetPlatforms = ['desktop']
                 null
             }
