@@ -292,13 +292,15 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
                     // Both release and debug should enable the the debugging options
                     // and MT crt mode. Debugging here is always safe
-                    bin.cppCompiler.args << '/Zi' << '/Zc:inline' << '/MT'
+                    bin.cppCompiler.args << '/Zi' << '/Zc:inline'
                     bin.linker.args << '/DEBUG:FULL'
 
                     // Build release in optimized mode.
                     if (bin.buildType.name.equals('release')) {
-                        bin.cppCompiler.args << '/O2'
+                        bin.cppCompiler.args << '/O2' << '/MD'
                         bin.linker.args << '/OPT:REF' << '/OPT:ICF'
+                    } else {
+                        bin.cppCompiler.args << '/MDd'
                     }
                 } else {
                     bin.cppCompiler.args << '-std=c++14' << '-g' << '-rdynamic' << '-pthread' << '-Og'

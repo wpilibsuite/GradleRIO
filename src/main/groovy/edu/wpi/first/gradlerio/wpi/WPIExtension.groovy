@@ -10,13 +10,13 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2019.1.1-beta-1"
+    String wpilibVersion = "2019.1.1-beta-1-16-g1dec039"
     String niLibrariesVersion = "2019.4.1"
-    String opencvVersion = "3.4.3-7"
+    String opencvVersion = "3.4.3-15"
 
     String wpilibYear = '2019'
 
-    String googleTestVersion = "1.8.0-1-4e4df22"
+    String googleTestVersion = "1.8.0-4-4e4df22"
 
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.0u28-1"
 
