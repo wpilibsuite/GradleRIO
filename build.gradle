@@ -43,6 +43,10 @@ group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
 version = "2019.1.1-beta-2-pre-1"
 
+if (project.hasProperty('publishVersion')) {
+    version = project.publishVersion
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -83,6 +87,24 @@ gradlePlugin {
 }
 
 apply from: 'versionupdates.gradle'
+
+tasks.register('PatchExamples') {
+    doLast {
+        String regex = "(id\\s*?[\\\"|\\']edu\\.wpi\\.first\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
+
+        def examplesFolder = file("$rootDir/examples")
+        examplesFolder.eachFile { File file ->
+            if (file.isDirectory() && file.name != '_archived') {
+                def buildGradleFile = new File(file, 'build.gradle')
+                if (buildGradleFile.exists() && buildGradleFile.isFile()) {
+                    def text = buildGradleFile.text
+                    text = text.replaceAll(regex, "id \"edu.wpi.first.GradleRIO\" version \"${version}\" ")
+                    buildGradleFile.text = text
+                }
+            }
+        }
+    }
+}
 
 wrapper {
     gradleVersion = '4.9'
