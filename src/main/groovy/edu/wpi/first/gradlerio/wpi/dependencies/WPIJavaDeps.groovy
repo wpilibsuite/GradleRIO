@@ -23,21 +23,21 @@ class WPIJavaDeps implements Plugin<Project> {
         def nativeclassifier = wpi.nativeClassifier
 
         project.dependencies.ext.wpilibDesktopJni = {
-             ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip",
-             "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
-             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
-             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip",
-             "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
+             ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}debug@zip",
+             "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${nativeclassifier}debug@zip",
+             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${nativeclassifier}debug@zip",
+             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${nativeclassifier}debug@zip",
+             "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${nativeclassifier}debug@zip"]
         }
 
         project.dependencies.ext.wpilibJni = {
             // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
             // libraries, while the -jni ones are standalone (have static libs embedded).
-            ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathena@zip",
-             "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:linuxathena@zip",
-             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:linuxathena@zip",
-             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:linuxathena@zip",
-             "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:linuxathena@zip"]
+            ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:linuxathenadebug@zip",
+             "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:linuxathenadebug@zip",
+             "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:linuxathenadebug@zip",
+             "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:linuxathenadebug@zip",
+             "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:linuxathenadebug@zip"]
         }
 
         project.dependencies.ext.wpilib = {
