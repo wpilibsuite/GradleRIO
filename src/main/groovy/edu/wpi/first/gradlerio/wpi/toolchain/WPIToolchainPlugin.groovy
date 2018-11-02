@@ -182,6 +182,43 @@ class WPIToolchainPlugin implements Plugin<Project> {
     }
 
     static class WPIToolchainRules extends RuleSource {
+        // Rules require this to be explicitly marked public static final
+        public static final String[] windowsCompilerArgs = ['/EHsc', '/DNOMINMAX', '/Zi', '/FS', '/Zc:inline']
+        public static final String[] windowsCCompilerArgs = ['/Zi', '/FS', '/Zc:inline']
+        public static final String[] windowsReleaseCompilerArgs = ['/O2', '/MD']
+        public static final String[] windowsDebugCompilerArgs = ['/Od', '/MDd']
+        public static final String[] windowsLinkerArgs = ['/DEBUG:FULL']
+        public static final String[] windowsReleaseLinkerArgs = ['/OPT:REF', '/OPT:ICF']
+
+        public static final String[] linuxCrossCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                        '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-fPIC', '-rdynamic',
+                        '-pthread']
+        public static final String[] linuxCrossCCompilerArgs = ['-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                            '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
+        public static final String[] linuxCrossLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
+        public static final String[] linuxCrossReleaseCompilerArgs = ['-O2']
+        public static final String[] linuxCrossDebugCompilerArgs = ['-Og']
+
+        public static final String[] linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                        '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-fPIC', '-rdynamic',
+                        '-pthread']
+        public static final String[] linuxCCompilerArgs = ['-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                            '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
+        public static final String[] linuxLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
+        public static final String[] linuxReleaseCompilerArgs = ['-O2']
+        public static final String[] linuxDebugCompilerArgs = ['-O0']
+
+        public static final String[] macCompilerArgs = ['-std=c++14', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+                        '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-Wno-missing-field-initializers',
+                        '-Wno-unused-private-field', '-Wno-unused-const-variable', '-pthread']
+        public static final String[] macCCompilerArgs = ['-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+                        '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field']
+        public static final String[] macObjCppLinkerArgs = ['-std=c++14', '-stdlib=libc++','-fobjc-arc', '-g', '-fPIC', '-Wall', '-Wextra', '-Werror']
+        public static final String[] macReleaseCompilerArgs = ['-O2']
+        public static final String[] macDebugCompilerArgs = ['-O0']
+        public static final String[] macLinkerArgs = ['-framework', 'CoreFoundation', '-framework', 'AVFoundation', '-framework', 'Foundation', '-framework', 'CoreMedia', '-framework', 'CoreVideo']
+
+
         @Defaults
         void addToolchains(NativeToolChainRegistryInternal toolChainRegistry, ServiceRegistry serviceRegistry, ExtensionContainer extContainer) {
             final FileResolver fileResolver = serviceRegistry.get(FileResolver.class);
@@ -287,24 +324,103 @@ class WPIToolchainPlugin implements Plugin<Project> {
         @Mutate
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(NativeBinarySpec, { NativeBinarySpec bin ->
-                if (bin.toolChain in VisualCpp) {
-                    bin.cppCompiler.args << '/std:c++14' << '/FS' << '/EHsc' << '/DNOMINMAX'
-
-                    // Both release and debug should enable the the debugging options
-                    // and MT crt mode. Debugging here is always safe
-                    bin.cppCompiler.args << '/Zi' << '/Zc:inline' << '/MT'
-                    bin.linker.args << '/DEBUG:FULL'
-
-                    // Build release in optimized mode.
-                    if (bin.buildType.name.equals('release')) {
-                        bin.cppCompiler.args << '/O2'
-                        bin.linker.args << '/OPT:REF' << '/OPT:ICF'
+                if (bin.targetPlatform.operatingSystem.isWindows()) {
+                    // Windows
+                    windowsCompilerArgs.each { String arg ->
+                        bin.cppCompiler.args << arg
+                    }
+                    windowsCCompilerArgs.each { String arg ->
+                        bin.cCompiler.args << arg
+                    }
+                    windowsLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        windowsDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                    } else {
+                        windowsReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                        windowsReleaseLinkerArgs.each { String arg ->
+                            bin.linker.args << arg
+                        }
+                    }
+                } else if (bin.targetPlatform.operatingSystem.isMacOsX()) {
+                    // OSX
+                    macCompilerArgs.each { String arg ->
+                        bin.cppCompiler.args << arg
+                    }
+                    macCCompilerArgs.each { String arg ->
+                        bin.cCompiler.args << arg
+                    }
+                    macObjCppLinkerArgs.each { String arg ->
+                        bin.objcppCompiler.args << arg
+                    }
+                    macLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        macDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                            bin.objcCompiler.args << arg
+                            bin.objcppCompiler.args << arg
+                        }
+                    } else {
+                        macReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                            bin.objcCompiler.args << arg
+                            bin.objcppCompiler.args << arg
+                        }
+                    }
+                } else if (bin.toolChain.name.equals('roborioGcc')) {
+                    // Rio
+                    linuxCrossCompilerArgs.each { String arg ->
+                        bin.cppCompiler.args << arg
+                    }
+                    linuxCrossCCompilerArgs.each { String arg ->
+                        bin.cCompiler.args << arg
+                    }
+                    linuxCrossLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        linuxCrossDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                    } else {
+                        linuxCrossReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
                     }
                 } else {
-                    bin.cppCompiler.args << '-std=c++14' << '-g' << '-rdynamic' << '-pthread' << '-Og'
-                    bin.linker.args << '-pthread'
-                    if (!bin.targetPlatform.operatingSystem.isMacOsX()) {
-                        bin.linker.args << '-ldl'
+                    // Linux
+                    linuxCompilerArgs.each { String arg ->
+                        bin.cppCompiler.args << arg
+                    }
+                    linuxCCompilerArgs.each { String arg ->
+                        bin.cCompiler.args << arg
+                    }
+                    linuxLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        linuxDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                    } else {
+                        linuxReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
                     }
                 }
 

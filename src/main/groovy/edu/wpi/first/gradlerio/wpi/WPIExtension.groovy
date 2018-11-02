@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
 
 import javax.inject.Inject
@@ -9,21 +10,21 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2018.4.1-1230-g7068551"
+    String wpilibVersion = "2019.1.1-beta-1-16-g1dec039"
     String niLibrariesVersion = "2019.4.1"
-    String opencvVersion = "3.4.3-7"
+    String opencvVersion = "3.4.3-15"
 
     String wpilibYear = '2019'
 
-    String googleTestVersion = "1.8.0-1-4e4df22"
+    String googleTestVersion = "1.8.0-4-4e4df22"
 
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.0u28-1"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "3.0.1-3-ga271736"
-    String shuffleboardVersion = "1.3.1-61-gac4305a"
-    String outlineViewerVersion = "2.0.4-2-g0161ee6"
-    String robotBuilderVersion = "3.0.1-5-g61cc7b4"
+    String smartDashboardVersion = "2019.1.1-beta-1"
+    String shuffleboardVersion = "2019.1.1-beta-1"
+    String outlineViewerVersion = "2019.1.1-beta-1"
+    String robotBuilderVersion = "2019.1.1-beta-1"
     String pathWeaverVersion = "2019.0.0-alpha-0"
 
     // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
@@ -43,9 +44,10 @@ class WPIExtension {
     @Inject
     WPIExtension(Project project) {
         this.project = project
-        def factory = project.objects
-
-        maven = factory.newInstance(WPIMavenExtension, project)
+        // Object factory breaks `wpi.maven {}`, hence instead we use extensions.create.
+//        def factory = project.objects
+//        maven = factory.newInstance(WPIMavenExtension, project)
+        maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
 
         if (project.hasProperty('forceNativeClassifier')) {
             this.nativeClassifier = project.findProperty('forceNativeClassifier')
