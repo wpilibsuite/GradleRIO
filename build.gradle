@@ -41,7 +41,7 @@ buildScanRecipes {
 
 group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2019.1.1-beta-2-pre-1"
+version = "2019.1.1-beta-2-pre-2"
 
 if (project.hasProperty('publishVersion')) {
     version = project.publishVersion
