@@ -32,7 +32,8 @@ class WPINativeJsonDepRules extends RuleSource {
                     def supportNative = art.validClassifiers.contains(nativeclassifier)
                     def supportAthena = art.validClassifiers.contains('linuxathena')
                     def mavenBase = "${art.groupId}:${art.artifactId}:${art.version}"
-                    def cfgName = "native_${name}"
+                    def cfgName = art.configuration ?: "native_${dep.uuid}"
+
                     libs.create("${name}_headers", NativeLib) { NativeLib lib ->
                         common(lib)
                         if (supportNative)

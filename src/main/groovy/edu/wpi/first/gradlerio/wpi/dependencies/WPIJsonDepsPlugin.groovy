@@ -39,6 +39,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         String groupId
         String artifactId
         String version
+        String configuration
         boolean isHeaderOnly
         String headerClassifier
         boolean hasSources
