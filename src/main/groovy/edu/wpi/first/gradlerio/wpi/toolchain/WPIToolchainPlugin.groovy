@@ -190,30 +190,30 @@ class WPIToolchainPlugin implements Plugin<Project> {
         public static final String[] windowsLinkerArgs = ['/DEBUG:FULL']
         public static final String[] windowsReleaseLinkerArgs = ['/OPT:REF', '/OPT:ICF']
 
-        public static final String[] linuxCrossCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+        public static final String[] linuxCrossCompilerArgs = ['-std=c++14', '-Wformat=2', '-pedantic', '-Wno-psabi', '-g',
                         '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-fPIC', '-rdynamic',
                         '-pthread']
-        public static final String[] linuxCrossCCompilerArgs = ['-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+        public static final String[] linuxCrossCCompilerArgs = ['-Wformat=2', '-Wno-psabi', '-g',
                             '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
         public static final String[] linuxCrossLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
         public static final String[] linuxCrossReleaseCompilerArgs = ['-O2']
         public static final String[] linuxCrossDebugCompilerArgs = ['-Og']
 
-        public static final String[] linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+        public static final String[] linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-pedantic', '-Wno-psabi', '-g',
                         '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-fPIC', '-rdynamic',
                         '-pthread']
-        public static final String[] linuxCCompilerArgs = ['-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+        public static final String[] linuxCCompilerArgs = ['-Wformat=2', '-pedantic', '-Wno-psabi', '-g',
                             '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
         public static final String[] linuxLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
         public static final String[] linuxReleaseCompilerArgs = ['-O2']
         public static final String[] linuxDebugCompilerArgs = ['-O0']
 
-        public static final String[] macCompilerArgs = ['-std=c++14', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+        public static final String[] macCompilerArgs = ['-std=c++14', '-pedantic-errors', '-fPIC', '-g',
                         '-Wno-unused-parameter', '-Wno-error=deprecated-declarations', '-Wno-missing-field-initializers',
                         '-Wno-unused-private-field', '-Wno-unused-const-variable', '-pthread']
-        public static final String[] macCCompilerArgs = ['-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+        public static final String[] macCCompilerArgs = ['-pedantic-errors', '-fPIC', '-g',
                         '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field']
-        public static final String[] macObjCppLinkerArgs = ['-std=c++14', '-stdlib=libc++','-fobjc-arc', '-g', '-fPIC', '-Wall', '-Wextra', '-Werror']
+        public static final String[] macObjCppLinkerArgs = ['-std=c++14', '-stdlib=libc++','-fobjc-arc', '-g', '-fPIC']
         public static final String[] macReleaseCompilerArgs = ['-O2']
         public static final String[] macDebugCompilerArgs = ['-O0']
         public static final String[] macLinkerArgs = ['-framework', 'CoreFoundation', '-framework', 'AVFoundation', '-framework', 'Foundation', '-framework', 'CoreMedia', '-framework', 'CoreVideo']
