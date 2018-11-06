@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
 import groovy.io.FileType
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
@@ -126,9 +127,10 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
         // Add all URLs from dependencies
         jsonExtension.dependencies.each { JsonDependency dep ->
+            int i = 0
             dep.mavenUrls.each { url ->
-                project.repositories.maven { MavenArtifactRepository repo ->
-                    repo.url = url
+                wpi.maven.vendor("${dep.uuid}_${i++}") { WPIMavenRepo repo ->
+                    repo.release = url
                 }
             }
         }

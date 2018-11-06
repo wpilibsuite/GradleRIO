@@ -18,6 +18,8 @@ class WPIMavenRepo implements Named {
     static final int PRIORITY_MIRROR = 200
     static final int PRIORITY_MIRROR_INUSE = 120
 
+    static final int PRIORITY_VENDOR = 175
+
     WPIMavenRepo(String name) {
         this.name = name
     }

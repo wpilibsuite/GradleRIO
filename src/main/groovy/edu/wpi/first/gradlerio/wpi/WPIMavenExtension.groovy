@@ -60,6 +60,14 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         return mirr
     }
 
+    WPIMavenRepo vendor(String name, final Closure config) {
+        def mirr = new WPIMavenRepo(name)
+        mirr.priority = WPIMavenRepo.PRIORITY_VENDOR
+        project.configure(mirr, config)
+        this << (mirr)
+        return mirr
+    }
+
     void useMirror(String name) {
         all { WPIMavenRepo m ->
             if (m.name == name)

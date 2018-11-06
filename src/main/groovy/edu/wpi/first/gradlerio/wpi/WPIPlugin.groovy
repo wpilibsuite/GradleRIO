@@ -14,6 +14,8 @@ import jaci.gradle.toolchains.ToolchainsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.repositories.ArtifactRepository
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.logging.text.StyledTextOutput
 
 @CompileStatic
@@ -46,6 +48,14 @@ class WPIPlugin implements Plugin<Project> {
             }
         }
 
+        project.tasks.register("explainRepositories") { Task task ->
+            task.group = "GradleRIO"
+            task.description = "Explain all Maven Repos present on this project"
+            task.doLast {
+                explainRepositories(project)
+            }
+        }
+
         // TODO: Remove for stable
         project.afterEvaluate {
             if (!_beta_warn) {
@@ -61,6 +71,12 @@ class WPIPlugin implements Plugin<Project> {
 
         project.gradle.buildFinished {
             _beta_warn = false;
+        }
+    }
+
+    void explainRepositories(Project project) {
+        project.repositories.withType(MavenArtifactRepository).each { MavenArtifactRepository repo ->
+            println("${repo.name} -> ${repo.url}")
         }
     }
 

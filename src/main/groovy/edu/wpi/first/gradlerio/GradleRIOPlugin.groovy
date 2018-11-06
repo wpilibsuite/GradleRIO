@@ -13,6 +13,7 @@ import jaci.gradle.deploy.target.discovery.TargetNotFoundException
 import jaci.gradle.log.ETLoggerFactory
 import org.apache.log4j.Logger
 import org.gradle.BuildResult
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -54,7 +55,10 @@ class GradleRIOPlugin implements Plugin<Project> {
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
 
-        project.tasks.register("downloadAll", DownloadAllTask)
+        project.tasks.register("downloadAll", DownloadAllTask, { DownloadAllTask t ->
+            t.group = "GradleRIO"
+            t.description = "Download all dependencies that may be used by this project"
+        } as Action<DownloadAllTask>)
 
         project.tasks.withType(Wrapper).configureEach { Wrapper wrapper ->
             if (!project.hasProperty('no-gradlerio-wrapper')) {
