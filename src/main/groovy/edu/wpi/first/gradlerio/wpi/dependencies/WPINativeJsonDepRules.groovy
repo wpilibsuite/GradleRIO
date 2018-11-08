@@ -34,14 +34,16 @@ class WPINativeJsonDepRules extends RuleSource {
                     def mavenBase = "${art.groupId}:${art.artifactId}:${art.version}"
                     def cfgName = art.configuration ?: "native_${dep.uuid}"
 
-                    libs.create("${name}_headers", NativeLib) { NativeLib lib ->
-                        common(lib)
-                        if (supportNative)
-                            lib.targetPlatforms << 'desktop'
-                        lib.headerDirs << ''
-                        lib.maven = "${mavenBase}:${art.headerClassifier}@zip"
-                        lib.configuration = cfgName
-                        null
+                    if (art.headerClassifier != null) {
+                        libs.create("${name}_headers", NativeLib) { NativeLib lib ->
+                            common(lib)
+                            if (supportNative)
+                                lib.targetPlatforms << 'desktop'
+                            lib.headerDirs << ''
+                            lib.maven = "${mavenBase}:${art.headerClassifier}@zip"
+                            lib.configuration = cfgName
+                            null
+                        }
                     }
 
                     if (art.isHeaderOnly) {
