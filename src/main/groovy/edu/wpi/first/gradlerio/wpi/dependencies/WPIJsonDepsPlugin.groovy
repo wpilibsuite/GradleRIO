@@ -211,7 +211,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
             VariantComponentSpec component = (VariantComponentSpec)closureArg
             component.binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
                 Set<DelegatedDependencySet> dds = []
-                jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
+                jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
                     dep.cppDependencies.collect { CppArtifact art ->
                         dds << new DelegatedDependencySet(dep.uuid + art.libName, bin, dse, art.skipOnUnknownClassifier)
                     }
@@ -225,7 +225,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         } else if (closureArg in NativeBinarySpec) {
             NativeBinarySpec bin = (NativeBinarySpec) closureArg
             Set<DelegatedDependencySet> dds = []
-            jsonExtension.dependencies.find { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
+            jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.each { JsonDependency dep ->
                 dep.cppDependencies.collect { CppArtifact art ->
                     dds << new DelegatedDependencySet(dep.uuid + art.libName, bin, dse, art.skipOnUnknownClassifier)
                 }
