@@ -100,7 +100,7 @@ class RoboRIO extends FRCCompatibleTarget {
     }
 
     boolean checkImage = true
-    List<String> validImageVersions = ['2019_v4']
+    List<String> validImageVersions = ['2019_v7']
 
     void verifyImageVersion(String image) {
         if (!validImageVersions.contains(image))
