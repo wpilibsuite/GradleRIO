@@ -137,7 +137,7 @@ class FRCNativeArtifact extends NativeArtifact {
                         sysroot    : sysroot,
                         srcpaths   : (srcpaths as List<File>).collect { it.absolutePath },
                         headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
-                        libfiles   : (libpaths as List<File>).collect { it.absolutePath },
+                        libpaths   : (libpaths as List<File>).collect { it.absolutePath },
                         libsrcpaths: (libsrcpaths as List<File>).collect { it.absolutePath },
                         arch       : "elf32-littlearm",
                         component  : this.component

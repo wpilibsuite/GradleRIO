@@ -26,7 +26,7 @@ class NativeExternalSimulationTask extends DefaultTask {
         for (NativeExecutableBinarySpec binary : binaries) {
             def cfg = [:]
             def installTask = (InstallExecutable)binary.tasks.install
-            cfg['name'] = binary.component.name
+            cfg['name'] = "${binary.component.name} (${binary.buildType})".toString()
             cfg['extensions'] = extensions
             cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
             cfg['clang'] = binary.toolChain in Clang
