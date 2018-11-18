@@ -34,6 +34,7 @@ class WPINativeDeps implements Plugin<Project> {
                 lib.targetPlatforms = ['roborio']
                 lib.headerDirs = []
                 lib.sourceDirs = []
+                lib.debugMatchers = ['**/*.pdb', '**/*.so.debug']
                 lib.staticMatchers = []
             }
 

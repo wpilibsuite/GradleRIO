@@ -105,6 +105,7 @@ class FRCNativeArtifact extends NativeArtifact {
             def srcpaths = []
             def headerpaths = []
             def libpaths = []
+            def debugpaths = []
             def libsrcpaths = []
 
             _bin.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
@@ -116,6 +117,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 libpaths += ds.runtimeFiles.files
                 if (ds instanceof DelegatedDependencySet) {
                     libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
+                    debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
                 }
             }
 
@@ -138,6 +140,7 @@ class FRCNativeArtifact extends NativeArtifact {
                         srcpaths   : (srcpaths as List<File>).collect { it.absolutePath },
                         headerpaths: (headerpaths as List<File>).collect { it.absolutePath },
                         libpaths   : (libpaths as List<File>).collect { it.absolutePath },
+                        debugpaths : (debugpaths as List<File>).collect {it.absolutePath },
                         libsrcpaths: (libsrcpaths as List<File>).collect { it.absolutePath },
                         arch       : "elf32-littlearm",
                         component  : this.component

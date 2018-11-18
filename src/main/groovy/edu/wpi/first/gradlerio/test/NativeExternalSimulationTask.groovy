@@ -35,6 +35,7 @@ class NativeExternalSimulationTask extends DefaultTask {
             def headerpaths = []
             def libpaths = []
             def libsrcpaths = []
+            def debugpaths = []
             binary.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
                 srcpaths += ss.source.srcDirs
                 srcpaths += ss.exportedHeaders.srcDirs
@@ -44,12 +45,14 @@ class NativeExternalSimulationTask extends DefaultTask {
                 libpaths += ds.runtimeFiles.files
                 if (ds instanceof DelegatedDependencySet) {
                     libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
+                    debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
                 }
             }
 
             cfg['srcpaths'] = (srcpaths as List<File>).collect { it.absolutePath }
             cfg['headerpaths'] = (headerpaths as List<File>).collect { it.absolutePath }
             cfg['libpaths'] = (libpaths as List<File>).collect { it.absolutePath }
+            cfg['debugpaths'] = (debugpaths as List<File>).collect { it.absolutePath }
             cfg['libsrcpaths'] = (libsrcpaths as List<File>).collect { it.absolutePath }
 
             cfgs << cfg
