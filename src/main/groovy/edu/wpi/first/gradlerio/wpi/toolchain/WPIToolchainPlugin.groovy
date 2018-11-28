@@ -28,7 +28,6 @@ import org.gradle.nativeplatform.SharedLibraryBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.platform.NativePlatform
 import org.gradle.nativeplatform.tasks.AbstractLinkTask
-import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory

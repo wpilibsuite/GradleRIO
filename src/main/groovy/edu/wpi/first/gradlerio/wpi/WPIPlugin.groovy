@@ -14,7 +14,6 @@ import jaci.gradle.toolchains.ToolchainsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.artifacts.repositories.ArtifactRepository
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.logging.text.StyledTextOutput
 

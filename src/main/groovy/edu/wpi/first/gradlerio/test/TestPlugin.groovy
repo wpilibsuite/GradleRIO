@@ -6,7 +6,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.nativeplatform.test.googletest.plugins.GoogleTestPlugin
 
 @CompileStatic
 class TestPlugin implements Plugin<Project> {

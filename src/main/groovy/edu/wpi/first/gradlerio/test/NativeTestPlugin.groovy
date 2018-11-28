@@ -18,9 +18,7 @@ import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
 import org.gradle.nativeplatform.test.googletest.GoogleTestTestSuiteBinarySpec
-import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.platform.base.BinaryContainer
-import org.gradle.platform.base.BinaryTasks
 import org.gradle.platform.base.ComponentSpecContainer
 import org.gradle.platform.base.internal.BinarySpecInternal
 
