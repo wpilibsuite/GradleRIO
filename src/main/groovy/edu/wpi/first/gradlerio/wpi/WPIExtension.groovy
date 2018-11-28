@@ -33,6 +33,10 @@ class WPIExtension {
     String toolchainVersionLow = "6.3"
     String toolchainVersionHigh = "6.3"
 
+    // Set to true to use debug JNI
+    // Might require extra libraries (especially on windows)
+    boolean debugSimJNI = false
+
     WPIMavenExtension maven
 
     String frcYear = '2019'
