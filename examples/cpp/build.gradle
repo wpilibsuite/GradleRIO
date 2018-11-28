@@ -43,8 +43,8 @@ def includeSrcInIncludeRoot = false
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
-            targetPlatform 'roborio'
-            targetPlatform 'desktop'
+            targetPlatform wpi.platforms.roborio
+            targetPlatform wpi.platforms.desktop
 
             sources.cpp {
                 source {

@@ -104,8 +104,6 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
         def jsonExtension = project.extensions.create('wpiJsonDeps', WPIJsonDepsExtension, project)
 
-        def nativeclassifier = wpi.nativeClassifier
-
         def jsonDepFolder = project.file('vendordeps')
         JsonSlurper slurper = new JsonSlurper()
 
@@ -182,7 +180,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         })
 
         project.extensions.add('jniDesktopVendorLibraries', { String... ignoreLibraries ->
-            def classifier = nativeclassifier
+            def classifier = wpi.platforms.desktop
             if (jsonExtension.dependencies != null) {
                 return jsonExtension.dependencies.findAll { (!ignoreLibraries.contains(it.name) && !ignoreLibraries.contains(it.uuid)) }.collectMany { JsonDependency dep ->
                     dep.jniDependencies.find { JniArtifact art ->
