@@ -41,9 +41,9 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends)
 dependencies {
     compile wpilib()
-    compile javaVendorLibraries()
-    nativeZip jniRoboRIOVendorLibraries()
-    nativeDesktopZip jniDesktopVendorLibraries()
+    compile frcVendor.javaVendorLibraries()
+    nativeZip frcVendor.jniRoboRIOVendorLibraries()
+    nativeDesktopZip frcVendor.jniDesktopVendorLibraries()
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     compile "org.jetbrains.kotlin:kotlin-stdlib"
