@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.toolchain
 
-import groovy.transform.CompileStatic
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.IdentityFileResolver

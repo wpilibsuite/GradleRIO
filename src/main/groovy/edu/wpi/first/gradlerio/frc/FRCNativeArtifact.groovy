@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
@@ -22,7 +23,7 @@ import java.nio.file.Paths
 class FRCNativeArtifact extends NativeArtifact {
     FRCNativeArtifact(String name, Project project) {
         super(name, project)
-        targetPlatform = 'roborio'
+        targetPlatform = WPIExtension.Platforms.roborio
 
         predeploy << { DeployContext ctx ->
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")

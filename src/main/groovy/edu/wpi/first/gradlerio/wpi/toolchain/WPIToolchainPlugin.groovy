@@ -28,7 +28,6 @@ import org.gradle.nativeplatform.SharedLibraryBinarySpec
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory
 import org.gradle.nativeplatform.platform.NativePlatform
 import org.gradle.nativeplatform.tasks.AbstractLinkTask
-import org.gradle.nativeplatform.toolchain.VisualCpp
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory
@@ -308,14 +307,14 @@ class WPIToolchainPlugin implements Plugin<Project> {
 
         @Mutate
         void addPlatform(PlatformContainer platforms) {
-            def roborio = platforms.maybeCreate('roborio', NativePlatform)
+            def roborio = platforms.maybeCreate(WPIExtension.Platforms.roborio, NativePlatform)
             roborio.architecture('arm')
             roborio.operatingSystem('linux')
 
-            def desktop = platforms.maybeCreate('desktop', NativePlatform)
-            def is64 = ['amd64', 'x86_64'].contains(System.getProperty("os.arch"))
-            Logger.getLogger(this.class).info("Desktop OS Arch: ${System.getProperty('os.arch')}, is64? ${is64}")
-            desktop.architecture(is64 ? 'x86_64' : 'x86')
+            def desktop = platforms.maybeCreate(WPIExtension.Platforms.desktop, NativePlatform)
+            def arch = WPIExtension.Platforms.desktopArch()
+            Logger.getLogger(this.class).info("Desktop OS Arch: ${System.getProperty('os.arch')}, normalized: ${arch}")
+            desktop.architecture(arch.replaceAll("-", "_"))
 
             def anyArm = platforms.maybeCreate('anyArm', NativePlatform)
             anyArm.architecture('arm')

@@ -33,12 +33,17 @@ class WPIExtension {
     String toolchainVersionLow = "6.3"
     String toolchainVersionHigh = "6.3"
 
+    // Set to true to use debug JNI
+    // Might require extra libraries (especially on windows)
+    boolean debugSimJNI = false
+
     WPIMavenExtension maven
 
     String frcYear = '2019'
 
+    final Platforms platforms
+
     final Project project
-    final String nativeClassifier
     final String toolsClassifier
 
     @Inject
@@ -48,18 +53,6 @@ class WPIExtension {
 //        def factory = project.objects
 //        maven = factory.newInstance(WPIMavenExtension, project)
         maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
-
-        if (project.hasProperty('forceNativeClassifier')) {
-            this.nativeClassifier = project.findProperty('forceNativeClassifier')
-        } else {
-            this.nativeClassifier = (
-                OperatingSystem.current().isWindows() ?
-                        System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
-                        OperatingSystem.current().isMacOsX() ? "osxx86-64" :
-                                OperatingSystem.current().isLinux() ? "linuxx86-64" :
-                                        null
-            )
-        }
 
         if (project.hasProperty('forceToolsClassifier')) {
             this.toolsClassifier = project.findProperty('forceToolsClassifier')
@@ -72,6 +65,8 @@ class WPIExtension {
                                             null
             )
         }
+
+        platforms = new Platforms()
     }
 
     private String frcHomeCache
@@ -111,5 +106,18 @@ class WPIExtension {
 
                 "toolchainVersion"     : new Tuple("Toolchain", toolchainVersion, "toolchain"),
         ]
+    }
+
+    public static class Platforms {
+        public static String desktop = desktopOS() + desktopArch(), roborio = "linuxathena"
+
+        public static String desktopArch() {
+            String arch = System.getProperty("os.arch")
+            return (arch == "amd64" || arch == "x86_64") ? "x86-64" : "x86"
+        }
+
+        public static String desktopOS() {
+            return OperatingSystem.current().isWindows() ? "windows" : OperatingSystem.current().isMacOsX() ? "osx" : "linux"
+        }
     }
 }

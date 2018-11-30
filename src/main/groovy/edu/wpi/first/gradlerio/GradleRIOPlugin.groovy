@@ -9,7 +9,6 @@ import edu.wpi.first.gradlerio.wpi.WPIPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deploy.target.discovery.TargetDiscoveryTask
-import jaci.gradle.deploy.target.discovery.TargetNotFoundException
 import jaci.gradle.log.ETLoggerFactory
 import org.apache.log4j.Logger
 import org.gradle.BuildResult
@@ -21,11 +20,9 @@ import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.api.tasks.compile.AbstractCompile
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.execution.MultipleBuildFailures
 import org.gradle.internal.resolve.ArtifactResolveException
-import org.gradle.language.cpp.tasks.CppCompile
 import org.gradle.language.nativeplatform.tasks.AbstractNativeCompileTask
 
 @CompileStatic

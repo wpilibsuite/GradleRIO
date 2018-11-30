@@ -1,6 +1,8 @@
 package edu.wpi.first.gradlerio.ide
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -16,10 +18,11 @@ class IDEPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def ecfgTask = project.tasks.register('editorConfig', EditorConfigurationTask) { EditorConfigurationTask task ->
+        def ecfgTask = project.tasks.register('editorConfig', EditorConfigurationTask, { EditorConfigurationTask task ->
             task.group = 'GradleRIO'
             task.description = 'Generate Editor Configuration for Build and Debugging'
-        }
+        } as Action<EditorConfigurationTask>)
+
         project.extensions.create('editorConfiguration', EditorConfigurationExtension)
     }
 
@@ -28,7 +31,7 @@ class IDEPlugin implements Plugin<Project> {
         void createEditorConfigTasks(ModelMap<Task> tasks, BinaryContainer bins, ExtensionContainer extCont) {
             def ext = extCont.getByType(EditorConfigurationExtension)
             bins.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                if (bin.targetPlatform.name.equals('roborio')) {
+                if (bin.targetPlatform.name.equals(WPIExtension.Platforms.roborio)) {
                     ext._binaries << bin
                 }
             }

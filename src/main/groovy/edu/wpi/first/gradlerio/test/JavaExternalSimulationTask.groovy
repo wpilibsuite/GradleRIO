@@ -16,7 +16,7 @@ class JavaExternalSimulationTask extends DefaultTask {
         for (Jar jar : taskDependencies.getDependencies(this).findAll { it instanceof Jar } as Set<Jar>) {
             def manifestAttributes = jar.manifest.attributes
 
-            if (!manifestAttributes.containsKey('Robot-Class')) {
+            if (!manifestAttributes.containsKey('Main-Class')) {
                 continue
             }
             def mainClass = manifestAttributes['Main-Class']

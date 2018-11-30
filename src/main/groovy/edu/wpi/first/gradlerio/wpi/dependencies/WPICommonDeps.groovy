@@ -64,20 +64,16 @@ class WPICommonDeps implements Plugin<Project> {
 
     @CompileDynamic
     void apply_halsim_extensions(Project project, WPIExtension wpi) {
-        def nativeclassifier = wpi.nativeClassifier
-
-        if (nativeclassifier != null) {
-            project.dependencies.ext.sim = [
-                print: {
-                    ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
-                },
-                nt_ds: {
-                    ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
-                },
-                nt_readout: {
-                    ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${nativeclassifier}@zip"]
-                }
-            ]
-        }
+        project.dependencies.ext.sim = [
+            print: {
+                ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"]
+            },
+            nt_ds: {
+                ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"]
+            },
+            nt_readout: {
+                ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"]
+            }
+        ]
     }
 }

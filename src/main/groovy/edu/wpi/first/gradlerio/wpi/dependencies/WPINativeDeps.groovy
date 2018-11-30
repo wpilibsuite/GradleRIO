@@ -31,14 +31,12 @@ class WPINativeDeps implements Plugin<Project> {
         void addWPILibraries(NativeDepsSpec libs, final ExtensionContainer extensionContainer) {
             def wpi = extensionContainer.getByType(WPIExtension)
             def common = { NativeLib lib ->
-                lib.targetPlatforms = ['roborio']
+                lib.targetPlatforms = [wpi.platforms.roborio]
                 lib.headerDirs = []
                 lib.sourceDirs = []
                 lib.debugMatchers = ['**/*.pdb', '**/*.so.debug']
                 lib.staticMatchers = []
             }
-
-            def nativeclassifier = wpi.nativeClassifier
 
             def createWpiLibrary = { String name, String mavenBase, String libname, boolean supportNative ->
                 ['debug', ''].each { buildType->
@@ -56,7 +54,7 @@ class WPINativeDeps implements Plugin<Project> {
                             lib.buildType = 'release'
                         }
                         if (supportNative)
-                            lib.targetPlatforms << 'desktop'
+                            lib.targetPlatforms << wpi.platforms.desktop
                         lib.headerDirs << ''
                         lib.maven = "${mavenBase}:headers@zip"
                         lib.configuration = cfgName
@@ -87,14 +85,14 @@ class WPINativeDeps implements Plugin<Project> {
                             lib.buildType = 'release'
                         }
                         if (supportNative)
-                            lib.targetPlatforms << 'desktop'
+                            lib.targetPlatforms << wpi.platforms.desktop
                         lib.sourceDirs << ''
                         lib.maven = "${mavenBase}:sources@zip"
                         lib.configuration = cfgName
                         null
                     }
 
-                    if (supportNative && nativeclassifier != null) {
+                    if (supportNative) {
                         libs.create("${name}_native${buildType}", NativeLib) { NativeLib lib ->
                             common(lib)
                             lib.libraryName = "${name}_binaries"
@@ -103,11 +101,11 @@ class WPINativeDeps implements Plugin<Project> {
                             } else {
                                 lib.buildType = 'release'
                             }
-                            lib.targetPlatforms = ['desktop']
+                            lib.targetPlatforms = [wpi.platforms.desktop]
                             lib.sharedMatchers = ["**/shared/*${libnameExt}*.lib".toString(), "**/shared/*${libnameExt}*.so".toString(), "**/shared/*${libnameExt}*.dylib".toString()]
 
                             lib.dynamicMatchers = lib.sharedMatchers + "**/shared/${libnameExt}*.dll".toString()
-                            lib.maven = "${mavenBase}:${nativeclassifier}${buildType}@zip"
+                            lib.maven = "${mavenBase}:${wpi.platforms.desktop}${buildType}@zip"
                             lib.configuration = "${cfgName}_desktop"
                             null
                         }
@@ -117,9 +115,9 @@ class WPINativeDeps implements Plugin<Project> {
                 libs.create("${name}", CombinedNativeLib) { CombinedNativeLib lib ->
                     lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
                     lib.buildTypes = ['debug', 'release']
-                    lib.targetPlatforms = ['roborio']
+                    lib.targetPlatforms = [wpi.platforms.roborio]
                     if (supportNative)
-                        lib.targetPlatforms << 'desktop'
+                        lib.targetPlatforms << wpi.platforms.desktop
                     null
                 }
             }
@@ -140,7 +138,7 @@ class WPINativeDeps implements Plugin<Project> {
                             lib.buildType = 'release'
                         }
                         if (supportNative)
-                            lib.targetPlatforms << 'desktop'
+                            lib.targetPlatforms << wpi.platforms.desktop
                         lib.headerDirs << ''
                         lib.maven = "${mavenBase}:headers@zip"
                         lib.configuration = cfgName
@@ -170,14 +168,14 @@ class WPINativeDeps implements Plugin<Project> {
                         }
                         lib.libraryName = "${name}_sources"
                         if (supportNative)
-                            lib.targetPlatforms << 'desktop'
+                            lib.targetPlatforms << wpi.platforms.desktop
                         lib.sourceDirs << ''
                         lib.maven = "${mavenBase}:sources@zip"
                         lib.configuration = cfgName
                         null
                     }
 
-                    if (supportNative && nativeclassifier != null) {
+                    if (supportNative) {
                         libs.create("${name}_native${buildType}", NativeLib) { NativeLib lib ->
                             common(lib)
                             if (buildType.contains('debug')) {
@@ -186,9 +184,9 @@ class WPINativeDeps implements Plugin<Project> {
                                 lib.buildType = 'release'
                             }
                             lib.libraryName = "${name}_binaries"
-                            lib.targetPlatforms = ['desktop']
+                            lib.targetPlatforms = [wpi.platforms.desktop]
                             lib.staticMatchers = ["**/static/*${libnameExt}.lib".toString(), "**/static/*${libnameExt}.a".toString()]
-                            lib.maven = "${mavenBase}:${nativeclassifier}static${buildType}@zip"
+                            lib.maven = "${mavenBase}:${wpi.platforms.desktop}static${buildType}@zip"
                             lib.configuration = "${cfgName}_desktop"
                             null
                         }
@@ -198,9 +196,9 @@ class WPINativeDeps implements Plugin<Project> {
                 libs.create("${name}", CombinedNativeLib) { CombinedNativeLib lib ->
                     lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
                     lib.buildTypes = ['debug', 'release']
-                    lib.targetPlatforms = ['roborio']
+                    lib.targetPlatforms = [wpi.platforms.roborio]
                     if (supportNative)
-                        lib.targetPlatforms << 'desktop'
+                        lib.targetPlatforms << wpi.platforms.desktop
                     null
                 }
             }
@@ -260,7 +258,7 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('ni_libraries', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'ni_chipobject_binaries' << 'ni_chipobject_headers' << 'ni_netcomm_binaries' << 'ni_netcomm_headers'
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatform = 'roborio'
+                lib.targetPlatform = wpi.platforms.roborio
                 null
             }
 
@@ -297,7 +295,7 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('opencv_headers', NativeLib) { NativeLib lib ->
                 common(lib)
                 lib.buildType = 'release'
-                lib.targetPlatforms << 'desktop'
+                lib.targetPlatforms << wpi.platforms.desktop
                 lib.headerDirs << ''
                 lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
                 lib.configuration = 'native_opencv'
@@ -319,7 +317,7 @@ class WPINativeDeps implements Plugin<Project> {
                 common(lib)
                 lib.buildType = 'debug'
                 lib.libraryName = 'opencv_headers'
-                lib.targetPlatforms << 'desktop'
+                lib.targetPlatforms << wpi.platforms.desktop
                 lib.headerDirs << ''
                 lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
                 lib.configuration = 'nativedebug_opencv'
@@ -337,86 +335,84 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
-            if (nativeclassifier != null) {
-                libs.create('opencv_native', NativeLib) { NativeLib lib ->
-                    common(lib)
-                    lib.buildType = 'release'
-                    lib.libraryName = 'opencv_binaries'
-                    lib.targetPlatforms = ['desktop']
+            libs.create('opencv_native', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.buildType = 'release'
+                lib.libraryName = 'opencv_binaries'
+                lib.targetPlatforms = [wpi.platforms.desktop]
 
-                    // Need special windows matchers because archive has bad file
-                    // Need to fix upstream, but no time before beta
-                    def windowsMatchers = [
-                        '**/shared/opencv_calib3d343*.lib',
-                        '**/shared/opencv_core343*.lib',
-                        '**/shared/opencv_dnn343*.lib',
-                        '**/shared/opencv_features2d343*.lib',
-                        '**/shared/opencv_flann343*.lib',
-                        '**/shared/opencv_highgui343*.lib',
-                        '**/shared/opencv_imgcodecs343*.lib',
-                        '**/shared/opencv_imgproc343*.lib',
-                        '**/shared/opencv_ml343*.lib',
-                        '**/shared/opencv_objdetect343*.lib',
-                        '**/shared/opencv_photo343*.lib',
-                        '**/shared/opencv_shape343*.lib',
-                        '**/shared/opencv_stitching343*.lib',
-                        '**/shared/opencv_superres343*.lib',
-                        '**/shared/opencv_video343*.lib',
-                        '**/shared/opencv_videoio343*.lib',
-                        '**/shared/opencv_videostab343*.lib',
-                    ]
+                // Need special windows matchers because archive has bad file
+                // Need to fix upstream, but no time before beta
+                def windowsMatchers = [
+                    '**/shared/opencv_calib3d343*.lib',
+                    '**/shared/opencv_core343*.lib',
+                    '**/shared/opencv_dnn343*.lib',
+                    '**/shared/opencv_features2d343*.lib',
+                    '**/shared/opencv_flann343*.lib',
+                    '**/shared/opencv_highgui343*.lib',
+                    '**/shared/opencv_imgcodecs343*.lib',
+                    '**/shared/opencv_imgproc343*.lib',
+                    '**/shared/opencv_ml343*.lib',
+                    '**/shared/opencv_objdetect343*.lib',
+                    '**/shared/opencv_photo343*.lib',
+                    '**/shared/opencv_shape343*.lib',
+                    '**/shared/opencv_stitching343*.lib',
+                    '**/shared/opencv_superres343*.lib',
+                    '**/shared/opencv_video343*.lib',
+                    '**/shared/opencv_videoio343*.lib',
+                    '**/shared/opencv_videostab343*.lib',
+                ]
 
-                    // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
-                    // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
-                    lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
-                    lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
-                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}@zip"
-                    lib.configuration = 'native_opencv_desktop'
-                    null
-                }
+                // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
+                // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
+                lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
+                lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}@zip"
+                lib.configuration = 'native_opencv_desktop'
+                null
+            }
 
-                libs.create('opencvdebug_native', NativeLib) { NativeLib lib ->
-                    common(lib)
-                    lib.buildType = 'debug'
-                    lib.libraryName = 'opencv_binaries'
-                    lib.targetPlatforms = ['desktop']
+            libs.create('opencvdebug_native', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.buildType = 'debug'
+                lib.libraryName = 'opencv_binaries'
+                lib.targetPlatforms = [wpi.platforms.desktop]
 
-                    // Need special windows matchers because archive has bad file
-                    // Need to fix upstream, but no time before beta
-                    def windowsMatchers = [
-                        '**/shared/opencv_calib3d343*.lib',
-                        '**/shared/opencv_core343*.lib',
-                        '**/shared/opencv_dnn343*.lib',
-                        '**/shared/opencv_features2d343*.lib',
-                        '**/shared/opencv_flann343*.lib',
-                        '**/shared/opencv_highgui343*.lib',
-                        '**/shared/opencv_imgcodecs343*.lib',
-                        '**/shared/opencv_imgproc343*.lib',
-                        '**/shared/opencv_ml343*.lib',
-                        '**/shared/opencv_objdetect343*.lib',
-                        '**/shared/opencv_photo343*.lib',
-                        '**/shared/opencv_shape343*.lib',
-                        '**/shared/opencv_stitching343*.lib',
-                        '**/shared/opencv_superres343*.lib',
-                        '**/shared/opencv_video343*.lib',
-                        '**/shared/opencv_videoio343*.lib',
-                        '**/shared/opencv_videostab343*.lib',
-                    ]
+                // Need special windows matchers because archive has bad file
+                // Need to fix upstream, but no time before beta
+                def windowsMatchers = [
+                    '**/shared/opencv_calib3d343*.lib',
+                    '**/shared/opencv_core343*.lib',
+                    '**/shared/opencv_dnn343*.lib',
+                    '**/shared/opencv_features2d343*.lib',
+                    '**/shared/opencv_flann343*.lib',
+                    '**/shared/opencv_highgui343*.lib',
+                    '**/shared/opencv_imgcodecs343*.lib',
+                    '**/shared/opencv_imgproc343*.lib',
+                    '**/shared/opencv_ml343*.lib',
+                    '**/shared/opencv_objdetect343*.lib',
+                    '**/shared/opencv_photo343*.lib',
+                    '**/shared/opencv_shape343*.lib',
+                    '**/shared/opencv_stitching343*.lib',
+                    '**/shared/opencv_superres343*.lib',
+                    '**/shared/opencv_video343*.lib',
+                    '**/shared/opencv_videoio343*.lib',
+                    '**/shared/opencv_videostab343*.lib',
+                ]
 
-                    // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
-                    // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
-                    lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
-                    lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
-                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}debug@zip"
-                    lib.configuration = 'nativedebug_opencv_desktop'
-                    null
-                }
+                // The mac matcher is weird because we want to match libopencv_core.3.4.dylib
+                // but not libopencv_java343.dylib. The java library cannot be linked as of 2019 libs.
+                lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
+                lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}debug@zip"
+                lib.configuration = 'nativedebug_opencv_desktop'
+                null
             }
 
             libs.create('opencv', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'opencv_binaries' << 'opencv_headers'
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = ['roborio', 'desktop']
+                lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop]
                 null
             }
 
@@ -425,7 +421,7 @@ class WPINativeDeps implements Plugin<Project> {
                 common(lib)
                 lib.buildType = 'release'
                 lib.libraryName = 'opencv_static_headers'
-                lib.targetPlatforms << 'desktop'
+                lib.targetPlatforms << wpi.platforms.desktop
                 lib.headerDirs << ''
                 lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
                 lib.configuration = 'native_opencv'
@@ -446,7 +442,7 @@ class WPINativeDeps implements Plugin<Project> {
                 common(lib)
                 lib.buildType = 'debug'
                 lib.libraryName = 'opencv_static_headers'
-                lib.targetPlatforms << 'desktop'
+                lib.targetPlatforms << wpi.platforms.desktop
                 lib.headerDirs << ''
                 lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:headers@zip"
                 lib.configuration = 'nativedebug_opencv'
@@ -463,36 +459,34 @@ class WPINativeDeps implements Plugin<Project> {
                 null
             }
 
-            if (nativeclassifier != null) {
-                libs.create('opencv_static_native', NativeLib) { NativeLib lib ->
-                    common(lib)
-                    lib.buildType = 'release'
-                    lib.libraryName = 'opencv_static_binaries'
-                    lib.targetPlatforms = ['desktop']
+            libs.create('opencv_static_native', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.buildType = 'release'
+                lib.libraryName = 'opencv_static_binaries'
+                lib.targetPlatforms = [wpi.platforms.desktop]
 
-                    lib.staticMatchers = ['**/static/*opencv*.a', '**/static/*opencv*.lib']
-                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}static@zip"
-                    lib.configuration = 'native_opencv_desktop'
-                    null
-                }
+                lib.staticMatchers = ['**/static/*opencv*.a', '**/static/*opencv*.lib']
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}static@zip"
+                lib.configuration = 'native_opencv_desktop'
+                null
+            }
 
-                libs.create('opencvdebug_static_native', NativeLib) { NativeLib lib ->
-                    common(lib)
-                    lib.buildType = 'debug'
-                    lib.libraryName = 'opencv_static_binaries'
-                    lib.targetPlatforms = ['desktop']
+            libs.create('opencvdebug_static_native', NativeLib) { NativeLib lib ->
+                common(lib)
+                lib.buildType = 'debug'
+                lib.libraryName = 'opencv_static_binaries'
+                lib.targetPlatforms = [wpi.platforms.desktop]
 
-                    lib.staticMatchers = ['**/static/*opencv*.a', '**/static/*opencv*.lib']
-                    lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${nativeclassifier}staticdebug@zip"
-                    lib.configuration = 'nativedebug_opencv_desktop'
-                    null
-                }
+                lib.staticMatchers = ['**/static/*opencv*.a', '**/static/*opencv*.lib']
+                lib.maven = "edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}staticdebug@zip"
+                lib.configuration = 'nativedebug_opencv_desktop'
+                null
             }
 
             libs.create('opencv_static', CombinedNativeLib) { CombinedNativeLib lib ->
                 lib.libs << 'opencv_static_binaries' << 'opencv_static_headers'
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = ['roborio', 'desktop']
+                lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop]
                 null
             }
 
@@ -501,21 +495,21 @@ class WPINativeDeps implements Plugin<Project> {
             libs.create('wpilib', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv" << "ni_libraries"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['roborio']
+                clib.targetPlatforms = [wpi.platforms.roborio]
                 null
             }
 
             libs.create('wpilib_static', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libs << "wpilibc_static" << "hal_static" << "cameraserver_static" << "ntcore_static" << "cscore_static" << "wpiutil_static" << "opencv_static" << "ni_libraries"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['roborio']
+                clib.targetPlatforms = [wpi.platforms.roborio]
                 null
             }
 
             libs.create('wpilibjni', CombinedNativeLib) { CombinedNativeLib clib ->
                 clib.libs << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv" << "ni_libraries"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['roborio']
+                clib.targetPlatforms = [wpi.platforms.roborio]
                 null
             }
 
@@ -523,7 +517,7 @@ class WPINativeDeps implements Plugin<Project> {
                 clib.libraryName = 'wpilib'
                 clib.libs << "wpilibc" << "hal" << "wpiutil" << "ntcore" << "cscore" << "cameraserver" << "opencv"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['desktop']
+                clib.targetPlatforms = [wpi.platforms.desktop]
                 null
             }
 
@@ -531,7 +525,7 @@ class WPINativeDeps implements Plugin<Project> {
                 clib.libraryName = 'wpilib_static'
                 clib.libs << "wpilibc_static" << "hal_static" << "cameraserver_static" << "ntcore_static" << "cscore_static" << "wpiutil_static" << "opencv_static"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['desktop']
+                clib.targetPlatforms = [wpi.platforms.desktop]
                 null
             }
 
@@ -539,7 +533,7 @@ class WPINativeDeps implements Plugin<Project> {
                 clib.libraryName = 'wpilibjni'
                 clib.libs << "hal" << "wpiutil" << "ntcore" << "cscore" << "opencv"
                 clib.buildTypes = ['debug', 'release']
-                clib.targetPlatforms = ['desktop']
+                clib.targetPlatforms = [wpi.platforms.desktop]
                 null
             }
         }
