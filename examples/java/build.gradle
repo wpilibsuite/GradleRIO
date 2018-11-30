@@ -38,9 +38,9 @@ deploy {
 // Also defines JUnit 4.
 dependencies {
     compile wpilib()
-    compile javaVendorLibraries()
-    nativeZip jniRoboRIOVendorLibraries()
-    nativeDesktopZip jniDesktopVendorLibraries()
+    compile frcVendor.javaVendorLibraries()
+    nativeZip frcVendor.jniRoboRIOVendorLibraries()
+    nativeDesktopZip frcVendor.jniDesktopVendorLibraries()
     testCompile 'junit:junit:4.12'
 }
 
