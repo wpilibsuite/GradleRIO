@@ -62,7 +62,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
                 }
             }
 
-            setTargets('roborio')
+            setTargets(WPIExtension.Platforms.roborio)
             path("NOTOOLCHAINPATH")
         } else {
             logger.info("Using Toolchain: " + toolchainDiscoverer.name)
@@ -73,7 +73,7 @@ class WPIRoboRioGcc extends AbstractGccCompatibleToolChain {
 
             def frcYear = project.extensions.getByType(WPIExtension).frcYear
 
-            setTargets('roborio')
+            setTargets(WPIExtension.Platforms.roborio)
             eachPlatform(new Action<GccPlatformToolChain>() {
                 @Override
                 void execute(GccPlatformToolChain target) {
