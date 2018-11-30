@@ -21,6 +21,7 @@ class WPINativeJsonDepRules extends RuleSource {
                 lib.headerDirs = []
                 lib.sourceDirs = []
                 lib.staticMatchers = []
+                lib.debugMatchers = ['**/*.pdb', '**/*.so.debug']
                 lib.sharedMatchers = []
                 lib.dynamicMatchers = []
             }
