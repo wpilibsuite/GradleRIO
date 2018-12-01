@@ -1,8 +1,8 @@
 package edu.wpi.first.gradlerio.wpi
 
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIJavaDeps
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIJsonDepsPlugin
-import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDeps
+
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin
+import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
@@ -25,13 +25,12 @@ class WPIPlugin implements Plugin<Project> {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)
         logger = ETLoggerFactory.INSTANCE.create(this.class.simpleName)
 
-        project.pluginManager.apply(WPIJavaDeps)
         project.pluginManager.apply(WPIToolsPlugin)
-        project.pluginManager.apply(WPIJsonDepsPlugin)
+        project.pluginManager.apply(WPIDependenciesPlugin)
 
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
-            project.pluginManager.apply(WPINativeDeps)
+            project.pluginManager.apply(WPINativeDepRules)
             project.pluginManager.apply(WPIToolchainPlugin)
             project.pluginManager.apply(GradleVsCode)
             project.pluginManager.apply(WPINativeJsonDepRules)
@@ -66,6 +65,7 @@ class WPIPlugin implements Plugin<Project> {
                 }
                 _beta_warn = true;
             }
+            addMavenRepositories(project, wpiExtension)
         }
 
         project.gradle.buildFinished {
@@ -76,6 +76,51 @@ class WPIPlugin implements Plugin<Project> {
     void explainRepositories(Project project) {
         project.repositories.withType(MavenArtifactRepository).each { MavenArtifactRepository repo ->
             println("${repo.name} -> ${repo.url}")
+        }
+    }
+
+    void addMavenRepositories(Project project, WPIExtension wpi) {
+        if (wpi.maven.useLocal) {
+            project.repositories.maven { MavenArtifactRepository repo ->
+                repo.name = "WPILocal"
+                repo.url = "${project.extensions.getByType(WPIExtension).getFrcHome()}/maven"
+            }
+        }
+
+        if (wpi.maven.useFrcMavenLocalDevelopment) {
+            project.repositories.maven { MavenArtifactRepository repo ->
+                repo.name = "FRCDevelopmentLocal"
+                repo.url = "${System.getProperty('user.home')}/releases/maven/development"
+            }
+        }
+
+        if (wpi.maven.useFrcMavenLocalRelease) {
+            project.repositories.maven { MavenArtifactRepository repo ->
+                repo.name = "FRCReleaseLocal"
+                repo.url = "${System.getProperty('user.home')}/releases/maven/release"
+            }
+        }
+
+        def sortedMirrors = wpi.maven.sort { it.priority }
+
+        // If enabled, the development branch should have a higher weight than the release
+        // branch.
+        if (wpi.maven.useDevelopment) {
+            sortedMirrors.each { WPIMavenRepo mirror ->
+                if (mirror.development != null)
+                    project.repositories.maven { MavenArtifactRepository repo ->
+                        repo.name = "WPI${mirror.name}Development"
+                        repo.url = mirror.development
+                    }
+            }
+        }
+
+        sortedMirrors.each { WPIMavenRepo mirror ->
+            if (mirror.release != null)
+                project.repositories.maven { MavenArtifactRepository repo ->
+                    repo.name = "WPI${mirror.name}Release"
+                    repo.url = mirror.release
+                }
         }
     }
 

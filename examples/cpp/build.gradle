@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2019.0.0-beta0-pre5"
+    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-3-pre-1" 
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -13,7 +13,7 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = getTeamNumber()
+            team = frc.getTeamNumber()
         }
     }
     artifacts {
@@ -21,7 +21,7 @@ deploy {
             targets << "roborio"
             component = 'frcUserProgram'
             // Debug can be overridden by command line, for use with VSCode
-            debug = getDebugOrDefault(false)
+            debug = frc.getDebugOrDefault(false)
         }
         // Built in artifact to deploy arbitrary files to the roboRIO.
         fileTreeArtifact('frcStaticFileDeploy') {
@@ -60,7 +60,7 @@ model {
 
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             useLibrary(it, "wpilib")
-            frcVendor.cppVendorLibraries(it)
+            wpi.deps.vendor.cpp(it)
         }
     }
     testSuites {
@@ -75,7 +75,7 @@ model {
             }
 
             useLibrary(it, "wpilib", "googletest")
-            frcVendor.cppVendorLibraries(it)
+            wpi.deps.vendor.cpp(it)
         }
     }
 }

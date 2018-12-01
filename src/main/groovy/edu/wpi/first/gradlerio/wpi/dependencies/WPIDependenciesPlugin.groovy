@@ -4,12 +4,13 @@ import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 @CompileStatic
-class WPIJsonDepsPlugin implements Plugin<Project> {
+class WPIDependenciesPlugin implements Plugin<Project> {
 
     @CompileStatic
     static class MissingJniDependencyException extends RuntimeException {
@@ -27,19 +28,21 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        def logger = ETLoggerFactory.INSTANCE.create("WPIDeps")
         def wpi = project.extensions.getByType(WPIExtension)
-        def vendorExt = project.extensions.create('frcVendor', WPIVendorDepsExtension, project)
 
-        def logger = ETLoggerFactory.INSTANCE.create("WPIJsonDeps")
+        loadJsonDependencies(logger, wpi)
+    }
 
+    private void loadJsonDependencies(ETLogger logger, WPIExtension wpi) {
         JsonSlurper slurper = new JsonSlurper()
 
         // Try to load dependencies JSON files
-        vendorExt.allVendorFiles().each { File f ->
+        wpi.deps.vendor.allVendorFiles().each { File f ->
             f.withReader {
                 def slurped = slurper.parse(it)
                 try {
-                    vendorExt.loadDependency(slurped)
+                    wpi.deps.vendor.loadDependency(slurped)
                 } catch (e) {
                     logger.logError("Malformed Vendor Deps File: ${f.toString()}")
                 }
@@ -47,7 +50,7 @@ class WPIJsonDepsPlugin implements Plugin<Project> {
         }
 
         // Add all URLs from dependencies
-        vendorExt.dependencies.each { WPIVendorDepsExtension.JsonDependency dep ->
+        wpi.deps.vendor.dependencies.each { WPIVendorDepsExtension.JsonDependency dep ->
             int i = 0
             dep.mavenUrls.each { url ->
                 wpi.maven.vendor("${dep.uuid}_${i++}") { WPIMavenRepo repo ->
