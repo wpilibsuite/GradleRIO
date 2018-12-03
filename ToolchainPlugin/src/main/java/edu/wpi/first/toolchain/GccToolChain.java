@@ -62,7 +62,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
                         logger.logErrorHead("No Toolchain Found for " + descriptor.getName());
                         logger.logErrorHead("Run `./gradlew " + descriptor.installTaskName() + "` to install one!");
                         logger.logErrorHead("");
-                        logger.logErrorHead("You can ignore this error with -Ptoolchain-missing-nofail");
+                        logger.logErrorHead("You can ignore this error with -Ptoolchain-optional-" + descriptor.getName());
                         logger.logErrorHead("For more information, run with `--info`");
                         logger.logError("=============================");
 

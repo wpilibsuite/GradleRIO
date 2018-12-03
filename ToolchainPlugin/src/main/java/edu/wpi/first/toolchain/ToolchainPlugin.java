@@ -1,5 +1,6 @@
 package edu.wpi.first.toolchain;
 
+import jaci.gradle.toolchains.ToolchainsPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -63,6 +64,7 @@ public class ToolchainPlugin implements Plugin<Project> {
         });
 
         project.getPluginManager().apply(ToolchainRules.class);
+        project.getPluginManager().apply(ToolchainsPlugin.class);
     }
 
     public static File gradleHome() {
