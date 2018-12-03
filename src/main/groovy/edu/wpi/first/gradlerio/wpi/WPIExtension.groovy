@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi
 
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
@@ -38,6 +39,7 @@ class WPIExtension {
     boolean debugSimJNI = false
 
     WPIMavenExtension maven
+    WPIDepsExtension deps
 
     String frcYear = '2019'
 
@@ -67,6 +69,7 @@ class WPIExtension {
         }
 
         platforms = new Platforms()
+        deps = new WPIDepsExtension(this)
     }
 
     private String frcHomeCache

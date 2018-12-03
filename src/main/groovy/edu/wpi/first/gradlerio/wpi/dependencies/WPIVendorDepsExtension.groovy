@@ -1,28 +1,26 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
-import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
 @CompileStatic
 public class WPIVendorDepsExtension {
 
-    final Project project
+    final WPIDepsExtension wpiDeps
 
     List<JsonDependency> dependencies = []
     final List<DelegatedDependencySet> nativeDependenciesList = []
 
     final File vendorFolder;
 
-    WPIVendorDepsExtension(Project project) {
-        this.project = project
-        this.vendorFolder = project.file('vendordeps')
+    WPIVendorDepsExtension(WPIDepsExtension wpiDeps) {
+        this.wpiDeps = wpiDeps
+        this.vendorFolder = wpiDeps.wpi.project.file('vendordeps')
     }
 
     @CompileDynamic
@@ -43,7 +41,7 @@ public class WPIVendorDepsExtension {
             return []
     }
 
-    List<String> javaVendorLibraries(String... ignore) {
+    List<String> java(String... ignore) {
         if (dependencies == null) return []
 
         return dependencies.findAll { !isIgnored(ignore, it) }.collectMany { JsonDependency dep ->
@@ -53,15 +51,7 @@ public class WPIVendorDepsExtension {
         }
     }
 
-    List<String> jniRoboRIOVendorLibraries(String... ignore) {
-        return jniVendorLibrariesForPlatform(wpi().platforms.roborio, ignore)
-    }
-
-    List<String> jniDesktopVendorLibraries(String... ignore) {
-        return jniVendorLibrariesForPlatform(wpi().platforms.desktop, ignore)
-    }
-
-    List<String> jniVendorLibrariesForPlatform(String platform, String... ignore) {
+    List<String> jni(String platform, String... ignore) {
         if (dependencies == null) return []
 
         def deps = [] as List<String>
@@ -71,7 +61,7 @@ public class WPIVendorDepsExtension {
                 dep.jniDependencies.each { JniArtifact jni ->
                     boolean applies = jni.validPlatforms.contains(platform)
                     if (!applies && !jni.skipInvalidPlatforms)
-                        throw new WPIJsonDepsPlugin.MissingJniDependencyException(dep.name, platform, jni)
+                        throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni)
 
                     if (applies)
                         deps.add("${jni.groupId}:${jni.artifactId}:${jni.version}:${platform}@${jni.isJar ? 'jar' : 'zip'}".toString())
@@ -82,8 +72,8 @@ public class WPIVendorDepsExtension {
         return deps
     }
 
-    void cppVendorLibraries(Object scope, String... ignore) {
-        def dse = project.extensions.getByType(DependencySpecExtension)
+    void cpp(Object scope, String... ignore) {
+        def dse = wpiDeps.wpi.project.extensions.getByType(DependencySpecExtension)
         if (scope in VariantComponentSpec) {
             ((VariantComponentSpec)scope).binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
                 cppVendorLibForBin(dse, bin, ignore)
@@ -117,10 +107,6 @@ public class WPIVendorDepsExtension {
 
     private boolean isIgnored(String[] ignore, JsonDependency dep) {
         return ignore.find { it.equals(dep.name) || it.equals(dep.uuid) } != null
-    }
-
-    private WPIExtension wpi() {
-        return project.extensions.getByType(WPIExtension)
     }
 
     static class JavaArtifact {

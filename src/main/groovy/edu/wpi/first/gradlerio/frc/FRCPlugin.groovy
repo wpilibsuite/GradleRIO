@@ -34,37 +34,11 @@ class FRCPlugin implements Plugin<Project> {
         project.pluginManager.apply(RiologPlugin)
 
         def debugInfoLazy = project.tasks.register("writeDebugInfo", DebugInfoTask)
+        def frcExt = project.extensions.create("frc", FRCExtension, project)
 
         project.tasks.withType(ArtifactDeployTask).configureEach { ArtifactDeployTask t ->
             t.dependsOn(debugInfoLazy)
         }
-
-        // Helper Extensions
-        project.extensions.add("getTeamOrDefault", { Integer teamDefault ->
-            if (project.hasProperty("teamNumber"))
-                return Integer.parseInt(project.property("teamNumber") as String)
-
-            def number = getTeamNumberFromJSON()
-            if (number < 0)
-                return teamDefault
-            return number
-        } as Closure<Integer>);
-
-        project.extensions.add("getTeamNumber", {
-            if (project.hasProperty("teamNumber"))
-                return Integer.parseInt(project.property("teamNumber") as String)
-            def number = getTeamNumberFromJSON()
-            if (number < 0)
-                throw new TeamNumberNotFoundException()
-            return number
-        } as Closure<Integer>);
-
-        project.extensions.add("getDebugOrDefault", { Boolean debugDefault ->
-            if (project.hasProperty("debugMode"))
-                return true
-            return debugDefault
-        } as Closure<Boolean>);
-
 
         project.afterEvaluate {
             addNativeLibraryArtifacts(project)
@@ -152,16 +126,7 @@ class FRCPlugin implements Plugin<Project> {
         }
     }
 
-    private int getTeamNumberFromJSON() {
-        def jsonFile = project.rootProject.file(".wpilib/wpilib_preferences.json")
-        if (jsonFile.exists()) {
-            def parsedJson = new groovy.json.JsonSlurper().parseText(jsonFile.text)
-            def teamNumber = parsedJson['teamNumber']
-            if (teamNumber != null)
-                return teamNumber as Integer
-        }
-        return -1;
-    }
+
 
     static class FRCRules extends RuleSource {
         @BinaryTasks
