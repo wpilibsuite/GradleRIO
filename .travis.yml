@@ -15,4 +15,4 @@ install:
 - sudo apt-get install frc-toolchain -y
 
 script:
-- ./gradlew build publishToMavenLocal --scan --stacktrace
+- ./gradlew build publishToMavenLocal --stacktrace
