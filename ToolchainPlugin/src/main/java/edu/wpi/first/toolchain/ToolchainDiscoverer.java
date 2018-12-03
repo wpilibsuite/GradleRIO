@@ -104,7 +104,7 @@ public class ToolchainDiscoverer implements Named {
     }
 
     public Optional<GccMetadata> metadata(TreeVisitor<String> visitor) {
-        if (!metadataLazy.isPresent())
+        if (metadataLazy.isEmpty())
             metadataLazy = metadata(gccFile().orElse(null), visitor);
         return metadataLazy;
     }
@@ -178,7 +178,7 @@ public class ToolchainDiscoverer implements Named {
     private Optional<GccMetadata> metadata(File file, TreeVisitor<String> visitor) {
         if (file == null || !file.exists())
             return Optional.empty();
-        SearchResult<GccMetadata> searchresult = metadataProvider.getCompilerMetaData(file, new ArrayList<String>());
+        SearchResult<GccMetadata> searchresult = metadataProvider.getCompilerMetaData(file, new ArrayList<String>(), new ArrayList<File>());
         if (visitor != null)
             searchresult.explain(visitor);
         return Optional.of(searchresult.getComponent());

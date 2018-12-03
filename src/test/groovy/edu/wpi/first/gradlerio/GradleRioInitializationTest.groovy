@@ -32,7 +32,7 @@ plugins {
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments('tasks')
+            .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
 
@@ -53,7 +53,7 @@ plugins {
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments('tasks')
+            .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
 
@@ -74,7 +74,7 @@ plugins {
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments('tasks')
+            .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
 
@@ -95,7 +95,7 @@ plugins {
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments('tasks')
+            .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
 

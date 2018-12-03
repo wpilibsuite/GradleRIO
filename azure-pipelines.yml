@@ -22,7 +22,7 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build publishToMavenLocal PatchExamples'
-    options: '--scan --stacktrace -PlocalPublish -PpublishVersion=4242.1.1-ci'
+    options: '--stacktrace -PlocalPublish -PpublishVersion=4242.1.1-ci'
 
 - script: |
     cd examples/cpp

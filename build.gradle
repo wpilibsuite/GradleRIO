@@ -1,5 +1,4 @@
 plugins {
-    id 'com.gradle.build-scan' version '1.9.1'
     id 'com.gradle.plugin-publish' version '0.9.9'
     id 'java-gradle-plugin'
     id 'idea'
@@ -26,11 +25,6 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
     testCompile gradleTestKit()
-}
-
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
 }
 
 archivesBaseName = "GradleRIO"
@@ -104,5 +98,5 @@ tasks.register('PatchExamples') {
 }
 
 wrapper {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0'
 }
