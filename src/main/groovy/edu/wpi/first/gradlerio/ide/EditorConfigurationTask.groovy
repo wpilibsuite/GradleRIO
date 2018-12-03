@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.ide
 
 import com.google.gson.GsonBuilder
-import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import edu.wpi.first.toolchain.ToolchainExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.DefaultTask
@@ -23,7 +23,7 @@ class EditorConfigurationTask extends DefaultTask {
         def cfg = [:]
 
         // Compiler
-        def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin).discoverRoborioToolchain()
+        def toolchainD = project.extensions.getByType(ToolchainExtension).getByName('roborio').discover()
         def dCompiler = [
             toolchainDir     : toolchainD.rootDir().get().absolutePath,
             gdbPath          : toolchainD.gdbFile().get().absolutePath,

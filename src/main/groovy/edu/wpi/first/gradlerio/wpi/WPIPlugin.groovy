@@ -1,11 +1,11 @@
 package edu.wpi.first.gradlerio.wpi
 
-
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
-import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import edu.wpi.first.toolchain.ToolchainPlugin
+import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLogger
@@ -31,7 +31,9 @@ class WPIPlugin implements Plugin<Project> {
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
             project.pluginManager.apply(WPINativeDepRules)
-            project.pluginManager.apply(WPIToolchainPlugin)
+            project.pluginManager.apply(ToolchainPlugin)
+            project.pluginManager.apply(RoboRioToolchainPlugin)
+            project.pluginManager.apply(WPINativeCompileRules)
             project.pluginManager.apply(GradleVsCode)
             project.pluginManager.apply(WPINativeJsonDepRules)
         }

@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
@@ -43,7 +44,7 @@ class WPIExtension {
 
     String frcYear = '2019'
 
-    final Platforms platforms
+    NativePlatforms platforms;
 
     final Project project
     final String toolsClassifier
@@ -68,7 +69,7 @@ class WPIExtension {
             )
         }
 
-        platforms = new Platforms()
+        platforms = new NativePlatforms();
         deps = new WPIDepsExtension(this)
     }
 
@@ -109,18 +110,5 @@ class WPIExtension {
 
                 "toolchainVersion"     : new Tuple("Toolchain", toolchainVersion, "toolchain"),
         ]
-    }
-
-    public static class Platforms {
-        public static String desktop = desktopOS() + desktopArch(), roborio = "linuxathena"
-
-        public static String desktopArch() {
-            String arch = System.getProperty("os.arch")
-            return (arch == "amd64" || arch == "x86_64") ? "x86-64" : "x86"
-        }
-
-        public static String desktopOS() {
-            return OperatingSystem.current().isWindows() ? "windows" : OperatingSystem.current().isMacOsX() ? "osx" : "linux"
-        }
     }
 }

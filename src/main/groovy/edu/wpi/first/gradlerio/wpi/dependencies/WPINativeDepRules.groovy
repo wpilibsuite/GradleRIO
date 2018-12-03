@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.NativeDepsSpec
@@ -72,9 +73,9 @@ class WPINativeDepRules extends RuleSource {
 
             libs.create("${name}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 if (supportDesktop)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                 lib.libraryName = "${name}_headers"
                 lib.buildType = buildType
                 lib.headerDirs.add('')
@@ -88,10 +89,10 @@ class WPINativeDepRules extends RuleSource {
                     matchersShared(lib, libName + 'd', false)
                 else
                     matchersStatic(lib, libName + 'd', false)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 lib.libraryName = "${name}_binaries"
                 lib.buildType = buildType
-                lib.maven = "${mavenBase}:${WPIExtension.Platforms.roborio}${linkSuff}debug@zip"
+                lib.maven = "${mavenBase}:${NativePlatforms.roborio}${linkSuff}debug@zip"
                 lib.configuration = config
             } as Action<? extends NativeLib>)
 
@@ -102,19 +103,19 @@ class WPINativeDepRules extends RuleSource {
                         matchersShared(lib, libName + libSuffix, true)
                     else
                         matchersStatic(lib, libName + libSuffix, true)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                     lib.libraryName = "${name}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenBase}:${WPIExtension.Platforms.desktop}${linkSuff}${buildKind}@zip"
+                    lib.maven = "${mavenBase}:${NativePlatforms.desktop}${linkSuff}${buildKind}@zip"
                     lib.configuration = "${config}_desktop"
                 } as Action<? extends NativeLib>)
             }
 
             libs.create("${name}_sources${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 if (supportDesktop)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                 lib.libraryName = "${name}_sources"
                 lib.buildType = buildType
                 lib.sourceDirs << ''
@@ -126,9 +127,9 @@ class WPINativeDepRules extends RuleSource {
         libs.create(name, CombinedNativeLib, { CombinedNativeLib lib ->
             lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
             lib.buildTypes = ['debug', 'release']
-            lib.targetPlatforms = [WPIExtension.Platforms.roborio]
+            lib.targetPlatforms = [NativePlatforms.roborio]
             if (supportDesktop)
-                lib.targetPlatforms << WPIExtension.Platforms.desktop
+                lib.targetPlatforms << NativePlatforms.desktop
         } as Action<? extends CombinedNativeLib>)
     }
 
@@ -264,7 +265,7 @@ class WPINativeDepRules extends RuleSource {
 
                 libs.create("opencv${suf}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
-                    lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                    lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop]
                     lib.libraryName = "opencv${suf}_headers"
                     lib.buildType = buildType
                     lib.headerDirs.add('')
@@ -280,10 +281,10 @@ class WPINativeDepRules extends RuleSource {
                     } else {
                         matchersStatic(lib, 'opencv', false)
                     }
-                    lib.targetPlatforms << WPIExtension.Platforms.roborio
+                    lib.targetPlatforms << NativePlatforms.roborio
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${WPIExtension.Platforms.roborio}${linkSuff}debug@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}debug@zip"
                     lib.configuration = config
                 } as Action<? extends NativeLib>)
 
@@ -295,16 +296,16 @@ class WPINativeDepRules extends RuleSource {
                     } else {
                         matchersStatic(lib, 'opencv', true)
                     }
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${WPIExtension.Platforms.desktop}${linkSuff}${buildKind}@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.desktop}${linkSuff}${buildKind}@zip"
                     lib.configuration = "${config}_desktop"
                 } as Action<? extends NativeLib>)
 
                 libs.create("opencv${suf}_sources${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
-                    lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                    lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop]
                     lib.libraryName = "opencv${suf}_sources"
                     lib.buildType = buildType
                     lib.sourceDirs << ''
@@ -316,7 +317,7 @@ class WPINativeDepRules extends RuleSource {
             libs.create('opencv' + suf, CombinedNativeLib, { CombinedNativeLib lib ->
                 lib.libs << "opencv${suf}_binaries".toString() << "opencv${suf}_headers".toString() << "opencv${suf}_sources".toString()
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop]
             } as Action<? extends CombinedNativeLib>)
         }
     }

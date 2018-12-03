@@ -1,6 +1,6 @@
 package edu.wpi.first.gradlerio.frc
 
-import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.artifact.NativeArtifact
 import jaci.gradle.deploy.context.DeployContext
@@ -11,7 +11,7 @@ class FRCNativeLibraryArtifact extends NativeArtifact {
 
   FRCNativeLibraryArtifact(String name, Project project) {
     super(name, project)
-    targetPlatform = WPIExtension.Platforms.roborio
+    targetPlatform = NativePlatforms.roborio
 
     directory = '/usr/local/frc/lib'
     postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }

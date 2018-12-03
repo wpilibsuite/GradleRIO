@@ -1,6 +1,6 @@
 package edu.wpi.first.gradlerio.ide
 
-import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -31,7 +31,7 @@ class IDEPlugin implements Plugin<Project> {
         void createEditorConfigTasks(ModelMap<Task> tasks, BinaryContainer bins, ExtensionContainer extCont) {
             def ext = extCont.getByType(EditorConfigurationExtension)
             bins.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                if (bin.targetPlatform.name.equals(WPIExtension.Platforms.roborio)) {
+                if (bin.targetPlatform.name.equals(NativePlatforms.roborio)) {
                     ext._binaries << bin
                 }
             }
