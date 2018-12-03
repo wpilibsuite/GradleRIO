@@ -49,6 +49,10 @@ public class ToolchainRules extends RuleSource {
         roborio.architecture("arm");
         roborio.operatingSystem("linux");
 
+        NativePlatform raspbian = platforms.maybeCreate(NativePlatforms.raspbian, NativePlatform.class);
+        raspbian.architecture("arm");
+        raspbian.operatingSystem("linux");
+
         NativePlatform desktop = platforms.maybeCreate(NativePlatforms.desktop, NativePlatform.class);
         desktop.architecture(NativePlatforms.desktopArch().replaceAll("-", "_"));
     }

@@ -5,6 +5,7 @@ import org.gradle.internal.os.OperatingSystem;
 public class NativePlatforms {
     public static final String desktop = desktopOS() + desktopArch();
     public static final String roborio = "linuxathena";
+    public static final String raspbian = "linuxraspbian";
 
     public static String desktopArch() {
         String arch = System.getProperty("os.arch");

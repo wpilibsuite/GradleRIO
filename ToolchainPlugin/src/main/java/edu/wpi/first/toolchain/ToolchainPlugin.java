@@ -16,7 +16,7 @@ public class ToolchainPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        ext = project.getExtensions().create("toolchainsPlugin", ToolchainExtension.class);
+        ext = project.getExtensions().create("toolchainsPlugin", ToolchainExtension.class, project);
 
         project.getTasks().register("explainToolchains", (Task t) -> {
             t.setGroup("Toolchains");
