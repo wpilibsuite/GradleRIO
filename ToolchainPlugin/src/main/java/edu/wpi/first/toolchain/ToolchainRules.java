@@ -1,5 +1,7 @@
 package edu.wpi.first.toolchain;
 
+import jaci.gradle.log.ETLogger;
+import jaci.gradle.log.ETLoggerFactory;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.internal.operations.BuildOperationExecutor;
@@ -20,6 +22,8 @@ import org.gradle.process.internal.ExecActionFactory;
 
 public class ToolchainRules extends RuleSource {
 
+    private static final ETLogger logger = ETLoggerFactory.INSTANCE.create("ToolchainRules");
+
     @Defaults
     void addDefaultToolchains(NativeToolChainRegistryInternal toolChainRegistry, ServiceRegistry serviceRegistry, ExtensionContainer extContainer) {
         final FileResolver fileResolver = serviceRegistry.get(FileResolver.class);
@@ -34,6 +38,7 @@ public class ToolchainRules extends RuleSource {
         final ToolchainExtension ext = extContainer.getByType(ToolchainExtension.class);
 
         ext.all(desc -> {
+            logger.info("Descriptor Register: " + desc.getName());
             ToolchainOptions options = new ToolchainOptions(instantiator, buildOperationExecutor, OperatingSystem.current(),
                             fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory, metaDataProviderFactory, workerLeaseService,
                             standardLibraryDiscovery);
