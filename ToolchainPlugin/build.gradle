@@ -24,6 +24,11 @@ dependencies {
 
 archivesBaseName = "Toolchain"
 
+compileJava {
+    sourceCompatibility = '8'
+    targetCompatibility = '8'
+}
+
 pluginBundle {
     website = 'https://github.com/wpilibsuite/GradleRIO'
     vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
