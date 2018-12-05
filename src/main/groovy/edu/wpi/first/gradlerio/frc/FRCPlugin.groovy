@@ -121,7 +121,7 @@ class FRCPlugin implements Plugin<Project> {
             artifact.configuration = nativeZips
             artifact.zipped = true
             artifact.filter = { PatternFilterable pat ->
-                pat.include('*.so*', 'lib/*.so', 'java/lib/*.so', 'linux/athena/shared/*.so', '**/libopencv*.so.*')
+                pat.include('*.so*', 'lib/*.so', 'java/lib/*.so', 'linux/athena/shared/*.so', 'linuxathena/**/*.so', '**/libopencv*.so.*')
             }
         }
     }
