@@ -1,8 +1,8 @@
 package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
-import edu.wpi.first.gradlerio.wpi.WPIExtension
-import edu.wpi.first.gradlerio.wpi.toolchain.WPIToolchainPlugin
+import edu.wpi.first.toolchain.NativePlatforms
+import edu.wpi.first.toolchain.ToolchainExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.artifact.BinaryLibraryArtifact
@@ -23,7 +23,7 @@ import java.nio.file.Paths
 class FRCNativeArtifact extends NativeArtifact {
     FRCNativeArtifact(String name, Project project) {
         super(name, project)
-        targetPlatform = WPIExtension.Platforms.roborio
+        targetPlatform = NativePlatforms.roborio
 
         predeploy << { DeployContext ctx ->
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")
@@ -126,8 +126,9 @@ class FRCNativeArtifact extends NativeArtifact {
                 def ip = (IPSessionController)ctx.controller
                 def filepath = file.get().absolutePath.replaceAll("\\\\", "/")
                 def target = ip.host + ":" + debugPort
-                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
+//                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
 
+                def toolchainD = project.extensions.getByType(ToolchainExtension).getByName('roborio').discover()
                 def gdbpath = toolchainD.gdbFile().get().absolutePath
                 def sysroot = toolchainD.sysroot().orElse(null).absolutePath
 

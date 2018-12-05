@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
-import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.Action
@@ -51,7 +51,7 @@ class NativeTestPlugin implements Plugin<Project> {
         @CompileDynamic
         void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(GoogleTestTestSuiteBinarySpec) { GoogleTestTestSuiteBinarySpec bin ->
-                if (!bin.targetPlatform.name.equals(WPIExtension.Platforms.desktop))
+                if (!bin.targetPlatform.name.equals(NativePlatforms.desktop))
                     bin.buildable = false
 
                 bin.cppCompiler.define('RUNNING_FRC_TESTS')
@@ -62,7 +62,7 @@ class NativeTestPlugin implements Plugin<Project> {
         void addSimulationTasks(ModelMap<Task> tasks, ComponentSpecContainer components) {
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec component ->
                 component.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals(WPIExtension.Platforms.roborio)) {
+                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals(NativePlatforms.roborio)) {
                         def name = "simulate${((BinarySpecInternal) bin).getProjectScopedName().capitalize()}".toString()
                         tasks.create(name, NativeSimulationTask, { NativeSimulationTask task ->
                             task.group = "GradleRIO"
@@ -81,7 +81,7 @@ class NativeTestPlugin implements Plugin<Project> {
             def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
                 spec.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals(WPIExtension.Platforms.roborio)) {
+                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals(NativePlatforms.roborio)) {
                         mainTask.binaries << bin
                         mainTask.dependsOn bin.tasks.install
                     }

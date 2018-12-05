@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.CombinedNativeLib
 import jaci.gradle.nativedeps.NativeDepsSpec
@@ -63,7 +64,7 @@ class WPINativeDepRules extends RuleSource {
         }
     }
 
-    private static void createWpiLibrary(NativeDepsSpec libs, String name, String mavenBase, String libName, boolean supportDesktop, boolean shared) {
+    private static void createWpiLibrary(NativeDepsSpec libs, String name, String mavenBase, String libName, boolean supportDesktop, boolean supportRaspbian, boolean shared) {
         ['debug', ''].each { String buildKind ->
             String buildType    = buildKind.contains('debug') ? 'debug' : 'release'
             String libSuffix    = buildKind.contains('debug') ? 'd' : ''
@@ -72,9 +73,11 @@ class WPINativeDepRules extends RuleSource {
 
             libs.create("${name}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 if (supportDesktop)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
+                if (supportRaspbian)
+                    lib.targetPlatforms << NativePlatforms.raspbian
                 lib.libraryName = "${name}_headers"
                 lib.buildType = buildType
                 lib.headerDirs.add('')
@@ -88,10 +91,10 @@ class WPINativeDepRules extends RuleSource {
                     matchersShared(lib, libName + 'd', false)
                 else
                     matchersStatic(lib, libName + 'd', false)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 lib.libraryName = "${name}_binaries"
                 lib.buildType = buildType
-                lib.maven = "${mavenBase}:${WPIExtension.Platforms.roborio}${linkSuff}debug@zip"
+                lib.maven = "${mavenBase}:${NativePlatforms.roborio}${linkSuff}debug@zip"
                 lib.configuration = config
             } as Action<? extends NativeLib>)
 
@@ -102,19 +105,36 @@ class WPINativeDepRules extends RuleSource {
                         matchersShared(lib, libName + libSuffix, true)
                     else
                         matchersStatic(lib, libName + libSuffix, true)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                     lib.libraryName = "${name}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenBase}:${WPIExtension.Platforms.desktop}${linkSuff}${buildKind}@zip"
+                    lib.maven = "${mavenBase}:${NativePlatforms.desktop}${linkSuff}${buildKind}@zip"
                     lib.configuration = "${config}_desktop"
+                } as Action<? extends NativeLib>)
+            }
+
+            if (supportRaspbian) {
+                libs.create("${name}_raspbian${buildKind}".toString(), NativeLib, { NativeLib lib ->
+                    common(lib)
+                    if (shared)
+                        matchersShared(lib, libName + libSuffix, false)
+                    else
+                        matchersStatic(lib, libName + libSuffix, false)
+                    lib.targetPlatforms << NativePlatforms.raspbian
+                    lib.libraryName = "${name}_binaries"
+                    lib.buildType = buildType
+                    lib.maven = "${mavenBase}:${NativePlatforms.raspbian}${linkSuff}${buildKind}@zip"
+                    lib.configuration = "${config}_raspbian"
                 } as Action<? extends NativeLib>)
             }
 
             libs.create("${name}_sources${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
-                lib.targetPlatforms << WPIExtension.Platforms.roborio
+                lib.targetPlatforms << NativePlatforms.roborio
                 if (supportDesktop)
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
+                if (supportRaspbian)
+                    lib.targetPlatforms << NativePlatforms.raspbian
                 lib.libraryName = "${name}_sources"
                 lib.buildType = buildType
                 lib.sourceDirs << ''
@@ -126,9 +146,11 @@ class WPINativeDepRules extends RuleSource {
         libs.create(name, CombinedNativeLib, { CombinedNativeLib lib ->
             lib.libs << "${name}_binaries".toString() << "${name}_headers".toString() << "${name}_sources".toString()
             lib.buildTypes = ['debug', 'release']
-            lib.targetPlatforms = [WPIExtension.Platforms.roborio]
+            lib.targetPlatforms = [NativePlatforms.roborio]
             if (supportDesktop)
-                lib.targetPlatforms << WPIExtension.Platforms.desktop
+                lib.targetPlatforms << NativePlatforms.desktop
+            if (supportRaspbian)
+                lib.targetPlatforms << NativePlatforms.raspbian
         } as Action<? extends CombinedNativeLib>)
     }
 
@@ -136,17 +158,17 @@ class WPINativeDepRules extends RuleSource {
         for (boolean shared in [true, false]) {
             def suf = shared ? '' : '_static'
 
-            createWpiLibrary(libs, 'wpilibc' + suf, "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true, shared)
-            createWpiLibrary(libs, 'hal' + suf, "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true, shared)
-            createWpiLibrary(libs, 'wpiutil' + suf, "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true, shared)
-            createWpiLibrary(libs, 'ntcore' + suf, "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true, shared)
-            createWpiLibrary(libs, 'cscore' + suf, "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}", 'cscore', true, shared)
-            createWpiLibrary(libs, 'cameraserver' + suf, "edu.wpi.first.cameraserver:cameraserver-cpp:${wpi.wpilibVersion}", 'cameraserver', true, shared)
+            createWpiLibrary(libs, 'wpilibc' + suf, "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true, true, shared)
+            createWpiLibrary(libs, 'hal' + suf, "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true, true, shared)
+            createWpiLibrary(libs, 'wpiutil' + suf, "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true, true, shared)
+            createWpiLibrary(libs, 'ntcore' + suf, "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true, true, shared)
+            createWpiLibrary(libs, 'cscore' + suf, "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}", 'cscore', true, true, shared)
+            createWpiLibrary(libs, 'cameraserver' + suf, "edu.wpi.first.cameraserver:cameraserver-cpp:${wpi.wpilibVersion}", 'cameraserver', true, true, shared)
 
             libs.create('wpilib_common' + suf, CombinedNativeLib, { CombinedNativeLib lib ->
                 lib.libs << 'wpilibc' + suf << 'hal' + suf << 'wpiutil' + suf << 'ntcore' + suf << 'cscore' + suf << 'cameraserver' + suf << 'opencv' + suf
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop]
+                lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop, wpi.platforms.raspbian]
             } as Action<? extends CombinedNativeLib>)
 
 
@@ -160,7 +182,7 @@ class WPINativeDepRules extends RuleSource {
                 lib.libraryName = 'wpilib' + suf
                 lib.libs << 'wpilib_common' + suf
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = [wpi.platforms.desktop]
+                lib.targetPlatforms = [wpi.platforms.desktop, wpi.platforms.raspbian]
             } as Action<? extends CombinedNativeLib>)
         }
 
@@ -213,7 +235,7 @@ class WPINativeDepRules extends RuleSource {
         libs.create('wpilibjni_common', CombinedNativeLib, { CombinedNativeLib lib ->
             lib.libs << 'hal' << 'wpiutil' << 'ntcore' << 'cscore' << 'opencv'
             lib.buildTypes = ['debug', 'release']
-            lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop]
+            lib.targetPlatforms = [wpi.platforms.roborio, wpi.platforms.desktop, wpi.platforms.raspbian]
         } as Action<? extends CombinedNativeLib>)
 
         libs.create('wpilibjni', CombinedNativeLib, { CombinedNativeLib lib ->
@@ -225,12 +247,12 @@ class WPINativeDepRules extends RuleSource {
         libs.create('wpilibjni_sim', CombinedNativeLib, { CombinedNativeLib lib ->
             lib.libs << 'wpilibjni_common'
             lib.buildTypes = ['debug', 'release']
-            lib.targetPlatforms = [wpi.platforms.desktop]
+            lib.targetPlatforms = [wpi.platforms.desktop, wpi.platforms.raspbian]
         } as Action<? extends CombinedNativeLib>)
     }
 
     private static void addThirdPartyLibraries(NativeDepsSpec libs, final WPIExtension wpi) {
-        createWpiLibrary(libs, 'googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true, false)
+        createWpiLibrary(libs, 'googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true, true, false)
 
         // OpenCV is special
         for (boolean shared in [true, false]) {
@@ -264,7 +286,7 @@ class WPINativeDepRules extends RuleSource {
 
                 libs.create("opencv${suf}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
-                    lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                    lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop, wpi.platforms.raspbian]
                     lib.libraryName = "opencv${suf}_headers"
                     lib.buildType = buildType
                     lib.headerDirs.add('')
@@ -280,10 +302,10 @@ class WPINativeDepRules extends RuleSource {
                     } else {
                         matchersStatic(lib, 'opencv', false)
                     }
-                    lib.targetPlatforms << WPIExtension.Platforms.roborio
+                    lib.targetPlatforms << NativePlatforms.roborio
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${WPIExtension.Platforms.roborio}${linkSuff}debug@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}debug@zip"
                     lib.configuration = config
                 } as Action<? extends NativeLib>)
 
@@ -295,16 +317,30 @@ class WPINativeDepRules extends RuleSource {
                     } else {
                         matchersStatic(lib, 'opencv', true)
                     }
-                    lib.targetPlatforms << WPIExtension.Platforms.desktop
+                    lib.targetPlatforms << NativePlatforms.desktop
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${WPIExtension.Platforms.desktop}${linkSuff}${buildKind}@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.desktop}${linkSuff}${buildKind}@zip"
                     lib.configuration = "${config}_desktop"
+                } as Action<? extends NativeLib>)
+
+                libs.create("opencv${suf}_raspbian${buildKind}".toString(), NativeLib, { NativeLib lib ->
+                    common(lib)
+                    if (isShared) {
+                        lib.sharedMatchers = ['**/shared/*opencv*.so.*']
+                    } else {
+                        matchersStatic(lib, 'opencv', false)
+                    }
+                    lib.targetPlatforms << NativePlatforms.raspbian
+                    lib.libraryName = "opencv${suf}_binaries"
+                    lib.buildType = buildType
+                    lib.maven = "${mavenRoot}:${NativePlatforms.raspbian}${linkSuff}${buildKind}@zip"
+                    lib.configuration = "${config}_raspbian"
                 } as Action<? extends NativeLib>)
 
                 libs.create("opencv${suf}_sources${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
-                    lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                    lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop, NativePlatforms.raspbian]
                     lib.libraryName = "opencv${suf}_sources"
                     lib.buildType = buildType
                     lib.sourceDirs << ''
@@ -316,7 +352,7 @@ class WPINativeDepRules extends RuleSource {
             libs.create('opencv' + suf, CombinedNativeLib, { CombinedNativeLib lib ->
                 lib.libs << "opencv${suf}_binaries".toString() << "opencv${suf}_headers".toString() << "opencv${suf}_sources".toString()
                 lib.buildTypes = ['debug', 'release']
-                lib.targetPlatforms = [WPIExtension.Platforms.roborio, WPIExtension.Platforms.desktop]
+                lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop, NativePlatforms.raspbian]
             } as Action<? extends CombinedNativeLib>)
         }
     }

@@ -1,7 +1,5 @@
 plugins {
-    id 'com.gradle.build-scan' version '1.9.1'
     id 'com.gradle.plugin-publish' version '0.9.9'
-    id 'me.champeau.buildscan-recipes' version '0.2.0'
     id 'java-gradle-plugin'
     id 'idea'
     id 'maven-publish'
@@ -16,11 +14,10 @@ repositories {
 }
 
 dependencies {
-    // compile 'jaci.gradle:EmbeddedTools:2018.11.18'
-    compile 'gradle.plugin.jaci.gradle:EmbeddedTools:2018.11.18'
-    compile 'de.undercouch:gradle-download-task:3.1.2'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'gradle.plugin.edu.wpi.first:gradle-cpp-vscode:0.5.0'
+
+    compile project(':ToolchainPlugin')
 
     compile 'com.jcraft:jsch:0.1.53'
 
@@ -30,25 +27,19 @@ dependencies {
     testCompile gradleTestKit()
 }
 
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
-}
-
-buildScanRecipes {
-    recipes 'git-commit', 'git-status', 'travis-ci', 'disk-usage', 'gc-stats'
-}
-
-group = "edu.wpi.first"
 archivesBaseName = "GradleRIO"
-version = "2019.1.1-beta-3-pre-1"
 
-if (project.hasProperty('publishVersion')) {
-    version = project.publishVersion
+allprojects {
+    group = "edu.wpi.first"
+    version = "2019.1.1-beta-3-pre3"
+
+    if (project.hasProperty('publishVersion')) {
+        version = project.publishVersion
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 pluginBundle {
     website = 'https://github.com/wpilibsuite/GradleRIO'
@@ -107,5 +98,5 @@ tasks.register('PatchExamples') {
 }
 
 wrapper {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0'
 }
