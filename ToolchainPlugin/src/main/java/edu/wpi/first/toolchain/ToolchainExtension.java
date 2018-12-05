@@ -11,6 +11,8 @@ public class ToolchainExtension extends DefaultNamedDomainObjectSet<ToolchainDes
 
     private Project project;
 
+    public boolean registerPlatforms = true;
+
     public ToolchainExtension(Project project) {
         super(ToolchainDescriptor.class, DirectInstantiator.INSTANCE);
         this.project = project;

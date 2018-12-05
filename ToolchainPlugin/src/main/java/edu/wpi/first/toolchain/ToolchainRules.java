@@ -49,17 +49,21 @@ public class ToolchainRules extends RuleSource {
     }
 
     @Mutate
-    void addDefaultPlatforms(PlatformContainer platforms) {
-        NativePlatform roborio = platforms.maybeCreate(NativePlatforms.roborio, NativePlatform.class);
-        roborio.architecture("arm");
-        roborio.operatingSystem("linux");
+    void addDefaultPlatforms(PlatformContainer platforms, final ExtensionContainer extContainer) {
+        final ToolchainExtension ext = extContainer.getByType(ToolchainExtension.class);
 
-        NativePlatform raspbian = platforms.maybeCreate(NativePlatforms.raspbian, NativePlatform.class);
-        raspbian.architecture("arm");
-        raspbian.operatingSystem("linux");
+        if (ext.registerPlatforms) {
+            NativePlatform roborio = platforms.maybeCreate(NativePlatforms.roborio, NativePlatform.class);
+            roborio.architecture("arm");
+            roborio.operatingSystem("linux");
 
-        NativePlatform desktop = platforms.maybeCreate(NativePlatforms.desktop, NativePlatform.class);
-        desktop.architecture(NativePlatforms.desktopArch().replaceAll("-", "_"));
+            NativePlatform raspbian = platforms.maybeCreate(NativePlatforms.raspbian, NativePlatform.class);
+            raspbian.architecture("arm");
+            raspbian.operatingSystem("linux");
+
+            NativePlatform desktop = platforms.maybeCreate(NativePlatforms.desktop, NativePlatform.class);
+            desktop.architecture(NativePlatforms.desktopArch().replaceAll("-", "_"));
+        }
     }
 
 }
