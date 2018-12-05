@@ -31,7 +31,7 @@ archivesBaseName = "GradleRIO"
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.1.1-beta-3-pre-3"
+    version = "2019.1.1-beta-3-pre3"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion

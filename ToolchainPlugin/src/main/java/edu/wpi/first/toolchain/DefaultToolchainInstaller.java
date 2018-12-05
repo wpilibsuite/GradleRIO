@@ -75,7 +75,7 @@ public class DefaultToolchainInstaller extends AbstractToolchainInstaller {
             c.into(installDir);
         });
 
-        System.out.println("Done! Installed to: " + extractDir.getAbsolutePath());
+        System.out.println("Done! Installed to: " + installDir.getAbsolutePath());
     }
 
     @Override
