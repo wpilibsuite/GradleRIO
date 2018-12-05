@@ -59,7 +59,13 @@ class WPINativeJsonDepRules extends RuleSource {
                 }
 
                 if (cpp.binaryPlatforms != null) {
-                    for (String platform : cpp.binaryPlatforms) {
+                    for (String p : cpp.binaryPlatforms) {
+                        // DON'T REMOVE THIS!
+                        // I know it's a redundant variable, but it's actually required. Groovy sucks with variable
+                        // lifetime, so if you remove this, platform as read inside of the action for libs.create
+                        // will only equal the last registered platform. The action is delegated and the variable is
+                        // overridden before the action is called, but groovy is too dumb to realize that itself.
+                        String platform = p
                         libs.create("${name}_${platform}".toString(), NativeLib, { NativeLib lib ->
                             common(lib)
                             lib.targetPlatforms = [platform]
