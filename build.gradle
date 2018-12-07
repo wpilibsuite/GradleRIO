@@ -21,7 +21,7 @@ dependencies {
 
     compile 'com.jcraft:jsch:0.1.53'
 
-    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
     }
     testCompile gradleTestKit()
