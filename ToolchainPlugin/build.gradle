@@ -17,8 +17,8 @@ dependencies {
     // For some utility classes. We don't actually apply EmbeddedTools to the FRCToolchain,
     // but we do in GradleRIO
 //    compile 'jaci.gradle:EmbeddedTools:2018.12.06'
-    compile 'gradle.plugin.jaci.gradle:EmbeddedTools:2018.12.06'
     
+    compile 'jaci.gradle:EmbeddedTools:2018.12.06a'
     compile 'de.undercouch:gradle-download-task:3.1.2'
 }
 
@@ -35,31 +35,32 @@ pluginBundle {
     description = 'FRC Toolchain Standalone Gradle Plugin'
     tags = ['frc', 'wpilib', 'gradlerio']
 
-    plugins {
-        toolchain {
-            id = "${project.group}.${project.archivesBaseName}"
-            displayName = 'Toolchain'
-        }
-    }
+//    plugins {
+//        toolchain {
+//            id = "${project.group}.${project.archivesBaseName}"
+//            displayName = 'Toolchain'
+//        }
+//    }
 }
 
-publishing {
-    publications {
-        plugin(MavenPublication) {
-            artifact(jar) {
-                if (project.hasProperty('localPublish')) {
-                    classifier null
-                    groupId 'gradle.plugin.' + group
-                }
-            }
-        }
-    }
-}
+//publishing {
+//    publications {
+//        plugin(MavenPublication) {
+//            artifact(jar) {
+//                if (project.hasProperty('localPublish')) {
+//                    classifier null
+//                    groupId 'gradle.plugin.' + group
+//                }
+//            }
+//        }
+//    }
+//}
 
 gradlePlugin {
     plugins {
         toolchain {
             id = 'edu.wpi.first.Toolchain'
+            displayName = 'Toolchain'
             implementationClass = 'edu.wpi.first.toolchain.ToolchainPlugin'
         }
     }

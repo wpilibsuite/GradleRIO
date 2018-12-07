@@ -45,7 +45,7 @@ class WPINativeDepRules extends RuleSource {
             lib.dynamicMatchers = lib.sharedMatchers + "**/shared/*${libname}*.dll".toString()
         } else {
             lib.sharedMatchers = [
-                "**/*${libname}*.so.*".toString()
+                "**/*${libname}*.so".toString()
             ]
             lib.dynamicMatchers = lib.sharedMatchers
         }
@@ -305,7 +305,8 @@ class WPINativeDepRules extends RuleSource {
                     lib.targetPlatforms << NativePlatforms.roborio
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}debug@zip"
+                    // TODO: This was meant to be debug but the matcher keeps grabbing .so.debug.
+                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}@zip"
                     lib.configuration = config
                 } as Action<? extends NativeLib>)
 

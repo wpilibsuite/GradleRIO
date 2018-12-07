@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.9'
+    id 'com.gradle.plugin-publish' version '0.10.0'
     id 'java-gradle-plugin'
     id 'idea'
     id 'maven-publish'
@@ -25,13 +25,16 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
     testCompile gradleTestKit()
+    
+//    compile 'gradle.plugin.jaci.gradle:EmbeddedTools:2018.12.06'
+//    compile 'de.undercouch:gradle-download-task:3.1.2'
 }
 
 archivesBaseName = "GradleRIO"
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.1.1-beta-3-pre4"
+    version = "2019.1.1-beta-3-pre6"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -44,31 +47,49 @@ pluginBundle {
     description = 'Managing FRC projects, the Gradle way (2019+)'
     tags = ['frc', 'wpilib', 'gradlerio']
 
-    plugins {
-        gradleRio {
-            id = "${project.group}.${project.archivesBaseName}"
-            displayName = 'GradleRIO'
-        }
-    }
+//    plugins {
+//        gradleRio {
+//            id = "${project.group}.${project.archivesBaseName}"
+//            displayName = 'GradleRIO'
+//        }
+//    }
 }
 
-publishing {
-    publications {
-        plugin(MavenPublication) {
-            artifact(jar) {
-                if (project.hasProperty('localPublish')) {
-                    classifier null
-                    groupId 'gradle.plugin.' + group
-                }
-            }
-        }
-    }
-}
+//publishing {
+//    publications {
+//        plugin(MavenPublication) {
+//            artifact(jar) {
+//                if (project.hasProperty('localPublish')) {
+//                    classifier null
+//                    groupId 'gradle.plugin.' + group
+//                }
+//            }
+//        }
+        // Gradle doesn't know how to translate plugin dependencies
+        // TODO: Not working
+//        all {
+//            pom.withXml {
+//                def deps = asNode().get("dependencies")
+//                if (deps.size() > 0) {
+//                    def allDeps = deps.get(0).children()
+//                    for (def dep : allDeps) {
+//                        if (dep.get("artifactId")[0].value()[0] == "ToolchainPlugin") {
+//                            def g = dep.get("groupId")[0]
+//                            g.setValue("gradle.plugin." + g.value()[0])
+//                            println dep
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 gradlePlugin {
     plugins {
         gradleRio {
             id = 'edu.wpi.first.GradleRIO'
+            displayName = 'GradleRIO'
             implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
         }
     }
