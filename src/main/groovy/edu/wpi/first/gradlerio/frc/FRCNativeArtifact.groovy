@@ -46,7 +46,7 @@ class FRCNativeArtifact extends NativeArtifact {
     int debugPort = 8348
 
     def robotCommand = { DeployContext ctx, FRCNativeArtifact self ->
-        "${self.debug ? "gdbserver host:${self.debugPort}" : ''} \"<<BINARY>>\" ${self.arguments.join(" ")}"
+        "LD_LIBRARY_PATH=/usr/local/frc/wpilib ${self.debug ? "gdbserver host:${self.debugPort}" : ''} \"<<BINARY>>\" ${self.arguments.join(" ")}"
     }
 
     NativeBinarySpec _bin
@@ -63,7 +63,7 @@ class FRCNativeArtifact extends NativeArtifact {
     @Override
     void configureLibsArtifact(BinaryLibraryArtifact bla) {
         super.configureLibsArtifact(bla)
-        bla.setDirectory('/usr/local/frc/lib')
+        bla.setDirectory('/usr/local/frc/wpilib')
         bla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
     }
 

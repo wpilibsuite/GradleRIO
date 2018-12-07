@@ -13,7 +13,7 @@ class FRCNativeLibraryArtifact extends NativeArtifact {
     super(name, project)
     targetPlatform = NativePlatforms.roborio
 
-    directory = '/usr/local/frc/lib'
+    directory = '/usr/local/frc/wpilib'
     postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }
   }
 
