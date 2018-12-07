@@ -12,7 +12,7 @@ public class WPIDepsExtension {
 
     WPIDepsExtension(WPIExtension wpi) {
         this.wpi = wpi
-        this.vendor = new WPIVendorDepsExtension(this)
+        this.vendor = new WPIVendorDepsExtension(this, wpi)
     }
 
     List<String> wpilib() {

@@ -28,7 +28,7 @@ class WPINativeJsonDepRules extends RuleSource {
         wpi.deps.vendor.dependencies.each { WPIVendorDepsExtension.JsonDependency dep ->
             dep.cppDependencies.each { WPIVendorDepsExtension.CppArtifact cpp ->
                 String name = dep.uuid + cpp.libName
-                String mavenbase = "${cpp.groupId}:${cpp.artifactId}:${cpp.version}"
+                String mavenbase = "${cpp.groupId}:${cpp.artifactId}:${WPIVendorDepsExtension.getVersion(cpp.version, wpi)}"
                 String config = cpp.configuration ?: "native_${dep.uuid}"
                 List<String> allPlatforms = platformContainer.collect { Platform p -> p.name }
 
