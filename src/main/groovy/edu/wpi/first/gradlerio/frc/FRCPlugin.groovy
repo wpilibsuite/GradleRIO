@@ -27,6 +27,8 @@ class FRCPlugin implements Plugin<Project> {
 
     Project project
 
+    public static final String LIB_DEPLOY_DIR = '/usr/local/frc/third-party/lib'
+
     @Override
     void apply(Project project) {
         this.project = project

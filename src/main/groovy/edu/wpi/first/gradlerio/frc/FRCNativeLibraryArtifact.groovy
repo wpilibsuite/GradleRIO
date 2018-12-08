@@ -13,7 +13,7 @@ class FRCNativeLibraryArtifact extends NativeArtifact {
     super(name, project)
     targetPlatform = NativePlatforms.roborio
 
-    directory = '/usr/local/frc/third-party/lib'
+    directory = FRCPlugin.LIB_DEPLOY_DIR
     postdeploy << { DeployContext ctx -> ctx.execute("ldconfig") }
   }
 
