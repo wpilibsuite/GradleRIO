@@ -26,6 +26,7 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
         }
 
         postdeploy << { DeployContext ctx ->
+            FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR)
             ctx.execute("ldconfig")
         }
 
