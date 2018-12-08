@@ -63,7 +63,7 @@ class FRCNativeArtifact extends NativeArtifact {
     @Override
     void configureLibsArtifact(BinaryLibraryArtifact bla) {
         super.configureLibsArtifact(bla)
-        bla.setDirectory('/usr/local/frc/lib')
+        bla.setDirectory('/usr/local/frc/third-party/lib')
         bla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
     }
 

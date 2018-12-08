@@ -20,7 +20,7 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
 
     ConfigurationArtifact(String name, Project project) {
         super(name, project)
-        directory = '/usr/local/frc/lib'
+        directory = '/usr/local/frc/third-party/lib'
         onlyIf = { DeployContext ctx ->
             files.isPresent() && !files.get().empty && !files.get().files.empty
         }
