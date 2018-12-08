@@ -20,12 +20,10 @@ class RiologPlugin implements Plugin<Project> {
         project.pluginManager.apply(EmbeddedTools)
         project.extensions.getByType(DeployExtension).targets.all { RemoteTarget target ->
             if (target instanceof RoboRIO) {
-                project.tasks.register("riolog${target.name.capitalize()}".toString(), RIOLogTask, { RIOLogTask task ->
+                def rioLogTask = project.tasks.register("riolog${target.name.capitalize()}".toString(), RIOLogTask, { RIOLogTask task ->
                     task.group = "GradleRIO"
                     task.description = "Run a console displaying output from the RoboRIO (${target.name})"
-                    project.tasks.withType(TargetDiscoveryTask).matching { TargetDiscoveryTask t -> t.target == target }.all { TargetDiscoveryTask discover_task ->
-                        task.dependsOn(discover_task)
-                    }
+                    task.dependsOn(project.tasks.withType(TargetDiscoveryTask).matching { TargetDiscoveryTask t -> t.target == target })
                 } as Action<RIOLogTask>)
 
                 // Guard for when the root project already has riolog

@@ -21,11 +21,11 @@ dependencies {
 
     compile 'com.jcraft:jsch:0.1.53'
 
-    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
     }
     testCompile gradleTestKit()
-    
+
 //    compile 'gradle.plugin.jaci.gradle:EmbeddedTools:2018.12.06'
 //    compile 'de.undercouch:gradle-download-task:3.1.2'
 }
@@ -34,7 +34,7 @@ archivesBaseName = "GradleRIO"
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.1.1-beta-3-pre6"
+    version = "2019.1.1-beta-3-pre7"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
