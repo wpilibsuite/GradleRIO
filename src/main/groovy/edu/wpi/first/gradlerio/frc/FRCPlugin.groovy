@@ -76,7 +76,7 @@ class FRCPlugin implements Plugin<Project> {
     }
 
     public static void ownDirectory(DeployContext ctx, String directory) {
-        ctx.execute("chmod -R 775 \"$directory\" || true; chown -R lvuser \"$directory\"")
+        ctx.execute("chmod -R 777 \"$directory\" || true; chown -R lvuser:ni \"$directory\"")
     }
 
     public static DeployExtension deployExtension(Project project) {
