@@ -75,6 +75,10 @@ class FRCPlugin implements Plugin<Project> {
         })
     }
 
+    public static void ownDirectory(DeployContext ctx, String directory) {
+        ctx.execute("chmod -R 777 \"$directory\" || true; chown -R lvuser:ni \"$directory\"")
+    }
+
     public static DeployExtension deployExtension(Project project) {
         return project.extensions.getByType(DeployExtension)
     }
@@ -127,8 +131,6 @@ class FRCPlugin implements Plugin<Project> {
             }
         }
     }
-
-
 
     static class FRCRules extends RuleSource {
         @BinaryTasks

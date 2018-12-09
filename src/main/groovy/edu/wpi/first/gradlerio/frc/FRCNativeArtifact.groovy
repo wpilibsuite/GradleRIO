@@ -64,7 +64,10 @@ class FRCNativeArtifact extends NativeArtifact {
     void configureLibsArtifact(BinaryLibraryArtifact bla) {
         super.configureLibsArtifact(bla)
         bla.setDirectory(FRCPlugin.LIB_DEPLOY_DIR)
-        bla.postdeploy << { DeployContext ctx -> ctx.execute('ldconfig') }
+        bla.postdeploy << { DeployContext ctx ->
+            FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR)
+            ctx.execute('ldconfig')
+        }
     }
 
     @Override
