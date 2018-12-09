@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
@@ -12,14 +13,16 @@ import org.gradle.platform.base.VariantComponentSpec
 public class WPIVendorDepsExtension {
 
     final WPIDepsExtension wpiDeps
+    final WPIExtension wpiExt
 
     List<JsonDependency> dependencies = []
     final List<DelegatedDependencySet> nativeDependenciesList = []
 
     final File vendorFolder;
 
-    WPIVendorDepsExtension(WPIDepsExtension wpiDeps) {
+    WPIVendorDepsExtension(WPIDepsExtension wpiDeps, WPIExtension wpiExt) {
         this.wpiDeps = wpiDeps
+        this.wpiExt = wpiExt
         this.vendorFolder = wpiDeps.wpi.project.file('vendordeps')
     }
 
@@ -41,12 +44,16 @@ public class WPIVendorDepsExtension {
             return []
     }
 
+    static String getVersion(String inputVersion, WPIExtension wpiExt) {
+        return inputVersion == 'wpilib' ? wpiExt.wpilibVersion : inputVersion
+    }
+
     List<String> java(String... ignore) {
         if (dependencies == null) return []
 
         return dependencies.findAll { !isIgnored(ignore, it) }.collectMany { JsonDependency dep ->
             dep.javaDependencies.collect { JavaArtifact art ->
-                "${art.groupId}:${art.artifactId}:${art.version}"
+                "${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}"
             } as List<String>
         }
     }
@@ -64,7 +71,7 @@ public class WPIVendorDepsExtension {
                         throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni)
 
                     if (applies)
-                        deps.add("${jni.groupId}:${jni.artifactId}:${jni.version}:${platform}@${jni.isJar ? 'jar' : 'zip'}".toString())
+                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}@${jni.isJar ? 'jar' : 'zip'}".toString())
                 }
             }
         }
