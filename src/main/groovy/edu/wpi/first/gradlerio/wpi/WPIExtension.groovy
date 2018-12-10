@@ -12,9 +12,9 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2019.1.1-beta-2"
-    String niLibrariesVersion = "2019.7.1"
-    String opencvVersion = "3.4.3-19"
+    String wpilibVersion = "2019.1.1-beta-3"
+    String niLibrariesVersion = "2019.9.3"
+    String opencvVersion = "3.4.4-3"
 
     String wpilibYear = '2019'
 
@@ -23,11 +23,11 @@ class WPIExtension {
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.1u13-1"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "2019.1.1-beta-1"
-    String shuffleboardVersion = "2019.1.1-beta-2"
-    String outlineViewerVersion = "2019.1.1-beta-1"
-    String robotBuilderVersion = "2019.1.1-beta-2"
-    String pathWeaverVersion = "2019.0.0-alpha-0"
+    String smartDashboardVersion = "2019.1.1-beta-3"
+    String shuffleboardVersion = "2019.1.1-beta-3"
+    String outlineViewerVersion = "2019.1.1-beta-3"
+    String robotBuilderVersion = "2019.1.1-beta-3"
+    String pathWeaverVersion = "2019.1.1-beta-3"
 
     // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
     String toolchainTag = 'v2019-3'
