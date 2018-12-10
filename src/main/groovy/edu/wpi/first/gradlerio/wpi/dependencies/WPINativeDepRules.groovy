@@ -54,11 +54,11 @@ class WPINativeDepRules extends RuleSource {
     private static void matchersStatic(NativeLib lib, String libname, boolean desktop) {
         if (desktop) {
             lib.staticMatchers = [
+                "**/static/*${libname}*.lib".toString(),
                 "**/static/*${libname}*.a".toString()
             ]
         } else {
             lib.staticMatchers = [
-                "**/static/*${libname}*.lib".toString(),
                 "**/static/*${libname}*.a".toString()
             ]
         }
