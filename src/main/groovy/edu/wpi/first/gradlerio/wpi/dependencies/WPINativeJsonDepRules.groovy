@@ -110,7 +110,7 @@ class WPINativeJsonDepRules extends RuleSource {
                                 } else {
                                     lib.staticMatchers.add("**/*${cpp.libName}${libSuffix}.a".toString())
                                 }
-                                lib.maven = "$mavenbase:$platform$linkSuff@zip"
+                                lib.maven = "$mavenbase:$platform$linkSuff$buildKind@zip"
                                 // It can't be 'config' otherwise missing libs break even if not used!
                                 lib.configuration = "${config}_${platform}".toString()
                             } as Action<NativeLib>)
