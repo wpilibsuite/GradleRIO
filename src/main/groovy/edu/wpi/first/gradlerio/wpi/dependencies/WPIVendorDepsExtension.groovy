@@ -94,15 +94,16 @@ public class WPIVendorDepsExtension {
 
     private void cppVendorLibForBin(DependencySpecExtension dse, NativeBinarySpec bin, String[] ignore) {
         Set<DelegatedDependencySet> dds = []
+        String buildType = bin.buildType.name.contains('debug') ? 'debug' : ''
         dependencies.each { JsonDependency dep ->
             if (!isIgnored(ignore, dep)) {
                 dep.cppDependencies.each { CppArtifact cpp ->
                     if (cpp.headerClassifier != null)
-                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_headers", bin, dse, cpp.skipInvalidPlatforms))
+                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_headers" + buildType, bin, dse, cpp.skipInvalidPlatforms))
                     if (cpp.sourcesClassifier != null)
-                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_sources", bin, dse, cpp.skipInvalidPlatforms))
+                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_sources" + buildType, bin, dse, cpp.skipInvalidPlatforms))
                     if (cpp.binaryPlatforms != null && cpp.binaryPlatforms.length > 0)
-                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_binaries", bin, dse, cpp.skipInvalidPlatforms))
+                        dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_binaries" + buildType, bin, dse, cpp.skipInvalidPlatforms))
                 }
             }
         }

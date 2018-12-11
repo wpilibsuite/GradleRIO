@@ -1,0 +1,76 @@
+{
+  "fileName": "Phoenix.json",
+  "name": "CTRE-Phoenix",
+  "version": "5.424242.10.0-2018121114+",
+  "uuid": "ab676553-b602-441f-a38d-f1296eff6537",
+  "mavenUrls": [
+    "http://devsite.ctr-electronics.com/maven/development/"
+  ],
+  "jsonUrl": "http://devsite.ctr-electronics.com/maven/frcbetajson/Phoenix.json",
+  "javaDependencies": [
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "api-java",
+      "version": "5.424242.10.0-2018121114+"
+    },
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "wpiapi-java",
+      "version": "5.424242.10.0-2018121114+"
+    }
+  ],
+  "jniDependencies": [
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "cci",
+      "version": "5.424242.10.0-2018121114+",
+      "skipInvalidPlatforms": false,
+      "isJar": false,
+      "validPlatforms": [
+          "linuxathena",
+          "windowsx86-64",
+          "linuxx86-64"
+      ]
+    }
+  ],
+  "cppDependencies": [
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "api-cpp",
+      "version": "5.424242.10.0-2018121114+",
+      "libName": "CTRE_Phoenix",
+      "headerClassifier": "headers",
+      "sharedLibrary": false,
+      "skipInvalidPlatforms": true,
+      "binaryPlatforms": [
+          "linuxathena",
+          "linuxathenadebug",
+          "windowsx86-64",
+          "linuxx86-64"
+      ]
+    },
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "cci",
+      "version": "5.424242.10.0-2018121114+",
+      "headerClassifier": "headers",
+      "sharedLibrary": false,
+      "libName": "CTRE_PhoenixCCI",
+      "skipInvalidPlatforms": true,
+      "binaryPlatforms": [
+          "linuxathena",
+          "linuxathenadebug",
+          "windowsx86-64",
+          "linuxx86-64"
+      ]
+    },
+    {
+      "groupId": "com.ctre.frcbeta.phoenix",
+      "artifactId": "core",
+      "version": "5.424242.10.0-2018121114+",
+      "libName": "CTRE_PhoenixCore",
+      "headerClassifier": "headers"
+    }
+  ]
+
+}
