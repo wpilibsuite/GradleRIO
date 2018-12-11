@@ -70,6 +70,7 @@ class WPINativeJsonDepRules extends RuleSource {
                             common(lib)
                             lib.targetPlatforms = [platform]
                             lib.libraryName = "${name}_binaries"
+                            def archiveSuf = cpp.sharedLibrary ? "" : "static"
 
                             lib.staticMatchers = ["**/*${cpp.libName}.lib".toString()]
                             if (cpp.sharedLibrary) {
@@ -79,7 +80,7 @@ class WPINativeJsonDepRules extends RuleSource {
                             } else {
                                 lib.staticMatchers.add("**/*${cpp.libName}.a".toString())
                             }
-                            lib.maven = "$mavenbase:$platform@zip"
+                            lib.maven = "$mavenbase:$platform$archivesuf@zip"
                             // It can't be 'config' otherwise missing libs break even if not used!
                             lib.configuration = "${config}_${platform}".toString()
                         } as Action<NativeLib>)
