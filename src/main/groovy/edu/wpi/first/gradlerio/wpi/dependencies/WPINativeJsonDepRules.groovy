@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
+import edu.wpi.first.toolchain.NativePlatforms
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.NativeDepsSpec
@@ -46,6 +47,7 @@ class WPINativeJsonDepRules extends RuleSource {
                             // Headers apply to all platforms, even if the binaries are missing.
                             lib.targetPlatforms = allPlatforms
                             lib.headerDirs << ''
+                            lib.libraryName = "${name}_headers"
                             lib.buildType = buildType
                             lib.maven = "$mavenbase:${cpp.headerClassifier}@zip"
                             lib.configuration = config
@@ -58,6 +60,7 @@ class WPINativeJsonDepRules extends RuleSource {
                             // Sources apply to all platforms, even if the binaries are missing.
                             lib.targetPlatforms = allPlatforms
                             lib.sourceDirs << ''
+                            lib.libraryName = "${name}_sources"
                             lib.buildType = buildType
                             lib.maven = "$mavenbase:${cpp.sourcesClassifier}@zip"
                             lib.configuration = config
@@ -65,7 +68,7 @@ class WPINativeJsonDepRules extends RuleSource {
                     }
 
                     if (cpp.binaryPlatforms != null) {
-                        if (cpp.binaryPlatforms.contains('linuxathena')) {
+                        if (cpp.binaryPlatforms.equals(NativePlatforms.roborio)) {
                             def platform = 'linuxathena'
                             libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
                                 common(lib)
@@ -88,7 +91,7 @@ class WPINativeJsonDepRules extends RuleSource {
 
                         for (String p : cpp.binaryPlatforms) {
                             // Skip athena, as it is specially handled
-                            if (p.contains('linuxathena')) {
+                            if (p.contains(NativePlatforms.roborio)) {
                                 continue
                             }
                             // DON'T REMOVE THIS!
@@ -101,6 +104,8 @@ class WPINativeJsonDepRules extends RuleSource {
                                 common(lib)
                                 lib.targetPlatforms = [platform]
                                 lib.libraryName = "${name}_binaries"
+
+                                lib.buildType = buildType
 
                                 lib.staticMatchers = ["**/*${cpp.libName}${libSuffix}.lib".toString()]
                                 if (cpp.sharedLibrary) {
