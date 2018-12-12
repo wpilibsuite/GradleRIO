@@ -40,8 +40,8 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         // Try to load dependencies JSON files
         wpi.deps.vendor.allVendorFiles().each { File f ->
             f.withReader {
-                def slurped = slurper.parse(it)
                 try {
+                    def slurped = slurper.parse(it)
                     wpi.deps.vendor.loadDependency(slurped)
                 } catch (e) {
                     logger.logError("Malformed Vendor Deps File: ${f.toString()}")
