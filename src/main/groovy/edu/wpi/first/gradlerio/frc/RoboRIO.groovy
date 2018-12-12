@@ -1,5 +1,6 @@
 package edu.wpi.first.gradlerio.frc
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.target.location.SshDeployLocation
@@ -25,6 +26,9 @@ class RoboRIO extends FRCCompatibleTarget {
         this.onlyIf = { DeployContext ctx ->
             verifyOnlyIf(ctx)
         }
+
+        // Make a copy of valid image versions so user defined cannot modify the global array
+        validImageVersions = WPIExtension.validImageVersions.toList()
     }
 
     int team
@@ -100,7 +104,7 @@ class RoboRIO extends FRCCompatibleTarget {
     }
 
     boolean checkImage = true
-    List<String> validImageVersions = ['2019_v7']
+    List<String> validImageVersions = []
 
     void verifyImageVersion(String image) {
         if (!validImageVersions.contains(image))
