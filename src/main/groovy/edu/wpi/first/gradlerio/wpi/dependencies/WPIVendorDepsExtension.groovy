@@ -94,7 +94,6 @@ public class WPIVendorDepsExtension {
 
     private void cppVendorLibForBin(DependencySpecExtension dse, NativeBinarySpec bin, String[] ignore) {
         Set<DelegatedDependencySet> dds = []
-        String buildType = bin.buildType.name.contains('debug') ? 'debug' : ''
         dependencies.each { JsonDependency dep ->
             if (!isIgnored(ignore, dep)) {
                 dep.cppDependencies.each { CppArtifact cpp ->
