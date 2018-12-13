@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
@@ -70,8 +71,12 @@ public class WPIVendorDepsExtension {
                     if (!applies && !jni.skipInvalidPlatforms)
                         throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni)
 
-                    if (applies)
-                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}@${jni.isJar ? 'jar' : 'zip'}".toString())
+                    if (applies) {
+                        def debug = wpiExt.debugSimJNI ? "debug" : ""
+                        debug = platform.equals(NativePlatforms.roborio) ? "debug" : debug
+                        debug = platform.equals(NativePlatforms.raspbian) ? "" : debug
+                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}${debug}@${jni.isJar ? 'jar' : 'zip'}".toString())
+                    }
                 }
             }
         }
