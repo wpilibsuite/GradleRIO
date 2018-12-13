@@ -72,7 +72,7 @@ class WPINativeJsonDepRules extends RuleSource {
                     String binaryConfig = config + buildKind
 
                     if (cpp.binaryPlatforms != null) {
-                        if (cpp.binaryPlatforms.equals(NativePlatforms.roborio)) {
+                        if (cpp.binaryPlatforms.contains(NativePlatforms.roborio)) {
                             def platform = 'linuxathena'
                             libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
                                 common(lib)
