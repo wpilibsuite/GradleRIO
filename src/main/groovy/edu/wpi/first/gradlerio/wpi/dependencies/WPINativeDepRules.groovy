@@ -264,26 +264,6 @@ class WPINativeDepRules extends RuleSource {
                 String linkSuff     = shared ? '' : 'static'
                 boolean isShared    = shared   // Action calls are deferred, so the value of shared can be broken since
 
-                def windowsMatchers = [
-                    '**/shared/opencv_calib3d343*.lib',
-                    '**/shared/opencv_core343*.lib',
-                    '**/shared/opencv_dnn343*.lib',
-                    '**/shared/opencv_features2d343*.lib',
-                    '**/shared/opencv_flann343*.lib',
-                    '**/shared/opencv_highgui343*.lib',
-                    '**/shared/opencv_imgcodecs343*.lib',
-                    '**/shared/opencv_imgproc343*.lib',
-                    '**/shared/opencv_ml343*.lib',
-                    '**/shared/opencv_objdetect343*.lib',
-                    '**/shared/opencv_photo343*.lib',
-                    '**/shared/opencv_shape343*.lib',
-                    '**/shared/opencv_stitching343*.lib',
-                    '**/shared/opencv_superres343*.lib',
-                    '**/shared/opencv_video343*.lib',
-                    '**/shared/opencv_videoio343*.lib',
-                    '**/shared/opencv_videostab343*.lib'
-                ] as List<String>
-
                 libs.create("opencv${suf}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
                     lib.targetPlatforms = [NativePlatforms.roborio, NativePlatforms.desktop, wpi.platforms.raspbian]
@@ -313,7 +293,7 @@ class WPINativeDepRules extends RuleSource {
                 libs.create("opencv${suf}_native${buildKind}".toString(), NativeLib, { NativeLib lib ->
                     common(lib)
                     if (isShared) {
-                        lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib'] + windowsMatchers
+                        lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib', '**/shared/*opencv*.lib']
                         lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
                     } else {
                         matchersStatic(lib, 'opencv', true)
