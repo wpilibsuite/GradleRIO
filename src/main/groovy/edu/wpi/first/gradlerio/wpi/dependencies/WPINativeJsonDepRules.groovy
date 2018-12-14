@@ -68,7 +68,6 @@ class WPINativeJsonDepRules extends RuleSource {
 
                 ['debug', ''].each { String buildKind ->
                     String buildType    = buildKind.contains('debug') ? 'debug' : 'release'
-                    String libSuffix    = buildKind.contains('debug') ? 'd' : ''
                     String binaryConfig = config + buildKind
 
                     if (cpp.binaryPlatforms != null) {
@@ -82,10 +81,10 @@ class WPINativeJsonDepRules extends RuleSource {
                                 lib.buildType = buildType
 
                                 if (cpp.sharedLibrary) {
-                                    lib.sharedMatchers = ["**/*${cpp.libName}d.so".toString()]
+                                    lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString()]
                                     lib.dynamicMatchers = lib.sharedMatchers
                                 } else {
-                                    lib.staticMatchers.add("**/*${cpp.libName}d.a".toString())
+                                    lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
                                 }
                                 lib.maven = "$mavenbase:${platform}${linkSuff}debug@zip"
                                 // It can't be 'config' otherwise missing libs break even if not used!
@@ -111,13 +110,13 @@ class WPINativeJsonDepRules extends RuleSource {
 
                                 lib.buildType = buildType
 
-                                lib.staticMatchers = ["**/*${cpp.libName}${libSuffix}.lib".toString()]
+                                lib.staticMatchers = ["**/*${cpp.libName}*.lib".toString()]
                                 if (cpp.sharedLibrary) {
-                                    lib.sharedMatchers = ["**/*${cpp.libName}${libSuffix}.so".toString(), "**/*${cpp.libName}${libSuffix}.dylib".toString()]
+                                    lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString(), "**/*${cpp.libName}*.dylib".toString()]
 
-                                    lib.dynamicMatchers = lib.sharedMatchers + "**/${cpp.libName}${libSuffix}.dll".toString()
+                                    lib.dynamicMatchers = lib.sharedMatchers + "**/${cpp.libName}*.dll".toString()
                                 } else {
-                                    lib.staticMatchers.add("**/*${cpp.libName}${libSuffix}.a".toString())
+                                    lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
                                 }
                                 lib.maven = "$mavenbase:$platform$linkSuff$buildKind@zip"
                                 // It can't be 'config' otherwise missing libs break even if not used!
