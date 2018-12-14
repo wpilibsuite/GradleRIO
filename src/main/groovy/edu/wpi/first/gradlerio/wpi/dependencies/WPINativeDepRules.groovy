@@ -284,7 +284,7 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/libopencv*.so.*']
-                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
                         lib.dynamicMatchers = lib.sharedMatchers
                         lib.dynamicExcludes = lib.sharedExcludes
                     } else {
@@ -301,7 +301,7 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib', '**/shared/*opencv*.lib']
-                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
                         lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
                         lib.dynamicExcludes = lib.sharedExcludes
                     } else {
@@ -318,7 +318,7 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/*opencv*.so.*']
-                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
                         lib.dynamicMatchers = lib.sharedMatchers
                         lib.dynamicExcludes = lib.sharedExcludes
                     } else {
