@@ -186,44 +186,50 @@ class WPINativeDepRules extends RuleSource {
             } as Action<? extends CombinedNativeLib>)
         }
 
-        // NI Libraries
-        libs.create('ni_chipobject_binaries', NativeLib, { NativeLib lib ->
-            common(lib)
-            lib.targetPlatforms << wpi.platforms.roborio
-            lib.buildTypes = ['debug', 'release']
-            lib.sharedMatchers = ['**/*.so*']
-            lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
-            lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}@zip"
-            lib.configuration = 'native_ni'
-        } as Action<? extends NativeLib>)
-
         libs.create('ni_chipobject_headers', NativeLib, { NativeLib lib ->
             common(lib)
             lib.targetPlatforms << wpi.platforms.roborio
-            lib.buildTypes = ['debug', 'release']
             lib.headerDirs << ''
             lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:headers@zip"
-            lib.configuration = 'native_ni'
-        } as Action<? extends NativeLib>)
-
-        libs.create('ni_netcomm_binaries', NativeLib, { NativeLib lib ->
-            common(lib)
-            lib.targetPlatforms << wpi.platforms.roborio
-            lib.buildTypes = ['debug', 'release']
-            lib.sharedMatchers = ['**/*.so*']
-            lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
-            lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}@zip"
             lib.configuration = 'native_ni'
         } as Action<? extends NativeLib>)
 
         libs.create('ni_netcomm_headers', NativeLib, { NativeLib lib ->
             common(lib)
             lib.targetPlatforms << wpi.platforms.roborio
-            lib.buildTypes = ['debug', 'release']
             lib.headerDirs << ''
             lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:headers@zip"
             lib.configuration = 'native_ni'
         } as Action<? extends NativeLib>)
+
+        ['debug', ''].each { String buildKind ->
+            String buildType    = buildKind.contains('debug') ? 'debug' : 'release'
+            String config       = "native_ni${buildKind}".toString()
+
+            // NI Libraries
+            libs.create("ni_chipobject_binaries${buildKind}", NativeLib, { NativeLib lib ->
+                common(lib)
+                lib.targetPlatforms << wpi.platforms.roborio
+                lib.buildType = buildType
+                lib.libraryName = "ni_chipobject_binaries"
+                lib.sharedMatchers = ['**/*.so*']
+                lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
+                lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}${buildKind}@zip"
+                lib.configuration = config
+            } as Action<? extends NativeLib>)
+
+            libs.create("ni_netcomm_binaries${buildKind}", NativeLib, { NativeLib lib ->
+                common(lib)
+                lib.targetPlatforms << wpi.platforms.roborio
+                lib.buildType = buildType
+                lib.libraryName = "ni_netcomm_binaries"
+                lib.sharedMatchers = ['**/*.so*']
+                lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
+                lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}${buildKind}@zip"
+                lib.configuration = config
+            } as Action<? extends NativeLib>)
+
+        }
 
         // Non-static combined libs
         libs.create('ni_libraries', CombinedNativeLib, { CombinedNativeLib lib ->
@@ -278,15 +284,16 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/libopencv*.so.*']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
                         lib.dynamicMatchers = lib.sharedMatchers
+                        lib.dynamicExcludes = lib.sharedExcludes
                     } else {
                         matchersStatic(lib, 'opencv', false)
                     }
                     lib.targetPlatforms << NativePlatforms.roborio
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    // TODO: This was meant to be debug but the matcher keeps grabbing .so.debug.
-                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}${buildKind}@zip"
                     lib.configuration = config
                 } as Action<? extends NativeLib>)
 
@@ -294,7 +301,9 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/*opencv*.so.*', '**/shared/*opencv*.*.dylib', '**/shared/*opencv*.lib']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
                         lib.dynamicMatchers = lib.sharedMatchers + '**/shared/*opencv*.dll'
+                        lib.dynamicExcludes = lib.sharedExcludes
                     } else {
                         matchersStatic(lib, 'opencv', true)
                     }
@@ -309,6 +318,9 @@ class WPINativeDepRules extends RuleSource {
                     common(lib)
                     if (isShared) {
                         lib.sharedMatchers = ['**/shared/*opencv*.so.*']
+                        lib.sharedExcludes = ['**/shared/libopencv*.so.*.debug', '**/shared/*java*']
+                        lib.dynamicMatchers = lib.sharedMatchers
+                        lib.dynamicExcludes = lib.sharedExcludes
                     } else {
                         matchersStatic(lib, 'opencv', false)
                     }
