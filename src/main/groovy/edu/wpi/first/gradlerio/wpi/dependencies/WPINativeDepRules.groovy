@@ -207,25 +207,25 @@ class WPINativeDepRules extends RuleSource {
             String config       = "native_ni${buildKind}".toString()
 
             // NI Libraries
-            libs.create("ni_chipobject_binaries${buildKind}", NativeLib, { NativeLib lib ->
+            libs.create("ni_chipobject_binaries${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
                 lib.targetPlatforms << wpi.platforms.roborio
                 lib.buildType = buildType
                 lib.libraryName = "ni_chipobject_binaries"
                 lib.sharedMatchers = ['**/*.so*']
                 lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
-                lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}${buildKind}@zip"
+                lib.maven = "edu.wpi.first.ni-libraries:chipobject:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}debug@zip"
                 lib.configuration = config
             } as Action<? extends NativeLib>)
 
-            libs.create("ni_netcomm_binaries${buildKind}", NativeLib, { NativeLib lib ->
+            libs.create("ni_netcomm_binaries${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
                 lib.targetPlatforms << wpi.platforms.roborio
                 lib.buildType = buildType
                 lib.libraryName = "ni_netcomm_binaries"
                 lib.sharedMatchers = ['**/*.so*']
                 lib.dynamicMatchers = []    // NI Libs are not deployed to RRIO
-                lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}${buildKind}@zip"
+                lib.maven = "edu.wpi.first.ni-libraries:netcomm:${wpi.niLibrariesVersion}:${wpi.platforms.roborio}debug@zip"
                 lib.configuration = config
             } as Action<? extends NativeLib>)
 
@@ -293,7 +293,7 @@ class WPINativeDepRules extends RuleSource {
                     lib.targetPlatforms << NativePlatforms.roborio
                     lib.libraryName = "opencv${suf}_binaries"
                     lib.buildType = buildType
-                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}${buildKind}@zip"
+                    lib.maven = "${mavenRoot}:${NativePlatforms.roborio}${linkSuff}debug@zip"
                     lib.configuration = config
                 } as Action<? extends NativeLib>)
 
