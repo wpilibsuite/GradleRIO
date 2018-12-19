@@ -9,6 +9,8 @@ import org.gradle.api.tasks.TaskAction
 @CompileStatic
 class DebugInfoTask extends DefaultTask {
 
+    List<Closure> extraArtifacts = []
+
     @TaskAction
     void writeDebugInfo() {
         def cfg = []
@@ -32,6 +34,10 @@ class DebugInfoTask extends DefaultTask {
                         debugfile: "${art.name}_${target}.debugconfig".toString(),
                         language: "cpp"
                     ]
+                }
+            } else {
+                extraArtifacts.each { Closure toCall
+                    toCall(art, cfg)
                 }
             }
         }
