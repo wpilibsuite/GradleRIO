@@ -59,60 +59,6 @@ class WPINativeCompileRules extends RuleSource {
     public static final String[] macDebugCompilerArgs = ['-O0']
     public static final String[] macLinkerArgs = ['-framework', 'CoreFoundation', '-framework', 'AVFoundation', '-framework', 'Foundation', '-framework', 'CoreMedia', '-framework', 'CoreVideo']
 
-    @BinaryTasks
-    void createNativeStripTasks(final ModelMap<Task> tasks, final ExtensionContainer extContainer, final NativeBinarySpec binary) {
-        final Project project = extContainer.getByType(GradleRIOPlugin.ProjectWrapper).project
-        RoboRioGcc gcc = null
-        if (binary.toolChain instanceof RoboRioGcc) {
-            gcc = (RoboRioGcc)binary.toolChain
-        } else {
-            return
-        }
-        Task rawLinkTask = null
-        if (binary instanceof SharedLibraryBinarySpec) {
-            rawLinkTask = ((SharedLibraryBinarySpec)binary).tasks.link
-        } else if (binary instanceof NativeExecutableBinarySpec) {
-            rawLinkTask = ((NativeExecutableBinarySpec)binary).tasks.link
-        }
-        if (!(rawLinkTask instanceof AbstractLinkTask)) {
-            return
-        }
-        AbstractLinkTask linkTask = (AbstractLinkTask)rawLinkTask
-
-        linkTask.doLast {
-            def mainFile = linkTask.linkedFile.get().asFile
-
-            if (mainFile.exists()) {
-                def mainFileStr = mainFile.toString()
-                def debugFile = mainFileStr + '.debug'
-
-                def disc = gcc.discoverer
-                def binDir = disc.binDir().get().toString()
-
-                def objcopyOptional = disc.tool('objcopy')
-                def stripOptional = disc.tool('strip')
-                if (!objcopyOptional.isPresent() || !stripOptional.isPresent()) {
-                    def logger = ETLoggerFactory.INSTANCE.create("NativeBinaryStrip")
-                    logger.logError('Failed to strip binaries because of unknown tool objcopy and strip')
-                    return
-                }
-
-                def objcopy = disc.tool('objcopy').get().toString()
-                def strip = disc.tool('strip').get().toString()
-
-                project.exec { ExecSpec ex ->
-                    ex.commandLine objcopy, '--only-keep-debug', mainFileStr, debugFile
-                }
-                project.exec { ExecSpec ex ->
-                    ex.commandLine strip, '-g', mainFileStr
-                }
-                project.exec { ExecSpec ex ->
-                    ex.commandLine objcopy, "--add-gnu-debuglink=$debugFile", mainFileStr
-                }
-            }
-        }
-    }
-
     @Mutate
     void addBuildTypes(BuildTypeContainer bts) {
         bts.maybeCreate('debug')
