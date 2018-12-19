@@ -2,6 +2,12 @@ package edu.wpi.first.toolchain;
 
 import jaci.gradle.log.ETLogger;
 import jaci.gradle.log.ETLoggerFactory;
+
+import java.io.File;
+import java.util.Optional;
+
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.internal.operations.BuildOperationExecutor;
@@ -10,13 +16,19 @@ import org.gradle.internal.reflect.Instantiator;
 import org.gradle.internal.service.ServiceRegistry;
 import org.gradle.internal.work.WorkerLeaseService;
 import org.gradle.model.Defaults;
+import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.RuleSource;
+import org.gradle.nativeplatform.NativeBinarySpec;
+import org.gradle.nativeplatform.NativeExecutableBinarySpec;
+import org.gradle.nativeplatform.SharedLibraryBinarySpec;
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory;
 import org.gradle.nativeplatform.platform.NativePlatform;
+import org.gradle.nativeplatform.tasks.AbstractLinkTask;
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal;
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery;
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory;
+import org.gradle.platform.base.BinaryTasks;
 import org.gradle.platform.base.PlatformContainer;
 import org.gradle.process.internal.ExecActionFactory;
 
@@ -66,4 +78,57 @@ public class ToolchainRules extends RuleSource {
         }
     }
 
+    @BinaryTasks
+    void createNativeStripTasks(final ModelMap<Task> tasks, final ExtensionContainer extContainer, final NativeBinarySpec binary) {
+        final Project project = extContainer.getByType(ToolchainPlugin.ProjectWrapper.class).getProject();
+        GccToolChain gccTmp = null;
+        if (binary.getToolChain() instanceof GccToolChain) {
+            gccTmp = (GccToolChain)binary.getToolChain();
+        } else {
+            return;
+        }
+        GccToolChain gcc = gccTmp;
+        Task rawLinkTask = null;
+        if (binary instanceof SharedLibraryBinarySpec) {
+            rawLinkTask = ((SharedLibraryBinarySpec)binary).getTasks().getLink();
+        } else if (binary instanceof NativeExecutableBinarySpec) {
+            rawLinkTask = ((NativeExecutableBinarySpec)binary).getTasks().getLink();
+        }
+        if (!(rawLinkTask instanceof AbstractLinkTask)) {
+            return;
+        }
+        AbstractLinkTask linkTask = (AbstractLinkTask)rawLinkTask;
+
+        linkTask.doLast((it) -> {
+            File mainFile = linkTask.getLinkedFile().get().getAsFile();
+
+            if (mainFile.exists()) {
+                String mainFileStr = mainFile.toString();
+                String debugFile = mainFileStr + ".debug";
+
+                ToolchainDiscoverer disc = gcc.getDiscoverer();
+
+                Optional<File> objcopyOptional = disc.tool("objcopy");
+                Optional<File>  stripOptional = disc.tool("strip");
+                if (!objcopyOptional.isPresent() || !stripOptional.isPresent()) {
+                    ETLogger logger = ETLoggerFactory.INSTANCE.create("NativeBinaryStrip");
+                    logger.logError("Failed to strip binaries because of unknown tool objcopy and strip");
+                    return;
+                }
+
+                String objcopy = disc.tool("objcopy").get().toString();
+                String strip = disc.tool("strip").get().toString();
+
+                project.exec((ex) -> {
+                    ex.commandLine(objcopy, "--only-keep-debug", mainFileStr, debugFile);
+                });
+                project.exec((ex) -> {
+                    ex.commandLine(strip, "-g", mainFileStr);
+                });
+                project.exec((ex) -> {
+                    ex.commandLine(objcopy, "--add-gnu-debuglink=" + debugFile, mainFileStr);
+                });
+            }
+        });
+    }
 }

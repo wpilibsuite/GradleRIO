@@ -12,12 +12,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ToolchainPlugin implements Plugin<Project> {
+    // Necessary to have access to project.configurations and such in the RuleSource
+    class ProjectWrapper {
+        private Project project;
+
+        public Project getProject() {
+            return this.project;
+        }
+
+        ProjectWrapper(Project project) { this.project = project; }
+    }
 
     private ToolchainExtension ext;
 
     @Override
     public void apply(Project project) {
         ext = project.getExtensions().create("toolchainsPlugin", ToolchainExtension.class, project);
+        project.getExtensions().add("toolchainProjectWrapper", new ProjectWrapper(project));
 
         project.getTasks().register("explainToolchains", (Task t) -> {
             t.setGroup("Toolchains");
