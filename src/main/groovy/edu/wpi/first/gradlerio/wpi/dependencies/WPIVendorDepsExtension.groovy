@@ -11,6 +11,7 @@ import jaci.gradle.log.ETLoggerFactory
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
@@ -29,10 +30,12 @@ public class WPIVendorDepsExtension {
     private final ETLogger log;
     private final JsonSlurper slurper;
 
+    public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
+
     WPIVendorDepsExtension(WPIDepsExtension wpiDeps, WPIExtension wpiExt) {
         this.wpiDeps = wpiDeps
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiDeps.wpi.project.file('vendordeps')
+        this.vendorFolder = wpiDeps.wpi.project.file(VENDORDEPS_FOLDER_NAME)
         this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
         this.slurper = new JsonSlurper()
     }
@@ -64,6 +67,10 @@ public class WPIVendorDepsExtension {
             if (dep != null)
                 load(dep)
         }
+    }
+
+    void loadFrom(Project project) {
+        loadFrom(project.file(VENDORDEPS_FOLDER_NAME))
     }
 
     JsonDependency parse(File f) {
