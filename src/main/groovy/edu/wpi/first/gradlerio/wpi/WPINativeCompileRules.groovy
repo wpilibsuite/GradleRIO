@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 import edu.wpi.first.toolchain.roborio.RoboRioGcc
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.Action
@@ -121,62 +122,90 @@ class WPINativeCompileRules extends RuleSource {
     @Mutate
     void addBinaryFlags(BinaryContainer binaries) {
         binaries.withType(NativeBinarySpec, { NativeBinarySpec bin ->
-            if (bin.targetPlatform.operatingSystem.isWindows()) {
-                // Windows
-                windowsCompilerArgs.each { String arg ->
-                    bin.cppCompiler.args << arg
-                }
-                windowsCCompilerArgs.each { String arg ->
-                    bin.cCompiler.args << arg
-                }
-                windowsLinkerArgs.each { String arg ->
-                    bin.linker.args << arg
-                }
-                if (bin.buildType.name.contains('debug')) {
-                    windowsDebugCompilerArgs.each { String arg ->
+            if (bin.targetPlatform.name.equals(NativePlatforms.desktop)) {
+                // Desktop
+                if (bin.targetPlatform.operatingSystem.isWindows()) {
+                    // Windows
+                    windowsCompilerArgs.each { String arg ->
                         bin.cppCompiler.args << arg
+                    }
+                    windowsCCompilerArgs.each { String arg ->
                         bin.cCompiler.args << arg
                     }
-                } else {
-                    windowsReleaseCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                        bin.cCompiler.args << arg
-                    }
-                    windowsReleaseLinkerArgs.each { String arg ->
+                    windowsLinkerArgs.each { String arg ->
                         bin.linker.args << arg
                     }
-                }
-            } else if (bin.targetPlatform.operatingSystem.isMacOsX()) {
-                // OSX
-                macCompilerArgs.each { String arg ->
-                    bin.cppCompiler.args << arg
-                }
-                macCCompilerArgs.each { String arg ->
-                    bin.cCompiler.args << arg
-                }
-                macObjCppLinkerArgs.each { String arg ->
-                    bin.objcppCompiler.args << arg
-                }
-                macLinkerArgs.each { String arg ->
-                    bin.linker.args << arg
-                }
-                if (bin.buildType.name.contains('debug')) {
-                    macDebugCompilerArgs.each { String arg ->
+                    if (bin.buildType.name.contains('debug')) {
+                        windowsDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                    } else {
+                        windowsReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                        windowsReleaseLinkerArgs.each { String arg ->
+                            bin.linker.args << arg
+                        }
+                    }
+                } else if (bin.targetPlatform.operatingSystem.isMacOsX()) {
+                    // OSX
+                    macCompilerArgs.each { String arg ->
                         bin.cppCompiler.args << arg
+                    }
+                    macCCompilerArgs.each { String arg ->
                         bin.cCompiler.args << arg
-                        bin.objcCompiler.args << arg
+                    }
+                    macObjCppLinkerArgs.each { String arg ->
                         bin.objcppCompiler.args << arg
+                    }
+                    macLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        macDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                            bin.objcCompiler.args << arg
+                            bin.objcppCompiler.args << arg
+                        }
+                    } else {
+                        macReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                            bin.objcCompiler.args << arg
+                            bin.objcppCompiler.args << arg
+                        }
                     }
                 } else {
-                    macReleaseCompilerArgs.each { String arg ->
+                    // Linux
+                    linuxCompilerArgs.each { String arg ->
                         bin.cppCompiler.args << arg
+                    }
+                    linuxCCompilerArgs.each { String arg ->
                         bin.cCompiler.args << arg
-                        bin.objcCompiler.args << arg
-                        bin.objcppCompiler.args << arg
+                    }
+                    linuxLinkerArgs.each { String arg ->
+                        bin.linker.args << arg
+                    }
+                    if (bin.buildType.name.contains('debug')) {
+                        linuxDebugCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
+                    } else {
+                        linuxReleaseCompilerArgs.each { String arg ->
+                            bin.cppCompiler.args << arg
+                            bin.cCompiler.args << arg
+                        }
                     }
                 }
-            } else if (bin.toolChain.name.equals('roborioGcc')) {
-                // Rio
+                if (bin.buildType.name.equals('debug')) {
+                    bin.cppCompiler.define('DEBUG')
+                }
+            } else if (bin.targetPlatform.name.equals(NativePlatforms.roborio) || bin.targetPlatform.name.equals(NativePlatforms.raspbian)) {
+                // Rio or Pi
                 linuxCrossCompilerArgs.each { String arg ->
                     bin.cppCompiler.args << arg
                 }
@@ -197,33 +226,12 @@ class WPINativeCompileRules extends RuleSource {
                         bin.cCompiler.args << arg
                     }
                 }
-            } else {
-                // Linux
-                linuxCompilerArgs.each { String arg ->
-                    bin.cppCompiler.args << arg
-                }
-                linuxCCompilerArgs.each { String arg ->
-                    bin.cCompiler.args << arg
-                }
-                linuxLinkerArgs.each { String arg ->
-                    bin.linker.args << arg
-                }
-                if (bin.buildType.name.contains('debug')) {
-                    linuxDebugCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                        bin.cCompiler.args << arg
-                    }
-                } else {
-                    linuxReleaseCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                        bin.cCompiler.args << arg
-                    }
+                if (bin.buildType.name.equals('debug')) {
+                    bin.cppCompiler.define('DEBUG')
                 }
             }
 
-            if (bin.buildType.name.equals('debug')) {
-                bin.cppCompiler.define('DEBUG')
-            }
+
             null
         } as Action<? extends NativeBinarySpec>)
     }
