@@ -1,24 +1,24 @@
 package edu.wpi.first.gradlerio.wpi
 
-import edu.wpi.first.gradlerio.GradleRIOPlugin
-import edu.wpi.first.toolchain.roborio.RoboRioGcc
+
 import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
-import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.language.base.internal.ProjectLayout
 import org.gradle.language.nativeplatform.tasks.AbstractNativeSourceCompileTask
 import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.model.Validate
-import org.gradle.nativeplatform.*
-import org.gradle.nativeplatform.tasks.AbstractLinkTask
-import org.gradle.platform.base.*
-import org.gradle.process.ExecSpec
+import org.gradle.nativeplatform.BuildTypeContainer
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.TargetedNativeComponent
+import org.gradle.platform.base.BinaryContainer
+import org.gradle.platform.base.BinarySpec
+import org.gradle.platform.base.ComponentSpec
+import org.gradle.platform.base.ComponentSpecContainer
 
 @CompileStatic
 class WPINativeCompileRules extends RuleSource {

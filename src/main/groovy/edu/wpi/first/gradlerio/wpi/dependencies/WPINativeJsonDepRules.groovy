@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
-import edu.wpi.first.toolchain.NativePlatforms
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.NativeDepsSpec
 import jaci.gradle.nativedeps.NativeLib

@@ -1,12 +1,18 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
+import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
 import edu.wpi.first.toolchain.NativePlatforms
+import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import jaci.gradle.log.ETLogger
+import jaci.gradle.log.ETLoggerFactory
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
+import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
@@ -21,21 +27,27 @@ public class WPIVendorDepsExtension {
 
     final File vendorFolder;
 
+    private final ETLogger log;
+    private final JsonSlurper slurper;
+
+    public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
+
     WPIVendorDepsExtension(WPIDepsExtension wpiDeps, WPIExtension wpiExt) {
         this.wpiDeps = wpiDeps
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiDeps.wpi.project.file('vendordeps')
+        this.vendorFolder = wpiDeps.wpi.project.file(VENDORDEPS_FOLDER_NAME)
+        this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
+        this.slurper = new JsonSlurper()
     }
 
     @CompileDynamic
-    void loadDependency(Object slurped) {
-        JsonDependency dep = new JsonDependency(slurped)
-        dependencies.add(dep)
+    JsonDependency parseSlurped(Object slurped) {
+        return new JsonDependency(slurped)
     }
 
-    List<File> allVendorFiles() {
-        if (vendorFolder.exists()) {
-            return vendorFolder.listFiles(new FileFilter() {
+    static List<File> vendorFiles(File directory) {
+        if (directory.exists()) {
+            return directory.listFiles(new FileFilter() {
                 @Override
                 boolean accept(File pathname) {
                     return pathname.name.endsWith(".json")
@@ -43,6 +55,55 @@ public class WPIVendorDepsExtension {
             }) as List<File>
         } else
             return []
+    }
+
+    void loadAll() {
+        loadFrom(vendorFolder)
+    }
+
+    void loadFrom(File directory) {
+        vendorFiles(directory).each { File f ->
+            def dep = parse(f)
+            if (dep != null)
+                load(dep)
+        }
+    }
+
+    void loadFrom(Project project) {
+        loadFrom(project.file(VENDORDEPS_FOLDER_NAME))
+    }
+
+    JsonDependency parse(File f) {
+        JsonDependency dep = null
+        f.withReader {
+            try {
+                dep = parseSlurped(slurper.parse(it))
+            } catch (ex) {
+                log.logError("Malformed Vendor Deps File: ${f.toString()}")
+            }
+        }
+        return dep
+    }
+
+    void load(JsonDependency dep) {
+        // Don't double-add a dependency!
+        if (dependencies.find { it.uuid.equals(dep.uuid) } == null) {
+            dependencies.add(dep)
+
+            if (dep != null && dep.mavenUrls != null) {
+                int i = 0
+                dep.mavenUrls.each { url ->
+                    // Only add if the maven doesn't yet exist.
+                    if (wpiExt.maven.find { it.release.equals(url) } == null) {
+                        def name = "${dep.uuid}_${i++}"
+                        log.info("Registering vendor dep maven: $name on project ${wpiExt.project.path}")
+                        wpiExt.maven.vendor(name) { WPIMavenRepo repo ->
+                            repo.release = url
+                        }
+                    }
+                }
+            }
+        }
     }
 
     static String getVersion(String inputVersion, WPIExtension wpiExt) {

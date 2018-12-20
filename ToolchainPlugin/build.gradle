@@ -16,7 +16,7 @@ repositories {
 dependencies {
     // For some utility classes. We don't actually apply EmbeddedTools to the FRCToolchain,
     // but we do in GradleRIO
-    compile 'jaci.gradle:EmbeddedTools:2018.12.14'
+    compile 'jaci.gradle:EmbeddedTools:2018.12.18'
     compile 'de.undercouch:gradle-download-task:3.1.2'
 }
 
