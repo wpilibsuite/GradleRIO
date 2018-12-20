@@ -15,9 +15,15 @@ configurations {
   gradleRioVersions
 }
 
+def useDevelopmentProperty = 'useDevelopment'
+
 project.repositories.maven { repo ->
     repo.name = "WPI"
-    repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
+    if (project.hasProperty(useDevelopmentProperty)) {
+      repo.url = "http://first.wpi.edu/FRC/roborio/maven/development"
+    } else {
+      repo.url = "http://first.wpi.edu/FRC/roborio/maven/release"
+    }
 }
 
 dependencies {
@@ -27,10 +33,21 @@ dependencies {
 }
 
 String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
+String mavenDevRegex = "this\\.useDevelopment\\s*=\\s*(true|false)"
 
 
 tasks.register('UpdateVersions') {
   doLast {
+    def mavenExtFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.groovy')
+    def mavenExtText = mavenExtFile.text
+    def toSet = "this.useDevelopment = false"
+    if (project.hasProperty(useDevelopmentProperty)) {
+      toSet = "this.useDevelopment = true"
+    }
+
+    mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
+
+
     def extFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIExtension.groovy')
     def extText = extFile.text
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {

@@ -22,7 +22,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
         this.project = project
 
-        this.useDevelopment = false
+        this.useDevelopment = false // Do not rename without changing versionupdates.gradle
         this.useLocal = true
         this.useFrcMavenLocalDevelopment = false
         this.useFrcMavenLocalRelease = false
