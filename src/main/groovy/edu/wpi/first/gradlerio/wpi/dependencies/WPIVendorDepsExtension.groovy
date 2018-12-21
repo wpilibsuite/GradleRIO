@@ -115,7 +115,7 @@ public class WPIVendorDepsExtension {
 
         return dependencies.findAll { !isIgnored(ignore, it) }.collectMany { JsonDependency dep ->
             dep.javaDependencies.collect { JavaArtifact art ->
-                "${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}"
+                "${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}".toString()
             } as List<String>
         }
     }
