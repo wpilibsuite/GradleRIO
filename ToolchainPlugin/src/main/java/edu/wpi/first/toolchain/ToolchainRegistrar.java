@@ -7,7 +7,7 @@ import org.gradle.api.Project;
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal;
 
-public class ToolchainRegistrar<T extends GccToolChain> {
+public class ToolchainRegistrar<T extends GccToolChain> implements ToolchainRegistrarBase {
 
     private Class<T> implClass;
     private Project project;
@@ -19,7 +19,8 @@ public class ToolchainRegistrar<T extends GccToolChain> {
         this.logger = ETLoggerFactory.INSTANCE.create("ToolchainRegistrar");
     }
 
-    void register(ToolchainOptions options, NativeToolChainRegistryInternal registry, Instantiator instantiator) {
+    @Override
+    public void register(ToolchainOptions options, NativeToolChainRegistryInternal registry, Instantiator instantiator) {
         NamedDomainObjectFactory<T> factory = new NamedDomainObjectFactory<T>() {
             @Override
             public T create(String name) {

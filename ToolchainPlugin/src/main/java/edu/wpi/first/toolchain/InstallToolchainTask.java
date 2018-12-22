@@ -7,17 +7,17 @@ import org.gradle.internal.os.OperatingSystem;
 
 public class InstallToolchainTask extends DefaultTask {
 
-    private ToolchainDescriptor desc;
+    private ToolchainDescriptorBase desc;
 
     public boolean requiresInstall() {
         return desc.discover() == null || getProject().hasProperty("toolchain-install-force");
     }
 
-    public void setDescriptor(ToolchainDescriptor desc) {
+    public void setDescriptor(ToolchainDescriptorBase desc) {
         this.desc = desc;
     }
 
-    public ToolchainDescriptor getDescriptor() {
+    public ToolchainDescriptorBase getDescriptor() {
         return desc;
     }
 

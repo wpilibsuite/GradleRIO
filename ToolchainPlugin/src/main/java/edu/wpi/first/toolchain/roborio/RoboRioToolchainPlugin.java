@@ -25,7 +25,7 @@ public class RoboRioToolchainPlugin implements Plugin<Project> {
 
         ToolchainExtension toolchainExt = project.getExtensions().getByType(ToolchainExtension.class);
 
-        ToolchainDescriptor descriptor = new ToolchainDescriptor(toolchainName, "roborioGcc", new ToolchainRegistrar<RoboRioGcc>(RoboRioGcc.class, project));
+        ToolchainDescriptor<RoboRioGcc> descriptor = new ToolchainDescriptor<>(toolchainName, "roborioGcc", new ToolchainRegistrar<RoboRioGcc>(RoboRioGcc.class, project));
         descriptor.setToolchainPlatforms(NativePlatforms.roborio);
         descriptor.setOptional(false);
         descriptor.getDiscoverers().all((ToolchainDiscoverer disc) -> {
@@ -49,7 +49,7 @@ public class RoboRioToolchainPlugin implements Plugin<Project> {
     }
 
 
-    public void populateDescriptor(ToolchainDescriptor descriptor) {
+    public void populateDescriptor(ToolchainDescriptor<RoboRioGcc> descriptor) {
         File frcHomeLoc = new File(new FrcHome(roborioExt.year).get(), "roborio");
         File installLoc = toolchainInstallLoc(roborioExt.year);
 

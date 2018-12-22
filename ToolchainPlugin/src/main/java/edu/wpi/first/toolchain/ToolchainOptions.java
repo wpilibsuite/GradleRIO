@@ -15,7 +15,7 @@ public class ToolchainOptions {
 
     public String name;
     public Project project;
-    public ToolchainDescriptor descriptor;
+    public ToolchainDescriptorBase descriptor;
 
     Instantiator instantiator;
     BuildOperationExecutor buildOperationExecutor;

@@ -12,7 +12,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
 
     private Project project;
     private ETLogger logger;
-    private ToolchainDescriptor descriptor;
+    private ToolchainDescriptorBase descriptor;
     private ToolchainDiscoverer discoverer;
 
     public GccToolChain(ToolchainOptions options) {
@@ -60,7 +60,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
                     } else {
                         logger.logError("=============================");
                         logger.logErrorHead("No Toolchain Found for " + descriptor.getName());
-                        logger.logErrorHead("Run `./gradlew " + descriptor.installTaskName() + "` to install one!");
+                        logger.logErrorHead("Run `./gradlew " + descriptor.getInstallTaskName() + "` to install one!");
                         logger.logErrorHead("");
                         logger.logErrorHead("You can ignore this error with -Ptoolchain-optional-" + descriptor.getName());
                         logger.logErrorHead("For more information, run with `--info`");
@@ -79,7 +79,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
         return project;
     }
 
-    public ToolchainDescriptor getDescriptor() {
+    public ToolchainDescriptorBase getDescriptor() {
         return descriptor;
     }
 

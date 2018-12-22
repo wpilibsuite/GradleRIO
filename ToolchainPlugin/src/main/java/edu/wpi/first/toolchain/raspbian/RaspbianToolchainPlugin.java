@@ -25,7 +25,7 @@ public class RaspbianToolchainPlugin implements Plugin<Project> {
 
         ToolchainExtension toolchainExt = project.getExtensions().getByType(ToolchainExtension.class);
 
-        ToolchainDescriptor descriptor = new ToolchainDescriptor(toolchainName, "raspianGcc", new ToolchainRegistrar<RaspbianGcc>(RaspbianGcc.class, project));
+        ToolchainDescriptor<RaspbianGcc> descriptor = new ToolchainDescriptor<>(toolchainName, "raspianGcc", new ToolchainRegistrar<RaspbianGcc>(RaspbianGcc.class, project));
         descriptor.setToolchainPlatforms(NativePlatforms.raspbian);
         descriptor.setOptional(true);
         descriptor.getDiscoverers().all((ToolchainDiscoverer disc) -> {
@@ -49,7 +49,7 @@ public class RaspbianToolchainPlugin implements Plugin<Project> {
         return "arm-" + raspbianVersion + "-linux-gnueabihf-" + toolName + exeSuffix;
     }
 
-    public void populateDescriptor(ToolchainDescriptor descriptor) {
+    public void populateDescriptor(ToolchainDescriptor<RaspbianGcc> descriptor) {
         String raspbianVersion = raspbianExt.toolchainVersion.split("-")[0].toLowerCase();
         File installLoc = toolchainInstallLoc(raspbianVersion);
 

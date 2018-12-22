@@ -7,14 +7,14 @@ import org.gradle.api.internal.DefaultNamedDomainObjectSet;
 import org.gradle.internal.reflect.DirectInstantiator;
 import org.gradle.util.TreeVisitor;
 
-public class ToolchainExtension extends DefaultNamedDomainObjectSet<ToolchainDescriptor> {
+public class ToolchainExtension extends DefaultNamedDomainObjectSet<ToolchainDescriptorBase> {
 
     private Project project;
 
     public boolean registerPlatforms = true;
 
     public ToolchainExtension(Project project) {
-        super(ToolchainDescriptor.class, DirectInstantiator.INSTANCE);
+        super(ToolchainDescriptorBase.class, DirectInstantiator.INSTANCE);
         this.project = project;
     }
 
@@ -27,7 +27,7 @@ public class ToolchainExtension extends DefaultNamedDomainObjectSet<ToolchainDes
     }
 
     public void explain(TreeVisitor<String> visitor) {
-        for (ToolchainDescriptor desc : this) {
+        for (ToolchainDescriptorBase desc : this) {
             visitor.node(desc.getName());
             visitor.startChildren();
             visitor.node("Selected: " + desc.discover().getName());
