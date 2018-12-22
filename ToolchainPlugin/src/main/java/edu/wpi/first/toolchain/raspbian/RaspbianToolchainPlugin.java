@@ -12,6 +12,8 @@ import java.net.URL;
 
 public class RaspbianToolchainPlugin implements Plugin<Project> {
 
+    public static final String toolchainName = "raspbian";
+
     private RaspbianToolchainExtension raspbianExt;
     private Project project;
 
@@ -23,7 +25,7 @@ public class RaspbianToolchainPlugin implements Plugin<Project> {
 
         ToolchainExtension toolchainExt = project.getExtensions().getByType(ToolchainExtension.class);
 
-        ToolchainDescriptor descriptor = new ToolchainDescriptor("raspbian", "raspianGcc", new ToolchainRegistrar<RaspbianGcc>(RaspbianGcc.class, project));
+        ToolchainDescriptor descriptor = new ToolchainDescriptor(toolchainName, "raspianGcc", new ToolchainRegistrar<RaspbianGcc>(RaspbianGcc.class, project));
         descriptor.setToolchainPlatforms(NativePlatforms.raspbian);
         descriptor.setOptional(true);
         descriptor.getDiscoverers().all((ToolchainDiscoverer disc) -> {
