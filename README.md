@@ -35,7 +35,7 @@ Create a folder `vendordeps` in your project directory if it doesn't already exi
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
 
 ## Commands
-Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `./gradlew powershell`
+Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `powershell`
 
 ### General
 - `./gradlew build` will build your robot code (and run unit tests if present).
