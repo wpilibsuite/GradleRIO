@@ -4,36 +4,113 @@ robotics competition to produce and build their code.
 
 ![](img/tty.gif)
 
-GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, CTRE Toolsuite (Talon SRX) and NavX libraries, and you can even add your own libraries!
+GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, Tools, and Vendor Libraries. 
 
-For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the WPILib extension.
+For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the [WPILib Extension](https://github.com/wpilibsuite/vscode-wpilib).
+
+Screensteps is the best place for documentation: https://wpilib.screenstepslive.com/s/currentCS/m/79833
 
 Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also supported, unofficially. You may also use this tool exclusively from the command line, allowing use of any IDE or text editor (like Sublime Text, Atom or Vim).
 
+## Getting Started - Creating a new project
+### With VSCode (recommended)
+For getting started with VSCode, please see the screensteps documentation:
+https://wpilib.screenstepslive.com/s/currentCS/m/79833
+
+### Without VSCode
+Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.
+Download the .zip file corresponding to your language and extract it.
+
+For C++ users, run `./gradlew installRoboRioToolchain`.
+
+You are now ready to go! Run `./gradlew build` to build your code, or `./gradlew deploy` to deploy to a robot. More commands are listed below.
+
+## Adding Vendor Libraries
+### With VSCode
+Open the command palette with CTRL + SHIFT + P, or by clicking the WPILib icon. 
+Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and paste the vendor-provided JSON url.
+
+### Without VSCode
+Create a folder `vendordeps` in your project directory if it doesn't already exist.
+Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
+
 ## Commands
-Windows Users: It is recommended to use Powershell instead of CMD.
-- ```./gradlew build``` will build your Robot Code
-- ```./gradlew deploy``` will build and deploy your code.
-- ```./gradlew riolog``` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).
+Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `./gradlew powershell`
 
-- ```./gradlew smartDashboard``` will launch Smart Dashboard
-- ```./gradlew shuffleboard``` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
-- ```./gradlew installToolchain``` will install the C++ Toolchains for your system (required for C++).
+### General
+- `./gradlew build` will build your robot code (and run unit tests if present).
+- `./gradlew deploy` will build and deploy your code.
+- `./gradlew riolog` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).
 
-**At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew build deploy --offline`
+- `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
 
-## IDE Commands
-_These IDEs are unofficially supported, so CSA support is not guaranteed. It is recommended to use VSCode, however these options are available if you wish._
-- ```./gradlew idea``` will generate IDE files for IntelliJ IDEA (java)
-- ```./gradlew eclipse``` will generate IDE files for Eclipse (java)
-- ```./gradlew <component>VisualStudio``` will generate IDE files for the C/C++ component named `<component>` for Visual Studio (C++)
-- ```./gradlew clion``` will generate IDE files for Clion (C++). Be warned that Clion support is hacky as Clion does not natively support Gradle.
+### Tools
+- `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
+- `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
+- `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
+- `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
+- `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles with Pathfinder.
+
+**At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
+
+## IDE Support
+### VSCode:
+VSCode is fully supported by GradleRIO for FRC. To use it, use the WPILib VSCode extension. See screensteps for instructions.
+
+### IntelliJ IDEA:
+_IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
+
+To start with, you must apply the `idea` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
+```gradle
+plugins {
+    id 'idea'
+}
+```
+
+You can generate your project with the following command:
+- `./gradlew idea` will generate IDE files for IntelliJ IDEA (java).
+
+Import your project with `File - Open Project` in IntelliJ IDEA.
+
+Please see the gradle guide on the idea plugin for help: https://docs.gradle.org/current/userguide/idea_plugin.html
+
+### Eclipse
+_Eclipse support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
+
+To start with, you must apply the `eclipse` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
+```gradle
+plugins {
+    id 'eclipse'
+}
+```
+
+You can generate your project with the following command:
+- `./gradlew eclipse` will generate IDE files for Eclipse (java).
+
+Import your project with `File - Import... Existing Projects into Workspace` in Eclipse.
+
+Please see the gradle guide on the eclipse plugin for help: https://docs.gradle.org/current/userguide/eclipse_plugin.html
+
+### Visual Studio 2017 Community / Full (not VSCode)
+_VS2017 support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
+
+To start with, you must apply the `visual-studio` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
+```gradle
+plugins {
+    id 'visual-studio'
+}
+```
+
+Finally, you can generate and open your solution with the following command:
+- `./gradlew openVisualStudio` will generate IDE files for VS2017 (C++) and open Visual Studio.
+
+Please see the gradle guide on building native software for help: https://docs.gradle.org/current/userguide/native_software.html#native_binaries:visual_studio
 
 ## Upgrading
 To upgrade your version of GradleRIO, you must first upgrade gradle. Near the bottom of your build.gradle, change the wrapper version to the following, and then run `./gradlew wrapper`:
 ```gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0'
 }
 ```
 
@@ -41,101 +118,8 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
+    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
 }
 ```
 
-## Implementation Details
-**NOTE: This section is for advanced users. View the examples for your language to get started.**
-
-### Full Spec
-```gradle
-deploy {
-    targets {
-        target('roborio', RoboRIO) {
-            team = getTeamOrDefault(5333)
-            // Other values can be edited through EmbeddedTools.
-            // See https://github.com/JacisNonsense/EmbeddedTools#spec
-        }
-        // Other targets can be edited through EmbeddedTools.
-        // See https://github.com/JacisNonsense/EmbeddedTools#spec
-    }
-    artifacts {
-        // Setup a Java Artifact. Required for Java Users.
-        artifact('myJava', FRCJavaArtifact) {
-            targets << 'roborio'
-
-            jvmArgs << '-Xmx=128m'      // Set more JVM Arguments. Optional.
-            arguments << 'myCustomArgs' // The command-line arguments to launch your jar with. Optional.
-            debug = getDebugOrDefault(false)                // Enable to enable java debugging on the RoboRIO. Default: false
-            debugPort = 8348            // Set the debugging port. Default: 8348
-            robotCommand = './myOtherProgram'       // Set the contents of robotCommand. Optional, usually created depending on above values.
-
-            // Other values can be edited through EmbeddedTools.
-            // See https://github.com/JacisNonsense/EmbeddedTools#spec
-        }
-
-        // Setup a C++ (Native) Artifact. Required for C++ (Native) Users
-        artifact('myNative', FRCNativeArtifact) {
-            targets << 'roborio'
-            component = 'myFrcBinary'   // The name of the component you wish to build (required).
-
-            arguments << 'myCustomArgs' // The command-line arguments to launch your jar with. Optional.
-            debug = getDebugOrDefault(false)                // Enable to enable cpp debugging on the RoboRIO. Default: false
-            debugPort = 8348            // Set the debugging port. Default: 8348
-            robotCommand = './myOtherProgram'       // Set the contents of robotCommand. Optional, usually created depending on above values.
-
-            // Other values can be edited through EmbeddedTools.
-            // See https://github.com/JacisNonsense/EmbeddedTools#spec
-        }
-        // Other artifacts can be edited through EmbeddedTools.
-        // See https://github.com/JacisNonsense/EmbeddedTools#spec
-    }
-}
-
-// Set the versions of libraries to use. This is calculated for you based
-// off known-stable versions for the current year, but you can modify
-// them here if you so desire. This block is not required.
-wpi {
-    wpilibVersion = '...'
-    ntcoreVersion = '...'
-    opencvVersion = '...'
-    cscoreVersion = '...'
-    wpiutilVersion = '...'
-
-    smartDashboardVersion = '...'
-    shuffleboardVersion = '...'
-
-    toolchainVersion = '...'
-}
-
-// Set the dependencies you want to use in your JAVA project.
-// WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-dependencies {
-    compile wpilib()
-}
-
-// Java only. Setup your Jar File.
-jar {
-    // Compile a 'fat jar' (libraries included)
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    // Include your Manifest. Arguments are your Robot Main Class.
-    manifest GradleRIOPlugin.javaManifest('test.myClass')
-}
-
-// Set up your Native (C++) projects. Not needed in Java.
-model {
-    components {
-        myFrcBinary(NativeExecutableSpec) {
-            targetPlatform 'roborio'
-            sources.cpp {
-                source {
-                    srcDir 'src/main/cpp'
-                }
-            }
-            // Add the libraries you wish to use in your NATIVE project.
-            // WPILib adds WPILibJ, NTCore, OpenCV, CSCore among others.
-            useLibrary(it, "wpilib")
-        }
-    }
-}
+The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
