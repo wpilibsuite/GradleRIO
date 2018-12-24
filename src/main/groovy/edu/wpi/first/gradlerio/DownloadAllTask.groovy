@@ -10,6 +10,10 @@ class DownloadAllTask extends DefaultTask {
     @TaskAction
     void downloadAll() {
         project.configurations.each { Configuration conf ->
+            // Skip configurations that cannot be resolved
+            if (!conf.canBeResolved) {
+                return
+            }
             println("Resolving: " + conf.getName())
             conf.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact art ->
                 art.file    // Needed to trigger download
