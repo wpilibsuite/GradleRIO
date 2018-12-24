@@ -57,11 +57,12 @@ gradlePlugin {
 
 apply from: 'versionupdates.gradle'
 
+def examplesFolder = file("$rootDir/examples")
+
 tasks.register('PatchExamples') {
     doLast {
         String regex = "(id\\s*?[\\\"|\\']edu\\.wpi\\.first\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
 
-        def examplesFolder = file("$rootDir/examples")
         examplesFolder.eachFile { File file ->
             if (file.isDirectory() && file.name != '_archived') {
                 def buildGradleFile = new File(file, 'build.gradle')
@@ -74,6 +75,22 @@ tasks.register('PatchExamples') {
         }
     }
 }
+
+task zipExamples(dependsOn: PatchExamples)
+
+examplesFolder.eachFile { File file ->
+    if (file.isDirectory() && file.name != '_archived') {
+        task "zipExample${file.name}"(type: Zip) {
+            from(file) {
+                archiveName "${file.name}.zip"
+            }
+
+            zipExamples.dependsOn it
+        }
+    }
+}
+
+jar.finalizedBy zipExamples
 
 wrapper {
     gradleVersion = '5.0'
