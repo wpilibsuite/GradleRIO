@@ -21,9 +21,6 @@ class ExternalLaunchTask extends DefaultTask {
     }
 
     Process launch(List<String> cmd) {
-        List<String> cmdWindows = ["cmd", "/c", "start"] + cmd
-        List<String> cmdUnix = cmd
-
         String fileContent = ""
         if (OperatingSystem.current().isWindows()) {
             fileContent += "@echo off\nsetlocal\n"
@@ -68,11 +65,15 @@ class ExternalLaunchTask extends DefaultTask {
             println "Commands written to ${file.absolutePath}! Run this file."
             return null;
         } else {
+            File stdoutFile = new File(project.buildDir, "stdout/${name}.log")
             ProcessBuilder builder
             if (OperatingSystem.current().isWindows()) {
                 builder = new ProcessBuilder("cmd", "/c", "start", file.absolutePath)
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
+                stdoutFile.parentFile.mkdirs()
+                builder.redirectOutput(stdoutFile)
+                println "Program Output logfile: ${stdoutFile.absolutePath}"
             }
             Process process = builder.start()
             try {
