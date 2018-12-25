@@ -2,9 +2,12 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
+import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.jvm.tasks.Jar
 
 @CompileStatic
 class WPIDependenciesPlugin implements Plugin<Project> {
@@ -28,6 +31,26 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         def logger = ETLoggerFactory.INSTANCE.create("WPIDeps")
         def wpi = project.extensions.getByType(WPIExtension)
         wpi.deps.vendor.loadAll()
+
+        project.tasks.withType(Jar) { Jar jarTask ->
+            jarTask.doFirst {
+                // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
+                // run an online deploy dry or downloadAll task.
+                downloadRoborioDepsForDeploy(project, logger)
+            }
+        }
+    }
+
+    void downloadRoborioDepsForDeploy(Project project, ETLogger logger) {
+        ['nativeLib', 'nativeZip'].each {
+            def cfg = project.configurations.getByName(it)
+            if (cfg.canBeResolved) {
+                logger.info("Resolving RoboRIO Deps Configuration: " + it)
+                cfg.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact art ->
+                    art.file
+                }
+            }
+        }
     }
 
 }
