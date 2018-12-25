@@ -45,10 +45,12 @@ class WPIDependenciesPlugin implements Plugin<Project> {
         ['nativeLib', 'nativeZip'].each {
             def cfg = project.configurations.getByName(it)
             if (cfg.canBeResolved) {
-                logger.info("Resolving RoboRIO Deps Configuration: " + it)
+                logger.info("Resolving RoboRIO Deps Configuration: " + cfg.getName())
                 cfg.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact art ->
                     art.file
                 }
+            } else {
+                logger.info("Can't resolve: " + cfg.getName())
             }
         }
     }
