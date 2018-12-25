@@ -74,7 +74,12 @@ class ExternalLaunchTask extends DefaultTask {
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
             }
-            return builder.start()
+            File pidFile = new File(project.buildDir, "pids/${name}.pid")
+            pidFile.parentFile.mkdirs()
+            Process process = builder.start()
+            pidFile.text = process.pid().toString()
+            println "Simulation Launched! PID: ${process.pid()} (written to ${pidFile.absolutePath})"
+            return process
         }
     }
 }
