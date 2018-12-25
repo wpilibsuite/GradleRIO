@@ -12,6 +12,8 @@ import java.net.URL;
 
 public class RoboRioToolchainPlugin implements Plugin<Project> {
 
+    public static final String toolchainName = "roboRio";
+
     private RoboRioToolchainExtension roborioExt;
     private Project project;
 
@@ -23,7 +25,7 @@ public class RoboRioToolchainPlugin implements Plugin<Project> {
 
         ToolchainExtension toolchainExt = project.getExtensions().getByType(ToolchainExtension.class);
 
-        ToolchainDescriptor descriptor = new ToolchainDescriptor("roboRio", "roborioGcc", new ToolchainRegistrar<RoboRioGcc>(RoboRioGcc.class, project));
+        ToolchainDescriptor descriptor = new ToolchainDescriptor(toolchainName, "roborioGcc", new ToolchainRegistrar<RoboRioGcc>(RoboRioGcc.class, project));
         descriptor.setToolchainPlatforms(NativePlatforms.roborio);
         descriptor.setOptional(false);
         descriptor.getDiscoverers().all((ToolchainDiscoverer disc) -> {
