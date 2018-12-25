@@ -74,11 +74,16 @@ class ExternalLaunchTask extends DefaultTask {
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
             }
-            File pidFile = new File(project.buildDir, "pids/${name}.pid")
-            pidFile.parentFile.mkdirs()
             Process process = builder.start()
-            pidFile.text = process.pid().toString()
-            println "Simulation Launched! PID: ${process.pid()} (written to ${pidFile.absolutePath})"
+            try {
+                long pid = process.pid()
+                File pidFile = new File(project.buildDir, "pids/${name}.pid")
+                pidFile.parentFile.mkdirs()
+                pidFile.text = pid.toString()
+                println "Simulation Launched! PID: ${pid} (written to ${pidFile.absolutePath})"
+            } catch (UnsupportedOperationException ex) {
+                println "Simulation Launched! PID Unknown."
+            }
             return process
         }
     }
