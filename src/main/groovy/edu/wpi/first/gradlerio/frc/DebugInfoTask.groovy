@@ -36,7 +36,7 @@ class DebugInfoTask extends DefaultTask {
                     ]
                 }
             } else {
-                extraArtifacts.each { Closure toCall
+                extraArtifacts.each { Closure toCall ->
                     toCall(art, cfg)
                 }
             }
