@@ -36,7 +36,7 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.1.1-beta-4b"
+    version = "2019.1.1-beta-4c"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -73,7 +73,7 @@ tasks.register('PatchExamples') {
                 def buildGradleFile = new File(file, 'build.gradle')
                 if (buildGradleFile.exists() && buildGradleFile.isFile()) {
                     def text = buildGradleFile.text
-                    text = text.replaceAll(regex, "id \"edu.wpi.first.GradleRIO\" version \"${version}\" ")
+                    text = text.replaceAll(regex, "id \"edu.wpi.first.GradleRIO\" version \"${version}\"")
                     buildGradleFile.text = text
                 }
             }
