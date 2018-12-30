@@ -41,3 +41,13 @@ steps:
     chmod +x ./gradlew
     ./gradlew build
   displayName: 'Test Kotlin Build'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: 'build/distributions'
+    contents: '*'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: 'Examples'
