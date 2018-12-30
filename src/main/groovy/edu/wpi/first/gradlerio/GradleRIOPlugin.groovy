@@ -24,6 +24,7 @@ import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.execution.MultipleBuildFailures
 import org.gradle.internal.resolve.ArtifactResolveException
 import org.gradle.language.nativeplatform.tasks.AbstractNativeCompileTask
+import org.gradle.nativeplatform.tasks.AbstractLinkTask
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
@@ -33,6 +34,8 @@ class GradleRIOPlugin implements Plugin<Project> {
 
         ProjectWrapper(Project project) { this.project = project }
     }
+
+    static boolean _registered_build_finished = false;
 
     void apply(Project project) {
         // These configurations only act for the JAVA portion of GradleRIO
@@ -74,16 +77,20 @@ class GradleRIOPlugin implements Plugin<Project> {
             ensureSingletons(project, graph)
         }
 
-        project.gradle.buildFinished { BuildResult result ->
-            if (result.failure != null) {
-                try {
-                    checkBuildFailed(project, result)
-                } catch (Throwable t) {
-                    // Don't fail the build if we, for some reason, screw up
-                    println("Error during build failure checking: ${t.getClass()} ${t.getMessage()}")
+        if (!_registered_build_finished) {
+            project.gradle.buildFinished { BuildResult result ->
+                _registered_build_finished = false
+                if (result.failure != null) {
+                    try {
+                        checkBuildFailed(project, result)
+                    } catch (Throwable t) {
+                        // Don't fail the build if we, for some reason, screw up
+                        println("Error during build failure checking: ${t.getClass()} ${t.getMessage()}")
+                    }
                 }
             }
         }
+        _registered_build_finished = true
     }
 
     void inspector(Project project) {
@@ -139,14 +146,20 @@ class GradleRIOPlugin implements Plugin<Project> {
             }
         }
 
+        // An array of string hashcodes makes sure we don't "overprint" errors.
+        def reasons = [] as Set<Integer>
+
         exceptions.each { Throwable t ->
             if (t instanceof ArtifactResolveException) {
-                // Encourage user to run downloadAll task to prepare dependencies.
-                // ./gradlew deploy -PdeployDry will also work, but for safety we should encourage all downloads
-                // in case requirements change at competition.
-                logger.logError("GradleRIO detected this build failed due to missing dependencies!")
-                logger.logError("Try again with `./gradlew downloadAll` whilst connected to the internet (not the robot!)")
-                logger.logError("If the error persists, ensure you are not behind a firewall / proxy server (common in schools)")
+                if (reasons.add("ArtifactResolve".hashCode())) {
+                    // Encourage user to run downloadAll task to prepare dependencies.
+                    // ./gradlew deploy -PdeployDry will also work, but for safety we should encourage all downloads
+                    // in case requirements change at competition.
+                    logger.logErrorHead("Dependency Error!")
+                    logger.logError("GradleRIO detected this build failed due to missing dependencies!")
+                    logger.logError("Try again with `./gradlew downloadAll` whilst connected to the internet (not the robot!)")
+                    logger.logError("If the error persists, ensure you are not behind a firewall / proxy server (common in schools)")
+                }
             }
 
             if (t instanceof TaskExecutionException) {
@@ -156,11 +169,38 @@ class GradleRIOPlugin implements Plugin<Project> {
 
                 if (task instanceof TargetDiscoveryTask) {
                     def target = ((TargetDiscoveryTask)task).target
-                    logger.logError("GradleRIO detected this build failed due to not being able to find \"${target.name}\"!")
-                    logger.logError("Scroll up in this error log for more information.")
+                    if (reasons.add("Target${target.name}".hashCode())) {
+                        logger.logErrorHead("Missing Target!")
+                        logger.logError("GradleRIO detected this build failed due to not being able to find \"${target.name}\"!")
+                        logger.logError("Scroll up in this error log for more information.")
+                    }
                 } else if (task instanceof AbstractNativeCompileTask || task instanceof AbstractCompile) {
-                    logger.logError("GradleRIO detected this build failed due to a Compile Error (${task.getName()}).")
-                    logger.logError("Check that all your files are saved, then scroll up in this log for more information.")
+                    def reasonID = task.name
+                    if (task instanceof AbstractNativeCompileTask) {
+                        def typedTask = (AbstractNativeCompileTask)task
+                        def indexOfPlatform = reasonID.indexOf(typedTask.targetPlatform.get().name.capitalize())
+                        reasonID = reasonID.substring(0, indexOfPlatform < 0 ? reasonID.length() : indexOfPlatform)
+                        logger.info("ReasonID: ${reasonID}")
+                    }
+
+                    if (reasons.add("Compile${reasonID}".hashCode())) {
+                        logger.logErrorHead("Compilation Error!")
+                        logger.logError("GradleRIO detected this build failed due to a Compile Error (${reasonID}).")
+                        logger.logError("Check that all your files are saved, then scroll up in this log for more information.")
+                    }
+                } else if (task instanceof AbstractLinkTask) {
+                    def reasonID = task.name
+
+                    def typedTask = (AbstractLinkTask)task
+                    def indexOfPlatform = reasonID.indexOf(typedTask.targetPlatform.get().name.capitalize())
+                    reasonID = reasonID.substring(0, indexOfPlatform < 0 ? reasonID.length() : indexOfPlatform)
+                    logger.info("ReasonID: ${reasonID}")
+
+                    if (reasons.add("Link${reasonID}".hashCode())) {
+                        logger.logErrorHead("Linker Error!")
+                        logger.logError("GradleRIO detected this build failed due to a Linker Error (${reasonID}).")
+                        logger.logError("Check that all your files are saved, then scroll up in this log for more information.")
+                    }
                 }
             }
         }
