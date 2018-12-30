@@ -1,8 +1,10 @@
 package edu.wpi.first.gradlerio
 
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
+import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecSpec
 
@@ -77,15 +79,27 @@ class ExternalLaunchTask extends DefaultTask {
             }
             Process process = builder.start()
             try {
-                long pid = process.pid()
-                File pidFile = new File(project.buildDir, "pids/${name}.pid")
-                pidFile.parentFile.mkdirs()
-                pidFile.text = pid.toString()
-                println "Simulation Launched! PID: ${pid} (written to ${pidFile.absolutePath})"
+                long pid = getPid(process);
+                if (pid != -1) {
+                    File pidFile = new File(project.buildDir, "pids/${name}.pid")
+                    pidFile.parentFile.mkdirs()
+                    pidFile.text = pid.toString()
+                    println "Simulation Launched! PID: ${pid} (written to ${pidFile.absolutePath})"
+                } else {
+                    println "Simulation Launched! PID Unknown (this JVM does not support java.lang.Process#pid)"
+                }
             } catch (UnsupportedOperationException ex) {
-                println "Simulation Launched! PID Unknown."
+                println "Simulation Launched! PID Unknown (${ex.class}: ${ex.message})"
             }
             return process
+        }
+    }
+    @CompileDynamic
+    long getPid(Process process) {
+        if (Jvm.current().getJavaVersion().isJava9Compatible()) {
+            return process.pid()
+        } else {
+            return -1;
         }
     }
 }
