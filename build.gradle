@@ -88,6 +88,8 @@ examplesFolder.eachFile { File file ->
         task "zipExample${file.name}"(type: Zip) {
             from(file) {
                 archiveName "${file.name}.zip"
+                exclude 'build/'
+                exclude '.gradle/'
             }
 
             zipExamples.dependsOn it
