@@ -1,7 +1,7 @@
 plugins {
     id 'org.ysb33r.doxygen' version '0.5'
     id 'maven-publish'
-    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-4b"
+    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-4c"
 }
 
 ext.uuid = 'YOUR_UUID_HERE'
