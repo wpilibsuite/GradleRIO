@@ -27,7 +27,7 @@ class WPINativeDepRules extends RuleSource {
         addThirdPartyLibraries(libs, wpi)
     }
 
-    private static void common(NativeLib lib) {
+    static void common(NativeLib lib) {
         lib.targetPlatforms = []
         lib.headerDirs = []
         lib.sourceDirs = []
@@ -35,7 +35,7 @@ class WPINativeDepRules extends RuleSource {
         lib.staticMatchers = []
     }
 
-    private static void matchersShared(NativeLib lib, String libname, boolean desktop) {
+    static void matchersShared(NativeLib lib, String libname, boolean desktop) {
         if (desktop) {
             lib.sharedMatchers = [
                 "**/shared/*${libname}*.lib".toString(),
@@ -51,7 +51,7 @@ class WPINativeDepRules extends RuleSource {
         }
     }
 
-    private static void matchersStatic(NativeLib lib, String libname, boolean desktop) {
+    static void matchersStatic(NativeLib lib, String libname, boolean desktop) {
         if (desktop) {
             lib.staticMatchers = [
                 "**/static/*${libname}*.lib".toString(),
@@ -64,7 +64,7 @@ class WPINativeDepRules extends RuleSource {
         }
     }
 
-    private static void createWpiLibrary(NativeDepsSpec libs, String name, String mavenBase, String libName, boolean supportDesktop, boolean supportRaspbian, boolean shared) {
+    static void createWpiLibrary(NativeDepsSpec libs, String name, String mavenBase, String libName, boolean supportDesktop, boolean supportRaspbian, boolean shared) {
         ['debug', ''].each { String buildKind ->
             String buildType    = buildKind.contains('debug') ? 'debug' : 'release'
             String libSuffix    = buildKind.contains('debug') ? 'd' : ''
@@ -154,7 +154,7 @@ class WPINativeDepRules extends RuleSource {
         } as Action<? extends CombinedNativeLib>)
     }
 
-    private static void addWPILibraries(NativeDepsSpec libs, final WPIExtension wpi) {
+    static void addWPILibraries(NativeDepsSpec libs, final WPIExtension wpi) {
         for (boolean shared in [true, false]) {
             def suf = shared ? '' : '_static'
 
@@ -257,7 +257,7 @@ class WPINativeDepRules extends RuleSource {
         } as Action<? extends CombinedNativeLib>)
     }
 
-    private static void addThirdPartyLibraries(NativeDepsSpec libs, final WPIExtension wpi) {
+    static void addThirdPartyLibraries(NativeDepsSpec libs, final WPIExtension wpi) {
         createWpiLibrary(libs, 'googletest', "edu.wpi.first.thirdparty.frc${wpi.wpilibYear}:googletest:${wpi.googleTestVersion}", 'googletest', true, true, false)
 
         // OpenCV is special
