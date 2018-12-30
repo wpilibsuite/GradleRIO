@@ -1,8 +1,10 @@
 package edu.wpi.first.gradlerio
 
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
+import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecSpec
 
@@ -21,9 +23,6 @@ class ExternalLaunchTask extends DefaultTask {
     }
 
     Process launch(List<String> cmd) {
-        List<String> cmdWindows = ["cmd", "/c", "start"] + cmd
-        List<String> cmdUnix = cmd
-
         String fileContent = ""
         if (OperatingSystem.current().isWindows()) {
             fileContent += "@echo off\nsetlocal\n"
@@ -68,13 +67,39 @@ class ExternalLaunchTask extends DefaultTask {
             println "Commands written to ${file.absolutePath}! Run this file."
             return null;
         } else {
+            File stdoutFile = new File(project.buildDir, "stdout/${name}.log")
             ProcessBuilder builder
             if (OperatingSystem.current().isWindows()) {
                 builder = new ProcessBuilder("cmd", "/c", "start", file.absolutePath)
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
+                stdoutFile.parentFile.mkdirs()
+                builder.redirectOutput(stdoutFile)
+                println "Program Output logfile: ${stdoutFile.absolutePath}"
             }
-            return builder.start()
+            Process process = builder.start()
+            try {
+                long pid = getPid(process);
+                if (pid != -1) {
+                    File pidFile = new File(project.buildDir, "pids/${name}.pid")
+                    pidFile.parentFile.mkdirs()
+                    pidFile.text = pid.toString()
+                    println "Simulation Launched! PID: ${pid} (written to ${pidFile.absolutePath})"
+                } else {
+                    println "Simulation Launched! PID Unknown (this JVM does not support java.lang.Process#pid)"
+                }
+            } catch (UnsupportedOperationException ex) {
+                println "Simulation Launched! PID Unknown (${ex.class}: ${ex.message})"
+            }
+            return process
+        }
+    }
+    @CompileDynamic
+    long getPid(Process process) {
+        if (Jvm.current().getJavaVersion().isJava9Compatible()) {
+            return process.pid()
+        } else {
+            return -1;
         }
     }
 }
