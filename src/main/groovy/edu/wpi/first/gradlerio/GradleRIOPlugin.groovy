@@ -26,6 +26,7 @@ import org.gradle.execution.MultipleBuildFailures
 import org.gradle.internal.resolve.ArtifactResolveException
 import org.gradle.language.nativeplatform.tasks.AbstractNativeCompileTask
 import org.gradle.nativeplatform.tasks.AbstractLinkTask
+import org.gradle.util.GUtil
 
 @CompileStatic
 class GradleRIOPlugin implements Plugin<Project> {
@@ -68,6 +69,8 @@ class GradleRIOPlugin implements Plugin<Project> {
             }
         }
 
+        disableCacheCleanup()
+
         project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
             try {
                 if (!project.hasProperty("skip-inspector"))
@@ -92,6 +95,34 @@ class GradleRIOPlugin implements Plugin<Project> {
             }
         }
         _registered_build_finished = true
+    }
+
+    private static final String CACHE_CLEANUP_PROPERTY = "org.gradle.cache.cleanup"
+
+    // Write to ~/.gradle/gradle.properties, to disable cache cleanup. Cache cleanup
+    // has the possibility to make dependencies 'go missing' if left unattended for a long time.
+    // There's a chance this could happen during competition.
+    void disableCacheCleanup() {
+        def logger = ETLoggerFactory.INSTANCE.create("GR_CACHECLEANUP")
+        try {
+            // TODO: Issue #6084 on gradle/gradle, this may not work in 5.1 or all use cases
+            def gradleProperties = new File("${System.getProperty('user.home')}/.gradle/gradle.properties")
+            if (gradleProperties.isFile()) {
+                Properties props = GUtil.loadProperties(gradleProperties)
+                String cleanup = props.getProperty(CACHE_CLEANUP_PROPERTY)
+                if (cleanup == null || !cleanup.equals("false")) {
+                    logger.info("Disabling Gradle auto cache cleanup...")
+                    props.setProperty(CACHE_CLEANUP_PROPERTY, "false")
+                    logger.info("Saving gradle.properties...")
+                    GUtil.saveProperties(props, gradleProperties)
+                    logger.info("Done!")
+                }
+            }
+        } catch (e) {
+            logger.logError("Could not disable gradle cache cleanup. Run with --info for more information.")
+            logger.info("${e.class}: ${e.message}")
+            logger.info(e.stackTrace.join("\n"))
+        }
     }
 
     void inspector(Project project) {
