@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio
 
 import edu.wpi.first.gradlerio.caching.WrapperInspector
 import edu.wpi.first.gradlerio.frc.FRCPlugin
+import edu.wpi.first.gradlerio.frc.RoboRIO
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
@@ -171,6 +172,11 @@ class GradleRIOPlugin implements Plugin<Project> {
                     def target = ((TargetDiscoveryTask)task).target
                     if (reasons.add("Target${target.name}".hashCode())) {
                         logger.logErrorHead("Missing Target!")
+                        if (target instanceof RoboRIO) {
+                            logger.logErrorHead("=============================================")
+                            logger.logErrorHead("Are you connected to the robot, and is it on?")
+                            logger.logErrorHead("=============================================")
+                        }
                         logger.logError("GradleRIO detected this build failed due to not being able to find \"${target.name}\"!")
                         logger.logError("Scroll up in this error log for more information.")
                     }
