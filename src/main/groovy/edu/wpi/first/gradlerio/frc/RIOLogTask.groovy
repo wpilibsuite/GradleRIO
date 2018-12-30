@@ -26,7 +26,7 @@ class RIOLogTask extends DefaultTask {
             System.out.flush()
         }
 
-        def discoveries = dependsOn.findAll {
+        def discoveries = dependsOn.flatten().findAll {
             i -> i instanceof TargetDiscoveryTask && (i as TargetDiscoveryTask).available()
         }.collect {
             it as TargetDiscoveryTask
@@ -35,7 +35,12 @@ class RIOLogTask extends DefaultTask {
         def hosts = discoveries.collect() { TargetDiscoveryTask discover ->
             ((IPSessionController)discover.activeContext().controller).host
         }
-        if (hosts.empty) throw new StopExecutionException()
+
+        if (hosts.empty) {
+            println "No hosts! Stopping..."
+            throw new StopExecutionException()
+        }
+
         def host = hosts.first()
 
         def conn = new RiologConnection(host)
