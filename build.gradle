@@ -101,4 +101,5 @@ jar.finalizedBy zipExamples
 
 wrapper {
     gradleVersion = '5.0'
+    distributionType = Wrapper.DistributionType.ALL
 }
