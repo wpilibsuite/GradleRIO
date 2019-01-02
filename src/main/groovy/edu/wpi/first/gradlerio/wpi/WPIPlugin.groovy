@@ -59,10 +59,6 @@ class WPIPlugin implements Plugin<Project> {
         project.afterEvaluate {
             addMavenRepositories(project, wpiExtension)
         }
-
-        project.gradle.buildFinished {
-            _beta_warn = false;
-        }
     }
 
     void explainRepositories(Project project) {
@@ -115,6 +111,4 @@ class WPIPlugin implements Plugin<Project> {
                 }
         }
     }
-
-    static boolean _beta_warn = false;
 }
