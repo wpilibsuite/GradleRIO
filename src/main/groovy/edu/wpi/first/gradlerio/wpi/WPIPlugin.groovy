@@ -56,17 +56,7 @@ class WPIPlugin implements Plugin<Project> {
             }
         }
 
-        // TODO: Remove for stable
         project.afterEvaluate {
-            if (!_beta_warn) {
-                def style = StyledTextOutput.Style.SuccessHeader
-                logger.withLock {
-                    logger.logStyle("NOTE: You are using a BETA version of GradleRIO, designed for the 2019 Season!", style)
-                    logger.logStyle("This release requires the 2019 RoboRIO Image, and may be unstable. Do not use this for the official competition season.", style)
-                    logger.logStyle("If you encounter any issues and/or bugs, please report them to https://github.com/wpilibsuite/GradleRIO", style)
-                }
-                _beta_warn = true;
-            }
             addMavenRepositories(project, wpiExtension)
         }
 
