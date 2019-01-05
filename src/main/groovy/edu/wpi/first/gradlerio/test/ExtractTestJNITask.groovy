@@ -45,9 +45,11 @@ class ExtractTestJNITask extends DefaultTask {
         if (dir.exists()) dir.deleteDir()
         dir.parentFile.mkdirs()
 
-        project.copy { CopySpec s ->
-            s.from(project.files { extractedFiles.files })
-            s.into(dir)
+        if (extractedFiles != null) {
+            project.copy { CopySpec s ->
+                s.from(project.files { extractedFiles.files })
+                s.into(dir)
+            }
         }
     }
 }
