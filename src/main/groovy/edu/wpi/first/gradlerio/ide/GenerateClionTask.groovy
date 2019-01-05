@@ -29,6 +29,7 @@ class GenerateClionTask extends DefaultTask {
         file.write("project(${project.name})\nset(CMAKE_CXX_STANDARD 14)\n\n")
 
         project.extensions.getByType(ClionExtension)._binaries.each { ClionExtension.ClionBinarySpec clionBin ->
+            println clionBin
             def src_dirs = [] as Set<File>
             def include_dirs = [] as Set<File>
             def dep_include_dirs = [] as Set<File>
@@ -70,7 +71,7 @@ class GenerateClionTask extends DefaultTask {
                 file.write("set(ALL_INCLUDES \${INCLUDES})\n")
             }
             file.write("\n")
-            file.write("add_executable(fake_${binfile.name} \${SOURCES} \${ALL_INCLUDES})\n")
+            file.write("add_executable(fake_${binfile.name}_${bin.buildType.name} \${SOURCES} \${ALL_INCLUDES})\n")
 
             if (!subdirs_write) {
                 subdirs_write = true
@@ -84,8 +85,8 @@ class GenerateClionTask extends DefaultTask {
             def work_dir = "WORKING_DIRECTORY ../${gradle_path} "
             def proj_path = project == project.rootProject ? "" : "${project.path}:"
             def gradle_exe = OperatingSystem.current().isWindows() ? "gradlew.bat" : "./gradlew"
-            file.write("add_custom_target(${binfile.name}_build ${gradle_exe} ${proj_path}build ${work_dir}SOURCES \${SOURCES} \${ALL_INCLUDES})\n")
-            file.write("add_custom_target(${binfile.name}_deploy ${gradle_exe} ${proj_path}deploy ${work_dir}SOURCES \${SOURCES} \${ALL_INCLUDES})\n")
+            file.write("add_custom_target(${binfile.name}_${bin.buildType.name}_build ${gradle_exe} ${proj_path}build ${work_dir}SOURCES \${SOURCES} \${ALL_INCLUDES})\n")
+            file.write("add_custom_target(${binfile.name}_${bin.buildType.name}_deploy ${gradle_exe} ${proj_path}deploy ${work_dir}SOURCES \${SOURCES} \${ALL_INCLUDES})\n")
         }
         file.close()
     }
