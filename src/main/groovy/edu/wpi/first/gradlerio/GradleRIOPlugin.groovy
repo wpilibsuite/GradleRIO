@@ -69,7 +69,7 @@ class GradleRIOPlugin implements Plugin<Project> {
             }
         }
 
-        disableCacheCleanup()
+        disableCacheCleanup(project)
 
         project.gradle.taskGraph.whenReady { TaskExecutionGraph graph ->
             try {
@@ -97,16 +97,25 @@ class GradleRIOPlugin implements Plugin<Project> {
         _registered_build_finished = true
     }
 
+    private static final String GRADLERIO_DISABLE_CACHE_CLEANUP_PROPERTY = "gradlerio.disable.cache.cleanup"
     private static final String CACHE_CLEANUP_PROPERTY = "org.gradle.cache.cleanup"
 
     // Write to ~/.gradle/gradle.properties, to disable cache cleanup. Cache cleanup
     // has the possibility to make dependencies 'go missing' if left unattended for a long time.
     // There's a chance this could happen during competition.
-    void disableCacheCleanup() {
+    void disableCacheCleanup(Project project) {
         def logger = ETLoggerFactory.INSTANCE.create("GR_CACHECLEANUP")
+        if (project.findProperty(GRADLERIO_DISABLE_CACHE_CLEANUP_PROPERTY) == "false") {
+            logger.logErrorHead("Warning! You have the property gradlerio.disable.cache.cleanup set to false")
+            logger.logError("This can cause issues when going to competition, since this means your dependencies can be deleted unwillingly after a month.")
+            logger.logError("Remove this from your gradle.properties file unless you know what you're doing.")
+            logger.logError("Note, this may result in you not being able to deploy code at competition")
+            return
+        }
+
         try {
             // TODO: Issue #6084 on gradle/gradle, this may not work in 5.1 or all use cases
-            def gradleProperties = new File("${System.getProperty('user.home')}/.gradle/gradle.properties")
+            def gradleProperties = new File("${project.gradle.gradleUserHomeDir}/gradle.properties")
             if (gradleProperties.isFile()) {
                 Properties props = GUtil.loadProperties(gradleProperties)
                 String cleanup = props.getProperty(CACHE_CLEANUP_PROPERTY)
