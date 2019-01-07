@@ -1,33 +1,18 @@
 package edu.wpi.first.gradlerio.test
 
-import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.google.gson.stream.JsonWriter
-import edu.wpi.first.gradlerio.JsonUtil
-import edu.wpi.first.gradlerio.SingletonTask
+import edu.wpi.first.gradlerio.JsonMergeTask
 import groovy.transform.CompileStatic
-import org.gradle.api.DefaultTask
-import org.gradle.api.Task
-import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
-class ExternalSimulationMergeTask extends DefaultTask implements SingletonTask {
+class ExternalSimulationMergeTask extends JsonMergeTask {
 
-    @TaskAction
-    void merge() {
-        def containerFolder = new File(project.rootProject.buildDir, "debug/partial")
-        def outfile = new File(project.rootProject.buildDir, "debug/desktopinfo.json")
+    public static final String CONTAINER_FOLDER = "debug/partial"
+    public static final String OUTPUT_FILE = "debug/desktopinfo.json"
 
-        if (containerFolder.exists()) {
-            def files = containerFolder.listFiles().findAll {
-                it.isFile() && it.name.endsWith(".json") && it.absolutePath != outfile.absolutePath
-            } as List<File>
-            JsonUtil.mergeArrays(files, outfile)
-        }
+    ExternalSimulationMergeTask() {
+        this.out = new File(project.rootProject.buildDir, OUTPUT_FILE)
+        this.folder = new File(project.rootProject.buildDir, CONTAINER_FOLDER)
+        this.singletonName = "mergeExternalSim"
     }
 
-    @Override
-    String singletonName() {
-        return "mergeExternalSim"
-    }
 }

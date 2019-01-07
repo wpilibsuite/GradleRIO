@@ -21,7 +21,7 @@ class NativeExternalSimulationTask extends ExternalSimulationTask {
     List<NativeExecutableBinarySpec> binaries = []
 
     @OutputFile
-    File outfile = new File(project.rootProject.buildDir, "debug/partial/${project.name}_native.json")
+    File outfile = new File(project.rootProject.buildDir, "${ExternalSimulationMergeTask.CONTAINER_FOLDER}/${project.name}_native.json")
 
     @TaskAction
     void create() {
