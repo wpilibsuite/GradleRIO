@@ -30,7 +30,7 @@ class JavaExternalSimulationTask extends ExternalSimulationTask {
 
             def cfg = [:]
 
-            cfg['name'] = jar.baseName
+            cfg['name'] = "${jar.baseName} (in project ${project.name})".toString()
             cfg['file'] = jar.outputs.files.singleFile.absolutePath
             cfg['extensions'] = extensions
             cfg['librarydir'] = libraryDir

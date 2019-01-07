@@ -4,12 +4,16 @@ import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.artifact.Artifact
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
 class DebugInfoTask extends DefaultTask {
 
     List<Closure> extraArtifacts = []
+
+    @OutputFile
+    File outfile = new File(project.rootProject.buildDir, "${DebugInfoMergeTask.CONTAINER_FOLDER}/${project.name}.json")
 
     @TaskAction
     void writeDebugInfo() {
@@ -18,7 +22,7 @@ class DebugInfoTask extends DefaultTask {
             if (art instanceof FRCJavaArtifact) {
                 art.targets.all { String target ->
                     cfg << [
-                        artifact: art.name,
+                        artifact: "${art.name} (in project ${project.name})".toString(),
                         target: target,
                         debugfile: "${art.name}_${target}.debugconfig".toString(),
                         project: project.name,
@@ -28,7 +32,7 @@ class DebugInfoTask extends DefaultTask {
             } else if (art instanceof FRCNativeArtifact) {
                 art.targets.all { String target ->
                     cfg << [
-                        artifact: art.name,
+                        artifact: "${art.name} (in project ${project.name})".toString(),
                         target: target,
                         component: (art as FRCNativeArtifact).component,
                         debugfile: "${art.name}_${target}.debugconfig".toString(),
@@ -42,12 +46,11 @@ class DebugInfoTask extends DefaultTask {
             }
         }
 
-        def file = new File(project.buildDir, "debug/debuginfo.json")
-        file.parentFile.mkdirs()
+        outfile.parentFile.mkdirs()
 
         def gbuilder = new GsonBuilder()
         gbuilder.setPrettyPrinting()
-        file.text = gbuilder.create().toJson(cfg)
+        outfile.text = gbuilder.create().toJson(cfg)
     }
 
 }

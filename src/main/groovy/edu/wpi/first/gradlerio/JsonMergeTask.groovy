@@ -12,7 +12,7 @@ class JsonMergeTask extends DefaultTask implements SingletonTask {
     @Internal
     String singletonName = "jsonMerge"
 
-    @InputFile
+    @Internal
     File folder
 
     @OutputFile
