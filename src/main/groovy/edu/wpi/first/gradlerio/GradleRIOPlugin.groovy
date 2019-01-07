@@ -145,16 +145,18 @@ class GradleRIOPlugin implements Plugin<Project> {
     }
 
     void ensureSingletons(Project project, TaskExecutionGraph graph) {
-        Map<String, Task> singletonMap = [:]
-        graph.getAllTasks().each { Task t ->
+        def allTasks = graph.getAllTasks()
+        def visited = [] as Set<String>
+
+        // Go in reverse - only use the latest version in the task graph (not earliest)
+        allTasks.reverseEach { Task t ->
             if (t instanceof SingletonTask) {
                 String singletonName = (t as SingletonTask).singletonName()
-                if (singletonMap.containsKey(singletonName)) {
-                    Logger.getLogger(this.class).info("Singleton task on graph, disabling: ${t} for ${singletonName}")
-                    t.setEnabled(false)
+                if (visited.add(singletonName)) {
+                    Logger.getLogger(this.class).info("Singleton Task Using: ${t} for ${singletonName}")
                 } else {
-                    Logger.getLogger(this.class).info("Singleton task on graph, using: ${t} for ${singletonName}")
-                    singletonMap.put(singletonName, (Task)t)
+                    Logger.getLogger(this.class).info("Singleton Task Disabling: ${t} for ${singletonName}")
+                    t.setEnabled(false)
                 }
             }
         }
