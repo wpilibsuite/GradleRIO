@@ -14,8 +14,8 @@ class FRCJREArtifact extends MavenArtifact {
 
     FRCJREArtifact(String name, Project project) {
         super(name, project)
-        configuration = project.configurations.create(name + 'frcjre')
-        dependency = project.dependencies.add(name + 'frcjre', project.extensions.getByType(WPIExtension).jreArtifactLocation)
+        configuration = project.configurations.create(configuration())
+        dependency = project.dependencies.add(configuration(), project.extensions.getByType(WPIExtension).jreArtifactLocation)
 
         onlyIf = { DeployContext ctx ->
             buildRequiresJre.apply(ctx) && jreMissing(ctx)
@@ -33,6 +33,10 @@ class FRCJREArtifact extends MavenArtifact {
             ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
             ctx.logger.log('JRE Deployed!')
         }
+    }
+
+    String configuration() {
+        return name + 'frcjre'
     }
 
     boolean jreMissing(DeployContext ctx) {
