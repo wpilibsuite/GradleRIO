@@ -15,7 +15,7 @@ class WPIExtension {
     String wpilibVersion = "2019.1.1"
     String niLibrariesVersion = "2019.12.1"
     String opencvVersion = "3.4.4-4"
-    static final String[] validImageVersions = ['2019_v12']
+    static final String[] validImageVersions = ['2019_v12', '2019_v13']
 
     String wpilibYear = '2019'
 
