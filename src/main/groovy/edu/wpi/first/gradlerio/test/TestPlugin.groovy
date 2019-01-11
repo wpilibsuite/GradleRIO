@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.test
 
 import groovy.transform.CompileStatic
 import jaci.gradle.toolchains.ToolchainsPlugin
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternFilterable
@@ -19,6 +20,10 @@ class TestPlugin implements Plugin<Project> {
         project.plugins.withType(ToolchainsPlugin).all {
             project.pluginManager.apply(NativeTestPlugin)
         }
+
+        project.tasks.register("externalSimulate", ExternalSimulationMergeTask, { ExternalSimulationMergeTask t ->
+            t.dependsOn(project.tasks.withType(ExternalSimulationTask))
+        } as Action<ExternalSimulationMergeTask>)
     }
 
     static List<String> getHALExtensions(Project project) {

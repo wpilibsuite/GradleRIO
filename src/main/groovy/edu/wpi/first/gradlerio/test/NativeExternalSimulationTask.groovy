@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.nativedeps.DelegatedDependencySet
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet
 import org.gradle.nativeplatform.NativeDependencySet
@@ -15,9 +16,12 @@ import org.gradle.nativeplatform.toolchain.Clang
 import java.nio.file.Paths
 
 @CompileStatic
-class NativeExternalSimulationTask extends DefaultTask {
+class NativeExternalSimulationTask extends ExternalSimulationTask {
     @Internal
     List<NativeExecutableBinarySpec> binaries = []
+
+    @OutputFile
+    File outfile = new File(project.rootProject.buildDir, "${ExternalSimulationMergeTask.CONTAINER_FOLDER}/${project.name}_native.json")
 
     @TaskAction
     void create() {
@@ -26,7 +30,7 @@ class NativeExternalSimulationTask extends DefaultTask {
         for (NativeExecutableBinarySpec binary : binaries) {
             def cfg = [:]
             def installTask = (InstallExecutable)binary.tasks.install
-            cfg['name'] = "${binary.component.name} (${binary.buildType})".toString()
+            cfg['name'] = "${binary.component.name} (in project ${project.name})".toString()
             cfg['extensions'] = extensions
             cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
             cfg['clang'] = binary.toolChain in Clang
@@ -62,7 +66,6 @@ class NativeExternalSimulationTask extends DefaultTask {
         gbuilder.setPrettyPrinting()
         def json = gbuilder.create().toJson(cfgs)
 
-        def outfile = new File(project.buildDir, "debug/desktopinfo.json")
         outfile.parentFile.mkdirs()
         outfile.text = json
     }

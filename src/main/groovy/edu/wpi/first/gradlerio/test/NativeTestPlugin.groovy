@@ -43,6 +43,8 @@ class NativeTestPlugin implements Plugin<Project> {
         project.tasks.register("simulateExternalCpp", NativeExternalSimulationTask, { NativeExternalSimulationTask task ->
             task.group = "GradleRIO"
             task.description = "Simulate External Task for native executable. Exports a JSON file for use by editors / tools"
+
+            task.finalizedBy(project.tasks.withType(ExternalSimulationMergeTask))
         } as Action<NativeExternalSimulationTask>)
     }
 
@@ -81,7 +83,9 @@ class NativeTestPlugin implements Plugin<Project> {
             def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
                 spec.binaries.withType(NativeExecutableBinarySpec).each { NativeExecutableBinarySpec bin ->
-                    if (bin.targetPlatform.operatingSystem.current && !bin.targetPlatform.name.equals(NativePlatforms.roborio)) {
+                    if (bin.targetPlatform.operatingSystem.current &&
+                            bin.targetPlatform.name.equals(NativePlatforms.desktop) &&
+                            bin.buildType.name.equals('debug')) {
                         mainTask.binaries << bin
                         mainTask.dependsOn bin.tasks.install
                     }

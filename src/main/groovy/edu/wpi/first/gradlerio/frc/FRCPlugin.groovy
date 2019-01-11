@@ -9,6 +9,7 @@ import jaci.gradle.deploy.artifact.ArtifactDeployTask
 import jaci.gradle.deploy.artifact.CommandArtifact
 import jaci.gradle.deploy.artifact.JavaArtifact
 import jaci.gradle.deploy.context.DeployContext
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -35,8 +36,14 @@ class FRCPlugin implements Plugin<Project> {
         project.pluginManager.apply(EmbeddedTools)
         project.pluginManager.apply(RiologPlugin)
 
-        def debugInfoLazy = project.tasks.register("writeDebugInfo", DebugInfoTask)
+        def debugInfoLazy = project.tasks.register("writeDebugInfo", DebugInfoTask, { DebugInfoTask t ->
+            t.finalizedBy(project.tasks.withType(DebugInfoMergeTask))
+        } as Action<DebugInfoTask>)
         def frcExt = project.extensions.create("frc", FRCExtension, project)
+
+        project.tasks.register("mergeDebugInfo", DebugInfoMergeTask, { DebugInfoMergeTask t ->
+            t.dependsOn(debugInfoLazy)
+        } as Action<DebugInfoMergeTask>)
 
         project.tasks.withType(ArtifactDeployTask).configureEach { ArtifactDeployTask t ->
             t.dependsOn(debugInfoLazy)

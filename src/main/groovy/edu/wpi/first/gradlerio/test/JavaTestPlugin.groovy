@@ -26,6 +26,7 @@ class JavaTestPlugin implements Plugin<Project> {
 
             task.dependsOn("extractTestJNI")
             task.dependsOn(project.tasks.withType(Jar))
+            task.finalizedBy(project.tasks.withType(ExternalSimulationMergeTask))
         } as Action<JavaExternalSimulationTask>)
 
         project.tasks.register("simulateJava", JavaSimulationTask, { JavaSimulationTask task ->

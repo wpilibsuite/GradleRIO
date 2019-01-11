@@ -4,11 +4,16 @@ import com.google.gson.GsonBuilder
 import edu.wpi.first.gradlerio.test.JavaTestPlugin
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.jvm.tasks.Jar
 
 @CompileStatic
-class JavaExternalSimulationTask extends DefaultTask {
+class JavaExternalSimulationTask extends ExternalSimulationTask {
+
+    @OutputFile
+    File outfile = new File(project.rootProject.buildDir, "${ExternalSimulationMergeTask.CONTAINER_FOLDER}/${project.name}_java.json")
+
     @TaskAction
     void create() {
         def cfgs = []
@@ -25,7 +30,7 @@ class JavaExternalSimulationTask extends DefaultTask {
 
             def cfg = [:]
 
-            cfg['name'] = jar.baseName
+            cfg['name'] = "${jar.baseName} (in project ${project.name})".toString()
             cfg['file'] = jar.outputs.files.singleFile.absolutePath
             cfg['extensions'] = extensions
             cfg['librarydir'] = libraryDir
@@ -37,7 +42,6 @@ class JavaExternalSimulationTask extends DefaultTask {
         gbuilder.setPrettyPrinting()
         def json = gbuilder.create().toJson(cfgs)
 
-        def outfile = new File(project.buildDir, "debug/desktopinfo.json")
         outfile.parentFile.mkdirs()
         outfile.text = json
     }
