@@ -29,7 +29,6 @@ class GenerateClionTask extends DefaultTask {
         file.write("project(${project.name})\nset(CMAKE_CXX_STANDARD 14)\n\n")
 
         project.extensions.getByType(ClionExtension)._binaries.each { ClionExtension.ClionBinarySpec clionBin ->
-            println clionBin
             def src_dirs = [] as Set<File>
             def include_dirs = [] as Set<File>
             def dep_include_dirs = [] as Set<File>
