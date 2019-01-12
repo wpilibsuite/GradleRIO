@@ -17,13 +17,21 @@ Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also suppor
 For getting started with VSCode, please see the screensteps documentation:
 https://wpilib.screenstepslive.com/s/currentCS/m/79833
 
-### Without VSCode
-Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.
+### Without VSCode 
+Follow the installation instructions on screensteps: https://wpilib.screenstepslive.com/s/currentCS/m/79833  
+_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VSCode if you wish._  
+
+**WPILibUtility Standalone Project Builder**  
+WPILib provides a standalone project builder that provides the same interface as VSCode, without having to use VSCode.  
+
+If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\frc2019\utility` (windows), or `~/frc2019/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.  
+Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases  
+
+Use the WPILib Utility whenever you want to create a new project. 
+
+**GradleRIO Example Project**  
+Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.  
 Download the .zip file corresponding to your language and extract it.
-
-For C++ users, run `./gradlew installRoboRioToolchain`.
-
-You are now ready to go! Run `./gradlew build` to build your code, or `./gradlew deploy` to deploy to a robot. More commands are listed below.
 
 ## Adding Vendor Libraries
 ### With VSCode
