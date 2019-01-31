@@ -14,9 +14,12 @@ import org.gradle.model.ModelMap
 import org.gradle.model.Mutate
 import org.gradle.model.RuleSource
 import org.gradle.model.Validate
+import org.gradle.nativeplatform.NativeComponentSpec
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
+import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec
+import org.gradle.nativeplatform.test.NativeTestSuiteSpec
 import org.gradle.nativeplatform.test.googletest.GoogleTestTestSuiteBinarySpec
 import org.gradle.platform.base.BinaryContainer
 import org.gradle.platform.base.ComponentSpecContainer
@@ -78,7 +81,7 @@ class NativeTestPlugin implements Plugin<Project> {
         }
 
         @Validate
-        void populateExternalSimBinaries(ModelMap<Task> tasks, ComponentSpecContainer components, ExtensionContainer extCont) {
+        void populateExternalSimBinaries(ModelMap<Task> tasks, ComponentSpecContainer components, final BinaryContainer binaries, ExtensionContainer extCont) {
             NativeExternalSimulationTask mainTask = (NativeExternalSimulationTask)tasks.get('simulateExternalCpp')
             def project = extCont.getByType(GradleRIOPlugin.ProjectWrapper).project
             components.withType(NativeExecutableSpec).each { NativeExecutableSpec spec ->
@@ -86,9 +89,18 @@ class NativeTestPlugin implements Plugin<Project> {
                     if (bin.targetPlatform.operatingSystem.current &&
                             bin.targetPlatform.name.equals(NativePlatforms.desktop) &&
                             bin.buildType.name.equals('debug')) {
-                        mainTask.binaries << bin
+                        mainTask.exeBinaries << bin
                         mainTask.dependsOn bin.tasks.install
                     }
+                }
+            }
+
+            binaries.withType(NativeTestSuiteBinarySpec).each { NativeTestSuiteBinarySpec bin ->
+                if (bin.targetPlatform.operatingSystem.current &&
+                        bin.targetPlatform.name.equals(NativePlatforms.desktop) &&
+                        bin.buildType.name.equals('debug')) {
+                    mainTask.testBinaries << bin
+                    mainTask.dependsOn bin.tasks.install
                 }
             }
         }
