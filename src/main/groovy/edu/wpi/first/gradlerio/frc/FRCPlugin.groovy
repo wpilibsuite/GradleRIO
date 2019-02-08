@@ -127,6 +127,14 @@ class FRCPlugin implements Plugin<Project> {
             allFrcTargets(dext, artifact)
             artifact.configuration = nativeLibs
             artifact.zipped = false
+        }.tasks.each {
+            if (!it instanceof ArtifactDeployTask) return
+            def task = (ArtifactDeployTask)it
+            if (!(task.artifact instanceof ConfigurationArtifact)) return
+            def config = ((ConfigurationArtifact)task.artifact).configuration
+            task.doFirst {
+                config.getResolvedConfiguration()
+            }
         }
 
         dext.artifacts.artifact('nativeZip', ConfigurationArtifact) { ConfigurationArtifact artifact ->
@@ -135,6 +143,14 @@ class FRCPlugin implements Plugin<Project> {
             artifact.zipped = true
             artifact.filter = { PatternFilterable pat ->
                 pat.include('*.so*', 'lib/*.so', 'java/lib/*.so', 'linux/athena/shared/*.so', 'linuxathena/**/*.so', '**/libopencv*.so.*')
+            }
+        }.tasks.each {
+            if (!(it instanceof ArtifactDeployTask)) return
+            def task = (ArtifactDeployTask)it
+            if (!(task.artifact instanceof ConfigurationArtifact)) return
+            def config = ((ConfigurationArtifact)task.artifact).configuration
+            task.doFirst {
+                config.getResolvedConfiguration()
             }
         }
     }
