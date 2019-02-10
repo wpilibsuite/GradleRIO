@@ -252,6 +252,7 @@ class WPINativeDepRules extends RuleSource {
 
         libs.create('wpilibjni_sim', CombinedNativeLib, { CombinedNativeLib lib ->
             lib.libs << 'wpilibjni_common'
+            lib.libraryName = 'wpilibjni'
             lib.buildTypes = ['debug', 'release']
             lib.targetPlatforms = [wpi.platforms.desktop, wpi.platforms.raspbian]
         } as Action<? extends CombinedNativeLib>)
