@@ -27,7 +27,9 @@ class FRCNativeArtifact extends NativeArtifact {
         targetPlatform = NativePlatforms.roborio
 
         predeploy << { DeployContext ctx ->
+            def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")
+            ctx.execute("rm \"${binFile}\"")
         }
 
         postdeploy << { DeployContext ctx ->
