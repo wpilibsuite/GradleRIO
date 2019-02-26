@@ -1,9 +1,8 @@
 package edu.wpi.first.toolchain;
 
-import jaci.gradle.log.ETLogger;
-import jaci.gradle.log.ETLoggerFactory;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.gradle.api.Project;
@@ -19,18 +18,26 @@ import org.gradle.model.Defaults;
 import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.RuleSource;
+import org.gradle.model.Validate;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import org.gradle.nativeplatform.SharedLibraryBinarySpec;
 import org.gradle.nativeplatform.internal.CompilerOutputFileNamingSchemeFactory;
 import org.gradle.nativeplatform.platform.NativePlatform;
 import org.gradle.nativeplatform.tasks.AbstractLinkTask;
+import org.gradle.nativeplatform.toolchain.NativeToolChain;
+import org.gradle.nativeplatform.toolchain.NativeToolChainRegistry;
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainRegistryInternal;
 import org.gradle.nativeplatform.toolchain.internal.gcc.metadata.SystemLibraryDiscovery;
 import org.gradle.nativeplatform.toolchain.internal.metadata.CompilerMetaDataProviderFactory;
+import org.gradle.platform.base.BinaryContainer;
+import org.gradle.platform.base.BinarySpec;
 import org.gradle.platform.base.BinaryTasks;
 import org.gradle.platform.base.PlatformContainer;
 import org.gradle.process.internal.ExecActionFactory;
+
+import jaci.gradle.log.ETLogger;
+import jaci.gradle.log.ETLoggerFactory;
 
 public class ToolchainRules extends RuleSource {
 
@@ -75,6 +82,33 @@ public class ToolchainRules extends RuleSource {
 
             NativePlatform desktop = platforms.maybeCreate(NativePlatforms.desktop, NativePlatform.class);
             desktop.architecture(NativePlatforms.desktopArch().replaceAll("-", "_"));
+        }
+    }
+
+    @Validate
+    void checkEnabledToolchains(final BinaryContainer binaries, final NativeToolChainRegistry toolChains) {
+        // Map of platform to toolchains
+        Map<String, GccToolChain> gccToolChains = new HashMap<>();
+        for(NativeToolChain toolChain : toolChains) {
+            if (toolChain instanceof GccToolChain) {
+                GccToolChain gccToolChain = (GccToolChain)toolChain;
+                for (String name : gccToolChain.getDescriptor().getToolchainPlatforms()) {
+                    gccToolChains.put(name, gccToolChain);
+                }
+                
+            }
+        }
+
+        for (BinarySpec oBinary : binaries) {
+            if (!(oBinary instanceof NativeBinarySpec)) {
+                break;
+            }
+            NativeBinarySpec binary = (NativeBinarySpec)oBinary;
+            GccToolChain chain = gccToolChains.getOrDefault(binary.getTargetPlatform().getName(), null);
+            // Can't use getToolChain, as that is invalid for unknown platforms
+            if (chain != null) {
+                chain.setUsed(true);
+            }
         }
     }
 

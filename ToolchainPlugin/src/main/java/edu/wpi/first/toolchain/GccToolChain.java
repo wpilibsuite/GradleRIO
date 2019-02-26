@@ -14,6 +14,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
     private ETLogger logger;
     private ToolchainDescriptor descriptor;
     private ToolchainDiscoverer discoverer;
+    private boolean isUsed;
 
     public GccToolChain(ToolchainOptions options) {
         super(options.name,
@@ -57,7 +58,7 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
                     boolean optional = descriptor.isOptional() || project.hasProperty("toolchain-optional-" + descriptor.getName());
                     if (optional) {
                         logger.logStyle("Skipping builds for " + descriptor.getName() + " (toolchain is marked optional)", StyledTextOutput.Style.Description);
-                    } else {
+                    } else if (isUsed) {
                         logger.logError("=============================");
                         logger.logErrorHead("No Toolchain Found for " + descriptor.getName());
                         logger.logErrorHead("Run `./gradlew " + descriptor.installTaskName() + "` to install one!");
@@ -85,5 +86,9 @@ public abstract class GccToolChain extends AbstractGccCompatibleToolChain {
 
     public ToolchainDiscoverer getDiscoverer() {
         return discoverer;
+    }
+
+    public void setUsed(boolean used) {
+        isUsed = used;
     }
 }
