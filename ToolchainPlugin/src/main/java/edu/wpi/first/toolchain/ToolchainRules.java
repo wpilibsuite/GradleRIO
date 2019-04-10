@@ -36,6 +36,7 @@ import org.gradle.platform.base.BinaryTasks;
 import org.gradle.platform.base.PlatformContainer;
 import org.gradle.process.internal.ExecActionFactory;
 
+import edu.wpi.first.toolchain.configurable.CrossCompilerConfiguration;
 import jaci.gradle.log.ETLogger;
 import jaci.gradle.log.ETLoggerFactory;
 
@@ -56,7 +57,7 @@ public class ToolchainRules extends RuleSource {
 
         final ToolchainExtension ext = extContainer.getByType(ToolchainExtension.class);
 
-        ext.all(desc -> {
+        ext.getToolchainDescriptors().all(desc -> {
             logger.info("Descriptor Register: " + desc.getName());
             ToolchainOptions options = new ToolchainOptions(instantiator, buildOperationExecutor, OperatingSystem.current(),
                             fileResolver, execActionFactory, compilerOutputFileNamingSchemeFactory, metaDataProviderFactory, workerLeaseService,
@@ -68,20 +69,18 @@ public class ToolchainRules extends RuleSource {
     }
 
     @Mutate
-    void addDefaultPlatforms(final ExtensionContainer extContainer, final PlatformContainer platforms) {
+    void addDefaultPlatforms(final PlatformContainer platforms, final ExtensionContainer extContainer) {
         final ToolchainExtension ext = extContainer.getByType(ToolchainExtension.class);
 
         if (ext.registerPlatforms) {
-            NativePlatform roborio = platforms.maybeCreate(NativePlatforms.roborio, NativePlatform.class);
-            roborio.architecture("arm");
-            roborio.operatingSystem("linux");
-
-            NativePlatform raspbian = platforms.maybeCreate(NativePlatforms.raspbian, NativePlatform.class);
-            raspbian.architecture("arm");
-            raspbian.operatingSystem("linux");
-
             NativePlatform desktop = platforms.maybeCreate(NativePlatforms.desktop, NativePlatform.class);
             desktop.architecture(NativePlatforms.desktopArch().replaceAll("-", "_"));
+
+            for (CrossCompilerConfiguration config : ext.getCrossCompilers()) {
+                NativePlatform configedPlatform = platforms.maybeCreate(config.getName(), NativePlatform.class);
+                configedPlatform.architecture(config.getArchitecture());
+                configedPlatform.operatingSystem(config.getOperatingSystem());
+              }
         }
     }
 
@@ -95,7 +94,7 @@ public class ToolchainRules extends RuleSource {
                 for (String name : gccToolChain.getDescriptor().getToolchainPlatforms()) {
                     gccToolChains.put(name, gccToolChain);
                 }
-                
+
             }
         }
 
