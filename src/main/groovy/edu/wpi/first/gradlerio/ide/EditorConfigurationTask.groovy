@@ -24,7 +24,7 @@ class EditorConfigurationTask extends DefaultTask {
         def cfg = [:]
 
         // Compiler
-        def toolchainD = project.extensions.getByType(ToolchainExtension).getByName(RoboRioToolchainPlugin.toolchainName).discover()
+        def toolchainD = project.extensions.getByType(ToolchainExtension).toolchainDescriptors.getByName(RoboRioToolchainPlugin.toolchainName).discover()
         def dCompiler = [
             toolchainDir     : toolchainD.rootDir().get().absolutePath,
             gdbPath          : toolchainD.gdbFile().get().absolutePath,
