@@ -17,7 +17,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'edu.wpi.first:gradle-cpp-vscode:0.7.1'
 
-    compile project(':ToolchainPlugin')
+    compile 'edu.wpi.first:ToolchainPlugin:2019.4.1'
 
     compile 'com.jcraft:jsch:0.1.53'
 
