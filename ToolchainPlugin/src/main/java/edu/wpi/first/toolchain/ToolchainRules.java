@@ -69,7 +69,7 @@ public class ToolchainRules extends RuleSource {
     }
 
     @Mutate
-    void addDefaultPlatforms(final PlatformContainer platforms, final ExtensionContainer extContainer) {
+    void addDefaultPlatforms(final ExtensionContainer extContainer, final PlatformContainer platforms) {
         final ToolchainExtension ext = extContainer.getByType(ToolchainExtension.class);
 
         if (ext.registerPlatforms) {
