@@ -14,14 +14,14 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            it.team = frc.getTeamNumber()
+            team = frc.getTeamNumber()
         }
     }
     artifacts {
         frcJavaArtifact('frcJava') {
-            it.targets << "roborio"
+            targets << "roborio"
             // Debug can be overridden by command line, for use with VSCode
-            it.debug = frc.getDebugOrDefault(false)
+            debug = frc.getDebugOrDefault(false)
         }
         // Built in artifact to deploy arbitrary files to the roboRIO.
         fileTreeArtifact('frcStaticFileDeploy') {
