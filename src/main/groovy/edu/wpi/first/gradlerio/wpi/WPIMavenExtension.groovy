@@ -28,8 +28,8 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         this.useFrcMavenLocalRelease = false
 
         mirror("Official") { WPIMavenRepo mirror ->
-            mirror.release = "http://first.wpi.edu/FRC/roborio/maven/release"
-            mirror.development = "http://first.wpi.edu/FRC/roborio/maven/development"
+            mirror.release = "https://first.wpi.edu/FRC/roborio/maven/release"
+            mirror.development = "https://first.wpi.edu/FRC/roborio/maven/development"
             mirror.priority = WPIMavenRepo.PRIORITY_OFFICIAL
         }
 
