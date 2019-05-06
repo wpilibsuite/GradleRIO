@@ -2,7 +2,9 @@ package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
+import javax.inject.Inject
 import jaci.gradle.PathUtils
+import jaci.gradle.ActionWrapper
 import jaci.gradle.deploy.artifact.JavaArtifact
 import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.sessions.IPSessionController
@@ -10,21 +12,23 @@ import org.gradle.api.Project
 
 @CompileStatic
 class FRCJavaArtifact extends JavaArtifact {
+
+    @Inject
     FRCJavaArtifact(String name, Project project) {
         super(name, project)
         setJar('jar')
 
-        predeploy << { DeployContext ctx ->
+        predeploy << new ActionWrapper({ DeployContext ctx ->
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")
-        }
+        })
 
-        postdeploy << { DeployContext ctx ->
+        postdeploy << new ActionWrapper({ DeployContext ctx ->
             def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
             ctx.execute("chmod +x \"${binFile}\"; chown lvuser \"${binFile}\"")
             ctx.execute("sync")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
-        }
+        });
     }
 
     List<String> jvmArgs = []

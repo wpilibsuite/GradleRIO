@@ -3,6 +3,7 @@ package edu.wpi.first.gradlerio.frc
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.context.DeployContext
+import javax.inject.Inject
 import jaci.gradle.deploy.target.location.SshDeployLocation
 import org.apache.log4j.Logger
 import org.gradle.api.Project
@@ -15,6 +16,7 @@ class RoboRIO extends FRCCompatibleTarget {
 
     private Logger log;
 
+    @Inject
     RoboRIO(String name, Project project) {
         super(name, project)
         log = Logger.getLogger(this.toString())

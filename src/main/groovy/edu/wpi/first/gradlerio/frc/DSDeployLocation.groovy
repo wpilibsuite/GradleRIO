@@ -8,10 +8,18 @@ import jaci.gradle.deploy.target.discovery.action.SshDiscoveryAction
 import jaci.gradle.deploy.target.location.SshDeployLocation
 import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
+import jaci.gradle.deploy.target.RemoteTarget
+import jaci.gradle.deploy.target.location.DeployLocation
+
+import javax.inject.Inject
 
 @CompileStatic
-@InheritConstructors
 class DSDeployLocation extends SshDeployLocation {
+
+    @Inject
+    DSDeployLocation(RemoteTarget target) {
+        super(target)
+    }
 
     private String dsAddress = "localhost"
     private Optional<String> cachedAddress = Optional.empty()

@@ -2,9 +2,11 @@ package edu.wpi.first.gradlerio.frc
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
+import javax.inject.Inject
 import jaci.gradle.deploy.artifact.MavenArtifact
 import jaci.gradle.deploy.context.DeployContext
 import org.gradle.api.Project
+import jaci.gradle.ActionWrapper
 
 import java.util.function.Function
 
@@ -12,6 +14,7 @@ import java.util.function.Function
 class FRCJREArtifact extends MavenArtifact {
     Function<DeployContext, Boolean> buildRequiresJre = (Function<DeployContext, Boolean>){ true }
 
+    @Inject
     FRCJREArtifact(String name, Project project) {
         super(name, project)
         configuration = project.configurations.create(configuration())
@@ -21,18 +24,18 @@ class FRCJREArtifact extends MavenArtifact {
             buildRequiresJre.apply(ctx) && jreMissing(ctx)
         }
 
-        predeploy << { DeployContext ctx ->
+        predeploy << new ActionWrapper({ DeployContext ctx ->
             ctx.logger.log('Deploying RoboRIO JRE (this will take a while)...')
-        }
+        })
 
         directory = '/tmp'
         filename = 'frcjre.ipk'
 
-        postdeploy << { DeployContext ctx ->
+        postdeploy << new ActionWrapper({ DeployContext ctx ->
             ctx.logger.log('Installing JRE...')
             ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
             ctx.logger.log('JRE Deployed!')
-        }
+        })
     }
 
     String configuration() {
