@@ -6,6 +6,9 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
+import edu.wpi.first.nativeutils.NativeUtilsExtension
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.platform.base.VariantComponentSpec;
 
 import javax.inject.Inject
 
@@ -50,6 +53,8 @@ class WPIExtension {
     final Project project
     final String toolsClassifier
 
+    NativeUtilsExtension ntExt;
+
     @Inject
     WPIExtension(Project project) {
         this.project = project
@@ -72,6 +77,42 @@ class WPIExtension {
 
         platforms = new NativePlatforms();
         deps = new WPIDepsExtension(this)
+    }
+
+    public void useLibrary(VariantComponentSpec component, String... libraries) {
+        useRequiredLibrary(component, libraries)
+    }
+
+    public void useLibrary(NativeBinarySpec binary, String... libraries) {
+        useRequiredLibrary(binary, libraries)
+    }
+
+    public void useRequiredLibrary(VariantComponentSpec component, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useRequiredLibrary(component, libraries)
+    }
+
+    public void useRequiredLibrary(NativeBinarySpec binary, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useRequiredLibrary(binary, libraries)
+    }
+
+    public void useOptionalLibrary(VariantComponentSpec component, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useOptionalLibrary(component, libraries)
+    }
+
+    public void useOptionalLibrary(NativeBinarySpec binary, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useOptionalLibrary(binary, libraries)
     }
 
     private String frcHomeCache

@@ -59,7 +59,7 @@ model {
             }
 
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-            embeddedTools.useLibrary(it, "wpilib")
+            wpi.useLibrary(it, "wpilib_shared")
             wpi.deps.vendor.cpp(it)
         }
     }
@@ -74,7 +74,7 @@ model {
                 }
             }
 
-            embeddedTools.useLibrary(it, "wpilib", "googletest")
+            wpi.useLibrary(it, "wpilib_shared", "googletest_static")
             wpi.deps.vendor.cpp(it)
         }
     }
