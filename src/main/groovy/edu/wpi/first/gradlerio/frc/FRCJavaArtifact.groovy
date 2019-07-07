@@ -34,7 +34,7 @@ class FRCJavaArtifact extends JavaArtifact {
     String debugFlags = "-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:${debugPort},server=y,suspend=y"
 
     def robotCommand = {
-        "/usr/local/frc/JRE/bin/java -Djava.library.path=${FRCPlugin.LIB_DEPLOY_DIR} ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -jar \"<<BINARY>>\" ${arguments.join(" ")}"
+        "/usr/local/frc/JRE/bin/java -Djava.library.path=${FRCPlugin.LIB_DEPLOY_DIR} -Djava.lang.invoke.stringConcat=BC_SB –XX:+UseConcMarkSweepGC ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -jar \"<<BINARY>>\" ${arguments.join(" ")}"
     }
 
     @Override
