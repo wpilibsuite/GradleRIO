@@ -17,7 +17,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'edu.wpi.first:gradle-cpp-vscode:0.7.1'
 
-    compile 'edu.wpi.first:ToolchainPlugin:2019.4.1'
+    compile 'edu.wpi.first:native-utils:2020.0.2'
 
     compile 'com.jcraft:jsch:0.1.53'
 
@@ -36,7 +36,7 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.4.1"
+    version = "2020.0.0-alpha-1"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -100,6 +100,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '5.0'
+    gradleVersion = '5.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }

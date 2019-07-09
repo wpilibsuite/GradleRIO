@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 import jaci.gradle.EmbeddedTools
 import jaci.gradle.deploy.DeployExtension
 import jaci.gradle.deploy.artifact.Artifact
+import jaci.gradle.ActionWrapper
 import jaci.gradle.deploy.artifact.ArtifactDeployTask
 import jaci.gradle.deploy.artifact.CommandArtifact
 import jaci.gradle.deploy.artifact.JavaArtifact
@@ -62,23 +63,23 @@ class FRCPlugin implements Plugin<Project> {
         def targetExtension = deployExtension.targets
 
         artifactExtensionAware.extensions.add('frcJavaArtifact', { String name, Closure closure->
-            return artifactExtension.artifact(name, FRCJavaArtifact, closure)
+            return artifactExtension.artifact(name, FRCJavaArtifact, new ActionWrapper(closure))
         })
 
         artifactExtensionAware.extensions.add('frcNativeArtifact', { String name, Closure closure->
-            return artifactExtension.artifact(name, FRCNativeArtifact, closure)
+            return artifactExtension.artifact(name, FRCNativeArtifact, new ActionWrapper(closure))
         })
 
         artifactExtensionAware.extensions.add('frcNativeLibraryArtifact', { String name, Closure closure->
-            return artifactExtension.artifact(name, FRCNativeLibraryArtifact, closure)
+            return artifactExtension.artifact(name, FRCNativeLibraryArtifact, new ActionWrapper(closure))
         })
 
         targetExtensionAware.extensions.add('roboRIO', { String name, Closure closure ->
-            targetExtension.target(name, RoboRIO, closure)
+            targetExtension.target(name, RoboRIO, new ActionWrapper(closure))
         })
 
         targetExtensionAware.extensions.add('frcCompatibleTarget', { String name, Closure closure ->
-            targetExtension.target(name, FRCCompatibleTarget, closure)
+            targetExtension.target(name, FRCCompatibleTarget, new ActionWrapper(closure))
         })
     }
 

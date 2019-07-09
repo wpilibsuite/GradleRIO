@@ -6,6 +6,8 @@ import edu.wpi.first.toolchain.ToolchainExtension
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
+import javax.inject.Inject
+import jaci.gradle.ActionWrapper
 import jaci.gradle.deploy.artifact.BinaryLibraryArtifact
 import jaci.gradle.deploy.artifact.NativeArtifact
 import jaci.gradle.deploy.context.DeployContext
@@ -22,24 +24,26 @@ import java.nio.file.Paths
 
 @CompileStatic
 class FRCNativeArtifact extends NativeArtifact {
+
+    @Inject
     FRCNativeArtifact(String name, Project project) {
         super(name, project)
         targetPlatform = NativePlatforms.roborio
 
-        predeploy << { DeployContext ctx ->
+        predeploy << new ActionWrapper({ DeployContext ctx ->
             def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")
             ctx.execute("rm -f \"${binFile}\"")
-        }
+        })
 
-        postdeploy << { DeployContext ctx ->
+        postdeploy << new ActionWrapper({ DeployContext ctx ->
             def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
             ctx.execute("chmod +x \"${binFile}\"; chown lvuser \"${binFile}\"")
             ctx.execute("sync")
             ctx.execute("ldconfig")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
-        }
+        })
 
         buildType = '<<GR_AUTO>>'
     }
@@ -67,10 +71,10 @@ class FRCNativeArtifact extends NativeArtifact {
     void configureLibsArtifact(BinaryLibraryArtifact bla) {
         super.configureLibsArtifact(bla)
         bla.setDirectory(FRCPlugin.LIB_DEPLOY_DIR)
-        bla.postdeploy << { DeployContext ctx ->
+        bla.postdeploy << new ActionWrapper({ DeployContext ctx ->
             FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR)
             ctx.execute('ldconfig')
-        }
+        })
     }
 
     @Override
@@ -134,7 +138,7 @@ class FRCNativeArtifact extends NativeArtifact {
                 def target = ip.host + ":" + debugPort
 //                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
 
-                def toolchainD = project.extensions.getByType(ToolchainExtension).getByName(RoboRioToolchainPlugin.toolchainName).discover()
+                def toolchainD = project.extensions.getByType(ToolchainExtension).toolchainDescriptors.getByName(RoboRioToolchainPlugin.toolchainName).discover()
                 def gdbpath = toolchainD.gdbFile().get().absolutePath
                 def sysroot = toolchainD.sysroot().orElse(null).absolutePath
 

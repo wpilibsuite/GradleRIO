@@ -16,6 +16,8 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.logging.text.StyledTextOutput
+import edu.wpi.first.nativeutils.NativeUtils
+import edu.wpi.first.nativeutils.NativeUtilsExtension
 
 @CompileStatic
 class WPIPlugin implements Plugin<Project> {
@@ -30,10 +32,28 @@ class WPIPlugin implements Plugin<Project> {
 
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
-            project.pluginManager.apply(WPINativeDepRules)
             project.pluginManager.apply(ToolchainPlugin)
             project.pluginManager.apply(RoboRioToolchainPlugin)
+            project.pluginManager.apply(NativeUtils)
             project.pluginManager.apply(WPINativeCompileRules)
+
+            NativeUtilsExtension nte = project.extensions.getByType(NativeUtilsExtension)
+            nte.addWpiNativeUtils()
+
+            nte.wpi.addWarnings()
+            nte.setSinglePrintPerPlatform()
+
+            project.afterEvaluate {
+                def ntExt = project.extensions.getByType(NativeUtilsExtension)
+                def wpiExt = project.extensions.getByType(WPIExtension)
+                ntExt.wpi.configureDependencies {
+                    it.wpiVersion = wpiExt.wpilibVersion
+                    it.niLibVersion = wpiExt.niLibrariesVersion
+                    it.opencvVersion = wpiExt.opencvVersion
+                    it.googleTestVersion = wpiExt.googleTestVersion
+                }
+            }
+
             project.pluginManager.apply(GradleVsCode)
             project.pluginManager.apply(WPINativeJsonDepRules)
         }

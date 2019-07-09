@@ -1,8 +1,10 @@
 package edu.wpi.first.gradlerio.frc
 
 import groovy.transform.CompileStatic
+import javax.inject.Inject
 import jaci.gradle.deploy.artifact.FileCollectionArtifact
 import jaci.gradle.deploy.context.DeployContext
+import jaci.gradle.ActionWrapper
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -18,6 +20,7 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
     boolean zipped
     Action<PatternFilterable> filter
 
+    @Inject
     ConfigurationArtifact(String name, Project project) {
         super(name, project)
         directory = FRCPlugin.LIB_DEPLOY_DIR
@@ -25,10 +28,10 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
             files.isPresent() && !files.get().empty && !files.get().files.empty
         }
 
-        postdeploy << { DeployContext ctx ->
+        postdeploy << new ActionWrapper({ DeployContext ctx ->
             FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR)
             ctx.execute("ldconfig")
-        }
+        })
 
         files.set(project.files(this as Callable<FileCollection>))
     }

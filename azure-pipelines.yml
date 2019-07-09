@@ -5,13 +5,13 @@
 
 resources:
   containers:
-  - container: wpilib2019
-    image: wpilib/roborio-cross-ubuntu:2019-18.04
+  - container: wpilib2020
+    image: wpilib/roborio-cross-ubuntu:2020-18.04
 
 pool:
   vmImage: 'Ubuntu 16.04'
 
-container: wpilib2019
+container: wpilib2020
 
 steps:
 - task: Gradle@2
