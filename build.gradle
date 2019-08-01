@@ -15,9 +15,9 @@ repositories {
 
 dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'edu.wpi.first:gradle-cpp-vscode:0.7.1'
+    compile 'edu.wpi.first:gradle-cpp-vscode:0.9.4'
 
-    compile 'edu.wpi.first:native-utils:2020.0.2'
+    compile 'edu.wpi.first:native-utils:2020.0.4'
 
     compile 'com.jcraft:jsch:0.1.53'
 
