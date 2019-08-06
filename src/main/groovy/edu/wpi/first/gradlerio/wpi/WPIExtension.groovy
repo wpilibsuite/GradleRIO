@@ -3,6 +3,7 @@ package edu.wpi.first.gradlerio.wpi
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension
 import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
@@ -58,10 +59,8 @@ class WPIExtension {
     @Inject
     WPIExtension(Project project) {
         this.project = project
-        // Object factory breaks `wpi.maven {}`, hence instead we use extensions.create.
-//        def factory = project.objects
-//        maven = factory.newInstance(WPIMavenExtension, project)
-        maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
+        def factory = project.objects
+        maven = factory.newInstance(WPIMavenExtension, project)
 
         if (project.hasProperty('forceToolsClassifier')) {
             this.toolsClassifier = project.findProperty('forceToolsClassifier')
@@ -77,6 +76,10 @@ class WPIExtension {
 
         platforms = new NativePlatforms();
         deps = new WPIDepsExtension(this)
+    }
+
+    void maven(final Action<? super WPIMavenExtension> closure) {
+      closure.execute(maven);
     }
 
     public void useLibrary(VariantComponentSpec component, String... libraries) {
