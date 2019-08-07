@@ -21,7 +21,7 @@ class FRCJREArtifact extends MavenArtifact {
         dependency = project.dependencies.add(configuration(), project.extensions.getByType(WPIExtension).jreArtifactLocation)
 
         onlyIf = { DeployContext ctx ->
-            buildRequiresJre.apply(ctx) && jreMissing(ctx)
+            (buildRequiresJre.apply(ctx) && jreMissing(ctx)) || project.hasProperty("force-redeploy-jre")
         }
 
         predeploy << new ActionWrapper({ DeployContext ctx ->
