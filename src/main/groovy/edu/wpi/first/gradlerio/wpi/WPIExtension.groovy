@@ -8,7 +8,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
 import edu.wpi.first.nativeutils.NativeUtilsExtension
 import org.gradle.nativeplatform.NativeBinarySpec
-import org.gradle.platform.base.VariantComponentSpec;
+import org.gradle.platform.base.VariantComponentSpec
 
 import javax.inject.Inject
 
