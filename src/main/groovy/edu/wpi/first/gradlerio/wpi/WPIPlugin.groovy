@@ -4,10 +4,12 @@ import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
+import edu.wpi.first.toolchain.ToolchainExtension
 import edu.wpi.first.toolchain.ToolchainPlugin
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
+import jaci.gradle.ActionWrapper
 import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
 import jaci.gradle.toolchains.ToolchainsPlugin
@@ -18,6 +20,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.logging.text.StyledTextOutput
 import edu.wpi.first.nativeutils.NativeUtils
 import edu.wpi.first.nativeutils.NativeUtilsExtension
+import edu.wpi.first.toolchain.configurable.CrossCompilerConfiguration
 
 @CompileStatic
 class WPIPlugin implements Plugin<Project> {
@@ -39,6 +42,11 @@ class WPIPlugin implements Plugin<Project> {
 
             NativeUtilsExtension nte = project.extensions.getByType(NativeUtilsExtension)
             nte.addWpiNativeUtils()
+
+            ToolchainExtension te = project.extensions.getByType(ToolchainExtension)
+            te.crossCompilers.named(nte.wpi.platforms.roborio, new ActionWrapper({ CrossCompilerConfiguration c ->
+                c.optional.set(false)
+            }))
 
             nte.wpi.addWarnings()
             nte.setSinglePrintPerPlatform()
