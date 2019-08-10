@@ -2,6 +2,8 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.platform.base.VariantComponentSpec;
 
 @CompileStatic
 public class WPIDepsExtension {
@@ -13,6 +15,22 @@ public class WPIDepsExtension {
     WPIDepsExtension(WPIExtension wpi) {
         this.wpi = wpi
         this.vendor = new WPIVendorDepsExtension(this, wpi)
+    }
+
+    void wpilib(VariantComponentSpec component) {
+        wpi.useLibrary(component, 'wpilib_shared')
+    }
+
+    void wpilib(NativeBinarySpec binary) {
+        wpi.useLibrary(binary, 'wpilib_shared')
+    }
+
+    void googleTest(VariantComponentSpec component) {
+        wpi.useLibrary(component, 'googletest_static')
+    }
+
+    void googleTest(NativeBinarySpec binary) {
+        wpi.useLibrary(binary, 'googletest_static')
     }
 
     List<String> wpilib() {
