@@ -1,7 +1,6 @@
 package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin
-import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.toolchain.ToolchainExtension
