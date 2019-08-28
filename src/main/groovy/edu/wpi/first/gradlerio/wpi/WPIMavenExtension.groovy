@@ -22,14 +22,14 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
         this.project = project
 
-        this.useDevelopment = false // Do not rename without changing versionupdates.gradle
+        this.useDevelopment = true // Do not rename without changing versionupdates.gradle
         this.useLocal = true
         this.useFrcMavenLocalDevelopment = false
         this.useFrcMavenLocalRelease = false
 
         mirror("Official") { WPIMavenRepo mirror ->
-            mirror.release = "https://first.wpi.edu/FRC/roborio/maven/release"
-            mirror.development = "https://first.wpi.edu/FRC/roborio/maven/development"
+            mirror.release = "https://frcmaven.wpi.edu/artifactory/release"
+            mirror.development = "https://frcmaven.wpi.edu/artifactory/development"
             mirror.priority = WPIMavenRepo.PRIORITY_OFFICIAL
         }
 

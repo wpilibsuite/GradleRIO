@@ -47,7 +47,7 @@ public class WPIDepsExtension {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}".toString(),
-                "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}".toString(),
+                "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}".toString()]
@@ -57,7 +57,7 @@ public class WPIDepsExtension {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}:sources".toString(),
-                "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
+                "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString()]
@@ -66,7 +66,7 @@ public class WPIDepsExtension {
     List<String> wpilibJni() {
         // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
         // libraries, while the -jni ones are standalone (have static libs embedded).
-        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.roborio}debug@zip".toString(),
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.roborio}debug@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
@@ -76,7 +76,7 @@ public class WPIDepsExtension {
     List<String> wpilibDesktopJni() {
         def debug = wpi.debugSimJNI ? "debug" : ""
 
-        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
@@ -85,7 +85,7 @@ public class WPIDepsExtension {
 
     // TODO: Need Raspbian JNI Configuration!
     List<String> wpilibRaspbianJni() {
-        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),

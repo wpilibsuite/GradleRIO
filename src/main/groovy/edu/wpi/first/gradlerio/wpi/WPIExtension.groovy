@@ -16,14 +16,14 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2019.4.1"
-    String niLibrariesVersion = "2019.12.1"
-    String opencvVersion = "3.4.4-4"
+    String wpilibVersion = "2019.+"
+    String niLibrariesVersion = "2019.12.2"
+    String opencvVersion = "3.4.7-1"
     static final String[] validImageVersions = ['2019_v14']
 
     String wpilibYear = '2019'
 
-    String googleTestVersion = "1.8.0-4-4e4df22"
+    String googleTestVersion = "1.9.0-3-437e100"
 
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.1u13-1"
 
@@ -33,12 +33,6 @@ class WPIExtension {
     String outlineViewerVersion = "2019.4.1"
     String robotBuilderVersion = "2019.4.1"
     String pathWeaverVersion = "2019.2.1"
-
-    // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
-    String toolchainTag = 'v2019-3'
-    String toolchainVersion = "2019-6.3.0"
-    String toolchainVersionLow = "6.3"
-    String toolchainVersionHigh = "6.3"
 
     // Set to true to use debug JNI
     // Might require extra libraries (especially on windows)
@@ -152,8 +146,6 @@ class WPIExtension {
                 "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
                 "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
                 "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
-
-                "toolchainVersion"     : new Tuple("Toolchain", toolchainVersion, "toolchain"),
         ]
     }
 }

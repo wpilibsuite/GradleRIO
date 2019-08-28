@@ -6,8 +6,8 @@ def versionMap = [
   robotBuilderVersion: 'edu.wpi.first.wpilib:RobotBuilder:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
   pathWeaverVersion: 'edu.wpi.first.wpilib:PathWeaver:+:win64',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:+',
-  googleTestVersion: 'edu.wpi.first.thirdparty.frc2019:googletest:+:headers',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:+',
+  googleTestVersion: 'edu.wpi.first.thirdparty.frc2020:googletest:+:headers',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers'
 ]
 
@@ -20,9 +20,9 @@ def useDevelopmentProperty = 'useDevelopment'
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (project.hasProperty(useDevelopmentProperty)) {
-      repo.url = "https://first.wpi.edu/FRC/roborio/maven/development"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/development"
     } else {
-      repo.url = "https://first.wpi.edu/FRC/roborio/maven/release"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/release"
     }
 }
 
