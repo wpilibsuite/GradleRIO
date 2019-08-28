@@ -163,11 +163,17 @@ public class WPIVendorDepsExtension {
         dependencies.each { JsonDependency dep ->
             if (!isIgnored(ignore, dep)) {
                 dep.cppDependencies.each { CppArtifact cpp ->
+                    if (cpp.sharedBinaryPlatforms == null) {
+                        cpp.sharedBinaryPlatforms = new String[0];
+                    }
+                    if (cpp.staticBinaryPlatforms == null) {
+                        cpp.staticBinaryPlatforms = new String[0];
+                    }
                     if (cpp.headerClassifier != null)
                         dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_headers", bin, dse, cpp.skipInvalidPlatforms))
                     if (cpp.sourcesClassifier != null)
                         dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_sources", bin, dse, cpp.skipInvalidPlatforms))
-                    if (cpp.binaryPlatforms != null && cpp.binaryPlatforms.length > 0)
+                    if (cpp.sharedBinaryPlatforms.length > 0 || cpp.staticBinaryPlatforms.length > 0)
                         dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_binaries", bin, dse, cpp.skipInvalidPlatforms))
                 }
             }
@@ -208,10 +214,9 @@ public class WPIVendorDepsExtension {
 
         String headerClassifier
         String sourcesClassifier
-        String[] binaryPlatforms
+        String[] sharedBinaryPlatforms
+        String[] staticBinaryPlatforms
         boolean skipInvalidPlatforms
-
-        boolean sharedLibrary
     }
 
     static class JsonDependency {
