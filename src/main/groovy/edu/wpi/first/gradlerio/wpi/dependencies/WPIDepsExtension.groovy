@@ -2,19 +2,25 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
+import org.gradle.api.Project
 import org.gradle.nativeplatform.NativeBinarySpec
-import org.gradle.platform.base.VariantComponentSpec;
+import org.gradle.platform.base.VariantComponentSpec
+
+import javax.inject.Inject
 
 @CompileStatic
 public class WPIDepsExtension {
 
     final WPIExtension wpi
 
-    WPIVendorDepsExtension vendor
+    final WPIVendorDepsExtension vendor
+    final WPISimDepsExtension sim
 
-    WPIDepsExtension(WPIExtension wpi) {
+    @Inject
+    WPIDepsExtension(Project project, WPIExtension wpi) {
         this.wpi = wpi
-        this.vendor = new WPIVendorDepsExtension(this, wpi)
+        this.vendor = project.objects.newInstance(WPIVendorDepsExtension, wpi)
+        this.sim = project.objects.newInstance(WPISimDepsExtension, wpi)
     }
 
     void wpilib(VariantComponentSpec component) {
@@ -98,20 +104,6 @@ public class WPIDepsExtension {
                 "edu.wpi.first.wpiutil:wpiutil-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.ntcore:ntcore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.cscore:cscore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString()]
-    }
-
-    class WPISimExtension {
-        List<String> print() {
-            return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
-        }
-
-        List<String> nt_ds() {
-            return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
-        }
-
-        List<String> lowfi() {
-            return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
-        }
     }
 
 }

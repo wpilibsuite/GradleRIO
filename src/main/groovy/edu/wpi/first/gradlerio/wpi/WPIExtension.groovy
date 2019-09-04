@@ -65,7 +65,7 @@ class WPIExtension {
         }
 
         platforms = new NativePlatforms();
-        deps = new WPIDepsExtension(this)
+        deps = factory.newInstance(WPIDepsExtension, project, this)
     }
 
     void maven(final Action<? super WPIMavenExtension> closure) {
