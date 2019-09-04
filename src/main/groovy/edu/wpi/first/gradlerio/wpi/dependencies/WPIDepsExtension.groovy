@@ -25,6 +25,14 @@ public class WPIDepsExtension {
         wpi.useLibrary(binary, 'wpilib_shared')
     }
 
+    void wpilibStatic(VariantComponentSpec component) {
+        wpi.useLibrary(component, 'wpilib_static')
+    }
+
+    void wpilibStatic(NativeBinarySpec binary) {
+        wpi.useLibrary(binary, 'wpilib_static')
+    }
+
     void googleTest(VariantComponentSpec component) {
         wpi.useLibrary(component, 'googletest_static')
     }
