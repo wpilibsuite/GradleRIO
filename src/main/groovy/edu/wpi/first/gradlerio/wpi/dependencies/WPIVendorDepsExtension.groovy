@@ -121,6 +121,14 @@ public class WPIVendorDepsExtension {
     }
 
     List<String> jni(String platform, String... ignore) {
+        return jniInternal(false, platform, ignore)
+    }
+
+    List<String> jniDebug(String platform, String... ignore) {
+        return jniInternal(true, platform, ignore)
+    }
+
+    List<String> jniInternal(boolean debug, String platform, String... ignore) {
         if (dependencies == null) return []
 
         def deps = [] as List<String>
@@ -133,10 +141,8 @@ public class WPIVendorDepsExtension {
                         throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni)
 
                     if (applies) {
-                        def debug = wpiExt.debugSimJNI ? "debug" : ""
-                        debug = platform.equals(NativePlatforms.roborio) ? "debug" : debug
-                        debug = platform.equals(NativePlatforms.raspbian) ? "" : debug
-                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}${debug}@${jni.isJar ? 'jar' : 'zip'}".toString())
+                        def debugString = debug ? "debug" : ""
+                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}${debugString}@${jni.isJar ? 'jar' : 'zip'}".toString())
                     }
                 }
             }
