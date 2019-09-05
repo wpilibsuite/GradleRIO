@@ -27,4 +27,8 @@ public class WPISimDepsExtension {
     List<String> lowfi() {
         return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
     }
+
+    List<String> driverstation() {
+        return ["edu.wpi.first.halsim:halsim_ds_socket:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
+    }
 }
