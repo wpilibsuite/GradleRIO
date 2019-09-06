@@ -11,7 +11,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include <frc2/command/Command.h>
+
+constexpr bool testBool = false;
+
 void Robot::RobotInit() {
+  if constexpr(testBool) {
+    frc2::Command* cmd;
+    (void)cmd;
+  }
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);

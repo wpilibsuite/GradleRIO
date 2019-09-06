@@ -37,7 +37,7 @@ public class WPIDepsExtension {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}".toString(),
-                "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}".toString(),
+                "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}".toString()]
@@ -47,7 +47,7 @@ public class WPIDepsExtension {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}:sources".toString(),
-                "edu.wpi.first.thirdparty.frc2019.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
+                "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString()]
@@ -66,7 +66,7 @@ public class WPIDepsExtension {
 
         // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
         // libraries, while the -jni ones are standalone (have static libs embedded).
-        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${platform}${debugString}@zip".toString(),
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
@@ -85,7 +85,7 @@ public class WPIDepsExtension {
         def debugString = debug ? "debug" : ""
 
         // The JNI jars are for embedding into an output jar
-        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-jni:${wpi.opencvVersion}:${platform}${debugString}@jar".toString(),
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-jni:${wpi.opencvVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.hal:hal-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.ntcore:ntcore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
