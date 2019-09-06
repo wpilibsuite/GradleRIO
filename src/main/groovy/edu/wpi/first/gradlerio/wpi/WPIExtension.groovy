@@ -34,10 +34,6 @@ class WPIExtension {
     String robotBuilderVersion = "2019.4.1"
     String pathWeaverVersion = "2019.2.1"
 
-    // Set to true to use debug JNI
-    // Might require extra libraries (especially on windows)
-    boolean debugSimJNI = false
-
     WPIMavenExtension maven
     WPIDepsExtension deps
 

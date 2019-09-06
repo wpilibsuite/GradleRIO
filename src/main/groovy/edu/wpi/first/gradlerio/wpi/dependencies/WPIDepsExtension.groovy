@@ -42,16 +42,6 @@ public class WPIDepsExtension {
     }
 
     List<String> wpilib() {
-        wpilibJni().each {
-            wpi.project.dependencies.add("nativeZip", it)
-        }
-        wpilibDesktopJni().each {
-            wpi.project.dependencies.add("nativeDesktopZip", it)
-        }
-        return wpilibJars()
-    }
-
-    List<String> wpilibJars() {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}".toString(),
@@ -71,33 +61,43 @@ public class WPIDepsExtension {
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString()]
     }
 
-    List<String> wpilibJni() {
+    List<String> wpilibJni(String platform) {
+        return wpilibJniInternal(false, platform)
+    }
+
+    List<String> wpilibJniDebug(String platform) {
+        return wpilibJniInternal(true, platform);
+    }
+
+    List<String> wpilibJniInternal(boolean debug, String platform) {
+        def debugString = debug ? "debug" : ""
+
         // Note: we use -cpp artifacts instead of -jni artifacts as the -cpp ones are linked with shared
         // libraries, while the -jni ones are standalone (have static libs embedded).
-        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.roborio}debug@zip".toString(),
-                "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
-                "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
-                "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString(),
-                "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.roborio}debug@zip".toString()]
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${platform}${debugString}@zip".toString(),
+                "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
+                "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
+                "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
+                "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString()]
     }
 
-    List<String> wpilibDesktopJni() {
-        def debug = wpi.debugSimJNI ? "debug" : ""
-
-        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
-                "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
-                "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
-                "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString(),
-                "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.desktop}${debug}@zip".toString()]
+    List<String> wpilibEmbeddedJni(String platform) {
+        return wpilibEmbeddedJniInternal(false, platform)
     }
 
-    // TODO: Need Raspbian JNI Configuration!
-    List<String> wpilibRaspbianJni() {
-        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
-                "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
-                "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
-                "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
-                "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString()]
+    List<String> wpilibEmbeddedJniDebug(String platform) {
+        return wpilibEmbeddedJniInternal(true, platform);
+    }
+
+    List<String> wpilibEmbeddedJniInternal(boolean debug, String platform) {
+        def debugString = debug ? "debug" : ""
+
+        // The JNI jars are for embedding into an output jar
+        return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-jni:${wpi.opencvVersion}:${platform}${debugString}@jar".toString(),
+                "edu.wpi.first.hal:hal-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
+                "edu.wpi.first.wpiutil:wpiutil-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
+                "edu.wpi.first.ntcore:ntcore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
+                "edu.wpi.first.cscore:cscore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString()]
     }
 
     class WPISimExtension {

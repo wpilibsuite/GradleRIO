@@ -48,6 +48,12 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.configurations.maybeCreate("nativeDesktopLib")
         project.configurations.maybeCreate("nativeDesktopZip")
 
+        project.configurations.maybeCreate("nativeRaspbianLib")
+        project.configurations.maybeCreate("nativeRaspbianZip")
+
+        project.configurations.maybeCreate("nativeAarch64BionicLib")
+        project.configurations.maybeCreate("nativeAarch64BionicZip")
+
         project.pluginManager.apply(EmbeddedTools)
         project.pluginManager.apply(FRCPlugin)
         project.pluginManager.apply(WPIPlugin)
