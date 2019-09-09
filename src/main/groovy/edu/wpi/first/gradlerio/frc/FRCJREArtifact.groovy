@@ -33,7 +33,7 @@ class FRCJREArtifact extends MavenArtifact {
 
         postdeploy << new ActionWrapper({ DeployContext ctx ->
             ctx.logger.log('Installing JRE...')
-            ctx.execute('opkg remove frc2019-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
+            ctx.execute('opkg remove frc2020-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk')
             ctx.logger.log('JRE Deployed!')
         })
     }

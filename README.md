@@ -4,7 +4,7 @@ robotics competition to produce and build their code.
 
 ![](img/tty.gif)
 
-GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, Tools, and Vendor Libraries. 
+GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, Tools, and Vendor Libraries.
 
 For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the [WPILib Extension](https://github.com/wpilibsuite/vscode-wpilib).
 
@@ -17,25 +17,25 @@ Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also suppor
 For getting started with VSCode, please see the screensteps documentation:
 https://wpilib.screenstepslive.com/s/currentCS/m/79833
 
-### Without VSCode 
-Follow the installation instructions on screensteps: https://wpilib.screenstepslive.com/s/currentCS/m/79833  
-_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VSCode if you wish._  
+### Without VSCode
+Follow the installation instructions on screensteps: https://wpilib.screenstepslive.com/s/currentCS/m/79833
+_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VSCode if you wish._
 
-**WPILibUtility Standalone Project Builder**  
-WPILib provides a standalone project builder that provides the same interface as VSCode, without having to use VSCode.  
+**WPILibUtility Standalone Project Builder**
+WPILib provides a standalone project builder that provides the same interface as VSCode, without having to use VSCode.
 
-If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\frc2019\utility` (windows), or `~/frc2019/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.  
-Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases  
+If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\2020\utility` (windows), or `~/wpilib/2020/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
+Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
 
-Use the WPILib Utility whenever you want to create a new project. 
+Use the WPILib Utility whenever you want to create a new project.
 
-**GradleRIO Example Project**  
-Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.  
+**GradleRIO Example Project**
+Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.
 Download the .zip file corresponding to your language and extract it.
 
 ## Adding Vendor Libraries
 ### With VSCode
-Open the command palette with CTRL + SHIFT + P, or by clicking the WPILib icon. 
+Open the command palette with CTRL + SHIFT + P, or by clicking the WPILib icon.
 Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and paste the vendor-provided JSON url.
 
 ### Without VSCode

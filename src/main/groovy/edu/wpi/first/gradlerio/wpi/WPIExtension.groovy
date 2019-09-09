@@ -21,23 +21,23 @@ class WPIExtension {
     String opencvVersion = "3.4.7-1"
     static final String[] validImageVersions = ['2019_v14']
 
-    String wpilibYear = '2019'
+    String wpilibYear = '2020'
 
     String googleTestVersion = "1.9.0-3-437e100"
 
-    String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.1u13-1"
+    String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2020:11.0.4u10"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "2019.4.1"
-    String shuffleboardVersion = "2019.4.1"
-    String outlineViewerVersion = "2019.4.1"
-    String robotBuilderVersion = "2019.4.1"
-    String pathWeaverVersion = "2019.2.1"
+    String smartDashboardVersion = "2019.+"
+    String shuffleboardVersion = "2019.+"
+    String outlineViewerVersion = "2019.+"
+    String robotBuilderVersion = "2019.+"
+    String pathWeaverVersion = "2019.+"
 
     WPIMavenExtension maven
     WPIDepsExtension deps
 
-    String frcYear = '2019'
+    String frcYear = '2020'
 
     NativePlatforms platforms;
 
