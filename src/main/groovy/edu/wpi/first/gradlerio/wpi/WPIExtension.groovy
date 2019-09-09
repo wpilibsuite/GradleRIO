@@ -120,10 +120,12 @@ class WPIExtension {
             if (publicFolder == null) {
                 publicFolder = "C:\\Users\\Public"
             }
-            frcHome = new File(publicFolder, "frc${this.frcYear}").toString()
+            def homeRoot = new File(publicFolder, "wpilib")
+            frcHome = new File(homeRoot, this.frcYear).toString()
         } else {
             def userFolder = System.getProperty("user.home")
-            frcHome = new File(userFolder, "frc${this.frcYear}").toString()
+            def homeRoot = new File(userFolder, "wpilib")
+            frcHome = new File(homeRoot, this.frcYear).toString()
         }
         frcHomeCache = frcHome
         return frcHomeCache
