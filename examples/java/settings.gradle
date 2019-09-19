@@ -12,11 +12,11 @@ pluginManagement {
                 publicFolder = "C:\\Users\\Public"
             }
             def homeRoot = new File(publicFolder, "wpilib")
-            frcHome = new File(homeRoot, frcYear).toString()
+            frcHome = new File(homeRoot, frcYear)
         } else {
             def userFolder = System.getProperty("user.home")
             def homeRoot = new File(userFolder, "wpilib")
-            frcHome = new File(homeRoot, frcYear).toString()
+            frcHome = new File(homeRoot, frcYear)
         }
         def frcHomeMaven = new File(frcHome, 'maven')
         maven {
