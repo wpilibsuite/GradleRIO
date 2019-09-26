@@ -16,19 +16,19 @@ public class WPISimDepsExtension {
         this.wpi = wpi
     }
 
-    List<String> print() {
-        return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
+    List<String> print(String platform) {
+        return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${platform}@zip".toString()]
     }
 
-    List<String> nt_ds() {
-        return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
+    List<String> nt_ds(String platform) {
+        return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${platform}@zip".toString()]
     }
 
-    List<String> lowfi() {
-        return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
+    List<String> lowfi(String platform) {
+        return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${platform}@zip".toString()]
     }
 
-    List<String> driverstation() {
-        return ["edu.wpi.first.halsim:halsim_ds_socket:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip".toString()]
+    List<String> driverstation(String platform) {
+        return ["edu.wpi.first.halsim:halsim_ds_socket:${wpi.wpilibVersion}:${platform}@zip".toString()]
     }
 }
