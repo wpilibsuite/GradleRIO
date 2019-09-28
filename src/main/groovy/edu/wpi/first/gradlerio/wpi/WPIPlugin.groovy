@@ -40,6 +40,7 @@ class WPIPlugin implements Plugin<Project> {
             project.pluginManager.apply(WPINativeCompileRules)
 
             NativeUtilsExtension nte = project.extensions.getByType(NativeUtilsExtension)
+            nte.withRoboRIO()
             nte.addWpiNativeUtils()
 
             ToolchainExtension te = project.extensions.getByType(ToolchainExtension)
