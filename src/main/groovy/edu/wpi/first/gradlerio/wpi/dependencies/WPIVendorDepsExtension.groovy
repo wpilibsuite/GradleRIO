@@ -16,10 +16,11 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
+import javax.inject.Inject
+
 @CompileStatic
 public class WPIVendorDepsExtension {
 
-    final WPIDepsExtension wpiDeps
     final WPIExtension wpiExt
 
     List<JsonDependency> dependencies = []
@@ -32,10 +33,10 @@ public class WPIVendorDepsExtension {
 
     public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
 
-    WPIVendorDepsExtension(WPIDepsExtension wpiDeps, WPIExtension wpiExt) {
-        this.wpiDeps = wpiDeps
+    @Inject
+    WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiDeps.wpi.project.file(VENDORDEPS_FOLDER_NAME)
+        this.vendorFolder = wpiExt.project.file(VENDORDEPS_FOLDER_NAME)
         this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
         this.slurper = new JsonSlurper()
     }
@@ -152,7 +153,7 @@ public class WPIVendorDepsExtension {
     }
 
     void cpp(Object scope, String... ignore) {
-        def dse = wpiDeps.wpi.project.extensions.getByType(DependencySpecExtension)
+        def dse = wpiExt.project.extensions.getByType(DependencySpecExtension)
         if (scope in VariantComponentSpec) {
             ((VariantComponentSpec)scope).binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
                 cppVendorLibForBin(dse, bin, ignore)
