@@ -6,23 +6,23 @@ robotics competition to produce and build their code.
 
 GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. GradleRIO automatically fetches WPILib, Tools, and Vendor Libraries.
 
-For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VSCode), using the [WPILib Extension](https://github.com/wpilibsuite/vscode-wpilib).
+For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VS Code), using the [WPILib Extension](https://github.com/wpilibsuite/vscode-wpilib).
 
-Screensteps is the best place for documentation: https://wpilib.screenstepslive.com/s/currentCS/m/79833
+Frc-docs is the best place for documentation: http://docs.wpilib.org/en/latest/
 
 Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also supported, unofficially. You may also use this tool exclusively from the command line, allowing use of any IDE or text editor (like Sublime Text, Atom or Vim).
 
 ## Getting Started - Creating a new project
-### With VSCode (recommended)
-For getting started with VSCode, please see the screensteps documentation:
-https://wpilib.screenstepslive.com/s/currentCS/m/79833
+### With Visual Studio Code (recommended)
+For getting started with VS Code, please see the frc-docs documentation:
+http://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
 
-### Without VSCode
-Follow the installation instructions on screensteps: https://wpilib.screenstepslive.com/s/currentCS/m/79833
-_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VSCode if you wish._
+### Without Visual Studio Code
+Follow the installation instructions on frc-docs: http://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
+_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
 
 **WPILibUtility Standalone Project Builder**
-WPILib provides a standalone project builder that provides the same interface as VSCode, without having to use VSCode.
+WPILib provides a standalone project builder that provides the same interface as VS Code, without having to use VS Code.
 
 If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\2020\utility` (windows), or `~/wpilib/2020/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
 Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
@@ -34,11 +34,11 @@ Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/rel
 Download the .zip file corresponding to your language and extract it.
 
 ## Adding Vendor Libraries
-### With VSCode
+### With Visual Studio Code
 Open the command palette with CTRL + SHIFT + P, or by clicking the WPILib icon.
 Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and paste the vendor-provided JSON url.
 
-### Without VSCode
+### Without Visual Studio Code
 Create a folder `vendordeps` in your project directory if it doesn't already exist.
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
 
@@ -62,8 +62,8 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
 
 ## IDE Support
-### VSCode:
-VSCode is fully supported by GradleRIO for FRC. To use it, use the WPILib VSCode extension. See screensteps for instructions.
+### Visual Studio Code:
+VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Code extension. See screensteps for instructions.
 
 ### IntelliJ IDEA:
 _IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
@@ -99,7 +99,7 @@ Import your project with `File - Import... Existing Projects into Workspace` in 
 
 Please see the gradle guide on the eclipse plugin for help: https://docs.gradle.org/current/userguide/eclipse_plugin.html
 
-### Visual Studio 2017 Community / Full (not VSCode)
+### Visual Studio 2017 Community / Full (not Visual Studio Code)
 _VS2017 support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
 To start with, you must apply the `visual-studio` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
