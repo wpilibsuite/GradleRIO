@@ -23,6 +23,10 @@ deploy {
             // Debug can be overridden by command line, for use with VSCode
             debug = frc.getDebugOrDefault(false)
         }
+        frcJavaClasspathArtifact('frcJavaClasspath') {
+            targets << "roborio"
+            configuration = configurations.compileClasspath
+        }
         // Built in artifact to deploy arbitrary files to the roboRIO.
         fileTreeArtifact('frcStaticFileDeploy') {
             // The directory below is the local directory to deploy
@@ -49,11 +53,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
-// in order to make them all available at runtime. Also adding the manifest so WPILib
+// Setting up my Jar File, adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
 
