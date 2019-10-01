@@ -26,7 +26,7 @@ class RoboRIO extends FRCCompatibleTarget {
         this.maxChannels = 4
 
         this.onlyIf = { DeployContext ctx ->
-            verifyOnlyIf(ctx)
+            return verifyOnlyIf(ctx)
         }
 
         // Make a copy of valid image versions so user defined cannot modify the global array

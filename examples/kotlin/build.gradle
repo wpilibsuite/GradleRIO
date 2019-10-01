@@ -60,6 +60,7 @@ dependencies {
 // Setting up my Jar File, adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
+    from { configurations.compileClasspath.findAll { it.isDirectory() } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
 

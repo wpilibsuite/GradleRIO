@@ -1,3 +1,5 @@
+import edu.wpi.first.gradlerio.frc.*
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2020.0.0-alpha-3"
@@ -15,6 +17,7 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = frc.getTeamNumber()
+            addAddress('192.168.2.139')
         }
     }
     artifacts {
@@ -23,7 +26,7 @@ deploy {
             // Debug can be overridden by command line, for use with VSCode
             debug = frc.getDebugOrDefault(false)
         }
-        frcJavaClasspathArtifact('frcJavaClasspath') {
+        artifact('frcJavaClasspath', JavaClasspathConfigurationArtifact) {
             targets << "roborio"
             configuration = configurations.compileClasspath
         }
@@ -45,6 +48,8 @@ dependencies {
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
+    compile project(":lib")
+
 
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
@@ -56,6 +61,7 @@ dependencies {
 // Setting up my Jar File, adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
+    from { configurations.compileClasspath.findAll { it.isDirectory() } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
 

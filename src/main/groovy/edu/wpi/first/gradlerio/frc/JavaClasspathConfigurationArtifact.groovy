@@ -13,13 +13,14 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.util.PatternFilterable
 import jaci.gradle.deploy.artifact.AbstractArtifact
+import jaci.gradle.deploy.artifact.CacheableArtifact
 import org.gradle.api.provider.Property
 import jaci.gradle.PathUtils
 
 import java.util.concurrent.Callable
 
 @CompileStatic
-class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Callable<FileCollection> {
+class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Callable<FileCollection>, CacheableArtifact {
 
     Configuration configuration
     final Property<FileCollection> files
@@ -45,7 +46,9 @@ class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Cal
         if (files.isPresent()) {
             Map<String, File> filesToWrite = [:]
             files.get().files.each {
-                filesToWrite.put(it.name.replaceFirst(~/\.[^\.] $/, ''), it)
+                def folderName = it.name.take(it.name.lastIndexOf('.')).toString()
+                def key = "${folderName}/${it.name}".toString()
+                filesToWrite.put(key, it)
             }
             context.put(filesToWrite, cacheResolver?.resolve(cache))
         } else {
@@ -54,7 +57,7 @@ class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Cal
     }
 
     List<String> getFileNames() {
-        return files.get().files.collect { it.name.replaceFirst(~/\.[^\.] $/, '') }
+        return files.get().files.collect { it.name.take(it.name.lastIndexOf('.')).toString() }
     }
 
     @Override
@@ -62,8 +65,9 @@ class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Cal
         if (resolvedFiles != null) {
             return resolvedFiles
         }
-        def conf = configuration.resolvedConfiguration
-        resolvedFiles = project.files(conf.files)
+        // Only resolve files, not classpath folders
+        def conf = configuration.resolvedConfiguration.files.findAll { !it.isDirectory() }
+        resolvedFiles = project.files(conf)
 
         return resolvedFiles
     }
