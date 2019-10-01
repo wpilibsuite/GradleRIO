@@ -63,7 +63,13 @@ class FRCPlugin implements Plugin<Project> {
         def targetExtension = deployExtension.targets
 
         artifactExtensionAware.extensions.add('frcJavaArtifact', { String name, Closure closure->
-            return artifactExtension.artifact(name, FRCJavaArtifact, new ActionWrapper(closure))
+            FRCJavaArtifact jArtifact = (FRCJavaArtifact)artifactExtension.artifact(name, FRCJavaArtifact, new ActionWrapper(closure))
+            JavaClasspathConfigurationArtifact confArtifact = (JavaClasspathConfigurationArtifact)artifactExtension.artifact(name + 'Classpath', JavaClasspathConfigurationArtifact, new ActionWrapper({
+                targets.addAll(jArtifact.targets)
+                configurations = jArtifact.dependencyConfigurations
+            }))
+            jArtifact.classpathArtifact = confArtifact
+            return jArtifact
         })
 
         artifactExtensionAware.extensions.add('frcNativeArtifact', { String name, Closure closure->

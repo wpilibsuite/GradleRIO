@@ -15,6 +15,7 @@ import org.gradle.api.tasks.util.PatternFilterable
 import jaci.gradle.deploy.artifact.AbstractArtifact
 import jaci.gradle.deploy.artifact.CacheableArtifact
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
 import jaci.gradle.PathUtils
 
 import java.util.concurrent.Callable
@@ -22,7 +23,7 @@ import java.util.concurrent.Callable
 @CompileStatic
 class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Callable<FileCollection>, CacheableArtifact {
 
-    Configuration configuration
+    ListProperty<Configuration> configurations
     final Property<FileCollection> files
     private FileCollection resolvedFiles
 
@@ -65,10 +66,13 @@ class JavaClasspathConfigurationArtifact extends AbstractArtifact implements Cal
         if (resolvedFiles != null) {
             return resolvedFiles
         }
-        // Only resolve files, not classpath folders
-        def conf = configuration.resolvedConfiguration.files.findAll { !it.isDirectory() }
-        resolvedFiles = project.files(conf)
-
+        resolvedFiles = []
+        configurations.get.each() {
+            // Only resolve files, not classpath folders
+            def conf = configuration.resolvedConfiguration.files.findAll { !it.isDirectory() }
+            resolvedFiles += project.files(conf)
+        }
+        
         return resolvedFiles
     }
 }

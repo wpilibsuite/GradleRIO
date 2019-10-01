@@ -5,18 +5,29 @@ import groovy.transform.CompileStatic
 import javax.inject.Inject
 import jaci.gradle.PathUtils
 import jaci.gradle.ActionWrapper
-import jaci.gradle.deploy.artifact.JavaArtifact
+import jaci.gradle.deploy.artifact.FileArtifact
+import jaci.gradle.deploy.artifact.TaskHungryArtifact
 import jaci.gradle.deploy.context.DeployContext
 import jaci.gradle.deploy.sessions.IPSessionController
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.tasks.bundling.Jar
+import java.util.concurrent.Callable
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.Task
 import org.gradle.api.Project
 
 @CompileStatic
-class FRCJavaArtifact extends JavaArtifact {
+class FRCJavaArtifact extends FileArtifact implements TaskHungryArtifact {
+
+    Jar jarTask
 
     @Inject
     FRCJavaArtifact(String name, Project project) {
         super(name, project)
-        setJar('jar')
+
+        dependenciesConfiguration = project.objects.listProperty(Configuration)
+
+        dependsOn({ jarTask } as Callable<Jar>)
 
         predeploy << new ActionWrapper({ DeployContext ctx ->
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null")
@@ -31,6 +42,15 @@ class FRCJavaArtifact extends JavaArtifact {
         });
     }
 
+    @Override
+    void taskDependenciesAvailable(Set<Task> tasks) {
+        file.set(jarTask.archiveFile.get().getAsFile())
+        directory = "/home/lvuser/${jarTask.archiveBaseName.get()}".toString()
+    }
+
+    ListProperty<Configuration> dependenciesConfiguration
+    JavaClasspathConfigurationArtifact classpathArtifact
+
     List<String> jvmArgs = []
     List<String> arguments = []
     boolean debug = false
@@ -38,7 +58,7 @@ class FRCJavaArtifact extends JavaArtifact {
     String debugFlags = "-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:${debugPort},server=y,suspend=y"
 
     def robotCommand = {
-        "/usr/local/frc/JRE/bin/java -Djava.library.path=${FRCPlugin.LIB_DEPLOY_DIR} -Djava.lang.invoke.stringConcat=BC_SB –XX:+UseConcMarkSweepGC ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -cp ${FRCPlugin.LIB_DEPLOY_DIR};/home/lvuser -jar \"<<BINARY>>\" ${arguments.join(" ")}"
+        "/usr/local/frc/JRE/bin/java -Djava.library.path=${FRCPlugin.LIB_DEPLOY_DIR} -Djava.lang.invoke.stringConcat=BC_SB –XX:+UseConcMarkSweepGC ${jvmArgs.join(" ")} ${debug ? debugFlags : ""} -cp <<LIBCP>>;/home/lvuser/${jarTask.archiveBaseName.get()} <<MAINCLASSNAME>> ${arguments.join(" ")}"
     }
 
     @Override
