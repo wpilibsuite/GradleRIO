@@ -63,7 +63,7 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 
 ## IDE Support
 ### Visual Studio Code:
-VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Code extension. See screensteps for instructions.
+VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Code extension. See frc-docs for instructions.
 
 ### IntelliJ IDEA:
 _IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
