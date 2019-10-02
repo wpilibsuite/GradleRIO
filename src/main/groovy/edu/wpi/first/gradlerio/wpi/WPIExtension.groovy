@@ -17,9 +17,10 @@ import javax.inject.Inject
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2019.+"
-    String niLibrariesVersion = "2019.12.2"
+    String niLibrariesVersion = "2020.2.2"
     String opencvVersion = "3.4.7-1"
-    static final String[] validImageVersions = ['2019_v14']
+    String imguiVersion = "1.72b-1"
+    static final String[] validImageVersions = ['2020_v2']
 
     String wpilibYear = '2020'
 
@@ -139,6 +140,7 @@ class WPIExtension {
                 "opencvVersion"        : new Tuple("OpenCV", opencvVersion, "opencv"),
                 "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
                 "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
+                "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
 
                 "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
                 "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
