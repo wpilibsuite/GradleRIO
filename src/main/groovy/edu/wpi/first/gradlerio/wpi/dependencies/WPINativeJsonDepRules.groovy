@@ -32,7 +32,7 @@ class WPINativeJsonDepRules extends RuleSource {
                 String linkSuff     = cpp.sharedLibrary ? '' : 'static'
                 String name = dep.uuid + cpp.libName
                 String mavenbase = "${cpp.groupId}:${cpp.artifactId}:${WPIVendorDepsExtension.getVersion(cpp.version, wpi)}"
-                String config = cpp.configuration ?: "native_${dep.uuid}"
+                String config = cpp.configuration ?: "native_${dep.uuid}_${cpp.groupId}${cpp.artifactId}"
                 List<String> allPlatforms = platformContainer.collect { Platform p -> p.name }
 
                 // Note: because of a discrepancy between the target platforms of the headers, sources
