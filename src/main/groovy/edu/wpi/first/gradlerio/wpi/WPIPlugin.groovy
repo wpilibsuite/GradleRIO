@@ -59,6 +59,7 @@ class WPIPlugin implements Plugin<Project> {
                     it.niLibVersion = wpiExt.niLibrariesVersion
                     it.opencvVersion = wpiExt.opencvVersion
                     it.googleTestVersion = wpiExt.googleTestVersion
+                    it.imguiVersion = wpiExt.imguiVersion
                 }
             }
 
