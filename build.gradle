@@ -93,6 +93,7 @@ examplesFolder.eachFile { File file ->
             }
 
             zipExamples.dependsOn it
+            it.dependsOn PatchExamples
         }
     }
 }
