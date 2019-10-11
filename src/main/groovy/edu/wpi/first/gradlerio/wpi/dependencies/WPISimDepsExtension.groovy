@@ -16,19 +16,23 @@ public class WPISimDepsExtension {
         this.wpi = wpi
     }
 
-    List<String> print(String platform) {
-        return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${platform}@zip".toString()]
+    List<String> print(String platform, boolean debug) {
+        return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
-    List<String> nt_ds(String platform) {
-        return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${platform}@zip".toString()]
+    List<String> nt_ds(String platform, boolean debug) {
+        return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
-    List<String> lowfi(String platform) {
-        return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${platform}@zip".toString()]
+    List<String> lowfi(String platform, boolean debug) {
+        return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
-    List<String> driverstation(String platform) {
-        return ["edu.wpi.first.halsim:halsim_ds_socket:${wpi.wpilibVersion}:${platform}@zip".toString()]
+    List<String> driverstation(String platform, boolean debug) {
+        return ["edu.wpi.first.halsim:halsim_ds_socket:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
+    }
+
+    List<String> gui(String platform, boolean debug) {
+        return ["edu.wpi.first.halsim:halsim_gui:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 }

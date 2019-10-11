@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
@@ -12,7 +13,7 @@ class JsonMergeTask extends DefaultTask implements SingletonTask {
     @Internal
     String singletonName = "jsonMerge"
 
-    @Internal
+    @InputDirectory
     File folder
 
     @OutputFile

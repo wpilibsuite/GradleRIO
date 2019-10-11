@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2020.0.0-alpha-3"
+    id "edu.wpi.first.GradleRIO" version "2020.0.0-alpha-4"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -39,6 +39,11 @@ deploy {
 // We recommend leaving this disabled if possible. Note for eclipse project
 // imports this is enabled by default. For new projects, its disabled
 def includeSrcInIncludeRoot = false
+
+dependencies {
+    // In C++ for now, the argument must be true
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
+}
 
 model {
     components {
