@@ -139,5 +139,10 @@ class WPIPlugin implements Plugin<Project> {
                     repo.url = mirror.release
                 }
         }
+
+        // Maven Central is needed for EJML and JUnit
+        if (wpi.maven.useMavenCentral) {
+            project.repositories.mavenCentral()
+        }
     }
 }

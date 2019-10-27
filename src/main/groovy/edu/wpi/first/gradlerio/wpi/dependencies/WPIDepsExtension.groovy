@@ -54,7 +54,8 @@ public class WPIDepsExtension {
                 "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}".toString(),
-                "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}".toString()]
+                "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}".toString(),
+                "org.ejml:ejml-simple:${wpi.ejmlVersion}".toString()]
     }
 
     List<String> wpilibSource() {
@@ -64,7 +65,8 @@ public class WPIDepsExtension {
                 "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}:sources".toString(),
-                "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString()]
+                "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString(),
+                "org.ejml:ejml-simple:${wpi.ejmlVersion}:sources".toString()]
     }
 
     List<String> wpilibJni(String platform) {

@@ -20,6 +20,7 @@ class WPIExtension {
     String niLibrariesVersion = "2020.4.1"
     String opencvVersion = "3.4.7-1"
     String imguiVersion = "1.72b-1"
+    String ejmlVersion = "0.38"
     static final String[] validImageVersions = ['2020_v4']
 
     String wpilibYear = '2020'
@@ -141,6 +142,7 @@ class WPIExtension {
                 "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
                 "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
                 "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
+                "ejmlVersion"         : new Tuple("EJML", ejmlVersion, "ejml"),
 
                 "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
                 "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
