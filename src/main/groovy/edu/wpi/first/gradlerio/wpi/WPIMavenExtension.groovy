@@ -16,6 +16,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
     boolean useLocal
     boolean useFrcMavenLocalDevelopment
     boolean useFrcMavenLocalRelease
+    boolean useMavenCentral
 
     @Inject
     WPIMavenExtension(Project project) {
@@ -26,6 +27,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         this.useLocal = true
         this.useFrcMavenLocalDevelopment = false
         this.useFrcMavenLocalRelease = false
+        this.useMavenCentral = true
 
         mirror("Official") { WPIMavenRepo mirror ->
             mirror.release = "https://frcmaven.wpi.edu/artifactory/release"
