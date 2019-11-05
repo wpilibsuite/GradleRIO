@@ -35,10 +35,10 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
             mirror.priority = WPIMavenRepo.PRIORITY_OFFICIAL
         }
 
-        mirror("AU") { WPIMavenRepo mirror ->
-            mirror.release = "http://wpimirror.imjac.in/m2/release"
-            mirror.development = "http://wpimirror.imjac.in/m2/development"
-        }
+        // mirror("AU") { WPIMavenRepo mirror ->
+        //     mirror.release = "http://wpimirror.imjac.in/m2/release"
+        //     mirror.development = "http://wpimirror.imjac.in/m2/development"
+        // }
     }
 
     // Mirror = source for WPILib artifacts

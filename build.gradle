@@ -14,17 +14,17 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile 'edu.wpi.first:gradle-cpp-vscode:0.9.4'
+    api 'com.google.code.gson:gson:2.2.4'
+    api 'edu.wpi.first:gradle-cpp-vscode:0.10.0'
 
-    compile 'edu.wpi.first:native-utils:2020.1.5'
+    api 'edu.wpi.first:native-utils:2020.2.0'
 
-    compile 'com.jcraft:jsch:0.1.53'
+    api 'com.jcraft:jsch:0.1.53'
 
-    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
+    testImplementation('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
     }
-    testCompile gradleTestKit()
+    testImplementation gradleTestKit()
 }
 
 archivesBaseName = "GradleRIO"
@@ -36,7 +36,7 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2020.1.1-beta-2"
+    version = "2020.1.1-beta-0"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -87,7 +87,7 @@ examplesFolder.eachFile { File file ->
     if (file.isDirectory() && file.name != '_archived') {
         task "zipExample${file.name}"(type: Zip) {
             from(file) {
-                archiveName "${file.name}.zip"
+                archiveFileName = "${file.name}.zip"
                 exclude 'build/'
                 exclude '.gradle/'
             }
@@ -101,6 +101,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '5.4.1'
-    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = '6.0-rc-1'
+    distributionType = Wrapper.DistributionType.BIN
 }
