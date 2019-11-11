@@ -49,7 +49,7 @@ class WPINativeJsonDepRules extends RuleSource {
                         lib.headerDirs << ''
                         lib.libraryName = "${name}_headers"
                         lib.maven = "$mavenbase:${cpp.headerClassifier}@zip"
-                        lib.configuration = config
+                        lib.configuration = "${config}_headers".toString()
                     } as Action<NativeLib>)
                 }
 
@@ -61,7 +61,7 @@ class WPINativeJsonDepRules extends RuleSource {
                         lib.sourceDirs << ''
                         lib.libraryName = "${name}_sources"
                         lib.maven = "$mavenbase:${cpp.sourcesClassifier}@zip"
-                        lib.configuration = config
+                        lib.configuration = "${config}_sources".toString()
                     } as Action<NativeLib>)
                 }
 
