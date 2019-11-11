@@ -24,19 +24,19 @@ public class WPIDepsExtension {
     }
 
     void wpilib(VariantComponentSpec component) {
-        wpi.useLibrary(component, 'wpilib_shared')
+        wpi.useLibrary(component, 'wpilib_executable_shared', 'vision_shared')
     }
 
     void wpilib(NativeBinarySpec binary) {
-        wpi.useLibrary(binary, 'wpilib_shared')
+        wpi.useLibrary(binary, 'wpilib_executable_shared', 'vision_shared')
     }
 
     void wpilibStatic(VariantComponentSpec component) {
-        wpi.useLibrary(component, 'wpilib_static')
+        wpi.useLibrary(component, 'wpilib_executable_static', 'vision_static')
     }
 
     void wpilibStatic(NativeBinarySpec binary) {
-        wpi.useLibrary(binary, 'wpilib_static')
+        wpi.useLibrary(binary, 'wpilib_executable_static', 'vision_static')
     }
 
     void googleTest(VariantComponentSpec component) {

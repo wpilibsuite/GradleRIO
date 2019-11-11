@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-0"
+    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-2"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -87,5 +87,5 @@ model {
 }
 
 wrapper {
-    gradleVersion = '5.4.1'
+    gradleVersion = '6.0'
 }

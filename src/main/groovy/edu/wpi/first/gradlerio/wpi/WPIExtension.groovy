@@ -17,7 +17,7 @@ import javax.inject.Inject
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2020.1.1-beta-2"
-    String niLibrariesVersion = "2020.5.1"
+    String niLibrariesVersion = "2020.5.2"
     String opencvVersion = "3.4.7-2"
     String imguiVersion = "1.72b-1"
     String ejmlVersion = "0.38"
