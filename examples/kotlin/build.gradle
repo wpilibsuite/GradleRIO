@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.11"
+    id "org.jetbrains.kotlin.jvm" version "1.3.50"
     id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-2"
 }
 
@@ -40,7 +40,7 @@ repositories {
 
 // Defining my dependencies. In this case, WPILib (+ friends)
 dependencies {
-    compile wpi.deps.wpilib()
+    implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
@@ -50,7 +50,7 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
