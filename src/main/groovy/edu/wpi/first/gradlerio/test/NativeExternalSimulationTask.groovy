@@ -19,6 +19,7 @@ import java.nio.file.Paths
 class NativeExternalSimulationTask extends ExternalSimulationTask {
     @Internal
     List<NativeExecutableBinarySpec> exeBinaries = []
+    @Internal
     List<NativeTestSuiteBinarySpec> testBinaries = []
 
     @OutputFile

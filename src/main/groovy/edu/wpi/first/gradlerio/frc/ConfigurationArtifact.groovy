@@ -20,6 +20,8 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
     boolean zipped
     Action<PatternFilterable> filter
 
+    Set<File> configFileCaches
+
     @Inject
     ConfigurationArtifact(String name, Project project) {
         super(name, project)
@@ -38,15 +40,17 @@ class ConfigurationArtifact extends FileCollectionArtifact implements Callable<F
 
     @Override
     FileCollection call() {
-        def conf = configuration.resolvedConfiguration
+        if (configFileCaches == null) {
+            configFileCaches = configuration.resolvedConfiguration.files
+        }
         if (zipped) {
-            def allfiles = conf.files.collect { File file ->
+            def allfiles = configFileCaches.collect { File file ->
                 project.zipTree(file).matching(filter)
             }.findAll { it != null }
 
             return allfiles.empty ? project.files() : allfiles.inject { a, b -> a + b }
         } else {
-            return project.files(conf.files)
+            return project.files(configFileCaches)
         }
     }
 }
