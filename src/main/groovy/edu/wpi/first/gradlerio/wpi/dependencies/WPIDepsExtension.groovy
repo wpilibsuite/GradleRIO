@@ -55,7 +55,10 @@ public class WPIDepsExtension {
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}".toString(),
-                "org.ejml:ejml-simple:${wpi.ejmlVersion}".toString()]
+                "org.ejml:ejml-simple:${wpi.ejmlVersion}".toString(),
+                "com.fasterxml.jackson.core:jackson-annotations:${wpi.jacksonVersion}".toString(),
+                "com.fasterxml.jackson.core:jackson-core:${wpi.jacksonVersion}".toString(),
+                "com.fasterxml.jackson.core:jackson-databind:${wpi.jacksonVersion}".toString()]
     }
 
     List<String> wpilibSource() {
@@ -66,7 +69,10 @@ public class WPIDepsExtension {
                 "edu.wpi.first.cscore:cscore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.cameraserver:cameraserver-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.hal:hal-java:${wpi.wpilibVersion}:sources".toString(),
-                "org.ejml:ejml-simple:${wpi.ejmlVersion}:sources".toString()]
+                "org.ejml:ejml-simple:${wpi.ejmlVersion}:sources".toString(),
+                "com.fasterxml.jackson.core:jackson-annotations:${wpi.jacksonVersion}:sources".toString(),
+                "com.fasterxml.jackson.core:jackson-core:${wpi.jacksonVersion}:sources".toString(),
+                "com.fasterxml.jackson.core:jackson-databind:${wpi.jacksonVersion}:sources".toString()]
     }
 
     List<String> wpilibJni(String platform) {
