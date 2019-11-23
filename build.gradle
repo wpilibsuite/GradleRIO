@@ -27,6 +27,11 @@ dependencies {
 
 archivesBaseName = "GradleRIO"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 compileGroovy {
     sourceCompatibility = '8'
     targetCompatibility = '8'
@@ -34,7 +39,7 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2020.1.1-beta-3"
+    version = "2020.1.1-beta-3a"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
