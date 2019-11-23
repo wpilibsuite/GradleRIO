@@ -14,6 +14,7 @@ import org.gradle.platform.base.PlatformContainer
 
 @CompileStatic
 class WPINativeJsonDepRules extends RuleSource {
+
     @Mutate
     void addJsonLibraries(NativeDepsSpec libs, final PlatformContainer platformContainer, final ExtensionContainer extensionContainer) {
         def wpi = extensionContainer.getByType(WPIExtension)
@@ -29,7 +30,6 @@ class WPINativeJsonDepRules extends RuleSource {
         wpi.deps.vendor.dependencies.each { WPIVendorDepsExtension.JsonDependency dep ->
             dep.cppDependencies.each { WPIVendorDepsExtension.CppArtifact cpp ->
 
-                String linkSuff     = cpp.sharedLibrary ? '' : 'static'
                 String name = dep.uuid + cpp.libName
                 String mavenbase = "${cpp.groupId}:${cpp.artifactId}:${WPIVendorDepsExtension.getVersion(cpp.version, wpi)}"
                 String config = cpp.configuration ?: "native_${dep.uuid}_${cpp.groupId}${cpp.artifactId}"
@@ -70,59 +70,86 @@ class WPINativeJsonDepRules extends RuleSource {
                     String buildType    = buildKind.contains('debug') ? 'debug' : 'release'
                     String binaryConfig = config + buildKind
 
-                    if (cpp.binaryPlatforms != null) {
-                        if (cpp.binaryPlatforms.contains(NativePlatforms.roborio)) {
-                            def platform = 'linuxathena'
-                            libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
-                                common(lib)
-                                lib.targetPlatforms = [platform]
-                                lib.libraryName = "${name}_binaries"
+                    boolean sharedContainsRio = cpp.sharedBinaryPlatforms.contains(NativePlatforms.roborio)
+                    boolean staticContainsRio = cpp.staticBinaryPlatforms.contains(NativePlatforms.roborio)
 
-                                lib.buildType = buildType
+                    if (sharedContainsRio || staticContainsRio) {
+                        def platform = 'linuxathena'
+                        libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
+                            common(lib)
+                            lib.targetPlatforms = [platform]
+                            lib.libraryName = "${name}_binaries"
 
-                                if (cpp.sharedLibrary) {
-                                    lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString()]
-                                    lib.dynamicMatchers = lib.sharedMatchers
-                                } else {
-                                    lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
-                                }
-                                lib.maven = "$mavenbase:${platform}${linkSuff}debug@zip"
-                                // It can't be 'config' otherwise missing libs break even if not used!
-                                lib.configuration = "${binaryConfig}_${platform}".toString()
-                            } as Action<NativeLib>)
-                        }
+                            lib.buildType = buildType
 
-                        for (String p : cpp.binaryPlatforms) {
-                            // Skip athena, as it is specially handled
-                            if (p.contains(NativePlatforms.roborio)) {
-                                continue
+                            String linkSuff = ''
+
+                            if (sharedContainsRio) {
+                                lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString()]
+                                lib.dynamicMatchers = lib.sharedMatchers
+                            } else {
+                                lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
+                                linkSuff = 'static'
                             }
-                            // DON'T REMOVE THIS!
-                            // I know it's a redundant variable, but it's actually required. Groovy sucks with variable
-                            // lifetime, so if you remove this, platform as read inside of the action for libs.create
-                            // will only equal the last registered platform. The action is delegated and the variable is
-                            // overridden before the action is called, but groovy is too dumb to realize that itself.
-                            String platform = p
-                            libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
-                                common(lib)
-                                lib.targetPlatforms = [platform]
-                                lib.libraryName = "${name}_binaries"
+                            lib.maven = "$mavenbase:${platform}${linkSuff}debug@zip"
+                            // It can't be 'config' otherwise missing libs break even if not used!
+                            lib.configuration = "${binaryConfig}_${platform}".toString()
+                        } as Action<NativeLib>)
+                    }
 
-                                lib.buildType = buildType
-
-                                lib.staticMatchers = ["**/*${cpp.libName}*.lib".toString()]
-                                if (cpp.sharedLibrary) {
-                                    lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString(), "**/*${cpp.libName}*.dylib".toString()]
-
-                                    lib.dynamicMatchers = lib.sharedMatchers + "**/${cpp.libName}*.dll".toString()
-                                } else {
-                                    lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
-                                }
-                                lib.maven = "$mavenbase:$platform$linkSuff$buildKind@zip"
-                                // It can't be 'config' otherwise missing libs break even if not used!
-                                lib.configuration = "${binaryConfig}_${platform}".toString()
-                            } as Action<NativeLib>)
+                    for (String p : cpp.sharedBinaryPlatforms) {
+                        // Skip athena, as it is specially handled
+                        if (p.contains(NativePlatforms.roborio)) {
+                            continue
                         }
+                        // DON'T REMOVE THIS!
+                        // I know it's a redundant variable, but it's actually required. Groovy sucks with variable
+                        // lifetime, so if you remove this, platform as read inside of the action for libs.create
+                        // will only equal the last registered platform. The action is delegated and the variable is
+                        // overridden before the action is called, but groovy is too dumb to realize that itself.
+                        String platform = p
+                        libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
+                            common(lib)
+                            lib.targetPlatforms = [platform]
+                            lib.libraryName = "${name}_binaries"
+
+                            lib.buildType = buildType
+
+                            lib.staticMatchers = ["**/*${cpp.libName}*.lib".toString()]
+                            lib.sharedMatchers = ["**/*${cpp.libName}*.so".toString(), "**/*${cpp.libName}*.dylib".toString()]
+
+                            lib.dynamicMatchers = lib.sharedMatchers + "**/${cpp.libName}*.dll".toString()
+                            lib.maven = "$mavenbase:$platform$buildKind@zip"
+                            // It can't be 'config' otherwise missing libs break even if not used!
+                            lib.configuration = "${binaryConfig}_${platform}".toString()
+                        } as Action<NativeLib>)
+                    }
+
+                    for (String p : cpp.staticBinaryPlatforms) {
+                        // Skip athena, as it is specially handled
+                        if (p.contains(NativePlatforms.roborio)) {
+                            continue
+                        }
+                        // DON'T REMOVE THIS!
+                        // I know it's a redundant variable, but it's actually required. Groovy sucks with variable
+                        // lifetime, so if you remove this, platform as read inside of the action for libs.create
+                        // will only equal the last registered platform. The action is delegated and the variable is
+                        // overridden before the action is called, but groovy is too dumb to realize that itself.
+                        String platform = p
+                        libs.create("${name}_${platform}${buildKind}".toString(), NativeLib, { NativeLib lib ->
+                            common(lib)
+                            lib.targetPlatforms = [platform]
+                            lib.libraryName = "${name}_binaries"
+
+                            lib.buildType = buildType
+
+                            lib.staticMatchers = ["**/*${cpp.libName}*.lib".toString()]
+                            lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
+
+                            lib.maven = "$mavenbase:${platform}static$buildKind@zip"
+                            // It can't be 'config' otherwise missing libs break even if not used!
+                            lib.configuration = "${binaryConfig}_${platform}".toString()
+                        } as Action<NativeLib>)
                     }
                 }
             }
