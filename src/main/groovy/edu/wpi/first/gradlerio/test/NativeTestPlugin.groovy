@@ -60,6 +60,7 @@ class NativeTestPlugin implements Plugin<Project> {
                     bin.buildable = false
 
                 bin.cppCompiler.define('RUNNING_FRC_TESTS')
+                bin.cCompiler.define('RUNNING_FRC_TESTS')
             }
         }
 
