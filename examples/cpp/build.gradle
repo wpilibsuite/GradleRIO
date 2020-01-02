@@ -85,7 +85,3 @@ model {
         }
     }
 }
-
-wrapper {
-    gradleVersion = '6.0'
-}
