@@ -6,6 +6,7 @@ import edu.wpi.first.gradlerio.test.TestPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.log.ETLoggerFactory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.internal.jvm.Jvm
 import org.gradle.jvm.tasks.Jar
 
@@ -23,7 +24,11 @@ class JavaSimulationTask extends ExternalLaunchTask {
                 continue
             }
 
-            launch("\"$java\"", "-Djava.library.path=\"$ldpath\"", "-jar", "\"${jar.archivePath.toString()}\"")
+            if (OperatingSystem.current().isMacOsX()) {
+                launch("\"$java\"", "-Djava.library.path=\"$ldpath\"", "-XstartOnFirstThread", "-jar", "\"${jar.archivePath.toString()}\"")
+            } else {
+                launch("\"$java\"", "-Djava.library.path=\"$ldpath\"", "-jar", "\"${jar.archivePath.toString()}\"")
+            }
             return
         }
 
