@@ -5,6 +5,7 @@ import edu.wpi.first.gradlerio.frc.FRCPlugin
 import edu.wpi.first.gradlerio.frc.RoboRIO
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
+import edu.wpi.first.gradlerio.ide.KDevelopPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
 import edu.wpi.first.gradlerio.wpi.WPIPlugin
 import groovy.transform.CompileStatic
@@ -60,6 +61,7 @@ class GradleRIOPlugin implements Plugin<Project> {
         project.pluginManager.apply(ClionPlugin)
         project.pluginManager.apply(IDEPlugin)
         project.pluginManager.apply(TestPlugin)
+        project.pluginManager.apply(KDevelopPlugin)
 
         project.extensions.add('projectWrapper', new ProjectWrapper(project))
 
