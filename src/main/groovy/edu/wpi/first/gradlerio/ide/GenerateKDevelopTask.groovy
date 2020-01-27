@@ -2,12 +2,9 @@ package edu.wpi.first.gradlerio.ide
 
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
-import org.gradle.api.Plugin
 import org.gradle.api.tasks.TaskAction
 import org.gradle.nativeplatform.NativeDependencySet
 import org.gradle.nativeplatform.NativeExecutableBinarySpec
-
 
 import java.nio.file.Paths
 
@@ -66,18 +63,5 @@ Type=2
             buildSystemFile.write("${index + 1}=${dir}\n")
         }
         buildSystemFile.close()
-    }
-}
-
-class KDevelopPlugin implements Plugin<Project> {
-    @Override
-    void apply(Project project) {
-        project.pluginManager.apply(ComponentModelBasePlugin)
-        project.extensions.create('KDevelop', EditorConfigurationExtension)
-
-        project.tasks.register('KDevelop', GenerateKDevelopTask) { GenerateKDevelopTask task ->
-            task.group = "GradleRIO"
-            task.description = "Generate KDevelop4 Build Files."
-        }
     }
 }
