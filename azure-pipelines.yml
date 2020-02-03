@@ -37,6 +37,12 @@ steps:
   displayName: 'Test Java Build'
 
 - script: |
+    cd examples/jni
+    chmod +x ./gradlew
+    ./gradlew build
+  displayName: 'Test JNI Build'
+
+- script: |
     cd examples/kotlin
     chmod +x ./gradlew
     ./gradlew build
