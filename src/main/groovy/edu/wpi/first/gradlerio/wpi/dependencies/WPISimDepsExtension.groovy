@@ -17,15 +17,15 @@ public class WPISimDepsExtension {
     }
 
     List<String> print(String platform, boolean debug) {
-        return ["edu.wpi.first.halsim:halsim-print:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
+        return ["edu.wpi.first.halsim:halsim_print:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
     List<String> nt_ds(String platform, boolean debug) {
-        return ["edu.wpi.first.halsim.ds:halsim-ds-nt:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
+        return ["edu.wpi.first.halsim.ds:halsim_ds_nt:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
     List<String> lowfi(String platform, boolean debug) {
-        return ["edu.wpi.first.halsim:halsim-lowfi:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
+        return ["edu.wpi.first.halsim:halsim_lowfi:${wpi.wpilibVersion}:${platform}${debug ? 'debug' : ''}@zip".toString()]
     }
 
     List<String> driverstation(String platform, boolean debug) {
