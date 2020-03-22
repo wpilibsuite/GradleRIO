@@ -79,7 +79,7 @@ Please see the IntelliJ IDEA help page on gradle for help: https://www.jetbrains
 ### Eclipse
 _Eclipse support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
 
-First install buildship the gradle plugin made by Eclipse for the Eclipse IDE. Installation instructions can be found here: https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md
+First install buildship, the gradle plugin made by Eclipse for the Eclipse IDE. Installation instructions can be found here: https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md
 
 Once installed, navigate to `File - Import… - Gradle` and select Gradle Project.
 
