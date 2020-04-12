@@ -3,6 +3,7 @@ package edu.wpi.first.gradlerio
 import edu.wpi.first.gradlerio.caching.WrapperInspector
 import edu.wpi.first.gradlerio.frc.FRCPlugin
 import edu.wpi.first.gradlerio.frc.RoboRIO
+import edu.wpi.first.gradlerio.frcvision.FRCVisionPlugin
 import edu.wpi.first.gradlerio.ide.ClionPlugin
 import edu.wpi.first.gradlerio.ide.IDEPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
@@ -56,6 +57,7 @@ class GradleRIOPlugin implements Plugin<Project> {
 
         project.pluginManager.apply(EmbeddedTools)
         project.pluginManager.apply(FRCPlugin)
+        project.pluginManager.apply(FRCVisionPlugin)
         project.pluginManager.apply(WPIPlugin)
         project.pluginManager.apply(ClionPlugin)
         project.pluginManager.apply(IDEPlugin)
