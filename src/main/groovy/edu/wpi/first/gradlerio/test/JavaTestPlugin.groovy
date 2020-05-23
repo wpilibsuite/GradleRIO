@@ -46,9 +46,16 @@ class JavaTestPlugin implements Plugin<Project> {
 
                 def ldpath = jniExtractionDir(project).absolutePath
 
-                if (OperatingSystem.current().isUnix()) {
+                // must check for isMacOsX first, because isUnix() returns true on a mac
+                if (OperatingSystem.current().isMacOsX()) {
+                    if (OperatingSystem.current().toString().contains("10.15")) {
+                        env["DYLD_LIBRARY_PATH"] = ldpath // On macoOS Catalina, DYLD_FALLBACK_LIBRARY_PATH doesn't work
+                    } else {
+                        env["DYLD_FALLBACK_LIBRARY_PATH"] = ldpath // On macOS before Catalina, it isn't 'safe' to override the non-fallback version.
+                                                                   // Gatekeeper will prevent loading dynamic libraries from relative
+                    }
+                } else if (OperatingSystem.current().isUnix()) {
                     env["LD_LIBRARY_PATH"] = ldpath
-                    env["DYLD_FALLBACK_LIBRARY_PATH"] = ldpath // On Mac it isn't 'safe' to override the non-fallback version.
                 } else if (OperatingSystem.current().isWindows()) {
                     env["PATH"] = ldpath + TestPlugin.envDelimiter() + System.getenv("PATH")
                 }
