@@ -48,6 +48,11 @@ class WPIDependenciesPlugin implements Plugin<Project> {
             }
         } as Action<Task>)
 
+        project.tasks.register("vendordep", VendorDepTask, { VendorDepTask task ->
+            task.group = "GradleRIO"
+            task.description = "Install vendordep JSON file from URL"
+        } as Action<VendorDepTask>)
+
         project.tasks.withType(Jar) { Jar jarTask ->
             jarTask.dependsOn(lazyPreempt)
         }
