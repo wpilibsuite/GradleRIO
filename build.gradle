@@ -18,6 +18,8 @@ dependencies {
     api 'edu.wpi.first:gradle-cpp-vscode:0.12.0'
 
     api 'edu.wpi.first:native-utils:2020.7.2'
+    
+    api'de.undercouch:gradle-download-task:4.0.4'
 
     testImplementation('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
