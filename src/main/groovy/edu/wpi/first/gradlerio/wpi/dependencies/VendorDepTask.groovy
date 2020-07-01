@@ -1,13 +1,12 @@
 package edu.wpi.first.gradlerio.wpi.dependencies
 
-import org.gradle.api.tasks.Exec
+import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-
 /**
  * A task type for downloading vendordep JSON files from the vendor URL.
  */
-class VendorDepTask extends Exec{
+class VendorDepTask extends Download{
     private String url
 //    private String file
 
@@ -35,7 +34,11 @@ class VendorDepTask extends Exec{
      */
     @TaskAction
     def install() {
-        commandLine 'curl', '-o', findFileName(url), url
+        download {
+            src url
+            dest findFileName(url)
+            overwrite true
+        }
     }
 
 }
