@@ -8,7 +8,6 @@ import org.gradle.api.tasks.options.Option
  */
 class VendorDepTask extends Download{
     private String url
-//    private String file
 
     @Option(option = "url", description = "The vendordep JSON URL.")
     void setURL(String url) {
@@ -40,5 +39,4 @@ class VendorDepTask extends Download{
             overwrite true
         }
     }
-
 }
