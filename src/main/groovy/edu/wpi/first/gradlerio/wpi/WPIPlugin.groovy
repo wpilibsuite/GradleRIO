@@ -51,7 +51,7 @@ class WPIPlugin implements Plugin<Project> {
             nte.wpi.addWarnings()
             nte.setSinglePrintPerPlatform()
 
-        project.afterEvaluate {
+            project.afterEvaluate {
                 def ntExt = project.extensions.getByType(NativeUtilsExtension)
                 def wpiExt = project.extensions.getByType(WPIExtension)
                 ntExt.wpi.configureDependencies {
