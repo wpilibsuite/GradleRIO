@@ -51,7 +51,7 @@ class WPIPlugin implements Plugin<Project> {
             nte.wpi.addWarnings()
             nte.setSinglePrintPerPlatform()
 
-            project.afterEvaluate {
+        project.afterEvaluate {
                 def ntExt = project.extensions.getByType(NativeUtilsExtension)
                 def wpiExt = project.extensions.getByType(WPIExtension)
                 ntExt.wpi.configureDependencies {
@@ -60,6 +60,7 @@ class WPIPlugin implements Plugin<Project> {
                     it.opencvVersion = wpiExt.opencvVersion
                     it.googleTestVersion = wpiExt.googleTestVersion
                     it.imguiVersion = wpiExt.imguiVersion
+                    it.wpimathVersion = wpiExt.wpimathVersion
                 }
             }
 
