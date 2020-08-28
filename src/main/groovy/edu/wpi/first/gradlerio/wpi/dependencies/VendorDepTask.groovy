@@ -25,12 +25,12 @@ class VendorDepTask extends DefaultTask{
     private static String findFileName(String url) {
         if (url == null) {
             throw new IllegalArgumentException(
-                    "No vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url <insert_url_here>")
+                    "No vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>")
         }
         int lastUrlSeparator = url.lastIndexOf('/')
         if (lastUrlSeparator == -1) {
             throw new IllegalArgumentException(
-                    "No vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url <insert_url_here>")
+                    "No vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>")
         }
         String name = url.substring(lastUrlSeparator + 1)
         return "vendordeps/${name}"
