@@ -43,7 +43,6 @@ tasks.register('UpdateVersions') {
     def mavenExtFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.groovy')
     def mavenExtText = mavenExtFile.text
     def toSet = "this.useDevelopment = false"
-    println project.hasProperty(useDevelopmentProperty)
     if (project.hasProperty(useDevelopmentProperty)) {
       toSet = "this.useDevelopment = true"
     }
