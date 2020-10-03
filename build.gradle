@@ -25,7 +25,6 @@ dependencies {
     testImplementation gradleTestKit()
 }
 
-archivesBaseName = "GradleRIO"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -38,9 +37,6 @@ compileGroovy {
 }
 
 allprojects {
-    group = "edu.wpi.first"
-    version = "2020.3.2"
-
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
     }
