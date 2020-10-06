@@ -2,6 +2,7 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
+import edu.wpi.first.toolchain.NativePlatforms
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -11,6 +12,7 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
