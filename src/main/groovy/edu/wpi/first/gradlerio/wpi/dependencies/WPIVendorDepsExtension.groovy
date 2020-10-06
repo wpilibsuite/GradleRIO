@@ -2,7 +2,6 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.gradlerio.wpi.WPIMavenRepo
-import edu.wpi.first.toolchain.NativePlatforms
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -12,7 +11,6 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
@@ -31,12 +29,17 @@ public class WPIVendorDepsExtension {
     private final ETLogger log;
     private final JsonSlurper slurper;
 
-    public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
+    private static final String DEFAULT_VENDORDEPS_FOLDER_NAME = 'vendordeps'
+    public static String folderPath = DEFAULT_VENDORDEPS_FOLDER_NAME
 
     @Inject
     WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiExt.project.file(VENDORDEPS_FOLDER_NAME)
+        if(folderPath != DEFAULT_VENDORDEPS_FOLDER_NAME) {
+            println("Warning - the path to the vendordep folder is different from the default.")
+            println("Check that `wpi.deps.vendor.folderPath` is not set to something other than `vendordeps`")
+        }
+        this.vendorFolder = wpiExt.project.file(folderPath)
         this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
         this.slurper = new JsonSlurper()
     }
@@ -71,7 +74,7 @@ public class WPIVendorDepsExtension {
     }
 
     void loadFrom(Project project) {
-        loadFrom(project.file(VENDORDEPS_FOLDER_NAME))
+        loadFrom(project.file(folderPath))
     }
 
     JsonDependency parse(File f) {
