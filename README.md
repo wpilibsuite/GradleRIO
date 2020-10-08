@@ -15,10 +15,10 @@ Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also suppor
 ## Getting Started - Creating a new project
 ### With Visual Studio Code (recommended)
 For getting started with VS Code, please see the frc-docs documentation:
-https://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
+https://docs.wpilib.org/en/latest/docs/zero-to-robot/step-3/creating-benchtop-test-program-cpp-java.html
 
 ### Without Visual Studio Code
-Follow the installation instructions on frc-docs: http://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
+Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/latest/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
 
 **WPILibUtility Standalone Project Builder**
