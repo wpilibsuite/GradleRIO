@@ -37,6 +37,8 @@ compileGroovy {
 }
 
 allprojects {
+    group = "edu.wpi.first"
+
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
     }
