@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption
 class VendorDepTask extends DefaultTask {
     private String url
     private DownloadAction downloadAction = new DownloadAction(getProject())
+    private wpiExt = project.getExtensions().getByType(WPIExtension)
 
     @Option(option = "url", description = "The vendordep JSON URL or path")
     void setURL(String url) {
@@ -71,7 +72,7 @@ class VendorDepTask extends DefaultTask {
      * @param dest the destination file
      */
     private void copyLocal(String filename, Path dest) {
-        Path localCache = Path.of(WPIExtension.getFrcHome()).resolve(WPIExtension.getFrcYear()).resolve("vendordeps")
+        Path localCache = Path.of(wpiExt.getFrcHome()).resolve(wpiExt.getFrcYear()).resolve("vendordeps")
         File localFolder = localCache.toFile()
         if (localFolder.isDirectory()) {
             List<File> matches = localFolder.listFiles(new FilenameFilter() {
