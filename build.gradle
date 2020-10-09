@@ -25,6 +25,7 @@ dependencies {
     testImplementation gradleTestKit()
 }
 
+archivesBaseName = "GradleRIO"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
