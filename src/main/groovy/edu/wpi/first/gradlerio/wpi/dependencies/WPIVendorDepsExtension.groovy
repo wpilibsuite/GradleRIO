@@ -26,19 +26,32 @@ public class WPIVendorDepsExtension {
     List<JsonDependency> dependencies = []
     final List<DelegatedDependencySet> nativeDependenciesList = []
 
-    final File vendorFolder;
-
     private final ETLogger log;
     private final JsonSlurper slurper;
 
-    public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
+    private static final String DEFAULT_VENDORDEPS_FOLDER_NAME = 'vendordeps'
+    private static final String GRADLERIO_VENDOR_FOLDER_PROPERTY = "gradlerio.vendordep.folder.path"
+
 
     @Inject
     WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiExt.project.file(VENDORDEPS_FOLDER_NAME)
         this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
         this.slurper = new JsonSlurper()
+    }
+
+    private File vendorFolder(Project project) {
+        def prop = project.findProperty(GRADLERIO_VENDOR_FOLDER_PROPERTY)
+        String filepath = DEFAULT_VENDORDEPS_FOLDER_NAME
+        if(prop != null && prop != DEFAULT_VENDORDEPS_FOLDER_NAME) {
+            log.logErrorHead("Warning! You have the property $GRADLERIO_VENDOR_FOLDER_PROPERTY set to a non-default value: $prop")
+            log.logError("The default path (from the project root) is $DEFAULT_VENDORDEPS_FOLDER_NAME")
+            log.logError("This can cause GradleRIO to not be able to find the vendordep JSON files, and the dependencies not being loaded.")
+            log.logError("This can result in compilation errors and you not being able to deploy code.")
+            log.logError("Remove this from your gradle.properties file unless you know what you're doing.")
+            filepath = prop
+        }
+        return project.file(filepath)
     }
 
     @CompileDynamic
@@ -59,7 +72,7 @@ public class WPIVendorDepsExtension {
     }
 
     void loadAll() {
-        loadFrom(vendorFolder)
+        loadFrom(vendorFolder(wpiExt.project))
     }
 
     void loadFrom(File directory) {
@@ -71,7 +84,7 @@ public class WPIVendorDepsExtension {
     }
 
     void loadFrom(Project project) {
-        loadFrom(project.file(VENDORDEPS_FOLDER_NAME))
+        loadFrom(vendorFolder(project))
     }
 
     JsonDependency parse(File f) {
