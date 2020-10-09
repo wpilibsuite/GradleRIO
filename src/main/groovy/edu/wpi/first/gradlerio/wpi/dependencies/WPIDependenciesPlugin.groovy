@@ -50,7 +50,7 @@ class WPIDependenciesPlugin implements Plugin<Project> {
 
         project.tasks.register("vendordep", VendorDepTask) { VendorDepTask task ->
             task.group = "GradleRIO"
-            task.description = "Install vendordep JSON file from URL"
+            task.description = "Install vendordep JSON file from URL or local wpilib folder"
         }
 
         project.tasks.withType(Jar) { Jar jarTask ->
