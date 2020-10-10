@@ -31,8 +31,10 @@ class VendorDepTask extends DefaultTask {
         String filename = findFileName(url)
         Path dest = computeDest(filename)
         if (url.startsWith("\$FRCLOCAL/")) {
+            logger.info("Locally fetching $filename")
             copyLocal(filename, dest)
         } else {
+            logger.info("Remotely fetching $filename")
             downloadRemote(dest)
         }
     }
@@ -52,7 +54,7 @@ class VendorDepTask extends DefaultTask {
         int lastUrlSeparator = inputUrl.lastIndexOf('/')
         if (lastUrlSeparator == -1) {
             throw new IllegalArgumentException(
-                    "No valid vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>\n" +
+                    "Invalid vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>\n" +
                             "Use either a URL to fetch a remote JSON file or `\$FRCLOCAL/Filename.json` to fetch from the local wpilib folder."
             )
         }
@@ -60,10 +62,12 @@ class VendorDepTask extends DefaultTask {
     }
 
     private Path computeDest(String filename) {
+        // find project vendordeps folder
         String destfolder =
                 project.findProperty(WPIVendorDepsExtension.GRADLERIO_VENDOR_FOLDER_PROPERTY) ?:
                         WPIVendorDepsExtension.DEFAULT_VENDORDEPS_FOLDER_NAME
-        return Path.of(destfolder, filename)
+
+        return project.file(destfolder).toPath().resolve(filename)
     }
 
     /**
@@ -72,28 +76,37 @@ class VendorDepTask extends DefaultTask {
      * @param dest the destination file
      */
     private void copyLocal(String filename, Path dest) {
-        Path localCache = Path.of(wpiExt.getFrcHome()).resolve(wpiExt.getFrcYear()).resolve("vendordeps")
+        Path localCache = Path.of(wpiExt.getFrcHome()).resolve("vendordeps")
         File localFolder = localCache.toFile()
-        if (localFolder.isDirectory()) {
-            List<File> matches = localFolder.listFiles(new FilenameFilter() {
-                @Override
-                boolean accept(File dir, String name) {
-                    return name == filename
-                }
-            }) as List<File>
-            if (matches.size() < 1) {
-                logger.error("Vendordep file $filename was not found in local wpilib vendordep folder (${localCache.toString()}).")
-                return
-            }
-            Path src = matches[0].toPath()
-            logger.info("Copying file $filename from ${src.toString()} to ${dest.toString()}")
-            try {
-                Path result = Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING)
-                logger.info("Successfully copied $filename to $result")
-            } catch (IOException ex) {
-                logger.error(ex.toString())
-            }
+        if (!localFolder.isDirectory()) {
+            logger.error("For some reason $localFolder is not a folder")
+            return
+        }
 
+        List<File> matches = localFolder.listFiles(new FilenameFilter() {
+            @Override
+            boolean accept(File dir, String name) {
+                return name == filename
+            }
+        }) as List<File>
+
+        // no matches means that source file doesn't exist
+        if (matches.size() < 1) {
+            logger.error("Vendordep file $filename was not found in local wpilib vendordep folder (${localCache.toString()}).")
+            return
+        }
+
+        // only one match could have been found
+        Path src = matches[0].toPath()
+        logger.info("Copying file $filename from ${src.toString()} to ${dest.toString()}")
+        try {
+            if (dest.toFile().exists()) {
+                logger.warn("Destination file $filename exists and is being overwritten.")
+            }
+            Path result = Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING)
+            logger.info("Successfully copied $filename to $result")
+        } catch (IOException ex) {
+            logger.error(ex.toString())
         }
     }
 
