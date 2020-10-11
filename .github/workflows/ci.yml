@@ -44,10 +44,8 @@ jobs:
         
         
     - name: Test JNI Build
-      run: |
-        cd examples/jni
-        chmod +x ./gradlew
-        ./gradlew build
+      run: ./gradlew build
+      working-directory: examples/jni
         
     - name: Test Kotlin Build
       run: |
