@@ -26,8 +26,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Publish to Maven Local
-      run: chmod +x gradlew
-      run: ./gradlew -Xmx3072m build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
+      run: |
+        chmod +x gradlew
+        ./gradlew -Xmx3072m build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
       
       
     - name: Test Cpp Build
@@ -49,13 +50,12 @@ jobs:
         chmod +x ./gradlew
         ./gradlew build
         
-        
     - name: Test Kotlin Build
       run: |
         cd examples/kotlin
         chmod +x ./gradlew
         ./gradlew build
         
-     - uses: actions/upload-artifact@v2
-        with:
+    - uses: actions/upload-artifact@v2
+      with:
           name: "Examples"
