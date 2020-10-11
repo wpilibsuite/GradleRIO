@@ -10,6 +10,7 @@ jobs:
     - uses: actions/checkout@v2
        with:
          fetch-depth: 0
+      
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
       
@@ -30,6 +31,6 @@ jobs:
       working-directory: examples/kotlin
         
     - uses: actions/upload-artifact@v2
-      with:
-        name: Examples
-        path: build/distributions
+       with:
+         name: Examples
+         path: build/distributions
