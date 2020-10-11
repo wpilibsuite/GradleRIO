@@ -11,7 +11,7 @@ jobs:
       with:
        fetch-depth: 0
     - name: Publish to Maven Local
-      run: ./gradlew build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
+      run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
