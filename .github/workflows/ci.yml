@@ -13,7 +13,6 @@ jobs:
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
       
-      
     - name: Test Cpp Build
       run: ./gradlew build
       working-directory: examples/cpp
@@ -21,7 +20,6 @@ jobs:
     - name: Test Java Build
       run: ./gradlew build
       working-directory: examples/java
-        
         
     - name: Test JNI Build
       run: ./gradlew build
