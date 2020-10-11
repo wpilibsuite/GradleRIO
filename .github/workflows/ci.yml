@@ -25,6 +25,10 @@ jobs:
         language: [cpp, java, jni, kotlin]
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2.0.5
+      with:
+        name: Maven
+        path: ~/.m2/
      
     - name: Test ${{ matrix.language }} Build
       run: ./gradlew build
