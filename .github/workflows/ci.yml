@@ -8,8 +8,8 @@ jobs:
     container: wpilib/roborio-cross-ubuntu:2020-18.04
     steps:
     - uses: actions/checkout@v2
-       with:
-         fetch-depth: 0
+      with:
+       fetch-depth: 0
       
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal PatchExamples --stacktrace -PlocalPublish
@@ -31,6 +31,6 @@ jobs:
       working-directory: examples/kotlin
         
     - uses: actions/upload-artifact@v2
-       with:
+      with:
          name: Examples
          path: build/distributions
