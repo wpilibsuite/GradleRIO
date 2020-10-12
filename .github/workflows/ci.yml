@@ -14,12 +14,13 @@ jobs:
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
     - name: Test (delete this)
       run: |
-        ls ~/.m2/
-        ls ~/.m2/repository/
+        mkdir -p MyArtifacts
+        cp -r ~/.m2/repository/* MyArtifacts
+        ls MyArtifacts
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
-        path: ~/.m2/
+        path: MyArtifacts
       
   test_examples:
     needs: build
