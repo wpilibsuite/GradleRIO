@@ -15,7 +15,7 @@ jobs:
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
-        path: $USER_HOME/.m2/repository/
+        path: build/distributions
       
   test_examples:
     needs: build
