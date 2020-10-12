@@ -12,10 +12,14 @@ jobs:
        fetch-depth: 0
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
+    - name: Test (delete this)
+      run: |
+        ls ~/.m2/
+        ls ~/.m2/repository/
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
-        path: ~/.m2/repository/
+        path: ~/.m2/
       
   test_examples:
     needs: build
@@ -29,7 +33,7 @@ jobs:
     - uses: actions/download-artifact@v2.0.5
       with:
         name: Maven
-        path: ~/.m2/repository/
+        path: ~/.m2/
      
     - name: Test ${{ matrix.language }} Build
       run: ./gradlew build
