@@ -14,6 +14,7 @@ jobs:
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
     - name: Test (delete this)
       run: |
+        ls -R ~
         mkdir -p MyArtifacts
         cp -r ~/.m2/repository/* MyArtifacts
         ls MyArtifacts
