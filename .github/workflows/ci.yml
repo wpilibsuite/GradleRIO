@@ -5,33 +5,36 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2020-18.04
+#     container: wpilib/roborio-cross-ubuntu:2020-18.04
     steps:
     - uses: actions/checkout@v2
       with:
        fetch-depth: 0
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
     - name: Test (delete this)
       run: |
-        ls -R ~
-        mkdir -p MyArtifacts
-        cp -r ~/.m2/repository/* MyArtifacts
-        ls MyArtifacts
+        ls -al ~/.m2
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
-        path: MyArtifacts
+        path: ~/.m2/
       
   test_examples:
     needs: build
     runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2020-18.04
+#     container: wpilib/roborio-cross-ubuntu:2020-18.04
     strategy:
      matrix:
         language: [cpp, java, jni, kotlin]
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
     - uses: actions/download-artifact@v2.0.5
       with:
         name: Maven
