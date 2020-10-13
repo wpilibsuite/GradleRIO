@@ -41,6 +41,7 @@ jobs:
         path: ~/.m2/
      
     - name: Setup RoboRIO Toolchain
+      if: ${{ (matrix.language == cpp) || (matrix.language == jni) }}
       run: ./gradlew installRoboRioToolchain
       working-directory: examples/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
