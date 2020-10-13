@@ -67,7 +67,7 @@ class WPIPlugin implements Plugin<Project> {
             project.pluginManager.apply(WPINativeJsonDepRules)
         }
 
-        project.tasks.register("wpi") { Task task ->
+        project.tasks.register("wpiVersions") { Task task ->
             task.group = "GradleRIO"
             task.description = "Print all versions of the wpi block"
             task.doLast {
