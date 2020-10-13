@@ -40,6 +40,8 @@ jobs:
         name: Maven
         path: ~/.m2/
      
+    - name: Setup RoboRIO Toolchain
+      run: ./gradlew installRoboRioToolchain
     - name: Test ${{ matrix.language }} Build
       run: ./gradlew build
       working-directory: examples/${{ matrix.language }}
