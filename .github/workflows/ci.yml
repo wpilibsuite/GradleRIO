@@ -42,6 +42,7 @@ jobs:
      
     - name: Setup RoboRIO Toolchain
       run: ./gradlew installRoboRioToolchain
+      working-directory: examples/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
       run: ./gradlew build
       working-directory: examples/${{ matrix.language }}
