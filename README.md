@@ -41,6 +41,7 @@ Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and pa
 ### Without Visual Studio Code
 Create a folder `vendordeps` in your project directory if it doesn't already exist.
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
+This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project. 
 
 ## Commands
 Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `powershell`
