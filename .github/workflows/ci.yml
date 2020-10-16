@@ -5,7 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-#     container: wpilib/roborio-cross-ubuntu:2020-18.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -15,9 +14,6 @@ jobs:
         java-version: 11
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
-    - name: Test (delete this)
-      run: |
-        ls -al ~/.m2
     - uses: actions/upload-artifact@v2.2.0
       with:
         name: Maven
@@ -26,7 +22,6 @@ jobs:
   test_examples:
     needs: build
     runs-on: ubuntu-latest
-#     container: wpilib/roborio-cross-ubuntu:2020-18.04
     strategy:
      matrix:
         language: [cpp, java, jni, kotlin]
