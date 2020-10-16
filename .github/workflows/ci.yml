@@ -14,7 +14,7 @@ jobs:
         java-version: 11
     - name: Publish to Maven Local
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
-    - uses: actions/upload-artifact@v2.2.0
+    - uses: actions/upload-artifact@v2
       with:
         name: Maven
         path: ~/.m2/
@@ -30,7 +30,7 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: 11
-    - uses: actions/download-artifact@v2.0.5
+    - uses: actions/download-artifact@v2
       with:
         name: Maven
         path: ~/.m2/
