@@ -15,10 +15,9 @@ Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also suppor
 ## Getting Started - Creating a new project
 ### With Visual Studio Code (recommended)
 For getting started with VS Code, please see the frc-docs documentation:
-https://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
-
+https://docs.wpilib.org/en/latest/docs/zero-to-robot/introduction.html
 ### Without Visual Studio Code
-Follow the installation instructions on frc-docs: http://docs.wpilib.org/en/latest/docs/software/getting-started/index.html
+Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/latest/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
 
 **WPILibUtility Standalone Project Builder**
@@ -68,36 +67,25 @@ VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Co
 ### IntelliJ IDEA:
 _IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
-To start with, you must apply the `idea` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
-```gradle
-plugins {
-    id 'idea'
-}
-```
+To import a gradle project into IntelliJ IDEA please do **one** of the following:
+- In the welcome screen click `Import Project` and select the `build.gradle` file of the project.
+- Click `Open` on the welcome screen or `File - Open` while you have another project open and select the `build.gradle` file of the project. IntelliJ will then prompt you if you would like to open it as a project, click `Open as Project`
 
-You can generate your project with the following command:
-- `./gradlew idea` will generate IDE files for IntelliJ IDEA (java).
+IntelliJ may ask to import the Gradle project in the bottom right of the IDE, simple click `Import Changes` to import it.
 
-Import your project with `File - Open Project` in IntelliJ IDEA.
-
-Please see the gradle guide on the idea plugin for help: https://docs.gradle.org/current/userguide/idea_plugin.html
+Please see the IntelliJ IDEA help page on gradle for help: https://www.jetbrains.com/help/idea/gradle.html
 
 ### Eclipse
 _Eclipse support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
 
-To start with, you must apply the `eclipse` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
-```gradle
-plugins {
-    id 'eclipse'
-}
-```
+First install buildship, the gradle plugin made by Eclipse for the Eclipse IDE. Installation instructions can be found here: https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md
 
-You can generate your project with the following command:
-- `./gradlew eclipse` will generate IDE files for Eclipse (java).
+Once installed, navigate to `File - Import… - Gradle` and select Gradle Project.
 
-Import your project with `File - Import... Existing Projects into Workspace` in Eclipse.
+Press the `Next >` button, then specify the root directory of the project.
+Press `Finish` once to finish the import, and `Finish` again to confirm it.
 
-Please see the gradle guide on the eclipse plugin for help: https://docs.gradle.org/current/userguide/eclipse_plugin.html
+Please see the buildship github page for help (specifically the user documentation and the forums): https://github.com/eclipse/buildship
 
 ### Visual Studio 2017 Community / Full (not Visual Studio Code)
 _VS2017 support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
