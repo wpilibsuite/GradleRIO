@@ -21,10 +21,10 @@ class WPIToolsPlugin implements Plugin<Project> {
             String toolFolder = new File(frcHome, 'tools').toString()
 
             ToolInstallTask.toolsFolder = toolFolder
-            tools << new WPITool(project, "SmartDashboard", wpi.smartDashboardVersion, "edu.wpi.first.wpilib:SmartDashboard:${wpi.smartDashboardVersion}", false)
+            tools << new WPITool(project, "SmartDashboard", wpi.smartDashboardVersion, "edu.wpi.first.tools:SmartDashboard:${wpi.smartDashboardVersion}", true)
             tools << new WPITool(project, "ShuffleBoard", wpi.shuffleboardVersion, "edu.wpi.first.shuffleboard:shuffleboard:${wpi.shuffleboardVersion}", true)
             tools << new WPITool(project, "OutlineViewer", wpi.outlineViewerVersion, "edu.wpi.first.wpilib:OutlineViewer:${wpi.outlineViewerVersion}", true)
-            tools << new WPITool(project, "RobotBuilder", wpi.robotBuilderVersion, "edu.wpi.first.wpilib:RobotBuilder:${wpi.robotBuilderVersion}", false)
+            tools << new WPITool(project, "RobotBuilder", wpi.robotBuilderVersion, "edu.wpi.first.tools:RobotBuilder:${wpi.robotBuilderVersion}", false)
             tools << new WPITool(project, "PathWeaver", wpi.pathWeaverVersion, "edu.wpi.first.wpilib:PathWeaver:${wpi.pathWeaverVersion}", true)
 
             project.tasks.register("InstallAllTools") { Task task->
