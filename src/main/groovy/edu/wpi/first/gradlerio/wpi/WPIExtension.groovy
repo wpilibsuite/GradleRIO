@@ -144,7 +144,7 @@ class WPIExtension {
                 "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
                 "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
                 "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
-                "wpimathVersion"       : new Tuple("WPIMath", imguiVersion, "wpimath"),
+                "wpimathVersion"       : new Tuple("WPIMath", wpimathVersion, "wpimath"),
                 "ejmlVersion"          : new Tuple("EJML", ejmlVersion, "ejml"),
                 "jacksonVersion"       : new Tuple("Jackson", jacksonVersion, "jackson"),
 
