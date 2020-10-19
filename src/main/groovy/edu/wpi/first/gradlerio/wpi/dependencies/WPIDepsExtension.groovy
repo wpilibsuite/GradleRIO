@@ -49,6 +49,7 @@ public class WPIDepsExtension {
 
     List<String> wpilib() {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}".toString(),
+                "edu.wpi.first.wpimath:wpimath-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}".toString(),
                 "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}".toString(),
@@ -63,6 +64,7 @@ public class WPIDepsExtension {
 
     List<String> wpilibSource() {
         return ["edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}:sources".toString(),
+                "edu.wpi.first.wpimath:wpimath-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.ntcore:ntcore-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-java:${wpi.wpilibVersion}:sources".toString(),
                 "edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:${wpi.opencvVersion}:sources".toString(),
@@ -90,6 +92,7 @@ public class WPIDepsExtension {
         // libraries, while the -jni ones are standalone (have static libs embedded).
         return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
+                "edu.wpi.first.wpimath:wpimath-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString()]
@@ -109,6 +112,7 @@ public class WPIDepsExtension {
         // The JNI jars are for embedding into an output jar
         return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-jni:${wpi.opencvVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.hal:hal-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
+                "edu.wpi.first.wpimath:wpimath-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.ntcore:ntcore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString(),
                 "edu.wpi.first.cscore:cscore-jni:${wpi.wpilibVersion}:${platform}${debugString}@jar".toString()]

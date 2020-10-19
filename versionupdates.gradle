@@ -1,14 +1,16 @@
 
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  smartDashboardVersion: 'edu.wpi.first.wpilib:SmartDashboard:+',
+  smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
   outlineViewerVersion: 'edu.wpi.first.wpilib:OutlineViewer:+:win64',
   robotBuilderVersion: 'edu.wpi.first.wpilib:RobotBuilder:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
-  pathWeaverVersion: 'edu.wpi.first.wpilib:PathWeaver:+:win64',
+  pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:+',
   googleTestVersion: 'edu.wpi.first.thirdparty.frc2020:googletest:+:headers',
-  niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers'
+  niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',
+  imguiVersions: 'edu.wpi.first.thirdparty.frc2020:imgui:+:headers',
+  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 
 configurations {

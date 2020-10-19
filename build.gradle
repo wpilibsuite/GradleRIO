@@ -17,7 +17,9 @@ dependencies {
     api 'com.google.code.gson:gson:2.8.6'
     api 'edu.wpi.first:gradle-cpp-vscode:0.12.0'
 
-    api 'edu.wpi.first:native-utils:2020.7.2'
+    api 'edu.wpi.first:native-utils:2020.10.1'
+
+    api 'de.undercouch:gradle-download-task:4.1.1'
 
     testImplementation('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
@@ -39,7 +41,6 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2020.3.2"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
