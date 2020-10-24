@@ -1,3 +1,5 @@
+![CI](https://github.com/wpilibsuite/GradleRIO/workflows/CI/badge.svg)
+
 # GradleRIO
 GradleRIO is a powerful Gradle Plugin that allows teams competing in the FIRST
 robotics competition to produce and build their code.
