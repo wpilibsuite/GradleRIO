@@ -16,16 +16,14 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2020.3.2-271-g7c8f1cf"
+    String wpilibVersion = "2021.1.1-alpha-1"
     String niLibrariesVersion = "2020.10.1"
-    String opencvVersion = "3.4.7-3"
+    String opencvVersion = "3.4.7-4"
     String imguiVersion = "1.72b-1"
     String ejmlVersion = "0.38"
     String jacksonVersion = "2.10.0"
-    String wpimathVersion = "2020.3.2-271-g7c8f1cf"
-    static final String[] validImageVersions = ['2020_v10']
-
-    String wpilibYear = '2020'
+    String wpimathVersion = "2021.1.1-alpha-1"
+    static final String[] validImageVersions = ['2020_v10', '2021_v1']
 
     String googleTestVersion = "1.9.0-5-437e100-1"
 
@@ -33,15 +31,15 @@ class WPIExtension {
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
     String smartDashboardVersion = "2020.3.2-3-g62bbfa8"
-    String shuffleboardVersion = "2020.3.2-3-gb834e14"
-    String outlineViewerVersion = "2020.3.2-1-gcbc04e9"
-    String robotBuilderVersion = "2020.3.2-10-gc2687bd"
+    String shuffleboardVersion = "2020.3.2"
+    String outlineViewerVersion = "2020.3.2"
+    String robotBuilderVersion = "2020.3.2"
     String pathWeaverVersion = "2020.3.2-5-g2e0d4ed"
 
     WPIMavenExtension maven
     WPIDepsExtension deps
 
-    String frcYear = '2020'
+    String frcYear = '2021'
 
     NativePlatforms platforms;
 
@@ -141,7 +139,7 @@ class WPIExtension {
         return [
                 "wpilibVersion"        : new Tuple("WPILib", wpilibVersion, "wpilib"),
                 "opencvVersion"        : new Tuple("OpenCV", opencvVersion, "opencv"),
-                "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
+                "frcYear   "           : new Tuple("FRC Year", frcYear, "frcYear"),
                 "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
                 "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
                 "wpimathVersion"       : new Tuple("WPIMath", wpimathVersion, "wpimath"),

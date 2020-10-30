@@ -24,7 +24,7 @@ class JavaSimulationTask extends ExternalLaunchTask {
 
         // Search for WPILib JDK first
         def frcHome = project.extensions.getByType(WPIExtension).frcHome
-        //C:\Users\Public\wpilib\2020\jdk\bin
+        //C:\Users\Public\wpilib\2021\jdk\bin
         def jdkPath = Paths.get(frcHome, "jdk", "bin").toFile()
         if (jdkPath.exists()) {
             java = (new File(jdkPath, javaFileName)).absolutePath.toString()

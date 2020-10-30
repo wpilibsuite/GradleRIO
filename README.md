@@ -25,7 +25,7 @@ _Note that the offline installer isn't required, but will save you a ton of time
 **WPILibUtility Standalone Project Builder**
 WPILib provides a standalone project builder that provides the same interface as VS Code, without having to use VS Code.
 
-If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\2020\utility` (windows), or `~/wpilib/2020/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
+If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\2021\utility` (windows), or `~/wpilib/2021/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
 Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
 
 Use the WPILib Utility whenever you want to create a new project.
@@ -42,7 +42,7 @@ Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and pa
 ### Without Visual Studio Code
 Create a folder `vendordeps` in your project directory if it doesn't already exist.
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
-This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project. 
+This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project.
 
 ## Commands
 Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `powershell`
