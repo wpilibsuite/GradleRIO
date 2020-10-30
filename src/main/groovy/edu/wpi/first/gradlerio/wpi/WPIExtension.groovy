@@ -30,11 +30,11 @@ class WPIExtension {
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2020:11.0.4u10-2"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "2020.3.2-3-g62bbfa8"
-    String shuffleboardVersion = "2020.3.2"
-    String outlineViewerVersion = "2020.3.2"
-    String robotBuilderVersion = "2020.3.2"
-    String pathWeaverVersion = "2020.3.2-5-g2e0d4ed"
+    String smartDashboardVersion = "2021.1.1-alpha-1"
+    String shuffleboardVersion = "2021.1.1-alpha-1"
+    String outlineViewerVersion = "2021.1.1-alpha-1"
+    String robotBuilderVersion = "2021.1.1-alpha-1"
+    String pathWeaverVersion = "2021.1.1-alpha-1"
 
     WPIMavenExtension maven
     WPIDepsExtension deps

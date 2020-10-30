@@ -3,7 +3,7 @@ def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
   smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
   outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:win64',
-  robotBuilderVersion: 'edu.wpi.first.wpilib:RobotBuilder:+',
+  robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
   pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:+',
