@@ -1,5 +1,6 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
+  "java.project.importOnFirstTimeStartup": "automatic",
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
