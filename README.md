@@ -59,7 +59,7 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
 - `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
 - `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
-- `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles with Pathfinder.
+- `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles using WPILib's trajectories and splines.
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
 
