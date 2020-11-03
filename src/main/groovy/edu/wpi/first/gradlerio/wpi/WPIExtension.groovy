@@ -19,7 +19,7 @@ class WPIExtension {
     String wpilibVersion = "2021.1.1-beta-1"
     String niLibrariesVersion = "2020.10.1"
     String opencvVersion = "3.4.7-4"
-    String imguiVersion = "1.72b-1"
+    String imguiVersion = "1.76-9"
     String ejmlVersion = "0.38"
     String jacksonVersion = "2.10.0"
     String wpimathVersion = "2021.1.1-beta-1"
