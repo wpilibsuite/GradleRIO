@@ -43,6 +43,11 @@ def includeSrcInIncludeRoot = false
 dependencies {
     // In C++ for now, the argument must be true
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
+    simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
+
+    // Websocket extensions require additional configuration.
+    // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
+    // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
 }
 
 model {
