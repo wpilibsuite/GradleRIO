@@ -6,10 +6,10 @@ def versionMap = [
   robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
   pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:+',
-  googleTestVersion: 'edu.wpi.first.thirdparty.frc2020:googletest:+:headers',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2021.opencv:opencv-java:+',
+  googleTestVersion: 'edu.wpi.first.thirdparty.frc2021:googletest:+:headers',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',
-  imguiVersions: 'edu.wpi.first.thirdparty.frc2020:imgui:+:headers',
+  imguiVersions: 'edu.wpi.first.thirdparty.frc2021:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 
