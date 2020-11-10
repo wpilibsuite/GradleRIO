@@ -62,7 +62,8 @@ class TestPlugin implements Plugin<Project> {
         env["HALSIM_EXTENSIONS"] = getHALExtensionsEnvVar(project)
         if (OperatingSystem.current().isUnix()) {
             env["LD_LIBRARY_PATH"] = ldpath
-            env["DYLD_FALLBACK_LIBRARY_PATH"] = ldpath // On Mac it isn't 'safe' to override the non-fallback version.
+            env["DYLD_FALLBACK_LIBRARY_PATH"] = ldpath
+            env["DYLD_LIBRARY_PATH"] = ldpath
         } else if (OperatingSystem.current().isWindows()) {
             env["PATH"] = System.getenv("PATH") + envDelimiter() + ldpath
         }
