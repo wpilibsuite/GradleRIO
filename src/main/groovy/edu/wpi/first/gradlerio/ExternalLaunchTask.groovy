@@ -70,7 +70,8 @@ class ExternalLaunchTask extends DefaultTask {
             File stdoutFile = new File(project.buildDir, "stdout/${name}.log")
             ProcessBuilder builder
             if (OperatingSystem.current().isWindows()) {
-                builder = new ProcessBuilder("cmd", "/c", "start", file.absolutePath)
+                builder = new ProcessBuilder("cmd", "/c", "start",
+                        "\"GradleRIO Simulation - ${project.name}\"", "\"${file.absolutePath}\"")
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
                 stdoutFile.parentFile.mkdirs()
