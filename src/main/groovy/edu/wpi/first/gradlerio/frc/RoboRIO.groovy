@@ -3,11 +3,11 @@ package edu.wpi.first.gradlerio.frc
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import jaci.gradle.deploy.context.DeployContext
+import javax.inject.Inject
 import jaci.gradle.deploy.target.location.SshDeployLocation
 import org.apache.log4j.Logger
 import org.gradle.api.Project
 
-import javax.inject.Inject
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -34,19 +34,18 @@ class RoboRIO extends FRCCompatibleTarget {
     }
 
     int team
-
     void setTeam(int team) {
         this.team = team
         setAddresses(
-                // These 3 should catch the RoboRIO when it's connected to a radio or to the computer via USB
-                "roborio-${team}-FRC.local".toString(),                 // Default mDNS
-                "10.${(int) (team / 100)}.${team % 100}.2".toString(),   // 10.TE.AM.2 (default RIO IP)
-                "172.22.11.2",                                          // USB
+            // These 3 should catch the RoboRIO when it's connected to a radio or to the computer via USB
+            "roborio-${team}-FRC.local".toString(),                 // Default mDNS
+            "10.${(int)(team / 100)}.${team % 100}.2".toString(),   // 10.TE.AM.2 (default RIO IP)
+            "172.22.11.2",                                          // USB
 
-                // Remaining cases are for weird environments, like a home network, practice field or otherwise.
-                "roborio-${team}-FRC".toString(),                       // Default DNS
-                "roborio-${team}-FRC.lan".toString(),                   // LAN mDNS/DNS
-                "roborio-${team}-FRC.frc-field.local".toString()        // Practice Field mDNS
+            // Remaining cases are for weird environments, like a home network, practice field or otherwise.
+            "roborio-${team}-FRC".toString(),                       // Default DNS
+            "roborio-${team}-FRC.lan".toString(),                   // LAN mDNS/DNS
+            "roborio-${team}-FRC.frc-field.local".toString()        // Practice Field mDNS
         )
     }
 
