@@ -23,7 +23,7 @@ class WPIExtension {
     String ejmlVersion = "0.38"
     String jacksonVersion = "2.10.0"
     String wpimathVersion = "2021.1.1-beta-1"
-    static final String[] validImageVersions = ['2020_v10', '2021_v1']
+    static final String[] validImageVersions = ['2020_v10', '2021_v1', '2021_v2', '2021_v3.*']
 
     String googleTestVersion = "1.9.0-5-437e100-1"
 
