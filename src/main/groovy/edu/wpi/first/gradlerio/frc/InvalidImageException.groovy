@@ -17,9 +17,16 @@ class InvalidImageException extends RuntimeException {
 
     @Override
     String getMessage() {
-        if (this.parsable)
-            return "RoboRIO Image invalid! RoboRIO: ${imageVersion}, allowed: [${this.allowedImageVersions.join(", ")}]"
-        else
+        if (this.parsable) {
+            return "Invalid RoboRIO Image Version!" +
+                    "\n\tCurrent Version: ${imageVersion}" +
+                    "\n\tAllowed Versions: [${this.allowedImageVersions.join(", ")}]" +
+                    "\nPlease image your RoboRIO with the latest firmware. " +
+                    "For more info, see https://docs.wpilib.org/en/latest/docs/zero-to-robot/" +
+                    "step-2/imaging-your-roborio.html"
+
+        } else {
             return "Could not parse image version!"
+        }
     }
 }
