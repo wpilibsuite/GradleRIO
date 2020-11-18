@@ -22,8 +22,7 @@ class InvalidImageException extends RuntimeException {
                     "\n\tCurrent Version: ${imageVersion}" +
                     "\n\tAllowed Versions: [${this.allowedImageVersions.join(", ")}]" +
                     "\nPlease image your RoboRIO with the latest firmware. " +
-                    "For more info, see https://docs.wpilib.org/en/latest/docs/zero-to-robot/" +
-                    "step-2/imaging-your-roborio.html"
+                    "For more info, see https://docs.wpilib.org/en/stable/docs/getting-started/getting-started-frc-control-system/imaging-your-roborio.html"
 
         } else {
             return "Could not parse image version!"
