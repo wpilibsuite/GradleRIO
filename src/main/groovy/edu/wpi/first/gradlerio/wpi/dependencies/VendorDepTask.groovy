@@ -30,7 +30,7 @@ class VendorDepTask extends DefaultTask {
     void install() throws IOException {
         String filename = findFileName(url)
         Path dest = computeDest(filename)
-        if (url.startsWith("\$FRCLOCAL/")) {
+        if (url.startsWith("FRCLOCAL/")) {
             logger.info("Locally fetching $filename")
             copyLocal(filename, dest)
         } else {
@@ -48,14 +48,14 @@ class VendorDepTask extends DefaultTask {
         if (inputUrl == null) {
             throw new IllegalArgumentException(
                     "No valid vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>\n" +
-                            "Use either a URL to fetch a remote JSON file or `\$FRCLOCAL/Filename.json` to fetch from the local wpilib folder."
+                            "Use either a URL to fetch a remote JSON file or `FRCLOCAL/Filename.json` to fetch from the local wpilib folder."
             )
         }
         int lastUrlSeparator = inputUrl.lastIndexOf('/')
         if (lastUrlSeparator == -1) {
             throw new IllegalArgumentException(
                     "Invalid vendor JSON URL was entered. Try the following:\n\tgradlew vendordep --url=<insert_url_here>\n" +
-                            "Use either a URL to fetch a remote JSON file or `\$FRCLOCAL/Filename.json` to fetch from the local wpilib folder."
+                            "Use either a URL to fetch a remote JSON file or `FRCLOCAL/Filename.json` to fetch from the local wpilib folder."
             )
         }
         return inputUrl.substring(lastUrlSeparator + 1)
