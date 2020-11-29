@@ -17,9 +17,16 @@ class InvalidImageException extends RuntimeException {
 
     @Override
     String getMessage() {
-        if (this.parsable)
-            return "RoboRIO Image invalid! RoboRIO: ${imageVersion}, allowed: [${this.allowedImageVersions.join(", ")}]"
-        else
+        if (this.parsable) {
+            return "Invalid RoboRIO Image Version!" +
+                    "\nRoboRIO firmware and GradleRIO versions are incompatible:" +
+                    "\n\tCurrent firmware version: ${imageVersion}" +
+                    "\n\tGradleRIO-compatible versions: [${this.allowedImageVersions.join(", ")}]" +
+                    "\nSee https://docs.wpilib.org/en/stable/docs/getting-started/getting-started-frc-control-system/imaging-your-roborio.html" +
+                    "for information about upgrading RoboRIO firmware and/or GradleRIO."
+
+        } else {
             return "Could not parse image version!"
+        }
     }
 }
