@@ -16,13 +16,13 @@ import javax.inject.Inject
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2021.1.1-beta-2"
+    String wpilibVersion = "2021.1.1-beta-3"
     String niLibrariesVersion = "2020.10.1"
     String opencvVersion = "3.4.7-5"
     String imguiVersion = "1.76-9"
     String ejmlVersion = "0.38"
     String jacksonVersion = "2.10.0"
-    String wpimathVersion = "2021.1.1-beta-2"
+    String wpimathVersion = "2021.1.1-beta-3"
     static final String[] validImageVersions = ['2020_v10', '2021_v1', '2021_v2', '2021_v3.*']
 
     String googleTestVersion = "1.9.0-5-437e100-1"
@@ -30,10 +30,10 @@ class WPIExtension {
     String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2021:11.0.9u11-1"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "2021.1.1-beta-1"
+    String smartDashboardVersion = "2021.1.1-beta-2"
     String shuffleboardVersion = "2021.1.1-beta-2"
-    String outlineViewerVersion = "2021.1.1-beta-1"
-    String robotBuilderVersion = "2021.1.1-beta-2"
+    String outlineViewerVersion = "2021.1.1-beta-2"
+    String robotBuilderVersion = "2021.1.1-beta-3"
     String pathWeaverVersion = "2021.1.1-beta-2"
 
     WPIMavenExtension maven
