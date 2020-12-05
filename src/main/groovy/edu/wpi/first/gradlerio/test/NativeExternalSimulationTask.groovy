@@ -110,4 +110,15 @@ class NativeExternalSimulationTask extends ExternalSimulationTask {
         outfile.parentFile.mkdirs()
         outfile.text = json
     }
+
+    @Internal
+    boolean includeTestBin = true
+
+    /**
+     * Specify whether to include test binaries.
+     * @param include if true, will include test binaries. Defaults to true.
+     */
+    void includeTestBinaries(boolean include) {
+        includeTestBin = include
+    }
 }
