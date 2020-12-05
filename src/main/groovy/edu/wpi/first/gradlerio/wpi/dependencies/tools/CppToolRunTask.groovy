@@ -12,22 +12,16 @@ import org.gradle.process.ExecSpec
 import javax.inject.Inject
 
 @CompileStatic
-class ToolRunTask extends DefaultTask implements SingletonTask {
-    @Internal
-    TaskProvider<ToolInstallTask> installTask
+class CppToolRunTask extends DefaultTask implements SingletonTask {
     @Internal
     String toolName
 
     @Inject
-    ToolRunTask(String name, TaskProvider<ToolInstallTask> installTask) {
+    CppToolRunTask(String name) {
         group = 'GradleRIO'
         description = "Run the tool $name"
 
         this.toolName = name
-        if (installTask != null) {
-            this.installTask = installTask
-            dependsOn(installTask)
-        }
     }
 
     @TaskAction
@@ -41,8 +35,7 @@ class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     void runToolWindows() {
-        def iTask = installTask.get()
-        def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.vbs')
+        def outputFile = new File(ToolInstallTask.toolsFolder, toolName + '.vbs')
         ProcessBuilder builder = new ProcessBuilder('wscript.exe', outputFile.absolutePath, 'silent')
         Process proc = builder.start()
         int result = proc.waitFor()
@@ -54,8 +47,7 @@ class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     void runToolUnix() {
-        def iTask = installTask.get()
-        def outputFile = new File(ToolInstallTask.toolsFolder, iTask.toolName + '.py')
+        def outputFile = new File(ToolInstallTask.toolsFolder, toolName + '.py')
         project.exec { ExecSpec spec ->
             spec.executable = outputFile.absolutePath
         }

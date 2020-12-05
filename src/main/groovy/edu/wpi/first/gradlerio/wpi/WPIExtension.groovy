@@ -35,6 +35,7 @@ class WPIExtension {
     String outlineViewerVersion = "2021.1.1-beta-2"
     String robotBuilderVersion = "2021.1.1-beta-3"
     String pathWeaverVersion = "2021.1.1-beta-2"
+    String glassVersion = "2021.1.1-beta-3"
 
     WPIMavenExtension maven
     WPIDepsExtension deps
@@ -45,6 +46,7 @@ class WPIExtension {
 
     final Project project
     final String toolsClassifier
+    final String cppToolsClassifier
 
     NativeUtilsExtension ntExt;
 
@@ -62,6 +64,17 @@ class WPIExtension {
                             System.getProperty("os.arch") == 'amd64' ? 'win64' : 'win32' :
                             OperatingSystem.current().isMacOsX() ? "mac64" :
                                     OperatingSystem.current().isLinux() ? "linux64" :
+                                            null
+            )
+        }
+        if (project.hasProperty('forceCppToolsClassifier')) {
+            this.cppToolsClassifier = project.findProperty('forceCppToolsClassifier')
+        } else {
+            this.cppToolsClassifier = (
+                    OperatingSystem.current().isWindows() ?
+                            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64release' : 'windowsx86release' :
+                            OperatingSystem.current().isMacOsX() ? "osxx86-64release" :
+                                    OperatingSystem.current().isLinux() ? "linuxx86-64release" :
                                             null
             )
         }
