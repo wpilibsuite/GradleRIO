@@ -12,6 +12,7 @@ import org.gradle.nativeplatform.NativeExecutableBinarySpec
 import org.gradle.nativeplatform.tasks.InstallExecutable
 import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec
 import org.gradle.nativeplatform.toolchain.Clang
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
 
 import java.nio.file.Paths
 
@@ -28,6 +29,7 @@ class NativeExternalSimulationTask extends ExternalSimulationTask {
     @TaskAction
     void create() {
         def cfgs = []
+        SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
         def extensions = TestPlugin.getHALExtensions(project)
         for (NativeExecutableBinarySpec binary : exeBinaries) {
             def cfg = [:]
@@ -36,6 +38,7 @@ class NativeExternalSimulationTask extends ExternalSimulationTask {
             cfg['extensions'] = extensions
             cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
             cfg['clang'] = binary.toolChain in Clang
+            cfg['env'] = simExtension.environment
 
             def srcpaths = []
             def headerpaths = []
@@ -71,6 +74,7 @@ class NativeExternalSimulationTask extends ExternalSimulationTask {
             cfg['extensions'] = extensions
             cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
             cfg['clang'] = binary.toolChain in Clang
+            cfg['env'] = simExtension.environment
 
             def srcpaths = []
             def headerpaths = []
