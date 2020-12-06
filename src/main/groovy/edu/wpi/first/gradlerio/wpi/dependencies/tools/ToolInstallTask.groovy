@@ -28,6 +28,7 @@ class ToolInstallTask extends DefaultTask {
     private static class ToolJson {
         String name
         String version
+        Boolean cpp
     }
 
     @Inject
