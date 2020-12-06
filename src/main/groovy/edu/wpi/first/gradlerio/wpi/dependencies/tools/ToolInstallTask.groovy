@@ -141,8 +141,8 @@ class ToolInstallTask extends DefaultTask {
     }
 
     private void extractScriptUnix() {
-        def outputFile = new File(toolsFolder, toolName + '.sh')
-        ToolInstallTask.class.getResourceAsStream('/ScriptBase.sh').withCloseable {
+        def outputFile = new File(toolsFolder, toolName + '.py')
+        ToolInstallTask.class.getResourceAsStream('/ScriptBase.py').withCloseable {
             outputFile.text = it.text
         }
         project.exec { ExecSpec spec ->

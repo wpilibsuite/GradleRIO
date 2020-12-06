@@ -36,6 +36,13 @@ class ExternalLaunchTask extends DefaultTask {
                 fileContent += "export ${entry.key}=${entry.value}\n"
             }
         }
+        customVars.each { Map.Entry<String, String> entry ->
+            if (OperatingSystem.current().isWindows()) {
+                fileContent += "set ${entry.key}=${entry.value}\n"
+            } else {
+                fileContent += "export ${entry.key}=${entry.value}\n"
+            }
+        }
 
         if (workingDir != null) {
             workingDir.mkdirs()
@@ -70,7 +77,8 @@ class ExternalLaunchTask extends DefaultTask {
             File stdoutFile = new File(project.buildDir, "stdout/${name}.log")
             ProcessBuilder builder
             if (OperatingSystem.current().isWindows()) {
-                builder = new ProcessBuilder("cmd", "/c", "start", file.absolutePath)
+                builder = new ProcessBuilder("cmd", "/c", "start",
+                        "\"GradleRIO Simulation - ${project.name}\"", "\"${file.absolutePath}\"")
             } else {
                 builder = new ProcessBuilder(file.absolutePath)
                 stdoutFile.parentFile.mkdirs()
@@ -101,5 +109,10 @@ class ExternalLaunchTask extends DefaultTask {
         } else {
             return -1;
         }
+    }
+
+    private Map<String, String> customVars = [:]
+    void envVar(String name, String value) {
+        customVars[name] = value
     }
 }

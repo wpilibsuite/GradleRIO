@@ -82,7 +82,7 @@ class RoboRIO extends FRCCompatibleTarget {
 
     void readAndVerifyImage(DeployContext context) {
         final String imageFile = "/etc/natinst/share/scs_imagemetadata.ini"
-        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s=\\s\\\"FRC_roboRIO_([0-9]{4}_v[0-9]+)\\\"")
+        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s*=\\s*\\\"FRC_roboRIO_(\\d{4}_v\\d+(?:\\.\\d+)?)\\\"")
 
         String content = context.execute("cat ${imageFile}")
         log.info("Received Image File: ")
@@ -109,8 +109,22 @@ class RoboRIO extends FRCCompatibleTarget {
     List<String> validImageVersions = []
 
     void verifyImageVersion(String image) {
-        if (!validImageVersions.contains(image))
+        def match = validImageVersions.find {
+            int index = it.indexOf('*')
+            if (index == -1) {
+                // no wildcard, check if versions are equal
+                return it == image
+            } else if (index > image.size()) {
+                return false
+            } else {
+                // deal with wildcard
+                return (it.substring(0, index) == image.substring(0, index))
+            }
+        }
+        if (match == null) {
+            // we didn't find a valid image version
             throw new InvalidImageException(image, validImageVersions)
+        }
     }
 
     @Override
