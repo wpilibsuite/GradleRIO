@@ -96,7 +96,7 @@ class NativeTestPlugin implements Plugin<Project> {
                 }
             }
 
-            if (mainTask.includeTestBin) {
+            if (mainTask.includeTestBinaries) {
                 binaries.withType(NativeTestSuiteBinarySpec).each { NativeTestSuiteBinarySpec bin ->
                     if (bin.targetPlatform.operatingSystem.current &&
                             bin.targetPlatform.name.equals(NativePlatforms.desktop) &&
