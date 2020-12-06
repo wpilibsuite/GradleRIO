@@ -130,6 +130,7 @@ class ToolInstallTask extends DefaultTask {
         def toolJson = new ToolJson()
         toolJson.name = toolName
         toolJson.version = dependency.version
+        toolJson.cpp = false
         setToolVersion(toolJson)
     }
 
