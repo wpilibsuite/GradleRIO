@@ -3,6 +3,7 @@ package edu.wpi.first.gradlerio
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
@@ -12,8 +13,8 @@ import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
 @CompileStatic
 class ExternalLaunchTask extends DefaultTask {
 
-    @Internal
-    def environment = [:] as Map<String, String>
+    @Input
+    Map<String, String> environment = [:]
     @Internal
     boolean scriptOnly = false
     @Internal
