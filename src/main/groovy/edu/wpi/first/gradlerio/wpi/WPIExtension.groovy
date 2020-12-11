@@ -72,9 +72,9 @@ class WPIExtension {
         } else {
             this.cppToolsClassifier = (
                     OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64release' : 'windowsx86release' :
-                            OperatingSystem.current().isMacOsX() ? "osxx86-64release" :
-                                    OperatingSystem.current().isLinux() ? "linuxx86-64release" :
+                            System.getProperty("os.arch") == 'amd64' ? 'windowsx86-64' : 'windowsx86' :
+                            OperatingSystem.current().isMacOsX() ? "osxx86-64" :
+                                    OperatingSystem.current().isLinux() ? "linuxx86-64" :
                                             null
             )
         }
