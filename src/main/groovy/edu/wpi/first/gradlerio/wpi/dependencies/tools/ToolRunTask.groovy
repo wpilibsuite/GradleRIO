@@ -24,8 +24,10 @@ class ToolRunTask extends DefaultTask implements SingletonTask {
         description = "Run the tool $name"
 
         this.toolName = name
-        this.installTask = installTask
-        dependsOn(installTask)
+        if (installTask != null) {
+            this.installTask = installTask
+            dependsOn(installTask)
+        }
     }
 
     @TaskAction
