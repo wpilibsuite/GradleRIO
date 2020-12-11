@@ -7,6 +7,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.jvm.tasks.Jar
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
 
 @CompileStatic
 class JavaExternalSimulationTask extends ExternalSimulationTask {
@@ -17,6 +18,7 @@ class JavaExternalSimulationTask extends ExternalSimulationTask {
     @TaskAction
     void create() {
         def cfgs = []
+        SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
         def extensions = TestPlugin.getHALExtensions(project)
         for (Jar jar : taskDependencies.getDependencies(this).findAll { it instanceof Jar } as Set<Jar>) {
             def manifestAttributes = jar.manifest.attributes
@@ -33,6 +35,7 @@ class JavaExternalSimulationTask extends ExternalSimulationTask {
             cfg['name'] = "${jar.baseName} (in project ${project.name})".toString()
             cfg['file'] = jar.outputs.files.singleFile.absolutePath
             cfg['extensions'] = extensions
+            cfg['env'] = simExtension.environment
             cfg['librarydir'] = libraryDir
             cfg['mainclass'] = mainClass
             cfgs << cfg
