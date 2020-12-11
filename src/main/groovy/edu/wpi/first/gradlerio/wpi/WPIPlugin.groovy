@@ -20,6 +20,7 @@ import org.gradle.internal.logging.text.StyledTextOutput
 import edu.wpi.first.nativeutils.NativeUtils
 import edu.wpi.first.nativeutils.NativeUtilsExtension
 import edu.wpi.first.toolchain.configurable.CrossCompilerConfiguration
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
 
 @CompileStatic
 class WPIPlugin implements Plugin<Project> {
@@ -27,6 +28,7 @@ class WPIPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         WPIExtension wpiExtension = project.extensions.create("wpi", WPIExtension, project)
+        SimulationExtension simExtension = project.extensions.create("sim", SimulationExtension, project)
         logger = ETLoggerFactory.INSTANCE.create(this.class.simpleName)
 
         project.pluginManager.apply(WPIToolsPlugin)

@@ -30,7 +30,7 @@ class JavaSimulationTask extends ExternalLaunchTask {
             java = (new File(jdkPath, javaFileName)).absolutePath.toString()
         }
 
-        environment = TestPlugin.getSimLaunchEnv(project, ldpath)
+        environment.putAll(TestPlugin.getSimLaunchEnv(project, ldpath))
         for (Jar jar : taskDependencies.getDependencies(this).findAll { it instanceof Jar } as Set<Jar>) {
             def manifestAttributes = jar.manifest.attributes
 

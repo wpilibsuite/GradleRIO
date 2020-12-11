@@ -3,16 +3,18 @@ package edu.wpi.first.gradlerio
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.internal.jvm.Jvm
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecSpec
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
 
 @CompileStatic
 class ExternalLaunchTask extends DefaultTask {
 
-    @Internal
-    def environment = [:] as Map<String, String>
+    @Input
+    Map<String, String> environment = [:]
     @Internal
     boolean scriptOnly = false
     @Internal
@@ -23,6 +25,8 @@ class ExternalLaunchTask extends DefaultTask {
     }
 
     Process launch(List<String> cmd) {
+        SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
+
         String fileContent = ""
         if (OperatingSystem.current().isWindows()) {
             fileContent += "@echo off\nsetlocal\n"
@@ -36,7 +40,7 @@ class ExternalLaunchTask extends DefaultTask {
                 fileContent += "export ${entry.key}=${entry.value}\n"
             }
         }
-        customVars.each { Map.Entry<String, String> entry ->
+        simExtension.environment.each { Map.Entry<String, String> entry ->
             if (OperatingSystem.current().isWindows()) {
                 fileContent += "set ${entry.key}=${entry.value}\n"
             } else {
@@ -109,10 +113,5 @@ class ExternalLaunchTask extends DefaultTask {
         } else {
             return -1;
         }
-    }
-
-    private Map<String, String> customVars = [:]
-    void envVar(String name, String value) {
-        customVars[name] = value
     }
 }

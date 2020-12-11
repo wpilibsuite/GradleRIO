@@ -18,7 +18,7 @@ class NativeSimulationTask extends ExternalLaunchTask {
         def installTask = binary.tasks.withType(InstallExecutable).first()
         def dir = new File(installTask.installDirectory.asFile.get(), "lib")
 
-        environment = TestPlugin.getSimLaunchEnv(project, dir.absolutePath)
+        environment.putAll(TestPlugin.getSimLaunchEnv(project, dir.absolutePath))
 
         workingDir = dir
         launch("\"${installTask.runScriptFile.get().asFile.absolutePath}\"")
