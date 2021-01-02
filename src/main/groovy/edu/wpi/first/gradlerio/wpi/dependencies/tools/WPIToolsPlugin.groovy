@@ -27,6 +27,7 @@ class WPIToolsPlugin implements Plugin<Project> {
             tools << new WPITool(project, "ShuffleBoard", wpi.shuffleboardVersion, "edu.wpi.first.shuffleboard:shuffleboard:${wpi.shuffleboardVersion}", true)
             tools << new WPITool(project, "OutlineViewer", wpi.outlineViewerVersion, "edu.wpi.first.tools:OutlineViewer:${wpi.outlineViewerVersion}", true)
             tools << new WPITool(project, "RobotBuilder", wpi.robotBuilderVersion, "edu.wpi.first.tools:RobotBuilder:${wpi.robotBuilderVersion}", false)
+            tools << new WPITool(project, "RobotBuilder-Old", wpi.robotBuilderOldVersion, "edu.wpi.first.tools:RobotBuilder-Old:${wpi.robotBuilderOldVersion}", false)
             tools << new WPITool(project, "PathWeaver", wpi.pathWeaverVersion, "edu.wpi.first.tools:PathWeaver:${wpi.pathWeaverVersion}", true)
             cppTools << new WPICppTool(project, "Glass", wpi.glassVersion, "edu.wpi.first.tools:Glass:${wpi.glassVersion}")
 
