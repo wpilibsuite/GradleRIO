@@ -34,6 +34,7 @@ class WPIExtension {
     String shuffleboardVersion = "2021.1.1-beta-3"
     String outlineViewerVersion = "2021.1.1-beta-3"
     String robotBuilderVersion = "2021.1.1-beta-4"
+    String robotBuilderOldVersion = "2021.1.1"
     String pathWeaverVersion = "2021.1.1-beta-3"
     String glassVersion = "2021.1.1-beta-4"
 
@@ -163,6 +164,7 @@ class WPIExtension {
                 "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
                 "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
                 "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
+                "RobotBuilderOldVersion"  : new Tuple("RobotBuilder-Old", robotBuilderOldVersion, "robotbuilderold"),
         ]
     }
 }

@@ -4,6 +4,7 @@ def versionMap = [
   smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
   outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:win64',
   robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
+  robotBuilderOldVersion: 'edu.wpi.first.tools:RobotBuilder-Old:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
   pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
