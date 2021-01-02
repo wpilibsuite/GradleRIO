@@ -1,7 +1,7 @@
 plugins {
     id "java"
     id "cpp"
-    id "edu.wpi.first.GradleRIO" version "2021.1.1-beta-3"
+    id "edu.wpi.first.GradleRIO" version "2021.1.1-beta-4"
     id 'edu.wpi.first.GradleJni' version '0.10.1'
 }
 
@@ -46,6 +46,12 @@ deploy {
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = true
+
+// Simulation configuration (e.g. environment variables).
+sim {
+    // Sets the websocket client remote host.
+    // envVar "HALSIMWS_HOST", "10.0.0.2"
+}
 
 model {
     components {
