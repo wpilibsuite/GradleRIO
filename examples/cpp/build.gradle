@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2021.1.1-beta-3"
+    id "edu.wpi.first.GradleRIO" version "2021.1.1-beta-4"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -48,6 +48,12 @@ dependencies {
     // Websocket extensions require additional configuration.
     // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
     // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
+}
+
+// Simulation configuration (e.g. environment variables).
+sim {
+    // Sets the websocket client remote host.
+    // envVar "HALSIMWS_HOST", "10.0.0.2"
 }
 
 model {
