@@ -55,9 +55,11 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
 
 ### Tools
+- `./gradlew Glass` will launch Glass, a data visualization tool similar to the SimGUI.
 - `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
 - `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
 - `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
+- `./gradlew RobotBuilder-Old` will launch the old version of Robot Builder, a tool for generating robot projects and source files with the old command framework.
 - `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
 - `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles using WPILib's trajectories and splines.
 
