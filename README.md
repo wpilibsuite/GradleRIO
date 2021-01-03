@@ -10,16 +10,16 @@ GradleRIO works with Java and C++ (and others!), on Windows, Mac and Linux. Grad
 
 For 2019+, GradleRIO is the official build system for the _FIRST_ Robotics Competition! The officially supported IDE is Visual Studio Code (VS Code), using the [WPILib Extension](https://github.com/wpilibsuite/vscode-wpilib).
 
-frc-docs is the best place for documentation: https://docs.wpilib.org/en/latest/
+frc-docs is the best place for documentation: https://docs.wpilib.org/en/stable/
 
 Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also supported, unofficially. You may also use this tool exclusively from the command line, allowing use of any IDE or text editor (like Sublime Text, Atom or Vim).
 
 ## Getting Started - Creating a new project
 ### With Visual Studio Code (recommended)
 For getting started with VS Code, please see the frc-docs documentation:
-https://docs.wpilib.org/en/latest/docs/zero-to-robot/introduction.html
+https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html
 ### Without Visual Studio Code
-Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/latest/docs/zero-to-robot/step-2/wpilib-setup.html
+Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
 
 **WPILibUtility Standalone Project Builder**
