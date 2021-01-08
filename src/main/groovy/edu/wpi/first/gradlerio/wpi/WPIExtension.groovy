@@ -165,6 +165,8 @@ class WPIExtension {
                 "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
                 "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
                 "RobotBuilderOldVersion"  : new Tuple("RobotBuilder-Old", robotBuilderOldVersion, "robotbuilderold"),
+                "glassVersion"         : new Tuple("Glass", glassVersion, "glass"),
+                "pathWeaverVersion"    : new Tuple("PathWeaver", pathWeaverVersion, "pathweaver"),
         ]
     }
 }
