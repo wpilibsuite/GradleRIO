@@ -40,7 +40,7 @@ class FRCNativeArtifact extends NativeArtifact {
             def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
             ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand")
             ctx.execute("chmod +x \"${binFile}\"; chown lvuser \"${binFile}\"")
-            ctx.execute("setcap cap_sys_nice=pe /home/lvuser/frcUserProgram")
+            ctx.execute("setcap cap_sys_nice=pe \"${binFile}\"")
             ctx.execute("sync")
             ctx.execute("ldconfig")
             ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null")
