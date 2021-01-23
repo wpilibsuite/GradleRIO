@@ -12,6 +12,8 @@ import jaci.gradle.nativedeps.DelegatedDependencySet
 import jaci.gradle.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
@@ -124,13 +126,20 @@ public class WPIVendorDepsExtension {
         return inputVersion == 'wpilib' ? wpiExt.wpilibVersion : inputVersion
     }
 
-    List<String> java(String... ignore) {
+    private Dependency GetDependency(JavaArtifact art) {
+        Dependency gdep = wpiExt.project.dependencies.create((Object)"${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}".toString(), ({
+            ((ModuleDependency)it).transitive = false
+        } as Closure))
+        return gdep;
+    }
+
+    List<Dependency> java(String... ignore) {
         if (dependencies == null) return []
 
         return dependencies.findAll { !isIgnored(ignore, it) }.collectMany { JsonDependency dep ->
             dep.javaDependencies.collect { JavaArtifact art ->
-                "${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}".toString()
-            } as List<String>
+                GetDependency(art)
+            } as List<Dependency>
         }
     }
 
