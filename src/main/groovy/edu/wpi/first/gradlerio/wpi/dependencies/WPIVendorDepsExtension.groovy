@@ -16,6 +16,11 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.api.artifacts.dsl.ComponentMetadataHandler
+import org.gradle.api.artifacts.DependencyMetadata
+import org.gradle.api.artifacts.ComponentMetadataDetails
+import org.gradle.api.artifacts.VariantMetadata
+import org.gradle.api.artifacts.DependencyMetadata
 import org.gradle.platform.base.VariantComponentSpec
 
 import javax.inject.Inject
@@ -127,9 +132,23 @@ public class WPIVendorDepsExtension {
     }
 
     private Dependency GetDependency(JavaArtifact art) {
-        Dependency gdep = wpiExt.project.dependencies.create((Object)"${art.groupId}:${art.artifactId}:${getVersion(art.version, wpiExt)}".toString(), ({
-            ((ModuleDependency)it).transitive = false
-        } as Closure))
+        String moduleName = "${art.groupId}:${art.artifactId}".toString();
+        String depName = "${moduleName}:${getVersion(art.version, wpiExt)}".toString();
+        Dependency gdep = wpiExt.project.dependencies.create(depName);
+        try {
+            wpiExt.project.dependencies.components { ComponentMetadataHandler meta ->
+                meta.withModule(moduleName) { ComponentMetadataDetails details ->
+                    details.allVariants { VariantMetadata varMeta ->
+                        varMeta.withDependencies { Collection col ->
+                            col.removeIf { DependencyMetadata item -> item.group.startsWith('edu.wpi.first') }
+                        }
+                    }
+                }
+            }
+        } catch (ex) {
+            println "Issue setting component metadata for ${depName}. Build could have issues with incorrect transitive dependencies."
+            println "Please create an issue at https://github.com/wpilibsuite/allwpilib with this message so we can investigate"
+        }
         return gdep;
     }
 
