@@ -8,7 +8,6 @@ import org.gradle.api.tasks.Internal
 
 @CompileStatic
 class NativeSimulationTask extends DefaultTask {
-    @Internal
     void validate(List<String> binaryTasks) {
         def simTask = project.extensions.getByType(SimulationExtension).cppSimTask
         if (simTask != "") {
