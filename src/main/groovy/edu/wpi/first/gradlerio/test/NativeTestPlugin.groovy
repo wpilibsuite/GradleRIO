@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
 import edu.wpi.first.gradlerio.GradleRIOPlugin
+import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -76,6 +77,11 @@ class NativeTestPlugin implements Plugin<Project> {
                             task.binary = bin
                             task.dependsOn(bin.tasks.install)
                         } as Action<NativeSimulationTask>)
+                        if (name.contains("Debug")) {
+                            tasks.create("simulateCpp") {
+                                it.dependsOn name
+                            }
+                        }
                     }
                 }
             }
