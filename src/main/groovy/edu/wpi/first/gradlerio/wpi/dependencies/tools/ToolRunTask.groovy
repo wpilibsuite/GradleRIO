@@ -62,7 +62,8 @@ class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     @Override
-    String singletonName() {
+    @Internal
+    String getSingletonName() {
         return toolName
     }
 }

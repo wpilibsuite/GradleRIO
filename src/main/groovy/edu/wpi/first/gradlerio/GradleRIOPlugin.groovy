@@ -157,7 +157,7 @@ class GradleRIOPlugin implements Plugin<Project> {
         // Go in reverse - only use the latest version in the task graph (not earliest)
         allTasks.reverseEach { Task t ->
             if (t instanceof SingletonTask) {
-                String singletonName = (t as SingletonTask).singletonName()
+                String singletonName = (t as SingletonTask).getSingletonName()
                 if (visited.add(singletonName)) {
                     Logger.getLogger(this.class).info("Singleton Task Using: ${t} for ${singletonName}")
                 } else {
