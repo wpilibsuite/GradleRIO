@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio
 
-import jaci.gradle.log.ETLogger
-import jaci.gradle.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact

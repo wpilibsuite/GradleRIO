@@ -2,7 +2,7 @@ package edu.wpi.first.gradlerio.test
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
-import jaci.gradle.nativedeps.DelegatedDependencySet
+import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction

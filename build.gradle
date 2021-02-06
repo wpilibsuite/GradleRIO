@@ -15,9 +15,9 @@ repositories {
 
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
-    api 'edu.wpi.first:gradle-cpp-vscode:0.12.0'
+    api 'edu.wpi.first:gradle-cpp-vscode:0.25.0'
 
-    api 'edu.wpi.first:native-utils:2021.0.5'
+    api 'edu.wpi.first:native-utils:2022.0.0'
 
     api 'de.undercouch:gradle-download-task:4.1.1'
 
@@ -29,15 +29,8 @@ dependencies {
 
 archivesBaseName = "GradleRIO"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-compileGroovy {
-    sourceCompatibility = '8'
-    targetCompatibility = '8'
-}
+sourceCompatibility = 11
+targetCompatibility = 11
 
 allprojects {
     group = "edu.wpi.first"
@@ -105,6 +98,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '6.0'
+    gradleVersion = '6.8.1'
     distributionType = Wrapper.DistributionType.BIN
 }

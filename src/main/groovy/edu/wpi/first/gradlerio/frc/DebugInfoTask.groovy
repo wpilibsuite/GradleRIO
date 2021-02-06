@@ -2,7 +2,7 @@ package edu.wpi.first.gradlerio.frc
 
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.artifact.Artifact
+import edu.wpi.first.embeddedtools.deploy.artifact.Artifact
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile

@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import edu.wpi.first.toolchain.ToolchainExtension
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import groovy.transform.CompileStatic
-import jaci.gradle.nativedeps.DelegatedDependencySet
+import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem

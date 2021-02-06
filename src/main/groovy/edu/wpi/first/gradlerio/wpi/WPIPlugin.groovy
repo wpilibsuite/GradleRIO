@@ -8,10 +8,10 @@ import edu.wpi.first.toolchain.ToolchainPlugin
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
-import jaci.gradle.ActionWrapper
-import jaci.gradle.log.ETLogger
-import jaci.gradle.log.ETLoggerFactory
-import jaci.gradle.toolchains.ToolchainsPlugin
+import edu.wpi.first.embeddedtools.ActionWrapper
+import edu.wpi.first.embeddedtools.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.toolchains.ToolchainsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task

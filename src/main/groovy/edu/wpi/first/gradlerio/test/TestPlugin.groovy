@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.test
 
 import groovy.transform.CompileStatic
-import jaci.gradle.toolchains.ToolchainsPlugin
+import edu.wpi.first.embeddedtools.toolchains.ToolchainsPlugin
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project

@@ -5,7 +5,7 @@ import edu.wpi.first.gradlerio.ExternalLaunchTask
 import edu.wpi.first.gradlerio.test.JavaTestPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
 import groovy.transform.CompileStatic
-import jaci.gradle.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.internal.jvm.Jvm

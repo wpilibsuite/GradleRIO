@@ -3,11 +3,11 @@ package edu.wpi.first.gradlerio.frc
 import com.google.gson.GsonBuilder
 import groovy.transform.CompileStatic
 import javax.inject.Inject
-import jaci.gradle.PathUtils
-import jaci.gradle.ActionWrapper
-import jaci.gradle.deploy.artifact.JavaArtifact
-import jaci.gradle.deploy.context.DeployContext
-import jaci.gradle.deploy.sessions.IPSessionController
+import edu.wpi.first.embeddedtools.PathUtils
+import edu.wpi.first.embeddedtools.ActionWrapper
+import edu.wpi.first.embeddedtools.deploy.artifact.JavaArtifact
+import edu.wpi.first.embeddedtools.deploy.context.DeployContext
+import edu.wpi.first.embeddedtools.deploy.sessions.IPSessionController
 import org.gradle.api.Project
 
 @CompileStatic

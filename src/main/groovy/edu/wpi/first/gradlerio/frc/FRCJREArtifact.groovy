@@ -3,10 +3,10 @@ package edu.wpi.first.gradlerio.frc
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
 import javax.inject.Inject
-import jaci.gradle.deploy.artifact.MavenArtifact
-import jaci.gradle.deploy.context.DeployContext
+import edu.wpi.first.embeddedtools.deploy.artifact.MavenArtifact
+import edu.wpi.first.embeddedtools.deploy.context.DeployContext
 import org.gradle.api.Project
-import jaci.gradle.ActionWrapper
+import edu.wpi.first.embeddedtools.ActionWrapper
 
 import java.util.function.Function
 

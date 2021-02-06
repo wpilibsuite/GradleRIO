@@ -6,10 +6,10 @@ import edu.wpi.first.toolchain.NativePlatforms
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import jaci.gradle.log.ETLogger
-import jaci.gradle.log.ETLoggerFactory
-import jaci.gradle.nativedeps.DelegatedDependencySet
-import jaci.gradle.nativedeps.DependencySpecExtension
+import edu.wpi.first.embeddedtools.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet
+import edu.wpi.first.embeddedtools.nativedeps.DependencySpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware

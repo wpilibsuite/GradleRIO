@@ -3,10 +3,10 @@ package edu.wpi.first.gradlerio.frc.riolog
 import edu.wpi.first.gradlerio.frc.RIOLogTask
 import edu.wpi.first.gradlerio.frc.RoboRIO
 import groovy.transform.CompileStatic
-import jaci.gradle.EmbeddedTools
-import jaci.gradle.deploy.DeployExtension
-import jaci.gradle.deploy.target.RemoteTarget
-import jaci.gradle.deploy.target.discovery.TargetDiscoveryTask
+import edu.wpi.first.embeddedtools.EmbeddedTools
+import edu.wpi.first.embeddedtools.deploy.DeployExtension
+import edu.wpi.first.embeddedtools.deploy.target.RemoteTarget
+import edu.wpi.first.embeddedtools.deploy.target.discovery.TargetDiscoveryTask
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project

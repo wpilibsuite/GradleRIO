@@ -2,9 +2,9 @@ package edu.wpi.first.gradlerio.frc
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.context.DeployContext
+import edu.wpi.first.embeddedtools.deploy.context.DeployContext
 import javax.inject.Inject
-import jaci.gradle.deploy.target.location.SshDeployLocation
+import edu.wpi.first.embeddedtools.deploy.target.location.SshDeployLocation
 import org.apache.log4j.Logger
 import org.gradle.api.Project
 

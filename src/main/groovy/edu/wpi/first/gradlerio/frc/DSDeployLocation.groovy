@@ -3,13 +3,13 @@ package edu.wpi.first.gradlerio.frc
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
-import jaci.gradle.deploy.target.discovery.action.DiscoveryAction
-import jaci.gradle.deploy.target.discovery.action.SshDiscoveryAction
-import jaci.gradle.deploy.target.location.SshDeployLocation
-import jaci.gradle.log.ETLogger
-import jaci.gradle.log.ETLoggerFactory
-import jaci.gradle.deploy.target.RemoteTarget
-import jaci.gradle.deploy.target.location.DeployLocation
+import edu.wpi.first.embeddedtools.deploy.target.discovery.action.DiscoveryAction
+import edu.wpi.first.embeddedtools.deploy.target.discovery.action.SshDiscoveryAction
+import edu.wpi.first.embeddedtools.deploy.target.location.SshDeployLocation
+import edu.wpi.first.embeddedtools.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.deploy.target.RemoteTarget
+import edu.wpi.first.embeddedtools.deploy.target.location.DeployLocation
 
 import javax.inject.Inject
 

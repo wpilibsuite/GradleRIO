@@ -1,7 +1,7 @@
 package edu.wpi.first.gradlerio.caching
 
 import groovy.transform.CompileStatic
-import jaci.gradle.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLogger
 import org.gradle.api.Project
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.wrapper.WrapperExecutor

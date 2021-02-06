@@ -3,10 +3,10 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 import edu.wpi.first.gradlerio.frc.FRCJREArtifact
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import groovy.transform.CompileStatic
-import jaci.gradle.deploy.DeployExtension
-import jaci.gradle.deploy.artifact.Artifact
-import jaci.gradle.log.ETLogger
-import jaci.gradle.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.deploy.DeployExtension
+import edu.wpi.first.embeddedtools.deploy.artifact.Artifact
+import edu.wpi.first.embeddedtools.log.ETLogger
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin

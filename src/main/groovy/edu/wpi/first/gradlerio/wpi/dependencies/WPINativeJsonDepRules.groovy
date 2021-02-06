@@ -3,8 +3,8 @@ package edu.wpi.first.gradlerio.wpi.dependencies
 import edu.wpi.first.gradlerio.wpi.WPIExtension
 import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
-import jaci.gradle.nativedeps.NativeDepsSpec
-import jaci.gradle.nativedeps.NativeLib
+import edu.wpi.first.embeddedtools.nativedeps.NativeDepsSpec
+import edu.wpi.first.embeddedtools.nativedeps.NativeLib
 import org.gradle.api.Action
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.model.Mutate

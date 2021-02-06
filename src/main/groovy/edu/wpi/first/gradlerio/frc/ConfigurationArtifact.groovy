@@ -2,9 +2,9 @@ package edu.wpi.first.gradlerio.frc
 
 import groovy.transform.CompileStatic
 import javax.inject.Inject
-import jaci.gradle.deploy.artifact.FileCollectionArtifact
-import jaci.gradle.deploy.context.DeployContext
-import jaci.gradle.ActionWrapper
+import edu.wpi.first.embeddedtools.deploy.artifact.FileCollectionArtifact
+import edu.wpi.first.embeddedtools.deploy.context.DeployContext
+import edu.wpi.first.embeddedtools.ActionWrapper
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration

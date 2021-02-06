@@ -8,9 +8,9 @@ import edu.wpi.first.gradlerio.ide.IDEPlugin
 import edu.wpi.first.gradlerio.test.TestPlugin
 import edu.wpi.first.gradlerio.wpi.WPIPlugin
 import groovy.transform.CompileStatic
-import jaci.gradle.EmbeddedTools
-import jaci.gradle.deploy.target.discovery.TargetDiscoveryTask
-import jaci.gradle.log.ETLoggerFactory
+import edu.wpi.first.embeddedtools.EmbeddedTools
+import edu.wpi.first.embeddedtools.deploy.target.discovery.TargetDiscoveryTask
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory
 import org.apache.log4j.Logger
 import org.gradle.BuildResult
 import org.gradle.api.Action
