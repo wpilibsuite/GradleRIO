@@ -1,21 +1,30 @@
-package edu.wpi.first.gradlerio.test
+package edu.wpi.first.gradlerio.test;
 
-import edu.wpi.first.gradlerio.wpi.WPIExtension
-import edu.wpi.first.gradlerio.ExternalLaunchTask
-import edu.wpi.first.gradlerio.test.JavaTestPlugin
-import edu.wpi.first.gradlerio.test.TestPlugin
-import groovy.transform.CompileStatic
-import edu.wpi.first.embeddedtools.log.ETLoggerFactory
-import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.os.OperatingSystem
-import org.gradle.internal.jvm.Jvm
-import org.gradle.jvm.tasks.Jar
-import java.nio.file.Paths
+import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.gradlerio.ExternalLaunchTask;
+import edu.wpi.first.gradlerio.test.JavaTestPlugin;
+import edu.wpi.first.gradlerio.test.TestPlugin;
+import groovy.transform.CompileStatic;
+import edu.wpi.first.embeddedtools.log.ETLoggerFactory;
 
-@CompileStatic
-class JavaSimulationTask extends ExternalLaunchTask {
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.os.OperatingSystem;
+import org.gradle.internal.jvm.Jvm;
+import org.gradle.jvm.tasks.Jar;
+import java.nio.file.Paths;
+
+import javax.inject.Inject;
+
+public class JavaSimulationTask extends ExternalLaunchTask {
+
+    @Inject
+    public JavaSimulationTask(ObjectFactory objects) {
+        super(objects);
+    }
+
     @TaskAction
-    void run() {
+    public void run() {
         def ldpath = JavaTestPlugin.jniExtractionDir(project).absolutePath
 
         def javaFile = Jvm.current().getExecutable("java")

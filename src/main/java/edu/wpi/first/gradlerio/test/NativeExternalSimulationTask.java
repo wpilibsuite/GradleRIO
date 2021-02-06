@@ -1,33 +1,59 @@
-package edu.wpi.first.gradlerio.test
+package edu.wpi.first.gradlerio.test;
 
-import com.google.gson.GsonBuilder
-import groovy.transform.CompileStatic
-import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
-import org.gradle.language.nativeplatform.HeaderExportingSourceSet
-import org.gradle.nativeplatform.NativeDependencySet
-import org.gradle.nativeplatform.NativeExecutableBinarySpec
-import org.gradle.nativeplatform.tasks.InstallExecutable
-import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec
-import org.gradle.nativeplatform.toolchain.Clang
-import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension
+import com.google.gson.GsonBuilder;
+import groovy.transform.CompileStatic;
+import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet;
 
-import java.nio.file.Paths
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.language.nativeplatform.HeaderExportingSourceSet;
+import org.gradle.nativeplatform.NativeDependencySet;
+import org.gradle.nativeplatform.NativeExecutableBinarySpec;
+import org.gradle.nativeplatform.tasks.InstallExecutable;
+import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec;
+import org.gradle.nativeplatform.toolchain.Clang;
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 
-@CompileStatic
-class NativeExternalSimulationTask extends ExternalSimulationTask {
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+public class NativeExternalSimulationTask extends ExternalSimulationTask {
+    private List<NativeExecutableBinarySpec> exeBinaries = new ArrayList<>();
+    private List<NativeTestSuiteBinarySpec> testBinaries = new ArrayList<>();
+    private final RegularFileProperty outfile;
+
     @Internal
-    List<NativeExecutableBinarySpec> exeBinaries = []
+    public List<NativeExecutableBinarySpec> getExeBinaries() {
+        return exeBinaries;
+    }
+
     @Internal
-    List<NativeTestSuiteBinarySpec> testBinaries = []
+    public List<NativeTestSuiteBinarySpec> getTestBinaries() {
+        return testBinaries;
+    }
 
     @OutputFile
-    File outfile = new File(project.rootProject.buildDir, "${ExternalSimulationMergeTask.CONTAINER_FOLDER}/${project.name}_native.json")
+    public RegularFileProperty getOutfile() {
+        return outfile;
+    }
+
+    @Inject
+    public NativeExternalSimulationTask(ObjectFactory objects) {
+        outfile = objects.fileProperty();
+        File file = new File(getProject().getRootProject().getBuildDir(), ExternalSimulationMergeTask.CONTAINER_FOLDER + "/" + getProject().getName() + "_native.json");
+        outfile.set(file);
+    }
+    //File outfile =
 
     @TaskAction
-    void create() {
+    public void create() {
         def cfgs = []
         SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
         def extensions = TestPlugin.getHALExtensions(project)
