@@ -3,6 +3,7 @@ package edu.wpi.first.gradlerio.wpi
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.internal.DefaultNamedDomainObjectSet
+import org.gradle.api.internal.CollectionCallbackActionDecorator;
 import org.gradle.internal.reflect.DirectInstantiator
 
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
     @Inject
     WPIMavenExtension(Project project) {
-        super(WPIMavenRepo.class, DirectInstantiator.INSTANCE)
+        super(WPIMavenRepo.class, DirectInstantiator.INSTANCE, CollectionCallbackActionDecorator.NOOP)
         this.project = project
 
         this.useDevelopment = false // Do not rename without changing versionupdates.gradle
