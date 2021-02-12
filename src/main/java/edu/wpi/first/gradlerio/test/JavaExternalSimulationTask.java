@@ -32,35 +32,35 @@ public class JavaExternalSimulationTask extends ExternalSimulationTask {
 
     @TaskAction
     public void create() {
-        List<Object> cfgs = new ArrayList<Object>();
-        SimulationExtension simExtension = getProject().getExtensions().getByType(SimulationExtension.class)
-        def extensions = TestPlugin.getHALExtensions(project)
-        for (Jar jar : taskDependencies.getDependencies(this).findAll { it instanceof Jar } as Set<Jar>) {
-            def manifestAttributes = jar.manifest.attributes
+        // List<Object> cfgs = new ArrayList<Object>();
+        // SimulationExtension simExtension = getProject().getExtensions().getByType(SimulationExtension.class)
+        // def extensions = TestPlugin.getHALExtensions(project)
+        // for (Jar jar : taskDependencies.getDependencies(this).findAll { it instanceof Jar } as Set<Jar>) {
+        //     def manifestAttributes = jar.manifest.attributes
 
-            if (!manifestAttributes.containsKey('Main-Class')) {
-                continue
-            }
-            def mainClass = manifestAttributes['Main-Class']
+        //     if (!manifestAttributes.containsKey('Main-Class')) {
+        //         continue
+        //     }
+        //     def mainClass = manifestAttributes['Main-Class']
 
-            def libraryDir = JavaTestPlugin.jniExtractionDir(project).absolutePath
+        //     def libraryDir = JavaTestPlugin.jniExtractionDir(project).absolutePath
 
-            def cfg = [:]
+        //     def cfg = [:]
 
-            cfg['name'] = "${jar.baseName} (in project ${project.name})".toString()
-            cfg['file'] = jar.outputs.files.singleFile.absolutePath
-            cfg['extensions'] = extensions
-            cfg['env'] = simExtension.environment
-            cfg['librarydir'] = libraryDir
-            cfg['mainclass'] = mainClass
-            cfgs << cfg
-        }
+        //     cfg['name'] = "${jar.baseName} (in project ${project.name})".toString()
+        //     cfg['file'] = jar.outputs.files.singleFile.absolutePath
+        //     cfg['extensions'] = extensions
+        //     cfg['env'] = simExtension.environment
+        //     cfg['librarydir'] = libraryDir
+        //     cfg['mainclass'] = mainClass
+        //     cfgs << cfg
+        // }
 
-        def gbuilder = new GsonBuilder()
-        gbuilder.setPrettyPrinting()
-        def json = gbuilder.create().toJson(cfgs)
+        // def gbuilder = new GsonBuilder()
+        // gbuilder.setPrettyPrinting()
+        // def json = gbuilder.create().toJson(cfgs)
 
-        outfile.parentFile.mkdirs()
-        outfile.text = json
+        // outfile.parentFile.mkdirs()
+        // outfile.text = json
     }
 }

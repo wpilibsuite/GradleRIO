@@ -43,13 +43,13 @@ public class NativeTestPlugin implements Plugin<Project> {
     public static class NativeTestRules extends RuleSource {
         @Mutate
         public void addBinaryFlags(BinaryContainer binaries) {
-            for (GoogleTestTestSuiteBinarySpec bin : binaries.withType(GoogleTestTestSuiteBinarySpec.class)) {
+            binaries.withType(GoogleTestTestSuiteBinarySpec.class, bin -> {
                 if (!bin.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
                     DynamicHelpers.setBuildable(bin, false);
                 }
                 bin.getCppCompiler().define("RUNNING_FRC_TESTS");
                 bin.getcCompiler().define("RUNNING_FRC_TESTS");
-            }
+            });
         }
 
         @Mutate

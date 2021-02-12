@@ -54,86 +54,86 @@ public class NativeExternalSimulationTask extends ExternalSimulationTask {
 
     @TaskAction
     public void create() {
-        def cfgs = []
-        SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
-        def extensions = TestPlugin.getHALExtensions(project)
-        for (NativeExecutableBinarySpec binary : exeBinaries) {
-            def cfg = [:]
-            def installTask = (InstallExecutable)binary.tasks.install
-            cfg['name'] = "${binary.component.name} (in project ${project.name})".toString()
-            cfg['extensions'] = extensions
-            cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
-            cfg['clang'] = binary.toolChain in Clang
-            cfg['env'] = simExtension.environment
+        // def cfgs = []
+        // SimulationExtension simExtension = project.extensions.getByType(SimulationExtension)
+        // def extensions = TestPlugin.getHALExtensions(project)
+        // for (NativeExecutableBinarySpec binary : exeBinaries) {
+        //     def cfg = [:]
+        //     def installTask = (InstallExecutable)binary.tasks.install
+        //     cfg['name'] = "${binary.component.name} (in project ${project.name})".toString()
+        //     cfg['extensions'] = extensions
+        //     cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
+        //     cfg['clang'] = binary.toolChain in Clang
+        //     cfg['env'] = simExtension.environment
 
-            def srcpaths = []
-            def headerpaths = []
-            def libpaths = []
-            def libsrcpaths = []
-            def debugpaths = []
-            binary.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
-                srcpaths += ss.source.srcDirs
-                srcpaths += ss.exportedHeaders.srcDirs
-            }
-            binary.libs.each { NativeDependencySet ds ->
-                headerpaths += ds.includeRoots
-                libpaths += ds.runtimeFiles.files
-                if (ds instanceof DelegatedDependencySet) {
-                    libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
-                    debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
-                }
-            }
+        //     def srcpaths = []
+        //     def headerpaths = []
+        //     def libpaths = []
+        //     def libsrcpaths = []
+        //     def debugpaths = []
+        //     binary.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
+        //         srcpaths += ss.source.srcDirs
+        //         srcpaths += ss.exportedHeaders.srcDirs
+        //     }
+        //     binary.libs.each { NativeDependencySet ds ->
+        //         headerpaths += ds.includeRoots
+        //         libpaths += ds.runtimeFiles.files
+        //         if (ds instanceof DelegatedDependencySet) {
+        //             libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
+        //             debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
+        //         }
+        //     }
 
-            cfg['srcpaths'] = (srcpaths as List<File>).collect { it.absolutePath }
-            cfg['headerpaths'] = (headerpaths as List<File>).collect { it.absolutePath }
-            cfg['libpaths'] = (libpaths as List<File>).collect { it.absolutePath }
-            cfg['debugpaths'] = (debugpaths as List<File>).collect { it.absolutePath }
-            cfg['libsrcpaths'] = (libsrcpaths as List<File>).collect { it.absolutePath }
+        //     cfg['srcpaths'] = (srcpaths as List<File>).collect { it.absolutePath }
+        //     cfg['headerpaths'] = (headerpaths as List<File>).collect { it.absolutePath }
+        //     cfg['libpaths'] = (libpaths as List<File>).collect { it.absolutePath }
+        //     cfg['debugpaths'] = (debugpaths as List<File>).collect { it.absolutePath }
+        //     cfg['libsrcpaths'] = (libsrcpaths as List<File>).collect { it.absolutePath }
 
-            cfgs << cfg
-        }
+        //     cfgs << cfg
+        // }
 
-        for (NativeTestSuiteBinarySpec binary : testBinaries) {
-            def cfg = [:]
-            def installTask = (InstallExecutable)binary.tasks.install
-            cfg['name'] = "${binary.component.name} (in project ${project.name}, test suite)".toString()
-            cfg['extensions'] = extensions
-            cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
-            cfg['clang'] = binary.toolChain in Clang
-            cfg['env'] = simExtension.environment
+        // for (NativeTestSuiteBinarySpec binary : testBinaries) {
+        //     def cfg = [:]
+        //     def installTask = (InstallExecutable)binary.tasks.install
+        //     cfg['name'] = "${binary.component.name} (in project ${project.name}, test suite)".toString()
+        //     cfg['extensions'] = extensions
+        //     cfg['launchfile'] = Paths.get(installTask.installDirectory.asFile.get().toString(), 'lib', installTask.executableFile.asFile.get().name).toString()
+        //     cfg['clang'] = binary.toolChain in Clang
+        //     cfg['env'] = simExtension.environment
 
-            def srcpaths = []
-            def headerpaths = []
-            def libpaths = []
-            def libsrcpaths = []
-            def debugpaths = []
-            binary.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
-                srcpaths += ss.source.srcDirs
-                srcpaths += ss.exportedHeaders.srcDirs
-            }
-            binary.libs.each { NativeDependencySet ds ->
-                headerpaths += ds.includeRoots
-                libpaths += ds.runtimeFiles.files
-                if (ds instanceof DelegatedDependencySet) {
-                    libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
-                    debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
-                }
-            }
+        //     def srcpaths = []
+        //     def headerpaths = []
+        //     def libpaths = []
+        //     def libsrcpaths = []
+        //     def debugpaths = []
+        //     binary.inputs.withType(HeaderExportingSourceSet) { HeaderExportingSourceSet ss ->
+        //         srcpaths += ss.source.srcDirs
+        //         srcpaths += ss.exportedHeaders.srcDirs
+        //     }
+        //     binary.libs.each { NativeDependencySet ds ->
+        //         headerpaths += ds.includeRoots
+        //         libpaths += ds.runtimeFiles.files
+        //         if (ds instanceof DelegatedDependencySet) {
+        //             libsrcpaths += (ds as DelegatedDependencySet).getSourceFiles()
+        //             debugpaths += (ds as DelegatedDependencySet).getDebugFiles()
+        //         }
+        //     }
 
-            cfg['srcpaths'] = (srcpaths as List<File>).collect { it.absolutePath }
-            cfg['headerpaths'] = (headerpaths as List<File>).collect { it.absolutePath }
-            cfg['libpaths'] = (libpaths as List<File>).collect { it.absolutePath }
-            cfg['debugpaths'] = (debugpaths as List<File>).collect { it.absolutePath }
-            cfg['libsrcpaths'] = (libsrcpaths as List<File>).collect { it.absolutePath }
+        //     cfg['srcpaths'] = (srcpaths as List<File>).collect { it.absolutePath }
+        //     cfg['headerpaths'] = (headerpaths as List<File>).collect { it.absolutePath }
+        //     cfg['libpaths'] = (libpaths as List<File>).collect { it.absolutePath }
+        //     cfg['debugpaths'] = (debugpaths as List<File>).collect { it.absolutePath }
+        //     cfg['libsrcpaths'] = (libsrcpaths as List<File>).collect { it.absolutePath }
 
-            cfgs << cfg
-        }
+        //     cfgs << cfg
+        // }
 
-        def gbuilder = new GsonBuilder()
-        gbuilder.setPrettyPrinting()
-        def json = gbuilder.create().toJson(cfgs)
+        // def gbuilder = new GsonBuilder()
+        // gbuilder.setPrettyPrinting()
+        // def json = gbuilder.create().toJson(cfgs)
 
-        outfile.parentFile.mkdirs()
-        outfile.text = json
+        // outfile.parentFile.mkdirs()
+        // outfile.text = json
     }
 }
