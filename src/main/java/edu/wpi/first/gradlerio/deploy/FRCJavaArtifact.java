@@ -13,6 +13,8 @@ import com.google.gson.GsonBuilder;
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.bundling.Jar;
 
 import edu.wpi.first.embeddedtools.PathUtils;
 import edu.wpi.first.embeddedtools.deploy.DeployExtension;
@@ -25,8 +27,8 @@ public class FRCJavaArtifact extends JavaArtifact {
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
     private final FRCJREArtifact jreArtifact;
-    private final ConfigurationArtifact nativeLibArtifact;
-    private final ConfigurationArtifact nativeZipArtifact;
+    private final FRCJNILibraryArtifact nativeLibArtifact;
+    private final FRCJNILibraryArtifact nativeZipArtifact;
 
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
@@ -53,13 +55,13 @@ public class FRCJavaArtifact extends JavaArtifact {
         Configuration nativeLibs = project.getConfigurations().getByName("nativeLib");
         Configuration nativeZips = project.getConfigurations().getByName("nativeZip");
 
-        nativeLibArtifact = de.getArtifacts().artifact("nativeLibs" + name, ConfigurationArtifact.class, artifact -> {
+        nativeLibArtifact = de.getArtifacts().artifact("nativeLibs" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
             artifact.setConfiguration(nativeLibs);
             artifact.setZipped(false);
         });
 
-        nativeZipArtifact = de.getArtifacts().artifact("nativeZips" + name, ConfigurationArtifact.class, artifact -> {
+        nativeZipArtifact = de.getArtifacts().artifact("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
             artifact.setConfiguration(nativeZips);
             artifact.setZipped(true);
@@ -68,7 +70,7 @@ public class FRCJavaArtifact extends JavaArtifact {
             });
         });
 
-        robotCommandArtifact.getPostdeploy().add(this::postStart);
+        programStartArtifact.getPostdeploy().add(this::postStart);
 
         getPostdeploy().add(ctx -> {
             String binFile = PathUtils.combine(ctx.getWorkingDir(),
@@ -89,6 +91,18 @@ public class FRCJavaArtifact extends JavaArtifact {
         super.setTarget(tObj);
     }
 
+    @Override
+    public void setJarTask(Jar jarTask) {
+        robotCommandArtifact.getDeployTask().configure(x -> x.dependsOn(jarTask));
+        super.setJarTask(jarTask);
+    }
+
+    @Override
+    public void setJarTask(TaskProvider<Jar> jarTask) {
+        robotCommandArtifact.getDeployTask().configure(x -> x.dependsOn(jarTask));
+        super.setJarTask(jarTask);
+    }
+
     public FRCJREArtifact getJreArtifact() {
         return jreArtifact;
     }
@@ -101,11 +115,11 @@ public class FRCJavaArtifact extends JavaArtifact {
         return robotCommandArtifact;
     }
 
-    public ConfigurationArtifact getNativeLibArtifact() {
+    public FRCJNILibraryArtifact getNativeLibArtifact() {
         return nativeLibArtifact;
     }
 
-    public ConfigurationArtifact getNativeZipArtifact() {
+    public FRCJNILibraryArtifact getNativeZipArtifact() {
         return nativeZipArtifact;
     }
 

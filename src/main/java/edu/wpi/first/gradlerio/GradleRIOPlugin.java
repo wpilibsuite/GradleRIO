@@ -8,6 +8,7 @@ import org.gradle.api.tasks.wrapper.Wrapper;
 
 import edu.wpi.first.embeddedtools.EmbeddedTools;
 import edu.wpi.first.gradlerio.deploy.FRCPlugin;
+import edu.wpi.first.gradlerio.test.TestPlugin;
 
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class GradleRIOPlugin implements Plugin<Project> {
         project.getPluginManager().apply(WPIPlugin.class);
         //project.getPluginManager().apply(ClionPlugin.class);
         //project.getPluginManager().apply(IDEPlugin.class);
-        //project.getPluginManager().apply(TestPlugin.class);
+        project.getPluginManager().apply(TestPlugin.class);
 
         project.getTasks().register("downloadAll", DownloadAllTask.class, t -> {
             t.setGroup("GradleRIO");

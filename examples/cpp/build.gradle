@@ -8,29 +8,33 @@ plugins {
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
-        roboRIO("roborio") {
-            // Team number is loaded either from the .wpilib/wpilib_preferences.json
-            // or from command line. If not found an exception will be thrown.
-            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
-            // want to store a team number in this file.
-            team = frc.getTeamNumber()
+        frc {
+            roboRIO("roborio") {
+                // Team number is loaded either from the .wpilib/wpilib_preferences.json
+                // or from command line. If not found an exception will be thrown.
+                // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+                // want to store a team number in this file.
+                team = project.frc.getTeamNumber()
+            }
         }
     }
     artifacts {
-        frcNativeArtifact('frcCpp') {
-            targets << "roborio"
-            component = 'frcUserProgram'
-            // Debug can be overridden by command line, for use with VSCode
-            debug = frc.getDebugOrDefault(false)
+        frc {
+            frcNativeArtifact('frcCpp') {
+                target = "roborio"
+                component = 'frcUserProgram'
+                // Debug can be overridden by command line, for use with VSCode
+                debug = project.frc.getDebugOrDefault(false)
+            }
         }
-        // Built in artifact to deploy arbitrary files to the roboRIO.
-        fileTreeArtifact('frcStaticFileDeploy') {
-            // The directory below is the local directory to deploy
-            files = fileTree(dir: 'src/main/deploy')
-            // Deploy to RoboRIO target, into /home/lvuser/deploy
-            targets << "roborio"
-            directory = '/home/lvuser/deploy'
-        }
+        // // Built in artifact to deploy arbitrary files to the roboRIO.
+        // fileTreeArtifact('frcStaticFileDeploy') {
+        //     // The directory below is the local directory to deploy
+        //     files = fileTree(dir: 'src/main/deploy')
+        //     // Deploy to RoboRIO target, into /home/lvuser/deploy
+        //     targets << "roborio"
+        //     directory = '/home/lvuser/deploy'
+        // }
     }
 }
 
@@ -40,21 +44,21 @@ deploy {
 // imports this is enabled by default. For new projects, its disabled
 def includeSrcInIncludeRoot = false
 
-dependencies {
-    // In C++ for now, the argument must be true
-    simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
-    simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
+// dependencies {
+//     // In C++ for now, the argument must be true
+//     simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
+//     simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
 
-    // Websocket extensions require additional configuration.
-    // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
-    // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
-}
+//     // Websocket extensions require additional configuration.
+//     // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
+//     // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
+// }
 
-// Simulation configuration (e.g. environment variables).
-sim {
-    // Sets the websocket client remote host.
-    // envVar "HALSIMWS_HOST", "10.0.0.2"
-}
+// // Simulation configuration (e.g. environment variables).
+// sim {
+//     // Sets the websocket client remote host.
+//     // envVar "HALSIMWS_HOST", "10.0.0.2"
+// }
 
 model {
     components {

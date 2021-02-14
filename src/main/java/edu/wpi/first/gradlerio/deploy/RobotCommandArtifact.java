@@ -6,10 +6,10 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.AbstractArtifact;
+import edu.wpi.first.embeddedtools.deploy.artifact.FileArtifact;
 import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
 
-public class RobotCommandArtifact extends AbstractArtifact {
+public class RobotCommandArtifact extends FileArtifact {
 
     private Function<DeployContext, String> startCommandFunc;
 
@@ -29,9 +29,11 @@ public class RobotCommandArtifact extends AbstractArtifact {
     }
 
     @Override
-    public void deploy(DeployContext arg0) {
-        // TODO Auto-generated method stub
-        // ctx.execute("chmod +x /home/lvuser/robotCommand")
+    public void deploy(DeployContext ctx) {
+        String content = startCommandFunc.apply(ctx);
+
+        ctx.execute("echo '" + content + "' > /home/lvuser/robotCommand");
+        ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand");
     }
 
 }

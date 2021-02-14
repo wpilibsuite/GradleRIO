@@ -11,11 +11,11 @@ import org.apache.log4j.Logger;
 import org.gradle.api.Project;
 
 import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.artifact.CommandArtifact;
 import edu.wpi.first.embeddedtools.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
 import edu.wpi.first.embeddedtools.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.toolchain.NativePlatforms;
 
 public class RoboRIO extends StagedDeployTarget {
 
@@ -43,12 +43,13 @@ public class RoboRIO extends StagedDeployTarget {
         DeployExtension de = project.getExtensions().getByType(DeployExtension.class);
 
         programKillArtifact = de.getArtifacts().multiCommandArtifact("programKill" + name, art -> {
-            System.out.println("Program kill created");
             art.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
             art.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
             art.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
         });
         programKillArtifact.setTarget(this);
+
+        setTargetPlatform(NativePlatforms.roborio);
     }
 
     public MultiCommandArtifact getProgramKillArtifact() {

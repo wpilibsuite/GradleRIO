@@ -17,4 +17,8 @@ public class FRCArtifactsExtension {
     public FRCJavaArtifact frcJavaArtifact(String name, final Action<FRCJavaArtifact> config) {
         return artifacts.artifact(name, FRCJavaArtifact.class, config);
     }
+
+    public FRCNativeArtifact frcNativeArtifact(String name, final Action<FRCNativeArtifact> config) {
+        return artifacts.artifact(name, FRCNativeArtifact.class, config);
+    }
 }

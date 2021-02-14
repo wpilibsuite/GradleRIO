@@ -1,12 +1,7 @@
 package edu.wpi.first.gradlerio.deploy;
 
-import java.util.Map;
-
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.java.archives.Manifest;
-import org.gradle.api.java.archives.internal.DefaultManifest;
 import org.gradle.api.plugins.ExtensionAware;
 
 import edu.wpi.first.embeddedtools.EmbeddedTools;

@@ -16,14 +16,14 @@ import org.gradle.api.tasks.util.PatternFilterable;
 
 import edu.wpi.first.embeddedtools.deploy.artifact.FileCollectionArtifact;
 
-public class ConfigurationArtifact extends FileCollectionArtifact implements Callable<FileCollection> {
+public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Callable<FileCollection> {
     private Configuration configuration;
     private boolean zipped;
     private Action<PatternFilterable> filter;
     private Set<File> configFileCaches;
 
     @Inject
-    public ConfigurationArtifact(String name, Project project) {
+    public FRCJNILibraryArtifact(String name, Project project) {
         super(name, project);
 
         getDirectory().set(FRCPlugin.LIB_DEPLOY_DIR);
