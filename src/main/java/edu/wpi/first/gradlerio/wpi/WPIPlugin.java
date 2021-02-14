@@ -20,7 +20,7 @@ import edu.wpi.first.toolchain.ToolchainPlugin;
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
 import edu.wpi.first.vscode.GradleVsCode;
 
-class WPIPlugin implements Plugin<Project> {
+public class WPIPlugin implements Plugin<Project> {
     private ETLogger logger;
 
     public ETLogger getLogger() {

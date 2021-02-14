@@ -1,6 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.dependencies;
 
-//import edu.wpi.first.gradlerio.frc.FRCJREArtifact;
+import edu.wpi.first.gradlerio.deploy.FRCJREArtifact;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import groovy.transform.CompileStatic;
 import edu.wpi.first.embeddedtools.deploy.DeployExtension;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gradle.api.Action;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -85,12 +84,11 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
         configs.add("nativeZip");
 
         for (Artifact art : project.getExtensions().getByType(DeployExtension.class).getArtifacts()) {
-            // TODO fix me
-            // if (art instanceof FRCJREArtifact) {
-            //     String cfgName = ((FRCJREArtifact)art).configuration();
-            //     logger.info("Found JRE Configuration: " + cfgName);
-            //     configs.add(cfgName);
-            // }
+            if (art instanceof FRCJREArtifact) {
+                String cfgName = ((FRCJREArtifact)art).getConfigName();
+                logger.info("Found JRE Configuration: " + cfgName);
+                configs.add(cfgName);
+            }
         }
 
         for (String cName : configs) {
