@@ -33,6 +33,7 @@ public class FRCNativeArtifact extends NativeArtifact {
             bla.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
             bla.getPostdeploy().add(ctx -> {
                 FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR);
+                ctx.execute("ldconfig");
             });
             if (onLocalBlaCreated != null) {
                 onLocalBlaCreated.execute(bla);
