@@ -4,11 +4,11 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
-import edu.wpi.first.embeddedtools.EmbeddedTools;
-import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.artifact.ArtifactsExtension;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
-import edu.wpi.first.embeddedtools.deploy.target.TargetsExtension;
+import edu.wpi.first.deployutils.DeployUtils;
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.artifact.ArtifactsExtension;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.target.TargetsExtension;
 
 public class FRCPlugin implements Plugin<Project> {
 
@@ -20,7 +20,7 @@ public class FRCPlugin implements Plugin<Project> {
     public void apply(Project project) {
         this.project = project;
 
-        project.getPluginManager().apply(EmbeddedTools.class);
+        project.getPluginManager().apply(DeployUtils.class);
         // TODO
         //project.getPluginManager().apply(RioLogPlugin.class);
 

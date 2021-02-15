@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.gradle.api.Action;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.ArtifactsExtension;
+import edu.wpi.first.deployutils.deploy.artifact.ArtifactsExtension;
 
 public class FRCArtifactsExtension {
     private final ArtifactsExtension artifacts;

@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.gradle.api.Action;
 
-import edu.wpi.first.embeddedtools.deploy.target.TargetsExtension;
+import edu.wpi.first.deployutils.deploy.target.TargetsExtension;
 
 public class FRCTargetsExtension {
     private final TargetsExtension targets;

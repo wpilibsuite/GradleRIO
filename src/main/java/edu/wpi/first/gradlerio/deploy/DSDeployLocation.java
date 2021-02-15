@@ -13,12 +13,12 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import edu.wpi.first.embeddedtools.deploy.target.RemoteTarget;
-import edu.wpi.first.embeddedtools.deploy.target.discovery.action.DiscoveryAction;
-import edu.wpi.first.embeddedtools.deploy.target.discovery.action.SshDiscoveryAction;
-import edu.wpi.first.embeddedtools.deploy.target.location.SshDeployLocation;
-import edu.wpi.first.embeddedtools.log.ETLogger;
-import edu.wpi.first.embeddedtools.log.ETLoggerFactory;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
+import edu.wpi.first.deployutils.deploy.target.discovery.action.DiscoveryAction;
+import edu.wpi.first.deployutils.deploy.target.discovery.action.SshDiscoveryAction;
+import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
+import edu.wpi.first.deployutils.log.ETLogger;
+import edu.wpi.first.deployutils.log.ETLoggerFactory;
 
 public class DSDeployLocation extends SshDeployLocation {
 

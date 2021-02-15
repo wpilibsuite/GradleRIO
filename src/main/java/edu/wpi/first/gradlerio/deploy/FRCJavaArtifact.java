@@ -16,11 +16,11 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
-import edu.wpi.first.embeddedtools.PathUtils;
-import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.artifact.JavaArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
-import edu.wpi.first.embeddedtools.deploy.sessions.IPSessionController;
+import edu.wpi.first.deployutils.PathUtils;
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.artifact.JavaArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
 
 public class FRCJavaArtifact extends JavaArtifact {
 

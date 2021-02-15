@@ -6,9 +6,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 
-import edu.wpi.first.embeddedtools.log.ETLogger;
-import edu.wpi.first.embeddedtools.log.ETLoggerFactory;
-import edu.wpi.first.embeddedtools.toolchains.ToolchainsPlugin;
+import edu.wpi.first.deployutils.log.ETLogger;
+import edu.wpi.first.deployutils.log.ETLoggerFactory;
+import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules;
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin;

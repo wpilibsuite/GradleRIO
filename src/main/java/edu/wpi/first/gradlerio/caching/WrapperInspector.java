@@ -1,6 +1,6 @@
 package edu.wpi.first.gradlerio.caching;
 
-import edu.wpi.first.embeddedtools.log.ETLogger;
+import edu.wpi.first.deployutils.log.ETLogger;
 
 import java.io.File;
 import java.io.FileReader;

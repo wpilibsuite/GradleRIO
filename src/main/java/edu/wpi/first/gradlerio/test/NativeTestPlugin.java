@@ -1,7 +1,6 @@
 package edu.wpi.first.gradlerio.test;
 
 import edu.wpi.first.toolchain.NativePlatforms;
-import edu.wpi.first.embeddedtools.DynamicHelpers;
 
 import java.io.File;
 
@@ -45,7 +44,7 @@ public class NativeTestPlugin implements Plugin<Project> {
         public void addBinaryFlags(BinaryContainer binaries) {
             binaries.withType(GoogleTestTestSuiteBinarySpec.class, bin -> {
                 if (!bin.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
-                    DynamicHelpers.setBuildable(bin, false);
+                    ((BinarySpecInternal)bin).setBuildable(false);
                 }
                 bin.getCppCompiler().define("RUNNING_FRC_TESTS");
                 bin.getcCompiler().define("RUNNING_FRC_TESTS");

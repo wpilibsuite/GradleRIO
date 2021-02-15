@@ -4,9 +4,9 @@ plugins {
     // GradleRIO is used for code intended to go on robots, which is why it's only applied to the 'robot' project.
     id "edu.wpi.first.GradleRIO" version "<REPLACEME latest>" apply false
 
-    // EmbeddedTools is the backing library for GradleRIO, and includes everything that's non-frc specific, which
+    // DeployUtils is the backing library for GradleRIO, and includes everything that's non-frc specific, which
     // is why we use it for our coprocessor project.
-    id "edu.wpi.first.embeddedtools.EmbeddedTools" version "<REPLACEME latest>" apply false
+    id "edu.wpi.first.deployutils.DeployUtils" version "<REPLACEME latest>" apply false
 }
 
 // Setup the configuration for all sub-projects. This is a shortcut for manually applying the configuration

@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.MavenArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.artifact.MavenArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJREArtifact extends MavenArtifact {

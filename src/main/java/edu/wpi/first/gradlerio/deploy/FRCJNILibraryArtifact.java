@@ -14,7 +14,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.util.PatternFilterable;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.FileCollectionArtifact;
+import edu.wpi.first.deployutils.deploy.artifact.FileCollectionArtifact;
 
 public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Callable<FileCollection> {
     private Configuration configuration;

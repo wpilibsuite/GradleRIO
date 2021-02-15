@@ -32,7 +32,9 @@ public class WPIDepsExtension {
     @Inject
     public WPIDepsExtension(Project project, WPIExtension wpi) {
         this.wpi = wpi;
-        this.vendor = project.getObjects().newInstance(WPIVendorDepsExtension.class, wpi);
+        // TODO fix me
+        //this.vendor = project.getObjects().newInstance(WPIVendorDepsExtension.class, wpi);
+        this.vendor = null;
         this.sim = project.getObjects().newInstance(WPISimDepsExtension.class, wpi);
     }
 

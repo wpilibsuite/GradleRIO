@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.AbstractArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.artifact.AbstractArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
 
 public class FRCProgramStartArtifact extends AbstractArtifact {
 

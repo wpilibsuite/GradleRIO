@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.java.archives.Manifest;
 import org.gradle.api.tasks.wrapper.Wrapper;
 
-import edu.wpi.first.embeddedtools.EmbeddedTools;
+import edu.wpi.first.deployutils.DeployUtils;
 import edu.wpi.first.gradlerio.deploy.FRCPlugin;
 import edu.wpi.first.gradlerio.test.TestPlugin;
 
@@ -31,7 +31,7 @@ public class GradleRIOPlugin implements Plugin<Project> {
         project.getConfigurations().maybeCreate("nativeAarch64BionicLib");
         project.getConfigurations().maybeCreate("nativeAarch64BionicZip");
 
-        project.getPluginManager().apply(EmbeddedTools.class);
+        project.getPluginManager().apply(DeployUtils.class);
         project.getPluginManager().apply(FRCPlugin.class);
         project.getPluginManager().apply(WPIPlugin.class);
         //project.getPluginManager().apply(ClionPlugin.class);

@@ -10,9 +10,9 @@ import org.gradle.api.Task;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.TaskProvider;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.Artifact;
-import edu.wpi.first.embeddedtools.deploy.artifact.ArtifactDeployTask;
-import edu.wpi.first.embeddedtools.deploy.target.RemoteTarget;
+import edu.wpi.first.deployutils.deploy.artifact.Artifact;
+import edu.wpi.first.deployutils.deploy.artifact.ArtifactDeployTask;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public abstract class StagedDeployTarget extends RemoteTarget {
     private static class TaskAndPreviousTaskPair {

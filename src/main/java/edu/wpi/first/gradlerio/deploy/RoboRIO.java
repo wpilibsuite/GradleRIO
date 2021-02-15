@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.artifact.MultiCommandArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
-import edu.wpi.first.embeddedtools.deploy.target.location.SshDeployLocation;
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 

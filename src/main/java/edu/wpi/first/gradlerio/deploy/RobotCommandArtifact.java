@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.FileArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.artifact.FileArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
 
 public class RobotCommandArtifact extends FileArtifact {
 

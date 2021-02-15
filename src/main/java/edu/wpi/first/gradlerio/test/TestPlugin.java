@@ -12,7 +12,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.internal.os.OperatingSystem;
 
-import edu.wpi.first.embeddedtools.toolchains.ToolchainsPlugin;
+import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
 
 public class TestPlugin implements Plugin<Project> {
 

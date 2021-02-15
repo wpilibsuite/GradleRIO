@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.deploy.artifact.NativeArtifact;
+import edu.wpi.first.deployutils.deploy.artifact.NativeArtifact;
 
 public class FRCNativeLibraryArtifact extends NativeArtifact {
 

@@ -3,10 +3,10 @@ package edu.wpi.first.gradlerio.wpi.dependencies;
 import edu.wpi.first.gradlerio.deploy.FRCJREArtifact;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import groovy.transform.CompileStatic;
-import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.artifact.Artifact;
-import edu.wpi.first.embeddedtools.log.ETLogger;
-import edu.wpi.first.embeddedtools.log.ETLoggerFactory;
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.artifact.Artifact;
+import edu.wpi.first.deployutils.log.ETLogger;
+import edu.wpi.first.deployutils.log.ETLoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,8 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
     public void apply(Project project) {
         ETLogger logger = ETLoggerFactory.INSTANCE.create("WPIDeps");
         WPIExtension wpi = project.getExtensions().getByType(WPIExtension.class);
-        wpi.getDeps().getVendor().loadAll();
+        //TODO Fix me
+        //wpi.getDeps().getVendor().loadAll();
 
         // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
         // if it"s up-to-date

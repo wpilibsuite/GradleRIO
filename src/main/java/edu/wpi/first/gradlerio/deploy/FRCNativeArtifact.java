@@ -9,12 +9,12 @@ import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 
-import edu.wpi.first.embeddedtools.PathUtils;
-import edu.wpi.first.embeddedtools.deploy.DeployExtension;
-import edu.wpi.first.embeddedtools.deploy.DeployPlugin.ArtifactBinaryLinkTaskTuple;
-import edu.wpi.first.embeddedtools.deploy.artifact.BinaryLibraryArtifact;
-import edu.wpi.first.embeddedtools.deploy.artifact.NativeArtifact;
-import edu.wpi.first.embeddedtools.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.PathUtils;
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.DeployPlugin.ArtifactBinaryLinkTaskTuple;
+import edu.wpi.first.deployutils.deploy.artifact.BinaryLibraryArtifact;
+import edu.wpi.first.deployutils.deploy.artifact.NativeArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
 
 public class FRCNativeArtifact extends NativeArtifact {
 

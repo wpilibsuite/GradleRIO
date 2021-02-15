@@ -2,7 +2,6 @@ package edu.wpi.first.gradlerio.test;
 
 import com.google.gson.GsonBuilder;
 import groovy.transform.CompileStatic;
-import edu.wpi.first.embeddedtools.nativedeps.DelegatedDependencySet;
 
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;

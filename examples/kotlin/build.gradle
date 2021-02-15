@@ -6,7 +6,7 @@ plugins {
 def ROBOT_MAIN_CLASS = "frc.team0000.robot.MainKt"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
+// This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
         roboRIO("roborio") {
