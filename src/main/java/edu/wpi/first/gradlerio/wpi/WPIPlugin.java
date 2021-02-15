@@ -47,6 +47,9 @@ public class WPIPlugin implements Plugin<Project> {
             nte.withRoboRIO();
             nte.addWpiNativeUtils();
 
+            // TODO Late bind version (this is going to be a deep change)
+            wpiExtension.getDeps().getVendor().initializeNativeDependencies();
+
             ToolchainExtension te = project.getExtensions().getByType(ToolchainExtension.class);
             te.getCrossCompilers().named(nte.getWpi().platforms.roborio, c -> {
                 c.getOptional().set(false);
@@ -146,7 +149,7 @@ public class WPIPlugin implements Plugin<Project> {
         }
 
         for (WPIMavenRepo mirror : sortedMirrors) {
-            if (mirror.getDevelopment() != null) {
+            if (mirror.getRelease() != null) {
                 project.getRepositories().maven(repo -> {
                     repo.setName("WPI" + mirror.getName() + "Release");
                     repo.setUrl(mirror.getRelease());

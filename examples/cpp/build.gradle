@@ -79,7 +79,7 @@ model {
             }
 
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-            //wpi.deps.vendor.cpp(it)
+            wpi.deps.vendor.cpp(it)
             wpi.deps.wpilib(it)
         }
     }
@@ -94,7 +94,7 @@ model {
                 }
             }
 
-            //wpi.deps.vendor.cpp(it)
+            wpi.deps.vendor.cpp(it)
             wpi.deps.wpilib(it)
             wpi.deps.googleTest(it)
         }
