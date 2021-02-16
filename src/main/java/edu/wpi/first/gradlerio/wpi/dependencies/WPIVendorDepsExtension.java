@@ -185,19 +185,12 @@ public class WPIVendorDepsExtension {
                 continue;
             }
 
+            String depName = dep.uuid + "_" + dep.name;
+
             NamedDomainObjectContainer<DependencyConfig> dConfigs = nue.getDependencyConfigs();
 
-            List<String> cppDeps = new ArrayList<>();
-
             for (CppArtifact cpp : dep.cppDependencies) {
-                String name = dep.uuid + "_" + cpp.libName;
-                String depName = name;
-                if (cpp.sharedLibrary) {
-                    depName = name + "_shared";
-                } else {
-                    depName = name + "_static";
-                }
-                cppDeps.add(depName);
+                String name = depName + "_" + cpp.libName;
                 dConfigs.create(name, c -> {
                     c.setGroupId(cpp.groupId);
                     c.setArtifactId(cpp.artifactId);
@@ -215,16 +208,16 @@ public class WPIVendorDepsExtension {
                 });
             }
 
-            nue.getCombinedDependencyConfigs().create(dep.uuid, combined -> {
+            nue.getCombinedDependencyConfigs().create(depName, combined -> {
                 for (CppArtifact cpp : dep.cppDependencies) {
-                    String name = dep.uuid + "_" + cpp.libName;
-                    String depName = name;
+                    String name = depName + "_" + cpp.libName;
+                    String binaryName = name;
                     if (cpp.sharedLibrary) {
-                        depName = name + "_shared_binaries";
+                        binaryName = name + "_shared_binaries";
                     } else {
-                        depName = name + "_static_binaries";
+                        binaryName = name + "_static_binaries";
                     }
-                    combined.getDependencies().add(depName);
+                    combined.getDependencies().add(binaryName);
                     if (cpp.headerClassifier != null) {
                         combined.getDependencies().add(name + "_headers");
                     }
@@ -256,25 +249,8 @@ public class WPIVendorDepsExtension {
             if (isIgnored(ignore, dep)) {
                 continue;
             }
-            nue.useRequiredLibrary(bin, dep.uuid);
+            nue.useRequiredLibrary(bin, dep.uuid + "_" + dep.name);
         }
-        // Set<DelegatedDependencySet> dds = new HashSet<>();
-        // for (JsonDependency dep : dependencies.values()) {
-        //     if (!isIgnored(ignore, dep)) {
-        //         for (CppArtifact cpp : dep.cppDependencies) {
-        //             if (cpp.headerClassifier != null)
-        //                 dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_headers", bin, dse, cpp.skipInvalidPlatforms));
-        //             if (cpp.sourcesClassifier != null)
-        //                 dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_sources", bin, dse, cpp.skipInvalidPlatforms));
-        //             if (cpp.binaryPlatforms != null && cpp.binaryPlatforms.length > 0)
-        //                 dds.add(new DelegatedDependencySet(dep.uuid + cpp.libName + "_binaries", bin, dse, cpp.skipInvalidPlatforms));
-        //         }
-        //     }
-        // }
-
-        // for (DelegatedDependencySet set : dds) {
-        //     bin.lib(set);
-        // }
     }
 
     private boolean isIgnored(String[] ignore, JsonDependency dep) {
