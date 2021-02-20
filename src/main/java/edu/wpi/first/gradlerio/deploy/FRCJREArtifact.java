@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 
 import edu.wpi.first.deployutils.deploy.artifact.MavenArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJREArtifact extends MavenArtifact {
@@ -16,19 +17,20 @@ public class FRCJREArtifact extends MavenArtifact {
     }
 
     @Inject
-    public FRCJREArtifact(String name, Project project) {
-        super(name, project);
+    public FRCJREArtifact(String name, RemoteTarget target) {
+        super(name, target);
         String configName = name + "frcjre";
         this.configName = configName;
-        setConfiguration(project.getConfigurations().create(configName));
-        setDependency(project.getDependencies().add(configName, project.getExtensions().getByType(WPIExtension.class).getJreArtifactLocation()));
+        Project project = target.getProject();
+        getConfiguration().set(project.getConfigurations().create(configName));
+        getDependency().set(project.getDependencies().add(configName, project.getExtensions().getByType(WPIExtension.class).getJreArtifactLocation()));
 
         setOnlyIf(ctx -> {
             return jreMissing(ctx) || project.hasProperty("force-redeploy-jre");
         });
 
         getDirectory().set("/tmp");
-        setFilename("frcjre.ipk");
+        getFilename().set("frcjre.ipk");
 
         getPostdeploy().add(ctx -> {
             ctx.getLogger().log("Installing JRE...");

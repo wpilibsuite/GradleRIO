@@ -23,8 +23,8 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 public class DSDeployLocation extends SshDeployLocation {
 
     @Inject
-    public DSDeployLocation(RemoteTarget target) {
-        super(target);
+    public DSDeployLocation(String name, RemoteTarget target) {
+        super(name, target);
     }
 
     private String dsAddress = "localhost";

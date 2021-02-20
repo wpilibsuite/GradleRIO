@@ -1,3 +1,5 @@
+import edu.wpi.first.gradlerio.deploy.RoboRIO
+
 plugins {
     id "cpp"
     id "google-test-test-suite"
@@ -8,25 +10,30 @@ plugins {
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
-        frc {
-            roboRIO("roborio") {
-                // Team number is loaded either from the .wpilib/wpilib_preferences.json
-                // or from command line. If not found an exception will be thrown.
-                // You can use getTeamOrDefault(team) instead of getTeamNumber if you
-                // want to store a team number in this file.
-                team = project.frc.getTeamNumber()
-            }
-        }
-    }
-    artifacts {
-        frc {
+        roborio(RoboRIO) {
+            team = project.frc.getTeamNumber()
             frcNativeArtifact('frcCpp') {
-                target = "roborio"
-                component = 'frcUserProgram'
-                // Debug can be overridden by command line, for use with VSCode
-                debug = project.frc.getDebugOrDefault(false)
             }
         }
+        // frc {
+        //     roboRIO("roborio") {
+        //         // Team number is loaded either from the .wpilib/wpilib_preferences.json
+        //         // or from command line. If not found an exception will be thrown.
+        //         // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+        //         // want to store a team number in this file.
+        //         team = project.frc.getTeamNumber()
+        //     }
+        // }
+    }
+    // artifacts {
+    //     frc {
+    //         frcNativeArtifact('frcCpp') {
+    //             target = "roborio"
+    //             component = 'frcUserProgram'
+    //             // Debug can be overridden by command line, for use with VSCode
+    //             debug = project.frc.getDebugOrDefault(false)
+    //         }
+    //     }
         // // Built in artifact to deploy arbitrary files to the roboRIO.
         // fileTreeArtifact('frcStaticFileDeploy') {
         //     // The directory below is the local directory to deploy
@@ -35,8 +42,10 @@ deploy {
         //     targets << "roborio"
         //     directory = '/home/lvuser/deploy'
         // }
-    }
+    //}
 }
+
+def nativeBinaryArtifact = deploy.targets.roborio.artifacts.frcCpp
 
 // Set this to true to include the src folder in the include directories passed
 // to the compiler. Some eclipse project imports depend on this behavior.
@@ -78,8 +87,13 @@ model {
                 }
             }
 
+            binaries.all {
+                if (it.buildType.name != 'release') return
+                nativeBinaryArtifact.executable = it
+            }
+
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-            wpi.deps.vendor.cpp(it)
+            //wpi.deps.vendor.cpp(it)
             wpi.deps.wpilib(it)
         }
     }
@@ -94,7 +108,7 @@ model {
                 }
             }
 
-            wpi.deps.vendor.cpp(it)
+            //wpi.deps.vendor.cpp(it)
             wpi.deps.wpilib(it)
             wpi.deps.googleTest(it)
         }

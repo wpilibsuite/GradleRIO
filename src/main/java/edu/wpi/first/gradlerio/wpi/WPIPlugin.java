@@ -5,12 +5,13 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
-import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
+//import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin;
-import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules;
+//import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules;
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
@@ -36,7 +37,7 @@ public class WPIPlugin implements Plugin<Project> {
         project.getPluginManager().apply(WPIToolsPlugin.class);
         project.getPluginManager().apply(WPIDependenciesPlugin.class);
 
-        project.getPlugins().withType(ToolchainsPlugin.class).all(p -> {
+        project.getPlugins().withType(NativeComponentPlugin.class).all(p -> {
             logger.info("DeployTools Native Project Detected");
             project.getPluginManager().apply(ToolchainPlugin.class);
             project.getPluginManager().apply(RoboRioToolchainPlugin.class);
@@ -56,16 +57,16 @@ public class WPIPlugin implements Plugin<Project> {
             });
 
             nte.getWpi().addWarnings();
-            nte.setSinglePrintPerPlatform();
+            //nte.setSinglePrintPerPlatform();
 
             project.afterEvaluate(ap -> {
                 nte.getWpi().configureDependencies(deps -> {
-                    deps.wpiVersion = wpiExtension.getWpilibVersion();
-                    deps.niLibVersion = wpiExtension.getNiLibrariesVersion();
-                    deps.opencvVersion = wpiExtension.getOpencvVersion();
-                    deps.googleTestVersion = wpiExtension.getGoogleTestVersion();
-                    deps.imguiVersion = wpiExtension.getImguiVersion();
-                    deps.wpimathVersion = wpiExtension.getWpimathVersion();
+                    deps.getWpiVersion().set(wpiExtension.getWpilibVersion());
+                    deps.getNiLibVersion().set(wpiExtension.getNiLibrariesVersion());
+                    deps.getOpencvVersion().set(wpiExtension.getOpencvVersion());
+                    deps.getGoogleTestVersion().set(wpiExtension.getGoogleTestVersion());
+                    deps.getImguiVersion().set(wpiExtension.getImguiVersion());
+                    deps.getWpimathVersion().set(wpiExtension.getWpimathVersion());
                 });
             });
 

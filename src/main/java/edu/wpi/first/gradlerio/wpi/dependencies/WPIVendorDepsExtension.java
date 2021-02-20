@@ -29,7 +29,7 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 // import edu.wpi.first.deployutils.nativedeps.DependencySpecExtension;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
-import edu.wpi.first.nativeutils.configs.DependencyConfig;
+//import edu.wpi.first.nativeutils.configs.DependencyConfig;
 
 public class WPIVendorDepsExtension {
 
@@ -178,56 +178,56 @@ public class WPIVendorDepsExtension {
     }
 
     public void initializeNativeDependencies() {
-        NativeUtilsExtension nue = wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
-        for (JsonDependency dep : dependencies.values()) {
-            // Individual dependencies
-            if (dep.cppDependencies.length <= 0) {
-                continue;
-            }
+        // NativeUtilsExtension nue = wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
+        // for (JsonDependency dep : dependencies.values()) {
+        //     // Individual dependencies
+        //     if (dep.cppDependencies.length <= 0) {
+        //         continue;
+        //     }
 
-            String depName = dep.uuid + "_" + dep.name;
+        //     String depName = dep.uuid + "_" + dep.name;
 
-            NamedDomainObjectContainer<DependencyConfig> dConfigs = nue.getDependencyConfigs();
+        //     NamedDomainObjectContainer<DependencyConfig> dConfigs = nue.getDependencyConfigs();
 
-            for (CppArtifact cpp : dep.cppDependencies) {
-                String name = depName + "_" + cpp.libName;
-                dConfigs.create(name, c -> {
-                    c.setGroupId(cpp.groupId);
-                    c.setArtifactId(cpp.artifactId);
-                    c.setHeaderClassifier(cpp.headerClassifier);
-                    c.setSourceClassifier(cpp.sourcesClassifier);
-                    c.setVersion(cpp.version);
-                    c.setExt("zip");
-                    if (cpp.sharedLibrary) {
-                        c.getSharedPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-                    } else {
-                        c.getStaticPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-                    }
-                    c.setSkipMissingPlatform(cpp.skipInvalidPlatforms);
-                    c.setSkipCombinedDependency(true);
-                });
-            }
+        //     for (CppArtifact cpp : dep.cppDependencies) {
+        //         String name = depName + "_" + cpp.libName;
+        //         dConfigs.create(name, c -> {
+        //             c.setGroupId(cpp.groupId);
+        //             c.setArtifactId(cpp.artifactId);
+        //             c.setHeaderClassifier(cpp.headerClassifier);
+        //             c.setSourceClassifier(cpp.sourcesClassifier);
+        //             c.setVersion(cpp.version);
+        //             c.setExt("zip");
+        //             if (cpp.sharedLibrary) {
+        //                 c.getSharedPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
+        //             } else {
+        //                 c.getStaticPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
+        //             }
+        //             c.setSkipMissingPlatform(cpp.skipInvalidPlatforms);
+        //             c.setSkipCombinedDependency(true);
+        //         });
+        //     }
 
-            nue.getCombinedDependencyConfigs().create(depName, combined -> {
-                for (CppArtifact cpp : dep.cppDependencies) {
-                    String name = depName + "_" + cpp.libName;
-                    String binaryName = name;
-                    if (cpp.sharedLibrary) {
-                        binaryName = name + "_shared_binaries";
-                    } else {
-                        binaryName = name + "_static_binaries";
-                    }
-                    combined.getDependencies().add(binaryName);
-                    if (cpp.headerClassifier != null) {
-                        combined.getDependencies().add(name + "_headers");
-                    }
+        //     nue.getCombinedDependencyConfigs().create(depName, combined -> {
+        //         for (CppArtifact cpp : dep.cppDependencies) {
+        //             String name = depName + "_" + cpp.libName;
+        //             String binaryName = name;
+        //             if (cpp.sharedLibrary) {
+        //                 binaryName = name + "_shared_binaries";
+        //             } else {
+        //                 binaryName = name + "_static_binaries";
+        //             }
+        //             combined.getDependencies().add(binaryName);
+        //             if (cpp.headerClassifier != null) {
+        //                 combined.getDependencies().add(name + "_headers");
+        //             }
 
-                    if (cpp.sourcesClassifier != null) {
-                        combined.getDependencies().add(name + "_sources");
-                    }
-                }
-            });
-        }
+        //             if (cpp.sourcesClassifier != null) {
+        //                 combined.getDependencies().add(name + "_sources");
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     public void cpp(Object scope, String... ignore) {

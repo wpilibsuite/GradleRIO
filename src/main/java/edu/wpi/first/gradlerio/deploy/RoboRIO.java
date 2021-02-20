@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
@@ -15,7 +16,6 @@ import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
-import edu.wpi.first.toolchain.NativePlatforms;
 
 public class RoboRIO extends StagedDeployTarget {
 
@@ -27,8 +27,8 @@ public class RoboRIO extends StagedDeployTarget {
     private final MultiCommandArtifact programKillArtifact;
 
     @Inject
-    public RoboRIO(String name, Project project) {
-        super(name, project);
+    public RoboRIO(String name, Project project, DeployExtension de) {
+        super(name, project, de);
         log = Logger.getLogger(this.toString());
 
         setDirectory("/home/lvuser");
@@ -40,16 +40,21 @@ public class RoboRIO extends StagedDeployTarget {
         // Make a copy of valid image versions so user defined cannot modify the global array
         validImageVersions = new ArrayList<>(WPIExtension.getValidImageVersions());
 
-        DeployExtension de = project.getExtensions().getByType(DeployExtension.class);
+        programKillArtifact = project.getObjects().newInstance(MultiCommandArtifact.class, "programKill" + name, this);
+        programKillArtifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
+        programKillArtifact.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
+        programKillArtifact.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
 
-        programKillArtifact = de.getArtifacts().multiCommandArtifact("programKill" + name, art -> {
-            art.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
-            art.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
-            art.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
-        });
-        programKillArtifact.setTarget(this);
 
-        setTargetPlatform(NativePlatforms.roborio);
+        getArtifacts().add(programKillArtifact);
+    }
+
+    public FRCNativeArtifact frcNativeArtifact(String name, Action<? super FRCNativeArtifact> config) {
+        return getArtifacts().create(name, FRCNativeArtifact.class, config);
+    }
+
+    public FRCJavaArtifact frcJavaArtifact(String name, Action<? super FRCJavaArtifact> config) {
+        return getArtifacts().create(name, FRCJavaArtifact.class, config);
     }
 
     public MultiCommandArtifact getProgramKillArtifact() {
@@ -93,7 +98,7 @@ public class RoboRIO extends StagedDeployTarget {
             this.addAddress(addr);
         }
 
-        getLocations().location(DSDeployLocation.class, ds -> {
+        getLocations().create("ds", DSDeployLocation.class, ds -> {
             ds.setUser("admin");
             ds.setPassword("");
             ds.setIpv6(false);
@@ -101,7 +106,7 @@ public class RoboRIO extends StagedDeployTarget {
     }
 
     public void addAddress(String address) {
-        getLocations().location(SshDeployLocation.class, loc -> {
+        getLocations().create(address, SshDeployLocation.class, loc -> {
             loc.setAddress(address);
             loc.setIpv6(false);
             loc.setUser("admin");

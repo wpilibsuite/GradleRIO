@@ -11,13 +11,11 @@ import javax.inject.Inject;
 import com.google.gson.GsonBuilder;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
-import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
 import edu.wpi.first.deployutils.PathUtils;
-import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.JavaArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
@@ -36,32 +34,31 @@ public class FRCJavaArtifact extends JavaArtifact {
     private int debugPort = 8349;
 
     @Inject
-    public FRCJavaArtifact(String name, Project project) {
-        super(name, project);
+    public FRCJavaArtifact(String name, RoboRIO target) {
+        super(name, target);
 
-        DeployExtension de = project.getExtensions().getByType(DeployExtension.class);
-
-        programStartArtifact = de.getArtifacts().artifact("programStart" + name, FRCProgramStartArtifact.class, art -> {
+        programStartArtifact = target.getArtifacts().create("programStart" + name, FRCProgramStartArtifact.class, art -> {
         });
 
-        jreArtifact = de.getArtifacts().artifact("jre" + name, FRCJREArtifact.class, art -> {
+        jreArtifact = target.getArtifacts().create("jre" + name, FRCJREArtifact.class, art -> {
         });
 
-        robotCommandArtifact = de.getArtifacts().artifact("robotCommand" + name, RobotCommandArtifact.class, art -> {
+        robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
             art.setStartCommandFunc(this::generateStartCommand);
+            art.dependsOn(getJarProvider());
         });
 
 
-        Configuration nativeLibs = project.getConfigurations().getByName("nativeLib");
-        Configuration nativeZips = project.getConfigurations().getByName("nativeZip");
+        Configuration nativeLibs = target.getProject().getConfigurations().getByName("nativeLib");
+        Configuration nativeZips = target.getProject().getConfigurations().getByName("nativeZip");
 
-        nativeLibArtifact = de.getArtifacts().artifact("nativeLibs" + name, FRCJNILibraryArtifact.class, artifact -> {
+        nativeLibArtifact = target.getArtifacts().create("nativeLibs" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
             artifact.setConfiguration(nativeLibs);
             artifact.setZipped(false);
         });
 
-        nativeZipArtifact = de.getArtifacts().artifact("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
+        nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
             artifact.setConfiguration(nativeZips);
             artifact.setZipped(true);
@@ -73,22 +70,15 @@ public class FRCJavaArtifact extends JavaArtifact {
         programStartArtifact.getPostdeploy().add(this::postStart);
 
         getPostdeploy().add(ctx -> {
-            String binFile = PathUtils.combine(ctx.getWorkingDir(),
-                    getFilename() != null ? getFilename() : getFile().get().getName());
+            String binFile = getBinFile(ctx);
             ctx.execute("chmod +x \"" + binFile + "\"; chown lvuser \"" + binFile + "\"");
         });
 
         getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
     }
 
-    @Override
-    public void setTarget(Object tObj) {
-        programStartArtifact.setTarget(tObj);
-        robotCommandArtifact.setTarget(tObj);
-        jreArtifact.setTarget(tObj);
-        nativeLibArtifact.setTarget(tObj);
-        nativeZipArtifact.setTarget(tObj);
-        super.setTarget(tObj);
+    private String getBinFile(DeployContext ctx) {
+        return PathUtils.combine(ctx.getWorkingDir(), getFilename().getOrElse(getFile().get().getName()));
     }
 
     @Override
@@ -154,8 +144,7 @@ public class FRCJavaArtifact extends JavaArtifact {
             builder.append(",server=y,suspend=y ");
         }
 
-        String binFile = PathUtils.combine(ctx.getWorkingDir(),
-                getFilename() != null ? getFilename() : getFile().get().getName());
+        String binFile = getBinFile(ctx);
 
         builder.append("-jar \"");
         builder.append(binFile);
@@ -166,7 +155,7 @@ public class FRCJavaArtifact extends JavaArtifact {
     }
 
     private void postStart(DeployContext ctx) {
-        File conffile = new File(getProject().getBuildDir(),
+        File conffile = new File(getTarget().getProject().getBuildDir(),
                 "debug/" + getName() + "_" + ctx.getDeployLocation().getTarget().getName() + ".debugconfig");
 
         if (debug) {

@@ -83,13 +83,15 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
         configs.add("nativeLib");
         configs.add("nativeZip");
 
-        for (Artifact art : project.getExtensions().getByType(DeployExtension.class).getArtifacts()) {
-            if (art instanceof FRCJREArtifact) {
-                String cfgName = ((FRCJREArtifact)art).getConfigName();
-                logger.info("Found JRE Configuration: " + cfgName);
-                configs.add(cfgName);
-            }
-        }
+        // TODO Fix me
+
+        // for (Artifact art : project.getExtensions().getByType(DeployExtension.class).getArtifacts()) {
+        //     if (art instanceof FRCJREArtifact) {
+        //         String cfgName = ((FRCJREArtifact)art).getConfigName();
+        //         logger.info("Found JRE Configuration: " + cfgName);
+        //         configs.add(cfgName);
+        //     }
+        // }
 
         for (String cName : configs) {
             Configuration cfg = project.getConfigurations().getByName(cName);

@@ -15,6 +15,7 @@ import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.util.PatternFilterable;
 
 import edu.wpi.first.deployutils.deploy.artifact.FileCollectionArtifact;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Callable<FileCollection> {
     private Configuration configuration;
@@ -23,8 +24,8 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Cal
     private Set<File> configFileCaches;
 
     @Inject
-    public FRCJNILibraryArtifact(String name, Project project) {
-        super(name, project);
+    public FRCJNILibraryArtifact(String name, RemoteTarget target) {
+        super(name, target);
 
         getDirectory().set(FRCPlugin.LIB_DEPLOY_DIR);
 
@@ -37,7 +38,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Cal
             ctx.execute("ldconfig");
         });
 
-        getFiles().set(project.files(this));
+        getFiles().set(target.getProject().files(this));
     }
 
     public Configuration getConfiguration() {
@@ -78,14 +79,14 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Cal
             configFileCaches = configuration.getResolvedConfiguration().getFiles();
         }
         if (zipped) {
-            Optional<FileTree> allFiles = configFileCaches.stream().map(file -> getProject().zipTree(file).matching(filter)).filter(x -> x != null).reduce((a, b) -> a.plus(b));
+            Optional<FileTree> allFiles = configFileCaches.stream().map(file -> getTarget().getProject().zipTree(file).matching(filter)).filter(x -> x != null).reduce((a, b) -> a.plus(b));
             if (allFiles.isPresent()) {
                 return allFiles.get();
             } else {
-                return getProject().files();
+                return getTarget().getProject().files();
             }
         } else {
-            return getProject().files(configFileCaches);
+            return getTarget().getProject().files(configFileCaches);
         }
     }
 

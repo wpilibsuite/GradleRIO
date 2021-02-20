@@ -4,18 +4,17 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import org.gradle.api.Project;
-
 import edu.wpi.first.deployutils.deploy.artifact.FileArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public class RobotCommandArtifact extends FileArtifact {
 
     private Function<DeployContext, String> startCommandFunc;
 
     @Inject
-    public RobotCommandArtifact(String name, Project project) {
-        super(name, project);
+    public RobotCommandArtifact(String name, RemoteTarget target) {
+        super(name, target);
 
         getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
     }

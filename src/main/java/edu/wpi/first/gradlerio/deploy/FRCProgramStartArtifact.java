@@ -2,16 +2,15 @@ package edu.wpi.first.gradlerio.deploy;
 
 import javax.inject.Inject;
 
-import org.gradle.api.Project;
-
 import edu.wpi.first.deployutils.deploy.artifact.AbstractArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public class FRCProgramStartArtifact extends AbstractArtifact {
 
     @Inject
-    public FRCProgramStartArtifact(String name, Project project) {
-        super(name, project);
+    public FRCProgramStartArtifact(String name, RemoteTarget target) {
+        super(name, target);
 
         this.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramStart);
     }

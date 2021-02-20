@@ -11,8 +11,9 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
-import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
+//import edu.wpi.first.deployutils.toolchains.ToolchainsPlugin;
 
 public class TestPlugin implements Plugin<Project> {
 
@@ -22,7 +23,7 @@ public class TestPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply(JavaTestPlugin.class);
 
-        project.getPlugins().withType(ToolchainsPlugin.class).all(x -> project.getPluginManager().apply(NativeTestPlugin.class));
+        project.getPlugins().withType(NativeComponentPlugin.class).all(x -> project.getPluginManager().apply(NativeTestPlugin.class));
 
         project.getTasks().register("externalSimulate", ExternalSimulationMergeTask.class, t -> {
             t.dependsOn(project.getTasks().withType(ExternalSimulationTask.class));
