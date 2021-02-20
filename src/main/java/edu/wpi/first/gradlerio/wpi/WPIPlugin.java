@@ -70,7 +70,6 @@ public class WPIPlugin implements Plugin<Project> {
             });
 
             project.getPluginManager().apply(GradleVsCode.class);
-            project.getPluginManager().apply(WPINativeJsonDepRules.class);
         });
 
         project.getTasks().register("wpiVersions", task -> {
