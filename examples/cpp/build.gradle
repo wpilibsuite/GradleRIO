@@ -12,6 +12,8 @@ deploy {
     targets {
         roborio(RoboRIO) {
             team = project.frc.getTeamNumber()
+            debug = true
+
             frcNativeArtifact('frcCpp') {
             }
         }
@@ -87,10 +89,9 @@ model {
                 }
             }
 
-            binaries.all {
-                if (it.buildType.name != 'release') return
-                nativeBinaryArtifact.executable = it
-            }
+            nativeBinaryArtifact.component = it
+
+
 
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             //wpi.deps.vendor.cpp(it)

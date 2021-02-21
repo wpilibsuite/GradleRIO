@@ -11,12 +11,14 @@ import org.apache.log4j.Logger;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.toolchain.NativePlatforms;
 
 public class RoboRIO extends StagedDeployTarget {
 
@@ -30,6 +32,12 @@ public class RoboRIO extends StagedDeployTarget {
         return debug;
     }
 
+    private final Provider<String> buildType;
+
+    public Provider<String> getBuildType() {
+        return buildType;
+    }
+
     private final MultiCommandArtifact programKillArtifact;
 
     @Inject
@@ -38,6 +46,9 @@ public class RoboRIO extends StagedDeployTarget {
         log = Logger.getLogger(this.toString());
 
         debug = project.getObjects().property(Boolean.class);
+        debug.set(false);
+
+        buildType = debug.map(x -> x ? "debug" : "release");
 
         setDirectory("/home/lvuser");
 
@@ -52,6 +63,8 @@ public class RoboRIO extends StagedDeployTarget {
         programKillArtifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
         programKillArtifact.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
         programKillArtifact.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
+
+        getTargetPlatform().set(NativePlatforms.roborio);
 
         getArtifacts().add(programKillArtifact);
     }

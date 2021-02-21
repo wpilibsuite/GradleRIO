@@ -30,12 +30,13 @@ public class FRCJavaArtifact extends JavaArtifact {
 
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
-    private boolean debug = false;
     private int debugPort = 8349;
+    private final RoboRIO roboRIO;
 
     @Inject
     public FRCJavaArtifact(String name, RoboRIO target) {
         super(name, target);
+        roboRIO = target;
 
         programStartArtifact = target.getArtifacts().create("programStart" + name, FRCProgramStartArtifact.class, art -> {
         });
@@ -121,14 +122,6 @@ public class FRCJavaArtifact extends JavaArtifact {
         return arguments;
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
         builder.append("/usr/local/frc/JRE/bin/java -XX:+UseConcMarkSweepGC -Djava.library.path=");
@@ -138,6 +131,7 @@ public class FRCJavaArtifact extends JavaArtifact {
         builder.append(" ");
 
         // Debug stuff
+        boolean debug = roboRIO.getDebug().get();
         if (debug) {
             builder.append("-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:");
             builder.append(debugPort);
@@ -158,6 +152,7 @@ public class FRCJavaArtifact extends JavaArtifact {
         File conffile = new File(getTarget().getProject().getBuildDir(),
                 "debug/" + getName() + "_" + ctx.getDeployLocation().getTarget().getName() + ".debugconfig");
 
+        boolean debug = roboRIO.getDebug().get();
         if (debug) {
             conffile.getParentFile().mkdirs();
 

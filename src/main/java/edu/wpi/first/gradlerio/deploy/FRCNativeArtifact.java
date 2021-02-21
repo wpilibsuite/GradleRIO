@@ -6,22 +6,44 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.gradle.api.provider.Property;
+import org.gradle.nativeplatform.NativeExecutableBinarySpec;
+import org.gradle.nativeplatform.NativeExecutableSpec;
+
 import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.artifact.NativeExecutableArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public class FRCNativeArtifact extends NativeExecutableArtifact {
 
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
     private final List<String> arguments = new ArrayList<>();
-    private boolean debug = false;
     private int debugPort = 8348;
+    private final RoboRIO roboRIO;
+
+    private final Property<NativeExecutableSpec> componentSpec;
+
+    public Property<NativeExecutableSpec> getComponent() {
+        return componentSpec;
+    }
 
     @Inject
-    public FRCNativeArtifact(String name, RemoteTarget target) {
+    public FRCNativeArtifact(String name, RoboRIO target) {
         super(name, target);
+        roboRIO = target;
+
+        componentSpec = target.getProject().getObjects().property(NativeExecutableSpec.class);
+
+        getBinary().set(componentSpec.map(x -> {
+            for (NativeExecutableBinarySpec bin : x.getBinaries().withType(NativeExecutableBinarySpec.class)) {
+                if (bin.getTargetPlatform().getName().equals(getTarget().getTargetPlatform().get()) &&
+                    bin.getBuildType().getName().equals(target.getBuildType().get())) {
+                    return bin;
+                }
+            }
+            return null;
+        }));
 
         getPostdeploy().add(ctx -> {
             FRCPlugin.ownDirectory(ctx, getLibraryDirectory().get());
@@ -71,6 +93,7 @@ public class FRCNativeArtifact extends NativeExecutableArtifact {
 
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
+        boolean debug = roboRIO.getDebug().get();
         if (debug) {
             builder.append("gdbserver host:");
             builder.append(debugPort);
