@@ -4,34 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import org.gradle.api.GradleException;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.TaskProvider;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.Artifact;
-import edu.wpi.first.deployutils.deploy.artifact.ArtifactDeployTask;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
 public abstract class StagedDeployTarget extends RemoteTarget {
-    // private static class TaskAndPreviousTaskPair {
-    //     public TaskAndPreviousTaskPair(TaskProvider<StageDeployTask> task, TaskProvider<StageDeployTask> previousTask) {
-    //         this.task = task;
-    //         this.previousTask = previousTask;
-    //     }
-
-    //     public TaskProvider<StageDeployTask> task;
-    //     public TaskProvider<StageDeployTask> previousTask;
-    // }
-
-    // private final Map<DeployStage, TaskAndPreviousTaskPair> stageMap = new HashMap<>();
+    private final Map<DeployStage, TaskProvider<StageDeployTask>> previousStageMap = new HashMap<>();
 
     @Inject
     public StagedDeployTarget(String name, Project project, DeployExtension de) {
@@ -54,44 +40,51 @@ public abstract class StagedDeployTarget extends RemoteTarget {
                     task.dependsOn(fixedPreviousStage);
                 }
             });
-            //stageMap.put(stage, new TaskAndPreviousTaskPair(stageTask, previousStage));
+            previousStageMap.put(stage, previousStage);
             previousStage = stageTask;
         }
         TaskProvider<StageDeployTask> lastStage = previousStage;
         getDeployTask().configure(x -> x.dependsOn(lastStage));
+
+        getArtifacts().all(this::configureArtifact);
+    }
+
+    private void configureArtifact(Artifact artifact) {
+        Callable<TaskProvider<StageDeployTask>> cbl = () -> computeArtifactStageDep(artifact);
+        artifact.dependsOn(cbl);
+    }
+
+    private final DeployStage defaultStage = DeployStage.FileDeploy;
+
+    private TaskProvider<StageDeployTask> computeArtifactStageDep(Artifact artifact) {
+        // Artifact must depend on stage before
+        DeployStage stage = defaultStage;
+        if (artifact instanceof ExtensionAware) {
+            ExtensionAware ext = (ExtensionAware)artifact;
+            DeployStage innerStage = ext.getExtensions().findByType(DeployStage.class);
+            if (innerStage != null) {
+                stage = innerStage;
+            }
+        }
+        TaskProvider<StageDeployTask> prevStageTask = previousStageMap.get(stage);
+        return prevStageTask;
     }
 
     private List<Object> computeStageDependencies(StageDeployTask stageTask) {
         List<Object> depTasks = new ArrayList<>();
         for (Artifact artifact : getArtifacts()) {
+            DeployStage stage = defaultStage;
             if (artifact instanceof ExtensionAware) {
                 ExtensionAware ext = (ExtensionAware)artifact;
-                DeployStage stage = ext.getExtensions().findByType(DeployStage.class);
-                if (stage != null) {
-                    if (stage == stageTask.getStage()) {
-                        insertForStage(stageTask, artifact.getDeployTask(), depTasks);
-                    }
-                } else {
-                    // Configure as stage FileDeploy
-                    throw new GradleException("Not configured");
-                    //insertForStage(DeployStage.FileDeploy, task);
+                DeployStage innerStage = ext.getExtensions().findByType(DeployStage.class);
+                if (innerStage != null) {
+                    stage = innerStage;
                 }
-            } else {
-                // Configure as stage FileDeploy
-                throw new GradleException("Not configured 2");
-                //insertForStage(DeployStage.FileDeploy, task);
+            }
+            if (stage == stageTask.getStage()) {
+                depTasks.add(artifact.getDeployTask());
             }
         }
         return depTasks;
-    }
-
-    private void insertForStage(StageDeployTask stageTask, TaskProvider<ArtifactDeployTask> task, List<Object> depTasks) {
-        System.out.println(stageTask.getName() + " is depending on " + task.getName());
-        depTasks.add(task);
-        // Task needs to depend on stage before
-        if (stageTask.getPreviousStage() != null) {
-            System.out.println(task.getName() + " is depending on " + stageTask.getPreviousStage());
-            task.configure(x -> x.dependsOn(stageTask.getPreviousStage()));
-        }
     }
 }

@@ -4,7 +4,6 @@ import org.gradle.api.ExtensiblePolymorphicDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.plugins.ExtensionAware;
 
 import edu.wpi.first.deployutils.DeployUtils;
 import edu.wpi.first.deployutils.deploy.DeployExtension;
@@ -12,8 +11,8 @@ import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.Artifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 //import edu.wpi.first.deployutils.deploy.target.TargetsExtension;
-import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.deployutils.deploy.target.location.DeployLocation;
+import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
 
 public class FRCPlugin implements Plugin<Project> {
 
@@ -21,36 +20,18 @@ public class FRCPlugin implements Plugin<Project> {
 
     public static final String LIB_DEPLOY_DIR = "/usr/local/frc/third-party/lib";
 
-    private void configureRoboRIOTypes(ExtensiblePolymorphicDomainObjectContainer<Artifact> artifacts, ExtensiblePolymorphicDomainObjectContainer<DeployLocation> locations, RemoteTarget target) {
-
+    private void configureRoboRIOTypes(RoboRIO target) {
         ObjectFactory objects = target.getProject().getObjects();
-        artifacts.registerFactory(FRCJavaArtifact.class, name -> {
-            var art = objects.newInstance(FRCJavaArtifact.class, name, target);
-            return art;
-        });
-        artifacts.registerFactory(FRCNativeArtifact.class, name -> {
-            var art = objects.newInstance(FRCNativeArtifact.class, name, target);
-            return art;
-        });
-        artifacts.registerFactory(FRCJREArtifact.class, name -> {
-            var art = objects.newInstance(FRCJREArtifact.class, name, target);
-            return art;
-        });
+        ExtensiblePolymorphicDomainObjectContainer<DeployLocation> locations = target.getLocations();
+        ExtensiblePolymorphicDomainObjectContainer<Artifact> artifacts = target.getArtifacts();
 
-        artifacts.registerFactory(FRCProgramStartArtifact.class, name -> {
-            var art = objects.newInstance(FRCProgramStartArtifact.class, name, target);
-            return art;
-        });
-        artifacts.registerFactory(RobotCommandArtifact.class, name -> {
-            var art = objects.newInstance(RobotCommandArtifact.class, name, target);
-            return art;
-        });
+        NamedObjectFactory.registerType(FRCJavaArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(FRCNativeArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(FRCJREArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(FRCProgramStartArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(RobotCommandArtifact.class, artifacts, target, objects);
 
-
-
-        locations.registerFactory(DSDeployLocation.class, name -> {
-            return objects.newInstance(DSDeployLocation.class, name, target);
-        });
+        NamedObjectFactory.registerType(DSDeployLocation.class, locations, target, objects);
     }
 
     @Override
@@ -68,7 +49,7 @@ public class FRCPlugin implements Plugin<Project> {
         // Register the RoboRIO target
         deployExtension.getTargets().registerFactory(RoboRIO.class, name -> {
             RoboRIO target = project.getObjects().newInstance(RoboRIO.class, name, project, deployExtension);
-            configureRoboRIOTypes(target.getArtifacts(), target.getLocations(), target);
+            configureRoboRIOTypes(target);
             return target;
         });
         //ExtensionAware artifactsExt = (ExtensionAware)deployExtension.getArtifacts();

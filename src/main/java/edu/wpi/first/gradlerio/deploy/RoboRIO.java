@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Property;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
@@ -22,7 +23,12 @@ public class RoboRIO extends StagedDeployTarget {
     private final Logger log;
     private int team;
     private boolean checkImage = true;
-    private List<String> validImageVersions = new ArrayList<>();
+    private final List<String> validImageVersions;
+    private final Property<Boolean> debug;
+
+    public Property<Boolean> getDebug() {
+        return debug;
+    }
 
     private final MultiCommandArtifact programKillArtifact;
 
@@ -30,6 +36,8 @@ public class RoboRIO extends StagedDeployTarget {
     public RoboRIO(String name, Project project, DeployExtension de) {
         super(name, project, de);
         log = Logger.getLogger(this.toString());
+
+        debug = project.getObjects().property(Boolean.class);
 
         setDirectory("/home/lvuser");
 
@@ -44,7 +52,6 @@ public class RoboRIO extends StagedDeployTarget {
         programKillArtifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
         programKillArtifact.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
         programKillArtifact.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
-
 
         getArtifacts().add(programKillArtifact);
     }
