@@ -6,8 +6,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import org.gradle.api.Project;
 
-import edu.wpi.first.nativeutils.utils.AfterAddNamedDomainObjectContainer;
-
 import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 
@@ -22,12 +20,11 @@ public class SimulationExtension {
         environment.put(name, value);
     }
 
-
     private NamedDomainObjectContainer<HalSimExtension> halExtensions;
 
     @Inject
     public SimulationExtension(Project project) {
-        halExtensions = new AfterAddNamedDomainObjectContainer<>(HalSimExtension.class, name -> {
+        halExtensions = project.getObjects().domainObjectContainer(HalSimExtension.class, name -> {
             return project.getObjects().newInstance(HalSimExtension.class, name);
         });
     }

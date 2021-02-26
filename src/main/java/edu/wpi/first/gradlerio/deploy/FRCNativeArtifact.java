@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.util.PatternFilterable;
 import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import org.gradle.nativeplatform.NativeExecutableSpec;
 
@@ -44,6 +45,10 @@ public class FRCNativeArtifact extends NativeExecutableArtifact {
             }
             return null;
         }));
+
+        PatternFilterable filterable = getLibraryFilter();
+        filterable.getExcludes().add("**/*.so.debug");
+        filterable.getExcludes().add("**/*.so.*.debug");
 
         getPostdeploy().add(ctx -> {
             FRCPlugin.ownDirectory(ctx, getLibraryDirectory().get());

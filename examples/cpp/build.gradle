@@ -12,7 +12,7 @@ deploy {
     targets {
         roborio(RoboRIO) {
             team = project.frc.getTeamNumber()
-            debug = true
+            debug = false
 
             frcNativeArtifact('frcCpp') {
             }
