@@ -28,6 +28,7 @@ public class FRCPlugin implements Plugin<Project> {
         NamedObjectFactory.registerType(FRCJavaArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCNativeArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCJREArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(FRCJNILibraryArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCProgramStartArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(RobotCommandArtifact.class, artifacts, target, objects);
 

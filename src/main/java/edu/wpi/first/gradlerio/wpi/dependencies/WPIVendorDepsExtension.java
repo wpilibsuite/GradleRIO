@@ -17,9 +17,11 @@ import javax.inject.Inject;
 
 import com.google.gson.Gson;
 
+import org.gradle.api.ExtensiblePolymorphicDomainObjectContainer;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.platform.base.VariantComponentSpec;
 
@@ -29,7 +31,9 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 // import edu.wpi.first.deployutils.nativedeps.DependencySpecExtension;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
+import edu.wpi.first.nativeutils.dependencies.AllPlatformsCombinedNativeDependency;
 //import edu.wpi.first.nativeutils.configs.DependencyConfig;
+import edu.wpi.first.nativeutils.dependencies.NativeDependency;
 
 public class WPIVendorDepsExtension {
 
@@ -177,68 +181,93 @@ public class WPIVendorDepsExtension {
         return deps;
     }
 
-    public void initializeNativeDependencies() {
-        // NativeUtilsExtension nue = wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
+    public void initializeNativeDependencies(NativeUtilsExtension nte, Project project) {
+        var dependencyContainer = nte.getNativeDependencyContainer();
+        dependencyContainer.registerFactory(WPIVendorMavenDependency.class, name -> {
+            return project.getObjects().newInstance(WPIVendorMavenDependency.class, name, project);
+        });
+
+        for (JsonDependency dep : dependencies.values()) {
+            // Individual dependencies
+            if (dep.cppDependencies.length <= 0) {
+                continue;
+            }
+
+            String depName = dep.uuid + "_" + dep.name;
+
+            AllPlatformsCombinedNativeDependency combinedDep = dependencyContainer.create(depName, AllPlatformsCombinedNativeDependency.class);
+
+            for (CppArtifact cpp : dep.cppDependencies) {
+                String name = depName + "_" + cpp.libName;
+                combinedDep.getDependencies().add(name);
+                WPIVendorMavenDependency vendorDep = dependencyContainer.create(name, WPIVendorMavenDependency.class);
+                vendorDep.setArtifact(cpp);
+            }
+        }
+        // NativeUtilsExtension nue =
+        // wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
         // for (JsonDependency dep : dependencies.values()) {
-        //     // Individual dependencies
-        //     if (dep.cppDependencies.length <= 0) {
-        //         continue;
-        //     }
+        // // Individual dependencies
+        // if (dep.cppDependencies.length <= 0) {
+        // continue;
+        // }
 
-        //     String depName = dep.uuid + "_" + dep.name;
+        // String depName = dep.uuid + "_" + dep.name;
 
-        //     NamedDomainObjectContainer<DependencyConfig> dConfigs = nue.getDependencyConfigs();
+        // NamedDomainObjectContainer<DependencyConfig> dConfigs =
+        // nue.getDependencyConfigs();
 
-        //     for (CppArtifact cpp : dep.cppDependencies) {
-        //         String name = depName + "_" + cpp.libName;
-        //         dConfigs.create(name, c -> {
-        //             c.setGroupId(cpp.groupId);
-        //             c.setArtifactId(cpp.artifactId);
-        //             c.setHeaderClassifier(cpp.headerClassifier);
-        //             c.setSourceClassifier(cpp.sourcesClassifier);
-        //             c.setVersion(cpp.version);
-        //             c.setExt("zip");
-        //             if (cpp.sharedLibrary) {
-        //                 c.getSharedPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-        //             } else {
-        //                 c.getStaticPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-        //             }
-        //             c.setSkipMissingPlatform(cpp.skipInvalidPlatforms);
-        //             c.setSkipCombinedDependency(true);
-        //         });
-        //     }
+        // for (CppArtifact cpp : dep.cppDependencies) {
+        // String name = depName + "_" + cpp.libName;
+        // dConfigs.create(name, c -> {
+        // c.setGroupId(cpp.groupId);
+        // c.setArtifactId(cpp.artifactId);
+        // c.setHeaderClassifier(cpp.headerClassifier);
+        // c.setSourceClassifier(cpp.sourcesClassifier);
+        // c.setVersion(cpp.version);
+        // c.setExt("zip");
+        // if (cpp.sharedLibrary) {
+        // c.getSharedPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
+        // } else {
+        // c.getStaticPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
+        // }
+        // c.setSkipMissingPlatform(cpp.skipInvalidPlatforms);
+        // c.setSkipCombinedDependency(true);
+        // });
+        // }
 
-        //     nue.getCombinedDependencyConfigs().create(depName, combined -> {
-        //         for (CppArtifact cpp : dep.cppDependencies) {
-        //             String name = depName + "_" + cpp.libName;
-        //             String binaryName = name;
-        //             if (cpp.sharedLibrary) {
-        //                 binaryName = name + "_shared_binaries";
-        //             } else {
-        //                 binaryName = name + "_static_binaries";
-        //             }
-        //             combined.getDependencies().add(binaryName);
-        //             if (cpp.headerClassifier != null) {
-        //                 combined.getDependencies().add(name + "_headers");
-        //             }
+        // nue.getCombinedDependencyConfigs().create(depName, combined -> {
+        // for (CppArtifact cpp : dep.cppDependencies) {
+        // String name = depName + "_" + cpp.libName;
+        // String binaryName = name;
+        // if (cpp.sharedLibrary) {
+        // binaryName = name + "_shared_binaries";
+        // } else {
+        // binaryName = name + "_static_binaries";
+        // }
+        // combined.getDependencies().add(binaryName);
+        // if (cpp.headerClassifier != null) {
+        // combined.getDependencies().add(name + "_headers");
+        // }
 
-        //             if (cpp.sourcesClassifier != null) {
-        //                 combined.getDependencies().add(name + "_sources");
-        //             }
-        //         }
-        //     });
+        // if (cpp.sourcesClassifier != null) {
+        // combined.getDependencies().add(name + "_sources");
+        // }
+        // }
+        // });
         // }
     }
 
     public void cpp(Object scope, String... ignore) {
         if (scope instanceof VariantComponentSpec) {
-            ((VariantComponentSpec)scope).getBinaries().withType(NativeBinarySpec.class).all( bin -> {
+            ((VariantComponentSpec) scope).getBinaries().withType(NativeBinarySpec.class).all(bin -> {
                 cppVendorLibForBin(bin, ignore);
             });
         } else if (scope instanceof NativeBinarySpec) {
-            cppVendorLibForBin((NativeBinarySpec)scope, ignore);
+            cppVendorLibForBin((NativeBinarySpec) scope, ignore);
         } else {
-            throw new GradleException("Unknown type for useVendorLibraries target. You put this declaration in a weird place.");
+            throw new GradleException(
+                    "Unknown type for useVendorLibraries target. You put this declaration in a weird place.");
         }
     }
 

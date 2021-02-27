@@ -55,27 +55,27 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
         WPIExtension wpi = project.getExtensions().getByType(WPIExtension.class);
         wpi.getDeps().getVendor().loadAll();
 
-        // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
-        // if it"s up-to-date
-        TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
-            t.doFirst(new Action<Task>() {
-				@Override
-				public void execute(Task t) {
-                    // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
-                    // run an online deploy dry or downloadAll task.
-                    downloadDepsPreemptively(project, logger);
-				}
-            });
-        });
+        // // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
+        // // if it"s up-to-date
+        // TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
+        //     t.doFirst(new Action<Task>() {
+		// 		@Override
+		// 		public void execute(Task t) {
+        //             // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
+        //             // run an online deploy dry or downloadAll task.
+        //             downloadDepsPreemptively(project, logger);
+		// 		}
+        //     });
+        // });
 
         project.getTasks().register("vendordep", VendorDepTask.class, task -> {
             task.setGroup("GradleRIO");
             task.setDescription("Install vendordep JSON file from URL or local wpilib folder");
         });
 
-        project.getTasks().withType(Jar.class, jarTask -> {
-            jarTask.dependsOn(lazyPreempt);
-        });
+        // project.getTasks().withType(Jar.class, jarTask -> {
+        //     jarTask.dependsOn(lazyPreempt);
+        // });
     }
 
     private void downloadDepsPreemptively(Project project, ETLogger logger) {

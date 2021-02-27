@@ -48,8 +48,7 @@ public class WPIPlugin implements Plugin<Project> {
             nte.withRoboRIO();
             nte.addWpiNativeUtils();
 
-            // TODO Late bind version (this is going to be a deep change)
-            wpiExtension.getDeps().getVendor().initializeNativeDependencies();
+            wpiExtension.getDeps().getVendor().initializeNativeDependencies(nte, project);
 
             ToolchainExtension te = project.getExtensions().getByType(ToolchainExtension.class);
             te.getCrossCompilers().named(nte.getWpi().platforms.roborio, c -> {
@@ -59,6 +58,7 @@ public class WPIPlugin implements Plugin<Project> {
             nte.getWpi().addWarnings();
             //nte.setSinglePrintPerPlatform();
 
+            // TODO fix me
             project.afterEvaluate(ap -> {
                 nte.getWpi().configureDependencies(deps -> {
                     deps.getWpiVersion().set(wpiExtension.getWpilibVersion());

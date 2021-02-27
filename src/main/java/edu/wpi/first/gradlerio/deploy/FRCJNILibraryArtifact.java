@@ -3,24 +3,24 @@ package edu.wpi.first.gradlerio.deploy;
 import java.io.File;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.util.PatternFilterable;
+import org.gradle.api.tasks.util.PatternSet;
 
 import edu.wpi.first.deployutils.deploy.artifact.FileCollectionArtifact;
+import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 
-public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Callable<FileCollection> {
-    private Configuration configuration;
+public class FRCJNILibraryArtifact extends FileCollectionArtifact {
+    private Property<Configuration> configuration;
     private boolean zipped;
-    private Action<PatternFilterable> filter;
-    private Set<File> configFileCaches;
+    private PatternFilterable filter;
 
     @Inject
     public FRCJNILibraryArtifact(String name, RemoteTarget target) {
@@ -28,24 +28,30 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Cal
 
         getDirectory().set(FRCPlugin.LIB_DEPLOY_DIR);
 
+        filter = new PatternSet();
+
+        configuration = target.getProject().getObjects().property(Configuration.class);
+
         setOnlyIf(ctx -> {
             return getFiles().isPresent() && !getFiles().get().isEmpty() && !getFiles().get().getFiles().isEmpty();
+        });
+
+        getPreWorkerThread().add(cfg -> {
+            if (!configuration.isPresent()) {
+                return;
+            }
+            getFiles().set(computeFiles());
+
         });
 
         getPostdeploy().add(ctx -> {
             FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR);
             ctx.execute("ldconfig");
         });
-
-        getFiles().set(target.getProject().files(this));
     }
 
-    public Configuration getConfiguration() {
+    public Property<Configuration> getConfiguration() {
         return configuration;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
     }
 
     public boolean isZipped() {
@@ -56,27 +62,18 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact implements Cal
         this.zipped = zipped;
     }
 
-    public Action<PatternFilterable> getFilter() {
+    public PatternFilterable getFilter() {
         return filter;
     }
 
-    public void setFilter(Action<PatternFilterable> filter) {
-        this.filter = filter;
-    }
-
-    public Set<File> getConfigFileCaches() {
-        return configFileCaches;
-    }
-
-    public void setConfigFileCaches(Set<File> configFileCaches) {
-        this.configFileCaches = configFileCaches;
-    }
-
     @Override
-    public FileCollection call() {
-        if (configFileCaches == null) {
-            configFileCaches = configuration.getResolvedConfiguration().getFiles();
-        }
+    public void deploy(DeployContext arg0) {
+
+        super.deploy(arg0);
+    }
+
+    public FileCollection computeFiles() {
+        Set<File> configFileCaches = configuration.get().getResolvedConfiguration().getFiles();
         if (zipped) {
             Optional<FileTree> allFiles = configFileCaches.stream().map(file -> getTarget().getProject().zipTree(file).matching(filter)).filter(x -> x != null).reduce((a, b) -> a.plus(b));
             if (allFiles.isPresent()) {

@@ -19,8 +19,6 @@ public class GradleRIOPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        project.getConfigurations().maybeCreate("nativeLib");
-        project.getConfigurations().maybeCreate("nativeZip");
 
         project.getConfigurations().maybeCreate("nativeDesktopLib");
         project.getConfigurations().maybeCreate("nativeDesktopZip");

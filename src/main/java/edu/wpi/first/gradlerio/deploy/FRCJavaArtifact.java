@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import com.google.gson.GsonBuilder;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -25,7 +24,6 @@ public class FRCJavaArtifact extends JavaArtifact {
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
     private final FRCJREArtifact jreArtifact;
-    private final FRCJNILibraryArtifact nativeLibArtifact;
     private final FRCJNILibraryArtifact nativeZipArtifact;
 
     private final List<String> jvmArgs = new ArrayList<>();
@@ -49,23 +47,11 @@ public class FRCJavaArtifact extends JavaArtifact {
             art.dependsOn(getJarProvider());
         });
 
-
-        Configuration nativeLibs = target.getProject().getConfigurations().getByName("nativeLib");
-        Configuration nativeZips = target.getProject().getConfigurations().getByName("nativeZip");
-
-        nativeLibArtifact = target.getArtifacts().create("nativeLibs" + name, FRCJNILibraryArtifact.class, artifact -> {
-            artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
-            artifact.setConfiguration(nativeLibs);
-            artifact.setZipped(false);
-        });
-
         nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
-            artifact.setConfiguration(nativeZips);
+            artifact.getConfiguration().set(target.getNativeZipConfig());
             artifact.setZipped(true);
-            artifact.setFilter(pat -> {
-                pat.include("*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "linuxathena/**/*.so", "**/libopencv*.so.*");
-            });
+            artifact.getFilter().include("*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "linuxathena/**/*.so", "**/libopencv*.so.*");
         });
 
         programStartArtifact.getPostdeploy().add(this::postStart);
@@ -104,10 +90,6 @@ public class FRCJavaArtifact extends JavaArtifact {
 
     public RobotCommandArtifact getRobotCommandArtifact() {
         return robotCommandArtifact;
-    }
-
-    public FRCJNILibraryArtifact getNativeLibArtifact() {
-        return nativeLibArtifact;
     }
 
     public FRCJNILibraryArtifact getNativeZipArtifact() {
