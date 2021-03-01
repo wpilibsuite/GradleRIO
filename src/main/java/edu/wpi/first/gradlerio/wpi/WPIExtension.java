@@ -8,17 +8,20 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.platform.base.VariantComponentSpec;
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension;
+import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 
 public class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    private String wpilibVersion = "2021.2.2";
+    private final Property<String> wpilibVersion;
     private String niLibrariesVersion = "2020.10.1";
     private String opencvVersion = "3.4.7-5";
     private String imguiVersion = "1.79-2";
@@ -42,6 +45,7 @@ public class WPIExtension {
 
     private final WPIMavenExtension maven;
     private final WPIDepsExtension deps;
+    private final SimulationExtension sim;
 
     private String frcYear = "2021";
 
@@ -53,11 +57,20 @@ public class WPIExtension {
 
     private NativeUtilsExtension ntExt;
 
+    public SimulationExtension getSim() {
+        return sim;
+    }
+
     @Inject
     public WPIExtension(Project project) {
         this.project = project;
         ObjectFactory factory = project.getObjects();
+        wpilibVersion = factory.property(String.class);
+        // TODO clean up so defaults are better
+        wpilibVersion.set("2021.2.2");
+        platforms = new NativePlatforms();
         maven = factory.newInstance(WPIMavenExtension.class, project);
+        sim = factory.newInstance(SimulationExtension.class, project, wpilibVersion, NativePlatforms.desktop);
 
         if (project.hasProperty("forceToolsClassifier")) {
             this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");
@@ -82,7 +95,7 @@ public class WPIExtension {
             );
         }
 
-        platforms = new NativePlatforms();
+
         deps = factory.newInstance(WPIDepsExtension.class, project, this);
     }
 
@@ -172,7 +185,7 @@ public class WPIExtension {
     //     ]
     // }
 
-    public String getWpilibVersion() {
+    public Property<String> getWpilibVersion() {
         return wpilibVersion;
     }
 
@@ -270,10 +283,6 @@ public class WPIExtension {
 
     public NativeUtilsExtension getNtExt() {
         return ntExt;
-    }
-
-    public void setWpilibVersion(String wpilibVersion) {
-        this.wpilibVersion = wpilibVersion;
     }
 
     public void setNiLibrariesVersion(String niLibrariesVersion) {

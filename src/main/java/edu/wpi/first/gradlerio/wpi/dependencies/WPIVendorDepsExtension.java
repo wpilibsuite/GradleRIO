@@ -141,7 +141,8 @@ public class WPIVendorDepsExtension {
     }
 
     public static String getVersion(String inputVersion, WPIExtension wpiExt) {
-        return inputVersion.equals("wpilib") ? wpiExt.getWpilibVersion() : inputVersion;
+        // TODO make lazy
+        return inputVersion.equals("wpilib") ? wpiExt.getWpilibVersion().get() : inputVersion;
     }
 
     public List<String> java(String... ignore) {

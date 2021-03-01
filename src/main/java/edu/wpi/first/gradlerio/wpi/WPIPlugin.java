@@ -5,6 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.attributes.Attribute;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
 import edu.wpi.first.deployutils.log.ETLogger;
@@ -13,15 +14,19 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin;
 //import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules;
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin;
-import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
+import edu.wpi.first.nativeutils.UnzipTransform;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.ToolchainPlugin;
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
 import edu.wpi.first.vscode.GradleVsCode;
 
 public class WPIPlugin implements Plugin<Project> {
+    public static final Attribute<String> NATIVE_ARTIFACT_FORMAT = Attribute.of("artifactType", String.class);
+    public static final String NATIVE_ARTIFACT_ZIP_TYPE = "zip";
+    public static final String NATIVE_ARTIFACT_DIRECTORY_TYPE = "gr-directory";
+
     private ETLogger logger;
 
     public ETLogger getLogger() {
@@ -30,8 +35,13 @@ public class WPIPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        // Apply transformation for JNI and simulation artifacts
+        project.getDependencies().registerTransform(UnzipTransform.class, variantTransform -> {
+            variantTransform.getFrom().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_ZIP_TYPE);
+            variantTransform.getTo().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_DIRECTORY_TYPE);
+          });
+
         WPIExtension wpiExtension = project.getExtensions().create("wpi", WPIExtension.class, project);
-        project.getExtensions().create("sim", SimulationExtension.class, project);
         logger = ETLoggerFactory.INSTANCE.create(this.getClass().getSimpleName());
 
         project.getPluginManager().apply(WPIToolsPlugin.class);

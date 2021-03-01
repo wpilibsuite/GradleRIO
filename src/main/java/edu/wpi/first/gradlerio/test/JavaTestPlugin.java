@@ -18,10 +18,10 @@ public class JavaTestPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        project.getTasks().register("extractTestJNI", ExtractTestJNITask.class, t -> {
-            t.setGroup("GradleRIO");
-            t.setDescription("Extract Test JNI Native Libraries (nativeDesktopLib, nativeDesktopZip)");
-        });
+        // project.getTasks().register("extractTestJNI", ExtractTestJNITask.class, t -> {
+        //     t.setGroup("GradleRIO");
+        //     t.setDescription("Extract Test JNI Native Libraries (nativeDesktopLib, nativeDesktopZip)");
+        // });
 
         project.getTasks().register("simulateExternalJava", JavaExternalSimulationTask.class, task -> {
             task.setGroup("GradleRIO");

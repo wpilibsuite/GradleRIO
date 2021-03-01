@@ -71,6 +71,9 @@ def includeSrcInIncludeRoot = false
 //     // envVar "HALSIMWS_HOST", "10.0.0.2"
 // }
 
+wpi.sim.addGui()
+wpi.sim.addDriverstation()
+
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
@@ -91,8 +94,7 @@ model {
 
             nativeBinaryArtifact.component = it
 
-
-
+            wpi.sim.enable(it)
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             wpi.deps.vendor.cpp(it)
             wpi.deps.wpilib(it)
