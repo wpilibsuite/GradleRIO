@@ -53,7 +53,7 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
     public void apply(Project project) {
         ETLogger logger = ETLoggerFactory.INSTANCE.create("WPIDeps");
         WPIExtension wpi = project.getExtensions().getByType(WPIExtension.class);
-        wpi.getDeps().getVendor().loadAll();
+        wpi.getVendor().loadAll();
 
         // // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
         // // if it"s up-to-date

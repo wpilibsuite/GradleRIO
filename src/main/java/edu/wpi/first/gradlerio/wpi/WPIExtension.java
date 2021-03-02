@@ -11,7 +11,8 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension;
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
+import edu.wpi.first.gradlerio.wpi.nativebuild.WPINativeExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 
@@ -26,7 +27,6 @@ public class WPIExtension {
 
 
     private final WPIMavenExtension maven;
-    private final WPIDepsExtension deps;
     private final SimulationExtension sim;
 
     private String frcYear = "2021";
@@ -36,6 +36,12 @@ public class WPIExtension {
     private final Project project;
     private final String toolsClassifier;
     private final String cppToolsClassifier;
+
+    private final WPIVendorDepsExtension vendor;
+
+    public WPIVendorDepsExtension getVendor() {
+        return vendor;
+    }
 
     public SimulationExtension getSim() {
         return sim;
@@ -48,14 +54,15 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         versions = factory.newInstance(WPIVersionsExtension.class);
-        deps = factory.newInstance(WPIDepsExtension.class, project, this);
+
+        vendor = project.getObjects().newInstance(WPIVendorDepsExtension.class, this);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
-            nativeExt = factory.newInstance(WPINativeExtension.class, project, deps, versions);
+            nativebuild = factory.newInstance(WPINativeExtension.class, project, vendor, versions);
         });
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
-            java = factory.newInstance(WPIJavaExtension.class, deps, versions);
+            java = factory.newInstance(WPIJavaExtension.class, vendor, versions);
         });
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
@@ -147,10 +154,10 @@ public class WPIExtension {
         return versions;
     }
 
-    private WPINativeExtension nativeExt;
+    private WPINativeExtension nativebuild;
 
-    public WPINativeExtension getNative() {
-        return nativeExt;
+    public WPINativeExtension getNativebuild() {
+        return nativebuild;
     }
 
     private WPIJavaExtension java;
@@ -161,10 +168,6 @@ public class WPIExtension {
 
     public WPIMavenExtension getMaven() {
         return maven;
-    }
-
-    public WPIDepsExtension getDeps() {
-        return deps;
     }
 
     public String getFrcYear() {

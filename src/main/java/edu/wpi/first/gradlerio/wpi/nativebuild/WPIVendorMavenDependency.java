@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.wpi.dependencies;
+package edu.wpi.first.gradlerio.wpi.nativebuild;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.nativeplatform.NativeBinarySpec;
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.nativeutils.dependencies.ResolvedNativeDependency;
 import edu.wpi.first.nativeutils.dependencies.WPIMavenDependency;
 import edu.wpi.first.nativeutils.dependencies.WPISharedMavenDependency;

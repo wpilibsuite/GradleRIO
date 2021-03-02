@@ -45,6 +45,10 @@ public abstract class WPIVendorDepsExtension {
 
     private final Map<String, JsonDependency> dependencies = new HashMap<>();
 
+    public Map<String, JsonDependency> getDependenciesMap() {
+        return dependencies;
+    }
+
     public List<JsonDependency> getDependencies() {
         return new ArrayList<>(dependencies.values());
     }
@@ -188,108 +192,7 @@ public abstract class WPIVendorDepsExtension {
         return deps;
     }
 
-    public void initializeNativeDependencies(NativeUtilsExtension nte, Project project) {
-        var dependencyContainer = nte.getNativeDependencyContainer();
-        dependencyContainer.registerFactory(WPIVendorMavenDependency.class, name -> {
-            return project.getObjects().newInstance(WPIVendorMavenDependency.class, name, project);
-        });
-
-        for (JsonDependency dep : dependencies.values()) {
-            // Individual dependencies
-            if (dep.cppDependencies.length <= 0) {
-                continue;
-            }
-
-            String depName = dep.uuid + "_" + dep.name;
-
-            AllPlatformsCombinedNativeDependency combinedDep = dependencyContainer.create(depName, AllPlatformsCombinedNativeDependency.class);
-
-            for (CppArtifact cpp : dep.cppDependencies) {
-                String name = depName + "_" + cpp.libName;
-                combinedDep.getDependencies().add(name);
-                WPIVendorMavenDependency vendorDep = dependencyContainer.create(name, WPIVendorMavenDependency.class);
-                vendorDep.setArtifact(cpp);
-            }
-        }
-        // NativeUtilsExtension nue =
-        // wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
-        // for (JsonDependency dep : dependencies.values()) {
-        // // Individual dependencies
-        // if (dep.cppDependencies.length <= 0) {
-        // continue;
-        // }
-
-        // String depName = dep.uuid + "_" + dep.name;
-
-        // NamedDomainObjectContainer<DependencyConfig> dConfigs =
-        // nue.getDependencyConfigs();
-
-        // for (CppArtifact cpp : dep.cppDependencies) {
-        // String name = depName + "_" + cpp.libName;
-        // dConfigs.create(name, c -> {
-        // c.setGroupId(cpp.groupId);
-        // c.setArtifactId(cpp.artifactId);
-        // c.setHeaderClassifier(cpp.headerClassifier);
-        // c.setSourceClassifier(cpp.sourcesClassifier);
-        // c.setVersion(cpp.version);
-        // c.setExt("zip");
-        // if (cpp.sharedLibrary) {
-        // c.getSharedPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-        // } else {
-        // c.getStaticPlatforms().addAll(Arrays.asList(cpp.binaryPlatforms));
-        // }
-        // c.setSkipMissingPlatform(cpp.skipInvalidPlatforms);
-        // c.setSkipCombinedDependency(true);
-        // });
-        // }
-
-        // nue.getCombinedDependencyConfigs().create(depName, combined -> {
-        // for (CppArtifact cpp : dep.cppDependencies) {
-        // String name = depName + "_" + cpp.libName;
-        // String binaryName = name;
-        // if (cpp.sharedLibrary) {
-        // binaryName = name + "_shared_binaries";
-        // } else {
-        // binaryName = name + "_static_binaries";
-        // }
-        // combined.getDependencies().add(binaryName);
-        // if (cpp.headerClassifier != null) {
-        // combined.getDependencies().add(name + "_headers");
-        // }
-
-        // if (cpp.sourcesClassifier != null) {
-        // combined.getDependencies().add(name + "_sources");
-        // }
-        // }
-        // });
-        // }
-    }
-
-    public void cpp(Object scope, String... ignore) {
-        if (scope instanceof VariantComponentSpec) {
-            ((VariantComponentSpec) scope).getBinaries().withType(NativeBinarySpec.class).all(bin -> {
-                cppVendorLibForBin(bin, ignore);
-            });
-        } else if (scope instanceof NativeBinarySpec) {
-            cppVendorLibForBin((NativeBinarySpec) scope, ignore);
-        } else {
-            throw new GradleException(
-                    "Unknown type for useVendorLibraries target. You put this declaration in a weird place.");
-        }
-    }
-
-    private void cppVendorLibForBin(NativeBinarySpec bin, String[] ignore) {
-        NativeUtilsExtension nue = wpiExt.getProject().getExtensions().getByType(NativeUtilsExtension.class);
-
-        for (JsonDependency dep : dependencies.values()) {
-            if (isIgnored(ignore, dep)) {
-                continue;
-            }
-            nue.useRequiredLibrary(bin, dep.uuid + "_" + dep.name);
-        }
-    }
-
-    private boolean isIgnored(String[] ignore, JsonDependency dep) {
+    public static boolean isIgnored(String[] ignore, JsonDependency dep) {
         for (String i : ignore) {
             if (i.equals(dep.name) || i.equals(dep.uuid)) {
                 return true;
@@ -299,46 +202,46 @@ public abstract class WPIVendorDepsExtension {
     }
 
     public static class JavaArtifact {
-        String groupId;
-        String artifactId;
-        String version;
+        public String groupId;
+        public String artifactId;
+        public String version;
     }
 
     public static class JniArtifact {
-        String groupId;
-        String artifactId;
-        String version;
+        public String groupId;
+        public String artifactId;
+        public String version;
 
-        boolean isJar;
+        public boolean isJar;
 
-        String[] validPlatforms;
-        boolean skipInvalidPlatforms;
+        public String[] validPlatforms;
+        public boolean skipInvalidPlatforms;
     }
 
     public static class CppArtifact {
-        String groupId;
-        String artifactId;
-        String version;
-        String libName;
+        public String groupId;
+        public String artifactId;
+        public String version;
+        public String libName;
 
-        String headerClassifier;
-        String sourcesClassifier;
-        String[] binaryPlatforms;
-        boolean skipInvalidPlatforms;
+        public String headerClassifier;
+        public String sourcesClassifier;
+        public String[] binaryPlatforms;
+        public boolean skipInvalidPlatforms;
 
-        boolean sharedLibrary;
+        public boolean sharedLibrary;
     }
 
     public static class JsonDependency {
-        String name;
-        String version;
-        String uuid;
-        String[] mavenUrls;
-        String jsonUrl;
-        String fileName;
-        JavaArtifact[] javaDependencies;
-        JniArtifact[] jniDependencies;
-        CppArtifact[] cppDependencies;
+        public String name;
+        public String version;
+        public String uuid;
+        public String[] mavenUrls;
+        public String jsonUrl;
+        public String fileName;
+        public JavaArtifact[] javaDependencies;
+        public JniArtifact[] jniDependencies;
+        public CppArtifact[] cppDependencies;
     }
 
 }
