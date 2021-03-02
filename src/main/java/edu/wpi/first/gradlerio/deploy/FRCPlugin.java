@@ -14,6 +14,7 @@ import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.DeployLocation;
 import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
 
+// TODO we should probably rename this
 public class FRCPlugin implements Plugin<Project> {
 
     private Project project;

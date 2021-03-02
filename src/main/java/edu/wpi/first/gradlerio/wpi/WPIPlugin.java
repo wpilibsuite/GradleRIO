@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.attributes.Attribute;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
 import edu.wpi.first.deployutils.log.ETLogger;
@@ -46,42 +47,6 @@ public class WPIPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply(WPIToolsPlugin.class);
         project.getPluginManager().apply(WPIDependenciesPlugin.class);
-
-        project.getPlugins().withType(NativeComponentPlugin.class).all(p -> {
-            logger.info("DeployTools Native Project Detected");
-            project.getPluginManager().apply(ToolchainPlugin.class);
-            project.getPluginManager().apply(RoboRioToolchainPlugin.class);
-            project.getPluginManager().apply(NativeUtils.class);
-            project.getPluginManager().apply(WPINativeCompileRules.class);
-
-            NativeUtilsExtension nte = project.getExtensions().getByType(NativeUtilsExtension.class);
-            nte.withRoboRIO();
-            nte.addWpiNativeUtils();
-
-            wpiExtension.getDeps().getVendor().initializeNativeDependencies(nte, project);
-
-            ToolchainExtension te = project.getExtensions().getByType(ToolchainExtension.class);
-            te.getCrossCompilers().named(nte.getWpi().platforms.roborio, c -> {
-                c.getOptional().set(false);
-            });
-
-            nte.getWpi().addWarnings();
-            //nte.setSinglePrintPerPlatform();
-
-            // TODO fix me
-            project.afterEvaluate(ap -> {
-                nte.getWpi().configureDependencies(deps -> {
-                    deps.getWpiVersion().set(wpiExtension.getWpilibVersion());
-                    deps.getNiLibVersion().set(wpiExtension.getNiLibrariesVersion());
-                    deps.getOpencvVersion().set(wpiExtension.getOpencvVersion());
-                    deps.getGoogleTestVersion().set(wpiExtension.getGoogleTestVersion());
-                    deps.getImguiVersion().set(wpiExtension.getImguiVersion());
-                    deps.getWpimathVersion().set(wpiExtension.getWpimathVersion());
-                });
-            });
-
-            project.getPluginManager().apply(GradleVsCode.class);
-        });
 
         project.getTasks().register("wpiVersions", task -> {
             task.setGroup("GradleRIO");

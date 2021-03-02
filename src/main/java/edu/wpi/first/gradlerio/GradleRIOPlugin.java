@@ -20,15 +20,6 @@ public class GradleRIOPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
-        project.getConfigurations().maybeCreate("nativeDesktopLib");
-        project.getConfigurations().maybeCreate("nativeDesktopZip");
-
-        project.getConfigurations().maybeCreate("nativeRaspbianLib");
-        project.getConfigurations().maybeCreate("nativeRaspbianZip");
-
-        project.getConfigurations().maybeCreate("nativeAarch64BionicLib");
-        project.getConfigurations().maybeCreate("nativeAarch64BionicZip");
-
         project.getPluginManager().apply(DeployUtils.class);
         project.getPluginManager().apply(FRCPlugin.class);
         project.getPluginManager().apply(WPIPlugin.class);

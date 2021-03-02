@@ -25,13 +25,14 @@ public class WPIToolsPlugin implements Plugin<Project> {
             File toolFolder = new File(frcHome, "tools");
 
             ToolInstallTask.setToolsFolder(toolFolder);
-            tools.add(new WPITool(project, "SmartDashboard", wpi.getSmartDashboardVersion(), "edu.wpi.first.tools:SmartDashboard:" + wpi.getSmartDashboardVersion(), true));
-            tools.add(new WPITool(project, "ShuffleBoard", wpi.getShuffleboardVersion(), "edu.wpi.first.shuffleboard:shuffleboard:" + wpi.getShuffleboardVersion(), true));
-            tools.add(new WPITool(project, "OutlineViewer", wpi.getOutlineViewerVersion(), "edu.wpi.first.tools:OutlineViewer:" + wpi.getOutlineViewerVersion(), true));
-            tools.add(new WPITool(project, "RobotBuilder", wpi.getRobotBuilderVersion(), "edu.wpi.first.tools:RobotBuilder:" + wpi.getRobotBuilderVersion(), false));
-            tools.add(new WPITool(project, "RobotBuilder-Old", wpi.getRobotBuilderOldVersion(), "edu.wpi.first.tools:RobotBuilder-Old:" + wpi.getRobotBuilderOldVersion(), false));
-            tools.add(new WPITool(project, "PathWeaver", wpi.getPathWeaverVersion(), "edu.wpi.first.tools:PathWeaver:" + wpi.getPathWeaverVersion(), true));
-            cppTools.add(new WPICppTool(project, "Glass", wpi.getGlassVersion(), "edu.wpi.first.tools:Glass:" + wpi.getGlassVersion()));
+            // TODO fix me lazy
+            tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion().get(), "edu.wpi.first.tools:SmartDashboard:" + wpi.getVersions().getSmartDashboardVersion().get(), true));
+            tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion().get(), "edu.wpi.first.shuffleboard:shuffleboard:" + wpi.getVersions().getShuffleboardVersion().get(), true));
+            tools.add(new WPITool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion().get(), "edu.wpi.first.tools:OutlineViewer:" + wpi.getVersions().getOutlineViewerVersion().get(), true));
+            tools.add(new WPITool(project, "RobotBuilder", wpi.getVersions().getRobotBuilderVersion().get(), "edu.wpi.first.tools:RobotBuilder:" + wpi.getVersions().getRobotBuilderVersion().get(), false));
+            tools.add(new WPITool(project, "RobotBuilder-Old", wpi.getVersions().getRobotBuilderOldVersion().get(), "edu.wpi.first.tools:RobotBuilder-Old:" + wpi.getVersions().getRobotBuilderOldVersion().get(), false));
+            tools.add(new WPITool(project, "PathWeaver", wpi.getVersions().getPathWeaverVersion().get(), "edu.wpi.first.tools:PathWeaver:" + wpi.getVersions().getPathWeaverVersion().get(), true));
+            cppTools.add(new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion().get(), "edu.wpi.first.tools:Glass:" + wpi.getVersions().getGlassVersion().get()));
 
             project.getTasks().register("InstallAllTools", task -> {
                 task.setGroup("GradleRIO");

@@ -88,18 +88,6 @@ public class SimulationExtension {
     private final Provider<String> wpilibVersion;
     private final Project project;
 
-    private final TaskProvider<ExtractNativeJavaArtifacts> javaDebugExtractTask;
-
-    public TaskProvider<ExtractNativeJavaArtifacts> getDebugJavaExtractTask() {
-        return javaDebugExtractTask;
-    }
-
-    private final TaskProvider<ExtractNativeJavaArtifacts> javaReleaseExtractTask;
-
-    public TaskProvider<ExtractNativeJavaArtifacts> getReleaseJavaExtractTask() {
-        return javaReleaseExtractTask;
-    }
-
     @Inject
     public SimulationExtension(Project project, ObjectFactory objects, ProjectLayout layout, Provider<String> wpilibVersion, String desktopPlatform) {
         halExtensions = objects.domainObjectContainer(HalSimExtension.class, name -> {
@@ -141,17 +129,6 @@ public class SimulationExtension {
 
         debugDependencySet = objects.newInstance(SimulationDependencySet.class, debugFileCollection);
         releaseDependencySet = objects.newInstance(SimulationDependencySet.class, releaseFileCollection);
-
-        javaDebugExtractTask = project.getTasks().register("extractDebugJNI", ExtractNativeJavaArtifacts.class, extract -> {
-            extract.getDestinationDirectory().set(project.file(project.getBuildDir() + "/jni/debug"));
-            extract.getFiles().from(debugFileCollection);
-            extract.getFiles().from(releaseFileCollection);
-        });
-
-        javaReleaseExtractTask = project.getTasks().register("extractReleaseJNI", ExtractNativeJavaArtifacts.class, extract -> {
-            extract.getDestinationDirectory().set(project.file(project.getBuildDir() + "/jni/release"));
-            extract.getFiles().from(releaseFileCollection);
-        });
     }
 
     public NamedDomainObjectContainer<HalSimExtension> getHalExtensions() {

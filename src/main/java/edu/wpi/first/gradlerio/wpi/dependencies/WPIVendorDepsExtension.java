@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -22,6 +23,8 @@ import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.platform.base.VariantComponentSpec;
 
@@ -30,18 +33,15 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 // import edu.wpi.first.deployutils.nativedeps.DelegatedDependencySet;
 // import edu.wpi.first.deployutils.nativedeps.DependencySpecExtension;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
 import edu.wpi.first.nativeutils.dependencies.AllPlatformsCombinedNativeDependency;
 //import edu.wpi.first.nativeutils.configs.DependencyConfig;
 import edu.wpi.first.nativeutils.dependencies.NativeDependency;
 
-public class WPIVendorDepsExtension {
+public abstract class WPIVendorDepsExtension {
 
     private final WPIExtension wpiExt;
-
-    public WPIExtension getWpiExt() {
-        return wpiExt;
-    }
 
     private final Map<String, JsonDependency> dependencies = new HashMap<>();
 
@@ -62,10 +62,13 @@ public class WPIVendorDepsExtension {
     public static final String DEFAULT_VENDORDEPS_FOLDER_NAME = "vendordeps";
     public static final String GRADLERIO_VENDOR_FOLDER_PROPERTY = "gradlerio.vendordep.folder.path";
 
+    private final ProviderFactory providerFactory;
+
     @Inject
-    public WPIVendorDepsExtension(WPIExtension wpiExt) {
+    public WPIVendorDepsExtension(WPIExtension wpiExt, ProviderFactory providerFactory) {
         this.wpiExt = wpiExt;
         this.log = ETLoggerFactory.INSTANCE.create("WPIVendorDeps");
+        this.providerFactory = providerFactory;
     }
 
     private File vendorFolder(Project project) {
@@ -140,29 +143,31 @@ public class WPIVendorDepsExtension {
         }
     }
 
-    public static String getVersion(String inputVersion, WPIExtension wpiExt) {
-        // TODO make lazy
+
+
+    public static String getVersion(String inputVersion, ProviderFactory providers, WPIVersionsExtension wpiExt) {
         return inputVersion.equals("wpilib") ? wpiExt.getWpilibVersion().get() : inputVersion;
     }
 
-    public List<String> java(String... ignore) {
+    public List<Provider<String>> java(String... ignore) {
         return dependencies.entrySet().stream().map(x -> x.getValue()).filter(x -> !isIgnored(ignore, x))
                 .map(x -> List.of(x.javaDependencies)).flatMap(List<JavaArtifact>::stream).map(art -> {
-                    return art.groupId + ":" + art.artifactId + ":" + getVersion(art.version, wpiExt);
+                    Callable<String> cbl = () -> art.groupId + ":" + art.artifactId + ":" + getVersion(art.version, providerFactory, wpiExt.getVersions());
+                    return providerFactory.provider(cbl);
                 }).collect(Collectors.toList());
     }
 
-    public List<String> jni(String platform, String... ignore) {
+    public List<Provider<String>> jni(String platform, String... ignore) {
         return jniInternal(false, platform, ignore);
     }
 
-    public List<String> jniDebug(String platform, String... ignore) {
+    public List<Provider<String>> jniDebug(String platform, String... ignore) {
         return jniInternal(true, platform, ignore);
     }
 
-    private List<String> jniInternal(boolean debug, String platform, String... ignore) {
+    private List<Provider<String>> jniInternal(boolean debug, String platform, String... ignore) {
 
-        List<String> deps = new ArrayList<>();
+        List<Provider<String>> deps = new ArrayList<>();
 
         for (JsonDependency dep : dependencies.values()) {
             if (!isIgnored(ignore, dep)) {
@@ -173,8 +178,9 @@ public class WPIVendorDepsExtension {
 
                     if (applies) {
                         String debugString = debug ? "debug" : "";
-                        deps.add(jni.groupId + ":" + jni.artifactId + ":" + getVersion(jni.version, wpiExt) + ":"
-                                + platform + debugString + "@" + (jni.isJar ? "jar" : "zip"));
+                        Callable<String> cbl = () -> jni.groupId + ":" + jni.artifactId + ":" + getVersion(jni.version, providerFactory, wpiExt.getVersions()) + ":"
+                                + platform + debugString + "@" + (jni.isJar ? "jar" : "zip");
+                        deps.add(providerFactory.provider(cbl));
                     }
                 }
             }

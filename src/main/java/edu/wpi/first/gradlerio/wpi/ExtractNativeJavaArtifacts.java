@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.wpi.simulation;
+package edu.wpi.first.gradlerio.wpi;
 
 import javax.inject.Inject;
 

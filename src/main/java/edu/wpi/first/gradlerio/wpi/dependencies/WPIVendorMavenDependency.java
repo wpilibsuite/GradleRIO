@@ -36,7 +36,7 @@ public abstract class WPIVendorMavenDependency extends WPIMavenDependency {
 
         if (artifact.version.equals("wpilib")) {
             WPIExtension wpi = getProject().getExtensions().getByType(WPIExtension.class);
-            getVersion().set(wpi.getWpilibVersion());
+            getVersion().set(wpi.getVersions().getWpilibVersion());
         } else {
             getVersion().set(artifact.version);
         }
