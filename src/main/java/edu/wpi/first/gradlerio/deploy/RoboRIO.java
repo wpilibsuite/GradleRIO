@@ -33,11 +33,6 @@ public class RoboRIO extends StagedDeployTarget {
         return debug;
     }
 
-    private final String nativeZip;
-    public String getNativeZip() {
-        return nativeZip;
-    }
-
     private final Provider<String> buildType;
 
     public Provider<String> getBuildType() {
@@ -46,19 +41,10 @@ public class RoboRIO extends StagedDeployTarget {
 
     private final MultiCommandArtifact programKillArtifact;
 
-    private final Configuration nativeZipConfig;
-    public Configuration getNativeZipConfig() {
-        return nativeZipConfig;
-    }
-
     @Inject
     public RoboRIO(String name, Project project, DeployExtension de) {
         super(name, project, de);
         log = Logger.getLogger(this.toString());
-
-        nativeZip = name + "NativeZip";
-
-        nativeZipConfig = project.getConfigurations().create(nativeZip);
 
         debug = project.getObjects().property(Boolean.class);
         debug.set(false);
