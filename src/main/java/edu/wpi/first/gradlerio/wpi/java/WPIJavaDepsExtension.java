@@ -56,11 +56,11 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("com.fasterxml.jackson.core", "jackson-databind", versions.getJacksonVersion());
     }
 
-    public List<Provider<String>> getWpilib() {
+    public List<Provider<String>> wpilib() {
         return wpilibDeps;
     }
 
-    public List<Provider<String>> getWpilibSources() {
+    public List<Provider<String>> wpilibSources() {
         return wpilibSources;
     }
 
