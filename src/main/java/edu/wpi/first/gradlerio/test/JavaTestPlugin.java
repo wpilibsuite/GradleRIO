@@ -27,7 +27,7 @@ public class JavaTestPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Simulate External Task for Java/Kotlin/JVM. Exports a JSON file for use by editors / tools");
 
-            task.dependsOn("extractTestJNI");
+            //task.dependsOn("extractTestJNI");
             task.dependsOn(project.getTasks().withType(Jar.class));
             task.finalizedBy(project.getTasks().withType(ExternalSimulationMergeTask.class));
         });
@@ -36,12 +36,12 @@ public class JavaTestPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Launch simulation for Java/Kotlin/JVM");
 
-            task.dependsOn("extractTestJNI");
+            //task.dependsOn("extractTestJNI");
             task.dependsOn(project.getTasks().withType(Jar.class));
         });
 
         project.getTasks().withType(Test.class).configureEach(t -> {
-            t.dependsOn("extractTestJNI");
+            //t.dependsOn("extractTestJNI");
 
             t.doFirst(new Action<Task>() {
 				@Override

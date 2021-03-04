@@ -42,7 +42,7 @@ public class WPIJavaDepsExtension {
 
         createJavaDependencies("edu.wpi.first.wpilibj", "wpilibj-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpimath", "wpimath-java", versions.getWpimathVersion());
-        createJavaDependencies("edu.wpi.first.ntcore", "ntore-java", versions.getWpilibVersion());
+        createJavaDependencies("edu.wpi.first.ntcore", "ntcore-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.cscore", "cscore-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.cameraserver", "cameraserver-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.hal", "hal-java", versions.getWpilibVersion());
