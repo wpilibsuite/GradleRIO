@@ -34,6 +34,7 @@ public class WPIJavaExtension {
 
     private final WPIJavaDepsExtension deps;
     private final WPIJavaVendorDepsExtension vendor;
+    private final WPIJavaExecutionExtension execution;
 
     public WPIJavaDepsExtension getDeps() {
         return deps;
@@ -41,6 +42,10 @@ public class WPIJavaExtension {
 
     public WPIJavaVendorDepsExtension getVendor() {
         return vendor;
+    }
+
+    public WPIJavaExecutionExtension getExecution() {
+        return execution;
     }
 
     private final Configuration debugNativeConfiguration;
@@ -68,8 +73,13 @@ public class WPIJavaExtension {
 
     @Inject
     public WPIJavaExtension(Project project, SimulationExtension sim, WPIVersionsExtension versions, WPIVendorDepsExtension vendorDeps) {
+        extractNativeDebugArtifacts = project.getTasks().register("extractDebugNative", ExtractNativeJavaArtifacts.class);
+        extractNativeReleaseArtifacts = project.getTasks().register("extractReleaseNative", ExtractNativeJavaArtifacts.class);
+
+
         deps = project.getObjects().newInstance(WPIJavaDepsExtension.class, versions);
         vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions);
+        execution = project.getObjects().newInstance(WPIJavaExecutionExtension.class, project, this);
 
         debugNativeConfiguration = project.getConfigurations().create("nativeDebug");
         releaseNativeConfiguration = project.getConfigurations().create("nativeRelease");
@@ -97,13 +107,13 @@ public class WPIJavaExtension {
         debugFileCollection = project.files(debugCallable);
         releaseFileCollection = project.files(releaseCallable);
 
-        extractNativeDebugArtifacts = project.getTasks().register("extractDebugNative", ExtractNativeJavaArtifacts.class, extract -> {
+        extractNativeDebugArtifacts.configure(extract -> {
             extract.getDestinationDirectory().set(project.getLayout().getBuildDirectory().dir("jni/debug"));
             extract.getFiles().from(sim.getDebugFileCollection());
             extract.getFiles().from(debugFileCollection);
         });
 
-        extractNativeReleaseArtifacts = project.getTasks().register("extractReleaseNative", ExtractNativeJavaArtifacts.class, extract -> {
+        extractNativeReleaseArtifacts.configure(extract -> {
             extract.getDestinationDirectory().set(project.getLayout().getBuildDirectory().dir("jni/release"));
             extract.getFiles().from(sim.getReleaseFileCollection());
             extract.getFiles().from(releaseFileCollection);

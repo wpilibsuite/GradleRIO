@@ -37,7 +37,7 @@ public class WPIJavaVendorDepsExtension {
                 }).collect(Collectors.toList());
     }
 
-    public List<Provider<String>> jni(String platform, String... ignore) {
+    public List<Provider<String>> jniRelease(String platform, String... ignore) {
         return jniInternal(false, platform, ignore);
     }
 

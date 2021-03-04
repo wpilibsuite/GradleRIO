@@ -36,6 +36,11 @@ dependencies {
 
     nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
     simulationDebug wpi.sim.enableDebug()
+
+
+    nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
+    nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
+    simulationRelease wpi.sim.enableRelease()
     //nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
 
 
