@@ -33,13 +33,15 @@ deploy {
 // Also defines JUnit 4.
 dependencies {
     implementation wpi.java.deps.wpilib
-    roborioNativeZip wpi.java.deps.jniRelease(wpi.platforms.roborio)
-    //nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+
+    nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
+    simulationDebug wpi.sim.enableDebug()
+    //nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
 
 
     implementation wpi.java.vendor.java()
-    roborioNativeZip wpi.java.vendor.jni(wpi.platforms.roborio)
-    //nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+    nativeDebug wpi.java.vendor.jniDebug(wpi.platforms.desktop)
+    //nativeDebug wpi.deps.vendor.jniDebug(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
 
@@ -53,10 +55,8 @@ dependencies {
 }
 
 // Simulation configuration (e.g. environment variables).
-sim {
-    // Sets the websocket client remote host.
-    // envVar "HALSIMWS_HOST", "10.0.0.2"
-}
+wpi.sim.addGui()
+wpi.sim.addDriverstation()
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
