@@ -1,7 +1,9 @@
 package edu.wpi.first.gradlerio.wpi.simulation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -88,8 +90,8 @@ public class SimulationExtension {
         this.wpilibVersion = wpilibVersion;
         this.desktopPlatform = desktopPlatform;
 
-        javaReleaseList = objects.listProperty(String.class);
-        javaDebugList = objects.listProperty(String.class);
+        javaReleaseList = new ArrayList<>();
+        javaDebugList = new ArrayList<>();
 
         debugConfiguration = project.getConfigurations().create("simulationDebug");
         releaseConfiguration = project.getConfigurations().create("simulationRelease");
@@ -142,14 +144,14 @@ public class SimulationExtension {
         }
     }
 
-    private final ListProperty<String> javaReleaseList;
-    private final ListProperty<String> javaDebugList;
+    private final List<Provider<String>> javaReleaseList;
+    private final List<Provider<String>> javaDebugList;
 
-    public ListProperty<String> enableDebug() {
+    public List<Provider<String>> enableDebug() {
         return javaDebugList;
     }
 
-    public ListProperty<String> enableRelease() {
+    public List<Provider<String>> enableRelease() {
         return javaReleaseList;
     }
 
