@@ -32,13 +32,13 @@ deploy {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    implementation wpi.deps.wpilib()
-    roborioNativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
+    implementation wpi.java.deps.wpilib
+    roborioNativeZip wpi.java.deps.jniRelease(wpi.platforms.roborio)
     //nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
 
-    implementation wpi.deps.vendor.java()
-    roborioNativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
+    implementation wpi.java.vendor.java()
+    roborioNativeZip wpi.java.vendor.jni(wpi.platforms.roborio)
     //nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'

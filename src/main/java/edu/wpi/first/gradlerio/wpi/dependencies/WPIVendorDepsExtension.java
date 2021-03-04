@@ -147,49 +147,8 @@ public abstract class WPIVendorDepsExtension {
         }
     }
 
-
-
     public static String getVersion(String inputVersion, ProviderFactory providers, WPIVersionsExtension wpiExt) {
         return inputVersion.equals("wpilib") ? wpiExt.getWpilibVersion().get() : inputVersion;
-    }
-
-    public List<Provider<String>> java(String... ignore) {
-        return dependencies.entrySet().stream().map(x -> x.getValue()).filter(x -> !isIgnored(ignore, x))
-                .map(x -> List.of(x.javaDependencies)).flatMap(List<JavaArtifact>::stream).map(art -> {
-                    Callable<String> cbl = () -> art.groupId + ":" + art.artifactId + ":" + getVersion(art.version, providerFactory, wpiExt.getVersions());
-                    return providerFactory.provider(cbl);
-                }).collect(Collectors.toList());
-    }
-
-    public List<Provider<String>> jni(String platform, String... ignore) {
-        return jniInternal(false, platform, ignore);
-    }
-
-    public List<Provider<String>> jniDebug(String platform, String... ignore) {
-        return jniInternal(true, platform, ignore);
-    }
-
-    private List<Provider<String>> jniInternal(boolean debug, String platform, String... ignore) {
-
-        List<Provider<String>> deps = new ArrayList<>();
-
-        for (JsonDependency dep : dependencies.values()) {
-            if (!isIgnored(ignore, dep)) {
-                for (JniArtifact jni : dep.jniDependencies) {
-                    boolean applies = Arrays.asList(jni.validPlatforms).contains(platform);
-                    if (!applies && !jni.skipInvalidPlatforms)
-                        throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni);
-
-                    if (applies) {
-                        String debugString = debug ? "debug" : "";
-                        Callable<String> cbl = () -> jni.groupId + ":" + jni.artifactId + ":" + getVersion(jni.version, providerFactory, wpiExt.getVersions()) + ":"
-                                + platform + debugString + "@" + (jni.isJar ? "jar" : "zip");
-                        deps.add(providerFactory.provider(cbl));
-                    }
-                }
-            }
-        }
-        return deps;
     }
 
     public static boolean isIgnored(String[] ignore, JsonDependency dep) {

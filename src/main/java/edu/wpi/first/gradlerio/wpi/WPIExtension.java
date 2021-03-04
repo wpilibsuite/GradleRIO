@@ -12,6 +12,7 @@ import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
+import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.nativebuild.WPINativeExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
@@ -56,17 +57,17 @@ public class WPIExtension {
         versions = factory.newInstance(WPIVersionsExtension.class);
 
         vendor = project.getObjects().newInstance(WPIVendorDepsExtension.class, this);
+        sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
             nativebuild = factory.newInstance(WPINativeExtension.class, project, vendor, versions);
         });
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
-            java = factory.newInstance(WPIJavaExtension.class, vendor, versions);
+            java = factory.newInstance(WPIJavaExtension.class, project, sim, versions, vendor);
         });
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
-        sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
 
         if (project.hasProperty("forceToolsClassifier")) {
             this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");

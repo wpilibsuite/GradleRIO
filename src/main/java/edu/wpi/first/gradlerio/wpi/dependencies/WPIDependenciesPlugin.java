@@ -41,7 +41,7 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
             return artifact;
         }
 
-        MissingJniDependencyException(String name, String classifier, WPIVendorDepsExtension.JniArtifact artifact) {
+        public MissingJniDependencyException(String name, String classifier, WPIVendorDepsExtension.JniArtifact artifact) {
             super("Cannot find jni dependency: " + name + " for classifier: " + classifier);
             this.dependencyName = name;
             this.classifier = classifier;

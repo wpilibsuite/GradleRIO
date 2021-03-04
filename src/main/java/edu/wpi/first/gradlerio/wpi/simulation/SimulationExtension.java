@@ -14,6 +14,7 @@ import org.gradle.api.attributes.Attribute;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternFilterable;
@@ -39,17 +40,6 @@ public class SimulationExtension {
     }
 
     private NamedDomainObjectContainer<HalSimExtension> halExtensions;
-
-    private final Configuration debugNativeConfiguration;
-    private final Configuration releaseNativeConfiguration;
-
-    public Configuration getDebugNativeConfiguration() {
-        return debugNativeConfiguration;
-    }
-
-    public Configuration getReleaseNativeConfiguration() {
-        return releaseNativeConfiguration;
-    }
 
     private final Configuration debugConfiguration;
     private final Configuration releaseConfiguration;
@@ -98,8 +88,8 @@ public class SimulationExtension {
         this.wpilibVersion = wpilibVersion;
         this.desktopPlatform = desktopPlatform;
 
-        debugNativeConfiguration = project.getConfigurations().create("nativeDebug");
-        releaseNativeConfiguration = project.getConfigurations().create("nativeRelease");
+        javaReleaseList = objects.listProperty(String.class);
+        javaDebugList = objects.listProperty(String.class);
 
         debugConfiguration = project.getConfigurations().create("simulationDebug");
         releaseConfiguration = project.getConfigurations().create("simulationRelease");
@@ -152,19 +142,34 @@ public class SimulationExtension {
         }
     }
 
+    private final ListProperty<String> javaReleaseList;
+    private final ListProperty<String> javaDebugList;
+
+    public ListProperty<String> enableDebug() {
+        return javaDebugList;
+    }
+
+    public ListProperty<String> enableRelease() {
+        return javaReleaseList;
+    }
+
+    private void addDep(String baseName) {
+        Provider<String> releaseDep = project.getProviders().provider(() -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "@zip");
+        project.getDependencies().add(releaseConfiguration.getName(), releaseDep);
+        Provider<String> debugDep = project.getProviders().provider(() -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "debug@zip");
+        project.getDependencies().add(debugConfiguration.getName(), debugDep);
+
+        javaDebugList.add(debugDep);
+        javaReleaseList.add(releaseDep);
+    }
+
     public void addGui() {
         String baseName = "edu.wpi.first.halsim:halsim_gui:";
-        Callable<String> releaseDep = () -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "@zip";
-        project.getDependencies().add(releaseConfiguration.getName(), project.getProviders().provider(releaseDep));
-        Callable<String> debugDep = () -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "debug@zip";
-        project.getDependencies().add(debugConfiguration.getName(), project.getProviders().provider(debugDep));
+        addDep(baseName);
     }
 
     public void addDriverstation() {
         String baseName = "edu.wpi.first.halsim:halsim_ds_socket:";
-        Callable<String> releaseDep = () -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "@zip";
-        project.getDependencies().add(releaseConfiguration.getName(), project.getProviders().provider(releaseDep));
-        Callable<String> debugDep = () -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "debug@zip";
-        project.getDependencies().add(debugConfiguration.getName(), project.getProviders().provider(debugDep));
+        addDep(baseName);
     }
 }
