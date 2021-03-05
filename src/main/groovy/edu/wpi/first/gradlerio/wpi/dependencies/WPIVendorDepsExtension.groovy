@@ -106,6 +106,12 @@ public class WPIVendorDepsExtension {
 
             if (dep != null && dep.mavenUrls != null) {
                 int i = 0
+
+                String[] groups
+                dep.javaDependencies.each {art -> groups << art.groupId}
+                dep.jniDependencies.each {art -> groups << art.groupId}
+                dep.cppDependencies.each {art -> groups << art.groupId}
+
                 dep.mavenUrls.each { url ->
                     // Only add if the maven doesn't yet exist.
                     if (wpiExt.maven.find { it.release.equals(url) } == null) {
@@ -113,6 +119,7 @@ public class WPIVendorDepsExtension {
                         log.info("Registering vendor dep maven: $name on project ${wpiExt.project.path}")
                         wpiExt.maven.vendor(name) { WPIMavenRepo repo ->
                             repo.release = url
+                            repo.groups = groups
                         }
                     }
                 }

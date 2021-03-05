@@ -10,6 +10,7 @@ class WPIMavenRepo implements Named {
     int priority = PRIORITY_REPO
 
     String name;
+    String[] groups
 
     static final int PRIORITY_REPO = 100
     static final int PRIORITY_REPO_INUSE = 50

@@ -140,6 +140,11 @@ class WPIPlugin implements Plugin<Project> {
                 project.repositories.maven { MavenArtifactRepository repo ->
                     repo.name = "WPI${mirror.name}Release"
                     repo.url = mirror.release
+                    repo.content {
+                        mirror.groups.each { group ->
+                            includeGroup(group)
+                        }
+                    }
                 }
         }
 
