@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.logging.TestLogEvent;
 import org.gradle.api.tasks.testing.logging.TestLogging;
@@ -18,10 +18,16 @@ import org.gradle.internal.os.OperatingSystem;
 public class WPIJavaExecutionExtension {
     @Inject
     public WPIJavaExecutionExtension(Project project, WPIJavaExtension javaExt) {
-        // TODO make debug JNI configurable
         project.getTasks().withType(Test.class).configureEach(t -> {
 
-            TaskProvider<ExtractNativeJavaArtifacts> extract = javaExt.getExtractNativeReleaseArtifacts();
+            Provider<ExtractNativeJavaArtifacts> extract = project.getProviders().provider(() -> {
+                if (javaExt.getDebugJni().get()) {
+                    return javaExt.getExtractNativeDebugArtifacts().get();
+                } else {
+                    return javaExt.getExtractNativeReleaseArtifacts().get();
+                }
+            });
+
             t.dependsOn(extract);
 
             t.doFirst(new Action<Task>() {

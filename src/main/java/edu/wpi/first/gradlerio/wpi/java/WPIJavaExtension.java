@@ -10,6 +10,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.ArtifactView;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternFilterable;
 import org.gradle.api.tasks.util.PatternSet;
@@ -70,13 +71,18 @@ public class WPIJavaExtension {
         return releaseFileCollection;
     }
 
+    private final Property<Boolean> debugJni;
+
+    public Property<Boolean> getDebugJni() {
+        return debugJni;
+    }
 
     @Inject
     public WPIJavaExtension(Project project, SimulationExtension sim, WPIVersionsExtension versions, WPIVendorDepsExtension vendorDeps) {
         extractNativeDebugArtifacts = project.getTasks().register("extractDebugNative", ExtractNativeJavaArtifacts.class);
         extractNativeReleaseArtifacts = project.getTasks().register("extractReleaseNative", ExtractNativeJavaArtifacts.class);
 
-
+        debugJni = project.getObjects().property(Boolean.class);
         deps = project.getObjects().newInstance(WPIJavaDepsExtension.class, versions);
         vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions);
         execution = project.getObjects().newInstance(WPIJavaExecutionExtension.class, project, this);
