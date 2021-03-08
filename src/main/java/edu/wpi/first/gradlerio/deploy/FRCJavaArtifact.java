@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import com.google.gson.GsonBuilder;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.artifact.JavaArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
+import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 
 public class FRCJavaArtifact extends JavaArtifact {
 
@@ -36,6 +38,9 @@ public class FRCJavaArtifact extends JavaArtifact {
         super(name, target);
         roboRIO = target;
 
+        var debugConfiguration = target.getProject().getConfigurations().create("roborioDebug");
+        var releaseConfiguration = target.getProject().getConfigurations().create("roborioRelease");
+
         programStartArtifact = target.getArtifacts().create("programStart" + name, FRCProgramStartArtifact.class, art -> {
         });
 
@@ -49,7 +54,17 @@ public class FRCJavaArtifact extends JavaArtifact {
 
         nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
-            artifact.getConfiguration().set(target.getNativeZipConfig());
+
+            var cbl = target.getProject().getProviders().provider(() -> {
+                boolean debug = target.getProject().getExtensions().getByType(WPIJavaExtension.class).getDebugJni().get();
+                if (debug) {
+                    return debugConfiguration;
+                } else {
+                    return releaseConfiguration;
+                }
+            });
+
+            artifact.getConfiguration().set(cbl);
             artifact.setZipped(true);
             artifact.getFilter().include("*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "linuxathena/**/*.so", "**/libopencv*.so.*");
         });

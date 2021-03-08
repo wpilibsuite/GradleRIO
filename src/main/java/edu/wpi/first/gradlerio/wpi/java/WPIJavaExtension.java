@@ -83,6 +83,7 @@ public class WPIJavaExtension {
         extractNativeReleaseArtifacts = project.getTasks().register("extractReleaseNative", ExtractNativeJavaArtifacts.class);
 
         debugJni = project.getObjects().property(Boolean.class);
+        debugJni.set(false);
         deps = project.getObjects().newInstance(WPIJavaDepsExtension.class, versions);
         vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions);
         execution = project.getObjects().newInstance(WPIJavaExecutionExtension.class, project, this);
