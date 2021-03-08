@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.io.BufferedReader;
 import java.io.IOException;

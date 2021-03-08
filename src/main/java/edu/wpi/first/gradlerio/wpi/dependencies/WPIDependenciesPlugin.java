@@ -1,6 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.dependencies;
 
-import edu.wpi.first.gradlerio.deploy.FRCJREArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import groovy.transform.CompileStatic;
 import edu.wpi.first.deployutils.deploy.DeployExtension;

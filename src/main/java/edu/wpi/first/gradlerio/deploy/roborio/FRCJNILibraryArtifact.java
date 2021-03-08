@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.io.File;
 import java.util.Optional;
@@ -16,6 +16,7 @@ import org.gradle.api.tasks.util.PatternSet;
 import edu.wpi.first.deployutils.deploy.artifact.FileCollectionArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
+import edu.wpi.first.gradlerio.deploy.FRCPlugin;
 
 public class FRCJNILibraryArtifact extends FileCollectionArtifact {
     private Property<Configuration> configuration;

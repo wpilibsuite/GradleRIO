@@ -1,10 +1,11 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import javax.inject.Inject;
 
 import edu.wpi.first.deployutils.deploy.artifact.AbstractArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
+import edu.wpi.first.gradlerio.deploy.DeployStage;
 
 public class FRCProgramStartArtifact extends AbstractArtifact {
 

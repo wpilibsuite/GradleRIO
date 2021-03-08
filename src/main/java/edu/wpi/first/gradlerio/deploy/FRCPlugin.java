@@ -12,6 +12,14 @@ import edu.wpi.first.deployutils.deploy.artifact.Artifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 //import edu.wpi.first.deployutils.deploy.target.TargetsExtension;
 import edu.wpi.first.deployutils.deploy.target.location.DeployLocation;
+import edu.wpi.first.gradlerio.deploy.roborio.DSDeployLocation;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJNILibraryArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJavaArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCNativeArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCProgramStartArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
+import edu.wpi.first.gradlerio.deploy.roborio.RobotCommandArtifact;
 import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
 
 // TODO we should probably rename this

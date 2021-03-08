@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.util.ArrayList;
 import java.util.List;

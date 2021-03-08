@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.util.function.Function;
 
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import edu.wpi.first.deployutils.deploy.artifact.FileArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
+import edu.wpi.first.gradlerio.deploy.DeployStage;
 
 public class RobotCommandArtifact extends FileArtifact {
 

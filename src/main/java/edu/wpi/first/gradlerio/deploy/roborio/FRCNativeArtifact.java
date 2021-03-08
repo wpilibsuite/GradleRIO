@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import org.gradle.nativeplatform.NativeExecutableSpec;
 import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.artifact.NativeExecutableArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.FRCPlugin;
 
 public class FRCNativeArtifact extends NativeExecutableArtifact {
 

@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import com.google.gson.GsonBuilder;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -19,9 +18,12 @@ import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.artifact.JavaArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
+import edu.wpi.first.gradlerio.deploy.DebuggableJavaArtifact;
+import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.FRCPlugin;
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 
-public class FRCJavaArtifact extends JavaArtifact {
+public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
@@ -30,7 +32,7 @@ public class FRCJavaArtifact extends JavaArtifact {
 
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
-    private int debugPort = 8349;
+
     private final RoboRIO roboRIO;
 
     @Inject
@@ -131,7 +133,7 @@ public class FRCJavaArtifact extends JavaArtifact {
         boolean debug = roboRIO.getDebug().get();
         if (debug) {
             builder.append("-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:");
-            builder.append(debugPort);
+            builder.append(getDebugPort());
             builder.append(",server=y,suspend=y ");
         }
 
@@ -155,14 +157,14 @@ public class FRCJavaArtifact extends JavaArtifact {
 
             ctx.getLogger().withLock(x -> {
                 x.log("====================================================================");
-                x.log("DEBUGGING ACTIVE ON PORT " + debugPort + "!");
+                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
                 x.log("====================================================================");
             });
 
             if (ctx.getController() instanceof IPSessionController) {
                 IPSessionController ip = (IPSessionController) ctx.getController();
-                String target = ip.getHost() + ":" + debugPort;
-                Map<String, Object> dbcfg = Map.of("target", target, "ipAddress", ip.getHost(), "port", debugPort);
+                String target = ip.getHost() + ":" + getDebugPort();
+                Map<String, Object> dbcfg = Map.of("target", target, "ipAddress", ip.getHost(), "port", getDebugPort());
                 GsonBuilder builder = new GsonBuilder();
                 builder.setPrettyPrinting();
                 try {

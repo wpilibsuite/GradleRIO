@@ -19,7 +19,6 @@ import edu.wpi.first.gradlerio.wpi.WPIPlugin;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
-import edu.wpi.first.toolchain.NativePlatforms;
 
 public class WPIJavaExtension {
     private final TaskProvider<ExtractNativeJavaArtifacts> extractNativeDebugArtifacts;

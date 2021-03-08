@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy;
+package edu.wpi.first.gradlerio.deploy.roborio;
 
 import javax.inject.Inject;
 
@@ -7,6 +7,7 @@ import org.gradle.api.Project;
 import edu.wpi.first.deployutils.deploy.artifact.MavenArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
+import edu.wpi.first.gradlerio.deploy.DeployStage;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJREArtifact extends MavenArtifact {
