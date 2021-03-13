@@ -1,4 +1,4 @@
-import edu.wpi.first.gradlerio.deploy.RoboRIO
+import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"

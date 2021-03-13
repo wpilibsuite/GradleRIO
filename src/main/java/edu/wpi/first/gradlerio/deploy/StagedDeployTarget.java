@@ -30,6 +30,8 @@ public abstract class StagedDeployTarget extends RemoteTarget {
                 task.setGroup("GradleRIO");
                 task.setDescription("Deploy stage " + stage + " for " + name);
 
+                task.dependsOn(getTargetDiscoveryTask());
+
                 task.setStage(stage);
                 task.setPreviousStage(fixedPreviousStage);
 

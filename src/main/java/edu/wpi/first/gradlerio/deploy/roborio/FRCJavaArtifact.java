@@ -15,13 +15,12 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
 import edu.wpi.first.deployutils.PathUtils;
-import edu.wpi.first.deployutils.deploy.artifact.JavaArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
 import edu.wpi.first.gradlerio.deploy.DebuggableJavaArtifact;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
 import edu.wpi.first.gradlerio.deploy.FRCPlugin;
-import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
+import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
@@ -58,7 +57,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
             artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
 
             var cbl = target.getProject().getProviders().provider(() -> {
-                boolean debug = target.getProject().getExtensions().getByType(WPIJavaExtension.class).getDebugJni().get();
+                boolean debug = target.getProject().getExtensions().getByType(WPIExtension.class).getJava().getDebugJni().get();
                 if (debug) {
                     return debugConfiguration;
                 } else {
@@ -68,7 +67,10 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
             artifact.getConfiguration().set(cbl);
             artifact.setZipped(true);
-            artifact.getFilter().include("*.so*", "lib/*.so", "java/lib/*.so", "linux/athena/shared/*.so", "linuxathena/**/*.so", "**/libopencv*.so.*");
+            artifact.getFilter().include("**/*.so*");
+            artifact.getFilter().include("**/*.so");
+            artifact.getFilter().getExcludes().add("**/*.so.debug");
+            artifact.getFilter().getExcludes().add("**/*.so.*.debug");
         });
 
         programStartArtifact.getPostdeploy().add(this::postStart);
@@ -148,36 +150,36 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
     }
 
     private void postStart(DeployContext ctx) {
-        File conffile = new File(getTarget().getProject().getBuildDir(),
-                "debug/" + getName() + "_" + ctx.getDeployLocation().getTarget().getName() + ".debugconfig");
+        // File conffile = new File(getTarget().getProject().getBuildDir(),
+        //         "debug/" + getName() + "_" + ctx.getDeployLocation().getTarget().getName() + ".debugconfig");
 
-        boolean debug = roboRIO.getDebug().get();
-        if (debug) {
-            conffile.getParentFile().mkdirs();
+        // boolean debug = roboRIO.getDebug().get();
+        // if (debug) {
+        //     conffile.getParentFile().mkdirs();
 
-            ctx.getLogger().withLock(x -> {
-                x.log("====================================================================");
-                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
-                x.log("====================================================================");
-            });
+        //     ctx.getLogger().withLock(x -> {
+        //         x.log("====================================================================");
+        //         x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
+        //         x.log("====================================================================");
+        //     });
 
-            if (ctx.getController() instanceof IPSessionController) {
-                IPSessionController ip = (IPSessionController) ctx.getController();
-                String target = ip.getHost() + ":" + getDebugPort();
-                Map<String, Object> dbcfg = Map.of("target", target, "ipAddress", ip.getHost(), "port", getDebugPort());
-                GsonBuilder builder = new GsonBuilder();
-                builder.setPrettyPrinting();
-                try {
-                    ResourceGroovyMethods.setText(conffile, builder.create().toJson(dbcfg));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                ctx.getLogger().log("Session Controller isn't IP Compatible. No debug file written");
-            }
-        } else {
-            if (conffile.exists()) conffile.delete();
-        }
+        //     if (ctx.getController() instanceof IPSessionController) {
+        //         IPSessionController ip = (IPSessionController) ctx.getController();
+        //         String target = ip.getHost() + ":" + getDebugPort();
+        //         Map<String, Object> dbcfg = Map.of("target", target, "ipAddress", ip.getHost(), "port", getDebugPort());
+        //         GsonBuilder builder = new GsonBuilder();
+        //         builder.setPrettyPrinting();
+        //         try {
+        //             ResourceGroovyMethods.setText(conffile, builder.create().toJson(dbcfg));
+        //         } catch (IOException e) {
+        //             throw new RuntimeException(e);
+        //         }
+        //     } else {
+        //         ctx.getLogger().log("Session Controller isn't IP Compatible. No debug file written");
+        //     }
+        // } else {
+        //     if (conffile.exists()) conffile.delete();
+        // }
     }
 
 }

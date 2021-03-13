@@ -10,48 +10,22 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
-import edu.wpi.first.gradlerio.deploy.StagedDeployTarget;
+import edu.wpi.first.gradlerio.deploy.WPIRemoteTarget;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 
-public class RoboRIO extends StagedDeployTarget {
+public class RoboRIO extends WPIRemoteTarget {
 
     private final Logger log;
     private int team;
     private boolean checkImage = true;
     private final List<String> validImageVersions;
-    private final Property<Boolean> debug;
-
-    /**
-     * Gets or Sets if debugging should be enabled for this target.
-     *
-     * Implies debug binaries in C++. For Java, use `wpi.java.debugJni = true`
-     * to deploy debug JNI artifacts.
-     *
-     * @return Property for debug mode.
-     */
-    public Property<Boolean> getDebug() {
-        return debug;
-    }
-
-    private final Provider<String> buildType;
-
-    /**
-     * Gets a mapping of getDebug() to the correct build type for C++.
-     *
-     * @return Build Type mapping for getDebug()
-     */
-    public Provider<String> getBuildType() {
-        return buildType;
-    }
 
     private final MultiCommandArtifact programKillArtifact;
 
@@ -59,11 +33,6 @@ public class RoboRIO extends StagedDeployTarget {
     public RoboRIO(String name, Project project, DeployExtension de) {
         super(name, project, de);
         log = Logger.getLogger(this.toString());
-
-        debug = project.getObjects().property(Boolean.class);
-        debug.set(false);
-
-        buildType = debug.map(x -> x ? "debug" : "release");
 
         setDirectory("/home/lvuser");
 

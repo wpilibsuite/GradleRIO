@@ -1,6 +1,7 @@
 package edu.wpi.first.gradlerio.deploy;
 
-public class JavaTargetDebugInfo {
+public class JavaTargetDebugInfo extends TargetDebugInfo {
+    public final String type = "java";
     public int port;
     public String target;
 
