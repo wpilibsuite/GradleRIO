@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,8 @@ public class TargetDebugFileTask extends DefaultTask {
     @Inject
     public TargetDebugFileTask(ObjectFactory objects) {
         getOutputs().upToDateWhen((spec) -> false);
+        Callable<Object[]> cbl = () -> target.getArtifacts().withType(DebuggableArtifact.class).stream().map(x -> x.getDeployTask()).toArray();
+        dependsOn(cbl);
         debugFile = objects.fileProperty();
     }
 
