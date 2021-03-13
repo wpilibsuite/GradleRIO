@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,6 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
 
             List<File> srcpaths = new ArrayList<>();
             List<File> headerpaths = new ArrayList<>();
-            List<File> libpaths = new ArrayList<>();
             List<File> libsrcpaths = new ArrayList<>();
 
             NativeExecutableBinarySpec bin = getBinary().get();
@@ -60,11 +60,15 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
                 srcpaths.addAll(sourceSet.getExportedHeaders().getSrcDirs());
             }
 
+            // Get all folders in install dir
+            List<File> libpaths = new ArrayList<>(Arrays.asList(getInstallTaskProvider().get().getInstallDirectory().get().getAsFile().listFiles(f -> f.isDirectory())));
+            libpaths.add(getInstallTaskProvider().get().getInstallDirectory().get().getAsFile());
+
+
             Map<Class<? extends NativeDependencySet>, Method> depClasses = new HashMap<>();
 
             for (NativeDependencySet ds : bin.getLibs()) {
                 headerpaths.addAll(ds.getIncludeRoots().getFiles());
-                libpaths.addAll(ds.getRuntimeFiles().getFiles());
 
                 Class<? extends NativeDependencySet> cls = ds.getClass();
                 Method sourceMethod = null;
