@@ -12,12 +12,12 @@ import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import org.gradle.nativeplatform.NativeExecutableSpec;
 
 import edu.wpi.first.deployutils.PathUtils;
-import edu.wpi.first.deployutils.deploy.artifact.NativeExecutableArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
+import edu.wpi.first.gradlerio.deploy.DebuggableNativeArtifact;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
 import edu.wpi.first.gradlerio.deploy.FRCPlugin;
 
-public class FRCNativeArtifact extends NativeExecutableArtifact {
+public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
@@ -116,6 +116,13 @@ public class FRCNativeArtifact extends NativeExecutableArtifact {
     }
 
     private void postStart(DeployContext ctx) {
-
+        boolean debug = roboRIO.getDebug().get();
+        if (debug) {
+            ctx.getLogger().withLock(x -> {
+                x.log("====================================================================");
+                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
+                x.log("====================================================================");
+            });
+        }
     }
 }

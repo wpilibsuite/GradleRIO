@@ -150,36 +150,14 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
     }
 
     private void postStart(DeployContext ctx) {
-        // File conffile = new File(getTarget().getProject().getBuildDir(),
-        //         "debug/" + getName() + "_" + ctx.getDeployLocation().getTarget().getName() + ".debugconfig");
-
-        // boolean debug = roboRIO.getDebug().get();
-        // if (debug) {
-        //     conffile.getParentFile().mkdirs();
-
-        //     ctx.getLogger().withLock(x -> {
-        //         x.log("====================================================================");
-        //         x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
-        //         x.log("====================================================================");
-        //     });
-
-        //     if (ctx.getController() instanceof IPSessionController) {
-        //         IPSessionController ip = (IPSessionController) ctx.getController();
-        //         String target = ip.getHost() + ":" + getDebugPort();
-        //         Map<String, Object> dbcfg = Map.of("target", target, "ipAddress", ip.getHost(), "port", getDebugPort());
-        //         GsonBuilder builder = new GsonBuilder();
-        //         builder.setPrettyPrinting();
-        //         try {
-        //             ResourceGroovyMethods.setText(conffile, builder.create().toJson(dbcfg));
-        //         } catch (IOException e) {
-        //             throw new RuntimeException(e);
-        //         }
-        //     } else {
-        //         ctx.getLogger().log("Session Controller isn't IP Compatible. No debug file written");
-        //     }
-        // } else {
-        //     if (conffile.exists()) conffile.delete();
-        // }
+        boolean debug = roboRIO.getDebug().get();
+        if (debug) {
+            ctx.getLogger().withLock(x -> {
+                x.log("====================================================================");
+                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
+                x.log("====================================================================");
+            });
+        }
     }
 
 }
