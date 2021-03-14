@@ -3,7 +3,9 @@ package edu.wpi.first.gradlerio.wpi.nativebuild;
 import javax.inject.Inject;
 
 import org.gradle.api.Project;
+import org.gradle.api.tasks.TaskProvider;
 
+import edu.wpi.first.gradlerio.simulation.NativeExternalSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
@@ -23,6 +25,28 @@ public class WPINativeExtension {
 
     public WPINativeVendorDepsExtension getVendor() {
         return vendor;
+    }
+
+    private final TaskProvider<NativeExternalSimulationTask> releaseExternalSimulationTask;
+    private final TaskProvider<NativeExternalSimulationTask> debugExternalSimulationTask;
+
+    private final TaskProvider<NativeExternalSimulationTask> releaseExternalTestSimulationTask;
+    private final TaskProvider<NativeExternalSimulationTask> debugExternalTestSimulationTask;
+
+    public TaskProvider<NativeExternalSimulationTask> getExternalSimulationReleaseTask() {
+        return releaseExternalSimulationTask;
+    }
+
+    public TaskProvider<NativeExternalSimulationTask> getExternalTestReleaseTask() {
+        return releaseExternalTestSimulationTask;
+    }
+
+    public TaskProvider<NativeExternalSimulationTask> getExternalSimulationDebugTask() {
+        return debugExternalSimulationTask;
+    }
+
+    public TaskProvider<NativeExternalSimulationTask> getExternalTestDebugTask() {
+        return debugExternalTestSimulationTask;
     }
 
     @Inject
@@ -58,5 +82,21 @@ public class WPINativeExtension {
         });
 
         project.getPluginManager().apply(GradleVsCode.class);
+
+        releaseExternalSimulationTask = project.getTasks().register("simulateExternalNativeRelease", NativeExternalSimulationTask.class, t -> {
+            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/release.json"));
+        });
+
+        debugExternalSimulationTask = project.getTasks().register("simulateExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
+            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/debug.json"));
+        });
+
+        releaseExternalTestSimulationTask = project.getTasks().register("testExternalNativeRelease", NativeExternalSimulationTask.class, t -> {
+            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/release.json"));
+        });
+
+        debugExternalTestSimulationTask = project.getTasks().register("testExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
+            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/debug.json"));
+        });
     }
 }

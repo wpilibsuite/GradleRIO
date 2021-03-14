@@ -17,7 +17,9 @@ import org.gradle.model.RuleSource;
 import org.gradle.model.Validate;
 import org.gradle.nativeplatform.BuildTypeContainer;
 import org.gradle.nativeplatform.NativeBinarySpec;
+import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import org.gradle.nativeplatform.TargetedNativeComponent;
+import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec;
 import org.gradle.nativeplatform.test.googletest.GoogleTestTestSuiteBinarySpec;
 import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.BinarySpec;
@@ -25,6 +27,7 @@ import org.gradle.platform.base.ComponentSpec;
 import org.gradle.platform.base.ComponentSpecContainer;
 import org.gradle.platform.base.internal.BinarySpecInternal;
 
+import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 
@@ -122,4 +125,44 @@ public class WPINativeCompileRules extends RuleSource {
             }
         }
     }
+
+    @Validate
+    public void populateExternalTasks(ModelMap<Task> tasks, BinaryContainer binaries, ExtensionContainer ext) {
+        WPINativeExtension nativebuild = ext.getByType(WPIExtension.class).getNativebuild();
+
+        nativebuild.getExternalSimulationDebugTask().configure(x -> {
+            for (NativeExecutableBinarySpec binary : binaries.withType(NativeExecutableBinarySpec.class)) {
+                if (binary.getBuildType().getName().contains("debug") && binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+                    x.getBinaries().add(binary);
+                }
+            }
+        });
+
+        nativebuild.getExternalSimulationReleaseTask().configure(x -> {
+            for (NativeExecutableBinarySpec binary : binaries.withType(NativeExecutableBinarySpec.class)) {
+                if (!binary.getBuildType().getName().contains("debug") && binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+                    x.getBinaries().add(binary);
+                }
+            }
+        });
+
+        nativebuild.getExternalTestDebugTask().configure(x -> {
+            for (NativeTestSuiteBinarySpec binary : binaries.withType(NativeTestSuiteBinarySpec.class)) {
+                if (binary.getBuildType().getName().contains("debug") && binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+                    x.getBinaries().add(binary);
+                }
+            }
+        });
+
+        nativebuild.getExternalTestReleaseTask().configure(x -> {
+            for (NativeTestSuiteBinarySpec binary : binaries.withType(NativeTestSuiteBinarySpec.class)) {
+                if (!binary.getBuildType().getName().contains("debug") && binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+                    x.getBinaries().add(binary);
+                }
+            }
+        });
+
+
+    }
+
 }

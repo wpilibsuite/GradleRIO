@@ -50,6 +50,7 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
             String gdbpath = toolchain.gdbFile().get().getAbsolutePath();
             String sysroot = toolchain.sysroot().get().getAbsolutePath();
 
+            // TODO deduplicate this with NativeExternalSimulationTask
             List<File> srcpaths = new ArrayList<>();
             List<File> headerpaths = new ArrayList<>();
             List<File> libsrcpaths = new ArrayList<>();
