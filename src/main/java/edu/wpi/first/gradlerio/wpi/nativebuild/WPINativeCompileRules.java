@@ -18,12 +18,15 @@ import org.gradle.model.Validate;
 import org.gradle.nativeplatform.BuildTypeContainer;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.nativeplatform.TargetedNativeComponent;
+import org.gradle.nativeplatform.test.googletest.GoogleTestTestSuiteBinarySpec;
 import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.BinarySpec;
 import org.gradle.platform.base.ComponentSpec;
 import org.gradle.platform.base.ComponentSpecContainer;
+import org.gradle.platform.base.internal.BinarySpecInternal;
 
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
+import edu.wpi.first.toolchain.NativePlatforms;
 
 public class WPINativeCompileRules extends RuleSource {
 
@@ -39,6 +42,17 @@ public class WPINativeCompileRules extends RuleSource {
 
         binaries.withType(NativeBinarySpec.class, bin -> {
             ntExt.usePlatformArguments(bin);
+        });
+    }
+
+    @Mutate
+    public void addBinaryFlags(BinaryContainer binaries) {
+        binaries.withType(GoogleTestTestSuiteBinarySpec.class, bin -> {
+            if (!bin.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+                ((BinarySpecInternal)bin).setBuildable(false);
+            }
+            bin.getCppCompiler().define("RUNNING_FRC_TESTS");
+            bin.getcCompiler().define("RUNNING_FRC_TESTS");
         });
     }
 
