@@ -75,6 +75,7 @@ public class NativeExternalSimulationTask extends DefaultTask {
     }
 
     public static class SimInfo {
+        public final String type = "native";
         public String name;
         public List<HalSimPair> extensions;
         public String launchfile;
@@ -105,16 +106,19 @@ public class NativeExternalSimulationTask extends DefaultTask {
 
         List<SimInfo> simInfo = new ArrayList<>();
 
+        List<HalSimPair> extensions = new ArrayList<>();
+        Map<String, String> env = sim.getEnvironment();
+
         for (NativeBinarySpec binary : binaries) {
             InstallExecutable install = getInstallForBinary(binary);
 
             String name =  binary.getComponent().getName() + " (in project " + getProject().getName() + ")";
-            List<HalSimPair> extensions = new ArrayList<>();
+
 
             String launchfile = install.getInstalledExecutable().get().getAsFile().getAbsolutePath();
             boolean clang = binary.getToolChain() instanceof Clang;
 
-            Map<String, String> env = sim.getEnvironment();
+
 
             List<File> srcpaths = new ArrayList<>();
             List<File> headerpaths = new ArrayList<>();

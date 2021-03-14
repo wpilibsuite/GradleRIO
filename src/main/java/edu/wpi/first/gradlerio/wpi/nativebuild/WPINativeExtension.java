@@ -4,12 +4,17 @@ import javax.inject.Inject;
 
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.nativeplatform.NativeBinarySpec;
+import org.gradle.nativeplatform.NativeExecutableBinarySpec;
+import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec;
+import org.gradle.platform.base.VariantComponentSpec;
 
 import edu.wpi.first.gradlerio.simulation.NativeExternalSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
+import edu.wpi.first.toolchain.NativePlatforms;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.ToolchainPlugin;
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
@@ -47,6 +52,31 @@ public class WPINativeExtension {
 
     public TaskProvider<NativeExternalSimulationTask> getExternalTestDebugTask() {
         return debugExternalTestSimulationTask;
+    }
+
+    public void enableExternalTasks(VariantComponentSpec component) {
+        component.getBinaries().withType(NativeExecutableBinarySpec.class, this::enableExternalTasks);
+        component.getBinaries().withType(NativeTestSuiteBinarySpec.class, this::enableExternalTasks);
+    }
+
+    public void enableExternalTasks(NativeExecutableBinarySpec binary) {
+        if (binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+            if (binary.getBuildType().getName().contains("debug")) {
+                debugExternalSimulationTask.configure(x -> x.getBinaries().add(binary));
+            } else {
+                releaseExternalSimulationTask.configure(x -> x.getBinaries().add(binary));
+            }
+        }
+    }
+
+    public void enableExternalTasks(NativeTestSuiteBinarySpec binary) {
+        if (binary.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
+            if (binary.getBuildType().getName().contains("debug")) {
+                debugExternalTestSimulationTask.configure(x -> x.getBinaries().add(binary));
+            } else {
+                releaseExternalTestSimulationTask.configure(x -> x.getBinaries().add(binary));
+            }
+        }
     }
 
     @Inject

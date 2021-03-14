@@ -14,7 +14,9 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternFilterable;
 import org.gradle.api.tasks.util.PatternSet;
+import org.gradle.jvm.tasks.Jar;
 
+import edu.wpi.first.gradlerio.simulation.JavaExternalSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
@@ -76,6 +78,16 @@ public class WPIJavaExtension {
         return debugJni;
     }
 
+    public TaskProvider<JavaExternalSimulationTask> externalSimulationTask;
+
+    public TaskProvider<JavaExternalSimulationTask> getExternalSimulationTask() {
+        return externalSimulationTask;
+    }
+
+    public void enableExternalTasks(Jar jar) {
+        externalSimulationTask.configure(x -> x.getJars().add(jar));
+    }
+
     @Inject
     public WPIJavaExtension(Project project, SimulationExtension sim, WPIVersionsExtension versions, WPIVendorDepsExtension vendorDeps) {
         extractNativeDebugArtifacts = project.getTasks().register("extractDebugNative", ExtractNativeJavaArtifacts.class);
@@ -123,6 +135,10 @@ public class WPIJavaExtension {
             extract.getDestinationDirectory().set(project.getLayout().getBuildDirectory().dir("jni/release"));
             extract.getFiles().from(sim.getReleaseFileCollection());
             extract.getFiles().from(releaseFileCollection);
+        });
+
+        externalSimulationTask = project.getTasks().register("simulateExternalJava", JavaExternalSimulationTask.class, t -> {
+            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/java.json"));
         });
     }
 }

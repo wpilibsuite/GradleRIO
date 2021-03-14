@@ -23,13 +23,14 @@ deploy {
             debug = false
 
             frcJavaArtifact('frcJava') {
-                jarTask = jar
             }
         }
     }
 }
 
-wpi.java.debugJni = true
+def deployArtifact = deploy.targets.roborio.artifacts.frcJava
+
+wpi.java.debugJni = false
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
@@ -75,6 +76,9 @@ jar {
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    wpi.java.enableExternalTasks(it)
+    deployArtifact.jarTask = it
 }
 
 wrapper {

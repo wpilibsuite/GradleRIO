@@ -47,7 +47,7 @@ deploy {
     //}
 }
 
-def nativeBinaryArtifact = deploy.targets.roborio.artifacts.frcCpp
+def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
 
 // Set this to true to include the src folder in the include directories passed
 // to the compiler. Some eclipse project imports depend on this behavior.
@@ -92,7 +92,8 @@ model {
                 }
             }
 
-            nativeBinaryArtifact.component = it
+            deployArtifact.component = it
+            wpi.nativebuild.enableExternalTasks(it)
 
             wpi.sim.enable(it)
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
@@ -110,6 +111,8 @@ model {
                     include '**/*.cpp'
                 }
             }
+
+            wpi.nativebuild.enableExternalTasks(it)
 
             wpi.nativebuild.vendor.cpp(it)
             wpi.nativebuild.deps.wpilib(it)
