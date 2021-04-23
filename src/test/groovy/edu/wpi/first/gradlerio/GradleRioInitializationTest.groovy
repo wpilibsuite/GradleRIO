@@ -2,21 +2,20 @@ package edu.wpi.first.gradlerio
 
 import org.gradle.testkit.runner.GradleRunner
 import static org.gradle.testkit.runner.TaskOutcome.*
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
+import spock.lang.TempDir
 import spock.lang.Specification
 
 class GradleRioInitializationTest extends Specification {
-    @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
+    @TempDir File testProjectDir
     File buildFile
     File buildFile2
     File settingsFile
 
     def setup() {
-        buildFile = testProjectDir.newFile('build.gradle')
-        testProjectDir.newFolder('sub')
-        buildFile2 = testProjectDir.newFile('sub/build.gradle')
-        settingsFile = testProjectDir.newFile('settings.gradle')
+        buildFile = new File(testProjectDir, 'build.gradle')
+        new File(testProjectDir, 'sub').mkdirs()
+        buildFile2 = new File(testProjectDir, 'sub/build.gradle')
+        settingsFile = new File(testProjectDir, 'settings.gradle')
     }
 
     def "Cpp Project Initializes Correctly"() {
@@ -31,7 +30,7 @@ plugins {
         settingsFile << ""
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
@@ -52,7 +51,7 @@ plugins {
         settingsFile << ""
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
@@ -73,7 +72,7 @@ plugins {
         settingsFile << "include 'sub'"
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()
@@ -94,7 +93,7 @@ plugins {
         settingsFile << "include 'sub'"
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('tasks', '--stacktrace')
             .withPluginClasspath()
             .build()

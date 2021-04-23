@@ -28,6 +28,7 @@ public class VendorDepTask extends DefaultTask {
 
     /**
      * Installs the JSON file
+     * @throws java.io.IOException throws on ioexception
      */
     @TaskAction
     public void install() throws IOException {
