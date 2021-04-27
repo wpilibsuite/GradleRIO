@@ -70,10 +70,10 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         getPostdeploy().add(ctx -> {
             String binFile = getBinFile(ctx);
             ctx.execute("chmod +x \"" + binFile + "\"; chown lvuser \"" + binFile + "\"");
-            // Let user program set RT thread priorities by making CAP_SYS_NICE
-            // permitted, inheritable, and effective. See "man 7 capabilities"
-            // for docs on capabilities and file capability sets.
-            ctx.execute("setcap cap_sys_nice+eip \"" + binFile + "\"");
+            // Make user program setuid admin. This lets the user program set RT
+            // thread priorities after it calls setuid(0).
+            ctx.execute("chown admin \"" + binFile + "\"");
+            ctx.execute("chmod u+s \"" + binFile + "\"");
         });
 
         this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
