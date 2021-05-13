@@ -2,7 +2,7 @@
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
   smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:win64',
+  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
   robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
   robotBuilderOldVersion: 'edu.wpi.first.tools:RobotBuilder-Old:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
