@@ -24,9 +24,46 @@ class GenerateClionTask extends DefaultTask {
         println "         enable the clion.enable.msvc Clion Registry key and configure MSVC."
 
         def subdirs_write = false
+
+        // Prevent usage of Visual Studio
+        new FileWriter(project.file('PreLoad.cmake')).write('set(CMAKE_GENERATOR "NMake Makefiles" CACHE INTERNAL "" FORCE)')
+
         def file = new FileWriter(project.file('CMakeLists.txt'))
         file.write("cmake_minimum_required(VERSION 3.3)\n")
-        file.write("project(${project.name})\nset(CMAKE_CXX_STANDARD 14)\n\n")
+
+        // Cross-compile settings
+        // TODO: set year by gradle variables, find wpilib in C:/Users/{user}/wpilib
+        file.write("""set(YEAR 2021)
+                     |set(ARM_PREFIX arm-frc\${YEAR}-linux-gnueabi)
+                     |
+                     |set(CMAKE_SYSTEM_NAME Linux)
+                     |
+                     |if(UNIX)
+                     |set(CROSSCOMPILING_ROOT \$ENV{HOME}/wpilib/\${YEAR}/roborio)
+                     |else()
+                     |set(CROSSCOMPILING_ROOT C:/Users/Public/wpilib/\${YEAR}/roborio)
+                     |endif(UNIX)
+                     |
+                     |
+                     |
+                     |set(CMAKE_SYSROOT \${CROSSCOMPILING_ROOT}/\${ARM_PREFIX})
+                     |
+                     |set(CMAKE_C_COMPILER \${CROSSCOMPILING_ROOT}/bin/\${ARM_PREFIX}-gcc)
+                     |set(CMAKE_CXX_COMPILER \${CROSSCOMPILING_ROOT}/bin/\${ARM_PREFIX}-g++)
+                     |
+                     |if(WIN32)
+                     |set(CMAKE_C_COMPILER \${CMAKE_C_COMPILER}.exe)
+                     |set(CMAKE_CXX_COMPILER \${CMAKE_CXX_COMPILER}.exe)
+                     |endif(WIN32)
+                     |
+                     |set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+                     |set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+                     |set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+                     |set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)\n\n"""
+                .stripMargin()
+        )
+
+        file.write("project(${project.name})\nset(CMAKE_CXX_STANDARD 17)\n\n")
 
         project.extensions.getByType(ClionExtension)._binaries.each { ClionExtension.ClionBinarySpec clionBin ->
             def src_dirs = [] as Set<File>
