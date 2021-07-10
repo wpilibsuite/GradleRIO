@@ -15,11 +15,11 @@ repositories {
 
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
-    api 'edu.wpi.first:gradle-cpp-vscode:0.25.0'
+    api 'edu.wpi.first:gradle-cpp-vscode:1.0.0'
 
-    api 'edu.wpi.first:native-utils:2022.0.0'
+    api 'edu.wpi.first:native-utils:2022.1.0'
 
-    api 'de.undercouch:gradle-download-task:4.1.1'
+    api 'de.undercouch:gradle-download-task:4.1.2'
 
     testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'
@@ -104,6 +104,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '7.0'
+    gradleVersion = '7.1.1'
     distributionType = Wrapper.DistributionType.BIN
 }
