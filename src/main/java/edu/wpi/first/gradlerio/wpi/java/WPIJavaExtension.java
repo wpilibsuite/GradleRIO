@@ -139,6 +139,7 @@ public class WPIJavaExtension {
 
         externalSimulationTask = project.getTasks().register("simulateExternalJava", JavaExternalSimulationTask.class, t -> {
             t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/java.json"));
+            t.setDependencies(sim, this, project);
         });
     }
 }

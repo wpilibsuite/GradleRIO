@@ -1,24 +1,17 @@
 package edu.wpi.first.gradlerio.wpi.dependencies;
 
-import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
-import edu.wpi.first.gradlerio.wpi.WPIExtension;
-import groovy.transform.CompileStatic;
-import edu.wpi.first.deployutils.deploy.DeployExtension;
-import edu.wpi.first.deployutils.deploy.artifact.Artifact;
-import edu.wpi.first.deployutils.log.ETLogger;
-import edu.wpi.first.deployutils.log.ETLoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ResolvedArtifact;
-import org.gradle.api.tasks.TaskProvider;
-import org.gradle.jvm.tasks.Jar;
+
+import edu.wpi.first.deployutils.log.ETLogger;
+import edu.wpi.first.deployutils.log.ETLoggerFactory;
+import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import groovy.transform.CompileStatic;
 
 public class WPIDependenciesPlugin implements Plugin<Project> {
 

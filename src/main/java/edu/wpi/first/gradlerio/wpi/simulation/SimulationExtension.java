@@ -5,29 +5,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+
+import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ArtifactView;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.attributes.Attribute;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternFilterable;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.platform.base.VariantComponentSpec;
 
+import edu.wpi.first.gradlerio.simulation.HalSimPair;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
-import edu.wpi.first.nativeutils.UnzipTransform;
-
-import org.gradle.api.NamedDomainObjectContainer;
 
 public class SimulationExtension {
 
@@ -76,7 +74,10 @@ public class SimulationExtension {
         return releaseFileCollection;
     }
 
-    private final String desktopPlatform;
+    private final ArtifactView debugArtifactView;
+    private final ArtifactView releaseArtifactView;
+
+    final String desktopPlatform;
     private final Provider<String> wpilibVersion;
     private final Project project;
 
@@ -99,22 +100,22 @@ public class SimulationExtension {
         PatternFilterable filterable = new PatternSet();
         filterable.include("**/*.so", "**/*.dylib", "**/*.pdb", "**/*.dll");
 
-        ArtifactView debugView = debugConfiguration.getIncoming().artifactView(viewConfiguration -> {
+        debugArtifactView = debugConfiguration.getIncoming().artifactView(viewConfiguration -> {
             viewConfiguration.attributes(attributeContainer -> {
                 attributeContainer.attribute(WPIPlugin.NATIVE_ARTIFACT_FORMAT,
                 WPIPlugin.NATIVE_ARTIFACT_DIRECTORY_TYPE);
             });
         });
 
-        ArtifactView releaseView = releaseConfiguration.getIncoming().artifactView(viewConfiguration -> {
+        releaseArtifactView = releaseConfiguration.getIncoming().artifactView(viewConfiguration -> {
             viewConfiguration.attributes(attributeContainer -> {
                 attributeContainer.attribute(WPIPlugin.NATIVE_ARTIFACT_FORMAT,
                 WPIPlugin.NATIVE_ARTIFACT_DIRECTORY_TYPE);
             });
         });
 
-        Callable<Set<File>> debugCallable = () -> debugView.getFiles().getAsFileTree().matching(filterable).getFiles();
-        Callable<Set<File>> releaseCallable = () -> releaseView.getFiles().getAsFileTree().matching(filterable).getFiles();
+        Callable<Set<File>> debugCallable = () -> debugArtifactView.getFiles().getAsFileTree().matching(filterable).getFiles();
+        Callable<Set<File>> releaseCallable = () -> releaseArtifactView.getFiles().getAsFileTree().matching(filterable).getFiles();
 
         debugFileCollection = project.files(debugCallable);
         releaseFileCollection = project.files(releaseCallable);
@@ -155,23 +156,58 @@ public class SimulationExtension {
         return javaReleaseList;
     }
 
-    private void addDep(String baseName) {
-        Provider<String> releaseDep = project.getProviders().provider(() -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "@zip");
+    private HalSimExtension addDep(String name, String groupId, String artifactId) {
+        HalSimExtension ext = halExtensions.create(name);
+        ext.getGroupId().set(groupId);
+        ext.getArtifactId().set(artifactId);
+        ext.getVersion().set(wpilibVersion);
+
+        Provider<String> releaseDep = ext.getReleaseDependency(project, this);
         project.getDependencies().add(releaseConfiguration.getName(), releaseDep);
-        Provider<String> debugDep = project.getProviders().provider(() -> baseName + wpilibVersion.get() + ":" + desktopPlatform + "debug@zip");
+        Provider<String> debugDep = ext.getDebugDependency(project, this);
         project.getDependencies().add(debugConfiguration.getName(), debugDep);
 
         javaDebugList.add(debugDep);
         javaReleaseList.add(releaseDep);
+        return ext;
     }
 
-    public void addGui() {
-        String baseName = "edu.wpi.first.halsim:halsim_gui:";
-        addDep(baseName);
+    public HalSimExtension addGui() {
+        return addDep("Sim GUI", "edu.wpi.first.halsim", "halsim_gui");
     }
 
-    public void addDriverstation() {
-        String baseName = "edu.wpi.first.halsim:halsim_ds_socket:";
-        addDep(baseName);
+    public HalSimExtension addDriverstation() {
+        return addDep("Sim DriverStation", "edu.wpi.first.halsim", "halsim_ds_socket");
+    }
+
+    public List<HalSimPair> getHalSimLocations(List<File> basePaths, boolean debug) {
+        List<HalSimPair> extensions = new ArrayList<>();
+
+        FileCollection simFiles;
+        ArtifactView view;
+        if (debug) {
+            simFiles = debugFileCollection;
+            view = debugArtifactView;
+        } else {
+            simFiles = releaseFileCollection;
+            view = releaseArtifactView;
+        }
+
+        for (HalSimExtension halExt : getHalExtensions()) {
+            Optional<String> loc = halExt.getFilenameForArtifact(view, simFiles);
+            if (loc.isEmpty()) {
+                continue;
+            }
+            for (File base : basePaths) {
+                File simFile = new File(base, loc.get());
+                if (simFile.exists()) {
+                    extensions.add(new HalSimPair(halExt.getName(), simFile.getAbsolutePath(), halExt.getDefaultEnabled().get()));
+                    break;
+                }
+            }
+
+        }
+
+        return extensions;
     }
 }

@@ -5,39 +5,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import com.google.gson.Gson;
 
-import org.gradle.api.ExtensiblePolymorphicDomainObjectContainer;
-import org.gradle.api.GradleException;
-import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
-import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
-import org.gradle.nativeplatform.NativeBinarySpec;
-import org.gradle.platform.base.VariantComponentSpec;
 
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
-// import edu.wpi.first.deployutils.nativedeps.DelegatedDependencySet;
-// import edu.wpi.first.deployutils.nativedeps.DependencySpecExtension;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
-import edu.wpi.first.nativeutils.NativeUtilsExtension;
-import edu.wpi.first.nativeutils.dependencies.AllPlatformsCombinedNativeDependency;
-//import edu.wpi.first.nativeutils.configs.DependencyConfig;
-import edu.wpi.first.nativeutils.dependencies.NativeDependency;
 
 public abstract class WPIVendorDepsExtension {
 
