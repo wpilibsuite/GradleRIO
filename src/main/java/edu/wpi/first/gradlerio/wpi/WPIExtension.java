@@ -13,7 +13,7 @@ import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
-import edu.wpi.first.gradlerio.wpi.nativebuild.WPINativeExtension;
+import edu.wpi.first.gradlerio.wpi.cpp.WPINativeExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 
@@ -60,7 +60,7 @@ public class WPIExtension {
         sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
-            nativebuild = factory.newInstance(WPINativeExtension.class, project, vendor, versions);
+            cpp = factory.newInstance(WPINativeExtension.class, project, vendor, versions);
         });
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
@@ -155,10 +155,10 @@ public class WPIExtension {
         return versions;
     }
 
-    private WPINativeExtension nativebuild;
+    private WPINativeExtension cpp;
 
-    public WPINativeExtension getNativebuild() {
-        return nativebuild;
+    public WPINativeExtension getCpp() {
+        return cpp;
     }
 
     private WPIJavaExtension java;

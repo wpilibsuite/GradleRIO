@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.wpi.nativebuild;
+package edu.wpi.first.gradlerio.wpi.cpp;
 
 import java.io.File;
 import java.io.IOException;

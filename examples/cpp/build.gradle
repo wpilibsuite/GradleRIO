@@ -71,7 +71,7 @@ def includeSrcInIncludeRoot = false
 //     // envVar "HALSIMWS_HOST", "10.0.0.2"
 // }
 
-wpi.nativebuild.debugSimulation = false
+wpi.cpp.debugSimulation = false
 
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
@@ -95,12 +95,12 @@ model {
             }
 
             deployArtifact.component = it
-            wpi.nativebuild.enableExternalTasks(it)
+            wpi.cpp.enableExternalTasks(it)
 
             wpi.sim.enable(it)
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-            wpi.nativebuild.vendor.cpp(it)
-            wpi.nativebuild.deps.wpilib(it)
+            wpi.cpp.vendor.cpp(it)
+            wpi.cpp.deps.wpilib(it)
         }
     }
     testSuites {
@@ -114,11 +114,11 @@ model {
                 }
             }
 
-            wpi.nativebuild.enableExternalTasks(it)
+            wpi.cpp.enableExternalTasks(it)
 
-            wpi.nativebuild.vendor.cpp(it)
-            wpi.nativebuild.deps.wpilib(it)
-            wpi.nativebuild.deps.googleTest(it)
+            wpi.cpp.vendor.cpp(it)
+            wpi.cpp.deps.wpilib(it)
+            wpi.cpp.deps.googleTest(it)
         }
     }
 }

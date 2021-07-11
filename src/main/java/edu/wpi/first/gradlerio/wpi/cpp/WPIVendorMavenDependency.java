@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.wpi.nativebuild;
+package edu.wpi.first.gradlerio.wpi.cpp;
 
 import java.util.HashMap;
 import java.util.Map;
