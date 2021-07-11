@@ -71,7 +71,9 @@ def includeSrcInIncludeRoot = false
 //     // envVar "HALSIMWS_HOST", "10.0.0.2"
 // }
 
-wpi.sim.addGui()
+wpi.nativebuild.debugSimulation = false
+
+wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
 
 model {

@@ -23,26 +23,21 @@ import org.gradle.jvm.tasks.Jar;
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.java.ExtractNativeJavaArtifacts;
-import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
 
 public class JavaExternalSimulationTask extends DefaultTask {
     private final List<Jar> jars = new ArrayList<>();
     private Provider<ExtractNativeJavaArtifacts> extractJni;
+    private boolean isDebug;
 
     @Internal
     public List<Jar> getJars() {
         return jars;
     }
 
-    public void setDependencies(SimulationExtension sim, WPIJavaExtension java, Project project) {
-        this.extractJni = project.getProviders().provider(() -> {
-            if (java.getDebugJni().get()) {
-                return java.getExtractNativeDebugArtifacts().get();
-            } else {
-                return java.getExtractNativeReleaseArtifacts().get();
-            }
-        });
+    public void setDependencies(SimulationExtension sim, Provider<ExtractNativeJavaArtifacts> extract, boolean debug, Project project) {
+        this.extractJni = extract;
+        isDebug = debug;
         this.dependsOn(extractJni);
     }
 
@@ -82,13 +77,12 @@ public class JavaExternalSimulationTask extends DefaultTask {
     public void execute() throws IOException {
         var ext = getProject().getExtensions().getByType(WPIExtension.class);
         SimulationExtension sim = ext.getSim();
-        WPIJavaExtension java = ext.getJava();
 
         File ldpath = extractJni.get().getDestinationDirectory().get().getAsFile();
 
         List<SimInfo> simInfo = new ArrayList<>();
 
-        List<HalSimPair> extensions = sim.getHalSimLocations(List.of(ldpath), java.getDebugJni().get());
+        List<HalSimPair> extensions = sim.getHalSimLocations(List.of(ldpath), isDebug);
 
         Map<String, String> env = sim.getEnvironment();
 

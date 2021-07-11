@@ -76,10 +76,11 @@ jar {
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    wpi.java.enableExternalTasks(it)
-    deployArtifact.jarTask = it
 }
+
+deployArtifact.jarTask = jar
+wpi.java.configureExecutableTasks(jar)
+wpi.java.configureTestTasks(test)
 
 wrapper {
     gradleVersion = '7.1.1'
