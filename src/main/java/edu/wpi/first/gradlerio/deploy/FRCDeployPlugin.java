@@ -7,10 +7,8 @@ import org.gradle.api.model.ObjectFactory;
 
 import edu.wpi.first.deployutils.DeployUtils;
 import edu.wpi.first.deployutils.deploy.DeployExtension;
-//import edu.wpi.first.deployutils.deploy.artifact.ArtifactsExtension;
 import edu.wpi.first.deployutils.deploy.artifact.Artifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-//import edu.wpi.first.deployutils.deploy.target.TargetsExtension;
 import edu.wpi.first.deployutils.deploy.target.location.DeployLocation;
 import edu.wpi.first.gradlerio.deploy.roborio.DSDeployLocation;
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJNILibraryArtifact;
@@ -22,8 +20,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
 import edu.wpi.first.gradlerio.deploy.roborio.RobotCommandArtifact;
 import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
 
-// TODO we should probably rename this
-public class FRCPlugin implements Plugin<Project> {
+public class FRCDeployPlugin implements Plugin<Project> {
 
     private Project project;
 
@@ -62,18 +59,6 @@ public class FRCPlugin implements Plugin<Project> {
             configureRoboRIOTypes(target);
             return target;
         });
-        //ExtensionAware artifactsExt = (ExtensionAware)deployExtension.getArtifacts();
-        //ExtensionAware targetsExt = (ExtensionAware)deployExtension.getTargets();
-
-        //ArtifactsExtension artifacts = deployExtension.getArtifacts();
-        //TargetsExtension targets = deployExtension.getTargets();
-
-        // TODO figure out how to do this
-        //artifactsExt.getExtensions().add("frcJavaArtifact");
-        //targetsExt.getExtensions().create("frc", FRCTargetsExtension.class, targets);
-        //artifactsExt.getExtensions().create("frc", FRCArtifactsExtension.class, artifacts);
-
-
     }
 
     public Project getProject() {

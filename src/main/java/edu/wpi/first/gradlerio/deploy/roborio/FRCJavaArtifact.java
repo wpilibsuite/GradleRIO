@@ -1,25 +1,18 @@
 package edu.wpi.first.gradlerio.deploy.roborio;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gson.GsonBuilder;
-
-import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
 import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
 import edu.wpi.first.gradlerio.deploy.DebuggableJavaArtifact;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
-import edu.wpi.first.gradlerio.deploy.FRCPlugin;
+import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJavaArtifact extends DebuggableJavaArtifact {
@@ -126,7 +119,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
         builder.append("/usr/local/frc/JRE/bin/java -XX:+UseConcMarkSweepGC -Djava.library.path=");
-        builder.append(FRCPlugin.LIB_DEPLOY_DIR);
+        builder.append(FRCDeployPlugin.LIB_DEPLOY_DIR);
         builder.append(" -Djava.lang.invoke.stringConcat=BC_SB ");
         builder.append(String.join(" ", jvmArgs));
         builder.append(" ");

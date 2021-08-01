@@ -15,7 +15,7 @@ import edu.wpi.first.deployutils.PathUtils;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.gradlerio.deploy.DebuggableNativeArtifact;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
-import edu.wpi.first.gradlerio.deploy.FRCPlugin;
+import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 
 public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
@@ -53,7 +53,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         filterable.getExcludes().add("**/*.so.*.debug");
 
         getPostdeploy().add(ctx -> {
-            FRCPlugin.ownDirectory(ctx, getLibraryDirectory().get());
+            FRCDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
             ctx.execute("ldconfig");
         });
 
@@ -76,7 +76,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
             ctx.execute("setcap cap_sys_nice+eip \"" + binFile + "\"");
         });
 
-        this.getLibraryDirectory().set(FRCPlugin.LIB_DEPLOY_DIR);
+        this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
 
         getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
     }

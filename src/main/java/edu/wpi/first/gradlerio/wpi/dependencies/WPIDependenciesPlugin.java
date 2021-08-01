@@ -3,13 +3,22 @@ package edu.wpi.first.gradlerio.wpi.dependencies;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ResolvedArtifact;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.jvm.tasks.Jar;
 
+import edu.wpi.first.deployutils.deploy.DeployExtension;
+import edu.wpi.first.deployutils.deploy.artifact.Artifact;
+import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
+import edu.wpi.first.gradlerio.deploy.roborio.FRCJavaArtifact;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import groovy.transform.CompileStatic;
 
@@ -50,44 +59,45 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
 
         // // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
         // // if it"s up-to-date
-        // TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
-        //     t.doFirst(new Action<Task>() {
-		// 		@Override
-		// 		public void execute(Task t) {
-        //             // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
-        //             // run an online deploy dry or downloadAll task.
-        //             downloadDepsPreemptively(project, logger);
-		// 		}
-        //     });
-        // });
+        TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
+            t.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task t) {
+                    // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
+                    // run an online deploy dry or downloadAll task.
+                    downloadDepsPreemptively(project, logger);
+                }
+            });
+        });
 
         project.getTasks().register("vendordep", VendorDepTask.class, task -> {
             task.setGroup("GradleRIO");
             task.setDescription("Install vendordep JSON file from URL or local wpilib folder");
         });
 
-        // project.getTasks().withType(Jar.class, jarTask -> {
-        //     jarTask.dependsOn(lazyPreempt);
-        // });
+        project.getTasks().withType(Jar.class, jarTask -> {
+            jarTask.dependsOn(lazyPreempt);
+        });
     }
 
     private void downloadDepsPreemptively(Project project, ETLogger logger) {
-        List<String> configs = new ArrayList<>();
-        configs.add("nativeLib");
-        configs.add("nativeZip");
+        List<Configuration> configs = new ArrayList<>();
 
-        // TODO Fix me
+        for (RemoteTarget target : project.getExtensions().getByType(DeployExtension.class).getTargets()) {
+            for (Artifact artifact : target.getArtifacts()) {
+                if (artifact instanceof FRCJREArtifact) {
+                    Configuration cfg = ((FRCJREArtifact)artifact).getConfiguration().get();
+                    logger.info("Found JRE Configuration: " + cfg.getName());
+                    configs.add(cfg);
+                } else if (artifact instanceof FRCJavaArtifact) {
+                    Configuration cfg = ((FRCJavaArtifact)artifact).getNativeZipArtifact().getConfiguration().get();
+                    logger.info("Found Java Configuration: " + cfg.getName());
+                    configs.add(cfg);
+                }
+            }
+        }
 
-        // for (Artifact art : project.getExtensions().getByType(DeployExtension.class).getArtifacts()) {
-        //     if (art instanceof FRCJREArtifact) {
-        //         String cfgName = ((FRCJREArtifact)art).getConfigName();
-        //         logger.info("Found JRE Configuration: " + cfgName);
-        //         configs.add(cfgName);
-        //     }
-        // }
-
-        for (String cName : configs) {
-            Configuration cfg = project.getConfigurations().getByName(cName);
+        for (Configuration cfg : configs) {
             if (cfg.isCanBeResolved()) {
                 logger.info("Resolving Deps Configuration: " + cfg.getName());
                 for (ResolvedArtifact art : cfg.getResolvedConfiguration().getResolvedArtifacts()) {

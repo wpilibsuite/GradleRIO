@@ -16,7 +16,7 @@ import org.gradle.api.tasks.util.PatternSet;
 import edu.wpi.first.deployutils.deploy.artifact.FileCollectionArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
-import edu.wpi.first.gradlerio.deploy.FRCPlugin;
+import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 
 public class FRCJNILibraryArtifact extends FileCollectionArtifact {
     private Property<Configuration> configuration;
@@ -27,7 +27,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact {
     public FRCJNILibraryArtifact(String name, RemoteTarget target) {
         super(name, target);
 
-        getDirectory().set(FRCPlugin.LIB_DEPLOY_DIR);
+        getDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
 
         filter = new PatternSet();
 
@@ -46,7 +46,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact {
         });
 
         getPostdeploy().add(ctx -> {
-            FRCPlugin.ownDirectory(ctx, FRCPlugin.LIB_DEPLOY_DIR);
+            FRCDeployPlugin.ownDirectory(ctx, FRCDeployPlugin.LIB_DEPLOY_DIR);
             ctx.execute("ldconfig");
         });
     }
