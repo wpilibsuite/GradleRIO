@@ -1,5 +1,5 @@
 import org.junit.Test;
-import edu.wpi.cscore.*;
+import edu.wpi.first.cscore.*;
 
 public class TestCode {
     @Test
