@@ -23,7 +23,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
