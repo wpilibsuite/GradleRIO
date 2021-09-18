@@ -9,7 +9,7 @@ package frc.robot;
 
 import java.io.IOException;
 
-import edu.wpi.first.wpiutil.RuntimeLoader;
+import edu.wpi.first.util.RuntimeLoader;
 
 public class JNICode {
   static RuntimeLoader<JNICode> loader = null;

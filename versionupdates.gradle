@@ -2,16 +2,16 @@
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
   smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:win64',
+  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
   robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
   robotBuilderOldVersion: 'edu.wpi.first.tools:RobotBuilder-Old:+',
   shuffleboardVersion: 'edu.wpi.first.shuffleboard:shuffleboard:+:win64',
   pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2021.opencv:opencv-java:+',
-  googleTestVersion: 'edu.wpi.first.thirdparty.frc2021:googletest:+:headers',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:+',
+  googleTestVersion: 'edu.wpi.first.thirdparty.frc2022:googletest:+:headers',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',
-  imguiVersions: 'edu.wpi.first.thirdparty.frc2021:imgui:+:headers',
+  imguiVersions: 'edu.wpi.first.thirdparty.frc2022:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 

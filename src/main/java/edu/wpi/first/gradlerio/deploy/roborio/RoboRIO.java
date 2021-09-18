@@ -169,7 +169,7 @@ public class RoboRIO extends WPIRemoteTarget {
             int index = x.indexOf("*");
             if (index == -1) {
                 // no wildcard, check if versions are equal
-                return x == image;
+                return x.equals(image);
             } else if (index > image.length()) {
                 return false;
             } else {

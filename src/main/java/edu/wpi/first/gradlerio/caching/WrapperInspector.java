@@ -36,7 +36,11 @@ public class WrapperInspector {
     }
 
     public static boolean requiresUpdate(Properties props) {
-        return props.getProperty(WrapperExecutor.ZIP_STORE_PATH_PROPERTY) == "wrapper/dists" || props.getProperty(WrapperExecutor.DISTRIBUTION_PATH_PROPERTY) == "wrapper/dists";
+        String zipStorePath = props.getProperty(WrapperExecutor.ZIP_STORE_PATH_PROPERTY);
+        String distributionPath = props.getProperty(WrapperExecutor.DISTRIBUTION_PATH_PROPERTY);
+        boolean isZipStoreValid = zipStorePath != null && zipStorePath.equals("wrapper/dists");
+        boolean isDistributionPathValid = distributionPath != null && distributionPath.equals("wrapper/dists");
+        return isZipStoreValid || isDistributionPathValid;
     }
 
 }

@@ -17,19 +17,19 @@ public class WPITool implements Named {
 
     private final Provider<String> version;
 
-    public WPITool(Project project, String name, Provider<String> version, String artifactId, boolean platformJars) {
+    public WPITool(Project project, String name, Provider<String> version, String groupId, String artifactName, boolean platformJars) {
         Configuration config = project.getConfigurations().getByName("wpiTools");
         String toolsClassifier = project.getExtensions().getByType(WPIExtension.class).getToolsClassifier();
         Provider<String> fullId = project.getProviders().provider(() -> {
-            String id = artifactId;
+            String id = groupId + ":" + artifactName;
             id += ":" + version.get();
             if (platformJars) {
                 id += ":" + toolsClassifier;
             }
             return id;
         });
-        Dependency dependency = project.getDependencies().add("wpiTools", fullId);
-        toolInstallTask = project.getTasks().register(name + "Install".toString(), ToolInstallTask.class, name, config, dependency);
+        project.getDependencies().add("wpiTools", fullId);
+        toolInstallTask = project.getTasks().register(name + "Install".toString(), ToolInstallTask.class, name, config, artifactName);
         toolRunTask = project.getTasks().register(name, ToolRunTask.class, name, toolInstallTask);
         this.name = name;
         this.version = version;

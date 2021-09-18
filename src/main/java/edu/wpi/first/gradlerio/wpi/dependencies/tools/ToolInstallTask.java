@@ -18,10 +18,12 @@ import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
@@ -29,7 +31,7 @@ import org.gradle.process.ExecSpec;
 public class ToolInstallTask extends DefaultTask {
     private final String toolName;
     private final Configuration configuration;
-    private final Dependency dependency;
+    private final String artifactName;
     private static final Type mapType = new TypeToken<List<ToolConfig>>() {
     }.getType();
 
@@ -54,8 +56,8 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     @Internal
-    public Dependency getDependency() {
-        return dependency;
+    public String getArtifactName() {
+        return artifactName;
     }
 
     @SuppressWarnings("unused")
@@ -76,13 +78,13 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     @Inject
-    public ToolInstallTask(String toolName, Configuration configuration, Dependency dep) {
+    public ToolInstallTask(String toolName, Configuration configuration, String artifactName) {
         setGroup("GradleRIO");
         setDescription("Install the tool " + toolName);
 
         this.toolName = toolName;
         this.configuration = configuration;
-        this.dependency = dep;
+        this.artifactName = artifactName;
     }
 
     private static synchronized Optional<ToolConfig> getExistingToolVersion(String toolName) {
@@ -115,7 +117,7 @@ public class ToolInstallTask extends DefaultTask {
                 toolTxt = ResourceGroovyMethods.getText(toolFile);
 
                 List<ToolConfig> tools = gson.fromJson(toolTxt, mapType);
-                tools.removeIf(x -> x.name == tool.name);
+                tools.removeIf(x -> x.name.equals(tool.name));
                 tools.add(tool);
                 String json = builder.create().toJson(tools);
                 ResourceGroovyMethods.setText(toolFile, json);
@@ -133,30 +135,45 @@ public class ToolInstallTask extends DefaultTask {
         return new File(toolsFolder, toolName + ".vbs");
     }
 
+    private Dependency getDependencyObject() {
+        for (Dependency dep : configuration.getDependencies()) {
+            if (dep.getName().equals(artifactName)) {
+                return dep;
+            }
+        }
+        return null;
+    }
+
     @TaskAction
     public void installTool() {
         // First check to see if both script and jar exist
         boolean jarExists = new File(toolsFolder, toolName + ".jar").exists();
         boolean scriptExists = getScriptFile().exists();
 
+        Dependency dependency = getDependencyObject();
+
+        if (dependency == null) {
+            throw new GradleException("Tool " + artifactName + " not found in dependency list");
+        }
+
         if (!jarExists || !scriptExists) {
-            extractAndInstall();
+            extractAndInstall(dependency);
             return;
         }
 
         Optional<ToolConfig> existingVersion = getExistingToolVersion(toolName);
         if (existingVersion.isEmpty()) {
-            extractAndInstall();
+            extractAndInstall(dependency);
             return;
         }
 
         // Check version
         if (dependency.getVersion().compareTo(existingVersion.get().version) > 0) {
-            extractAndInstall();
+            extractAndInstall(dependency);
         }
     }
 
-    private void extractAndInstall() {
+    private void extractAndInstall(Dependency dependency) {
         File jarfile = configuration.files(dependency).iterator().next();
         File of = toolsFolder;
         of.mkdirs();
@@ -165,7 +182,7 @@ public class ToolInstallTask extends DefaultTask {
             public void execute(CopySpec cp) {
                 cp.from(jarfile);
                 cp.into(of);
-                cp.rename("*", toolName + ".jar");
+                cp.rename(f -> toolName + ".jar");
             }
         });
         if (OperatingSystem.current().isWindows()) {

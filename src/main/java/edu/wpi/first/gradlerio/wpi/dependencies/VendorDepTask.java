@@ -87,7 +87,7 @@ public class VendorDepTask extends DefaultTask {
         }
 
         File[] matches = localFolder.listFiles((dir, name) -> {
-            return name == filename;
+            return name.equals(filename);
         });
 
         // no matches means that source file doesn't exist
