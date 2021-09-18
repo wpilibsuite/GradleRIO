@@ -227,7 +227,7 @@ public class WPIJavaExtension {
         releaseNativeConfiguration = project.getConfigurations().create("nativeRelease");
 
         PatternFilterable filterable = new PatternSet();
-        filterable.include("**/*.so", "**/*.dylib", "**/*.pdb", "**/*.dll");
+        filterable.include("**/*.so*", "**/*.dylib", "**/*.pdb", "**/*.dll");
 
         ArtifactView debugView = debugNativeConfiguration.getIncoming().artifactView(viewConfiguration -> {
             viewConfiguration.attributes(attributeContainer -> {

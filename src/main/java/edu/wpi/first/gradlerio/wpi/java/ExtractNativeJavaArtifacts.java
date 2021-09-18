@@ -34,11 +34,6 @@ public abstract class ExtractNativeJavaArtifacts extends DefaultTask {
                 copySpec.into(parameters.getDestinationDirectory());
                 copySpec.from(parameters.getFiles());
             });
-
-            File[] fileList = parameters.getDestinationDirectory().get().getAsFile().listFiles();
-            for (File file : fileList) {
-                System.out.println(file.getAbsolutePath());
-            }
         }
     }
 

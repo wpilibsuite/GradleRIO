@@ -98,7 +98,7 @@ public class SimulationExtension {
         releaseConfiguration = project.getConfigurations().create("simulationRelease");
 
         PatternFilterable filterable = new PatternSet();
-        filterable.include("**/*.so", "**/*.dylib", "**/*.pdb", "**/*.dll");
+        filterable.include("**/*.so*", "**/*.dylib", "**/*.pdb", "**/*.dll");
 
         debugArtifactView = debugConfiguration.getIncoming().artifactView(viewConfiguration -> {
             viewConfiguration.attributes(attributeContainer -> {
