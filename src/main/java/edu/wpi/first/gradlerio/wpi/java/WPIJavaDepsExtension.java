@@ -48,7 +48,7 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("edu.wpi.first.hal", "hal-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpiutil", "wpiutil-java", versions.getWpilibVersion());
 
-        createJavaDependencies("edu.wpi.first.thirdparty.frc2021.opencv", "opencv-java", versions.getOpencvVersion());
+        createJavaDependencies("edu.wpi.first.thirdparty.frc2022.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
 
         createJavaDependencies("com.fasterxml.jackson.core", "jackson-annotations", versions.getJacksonVersion());
@@ -78,7 +78,7 @@ public class WPIJavaDepsExtension {
             createJniDependency("edu.wpi.first.wpimath", "wpimath-cpp", versions.getWpimathVersion(), debug, platform),
             createJniDependency("edu.wpi.first.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.thirdparty.frc2021.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
+            createJniDependency("edu.wpi.first.thirdparty.frc2022.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
             createJniDependency("edu.wpi.first.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform)
         );
     }
