@@ -20,17 +20,16 @@ import edu.wpi.first.toolchain.NativePlatforms;
 public class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
 
-    private static final List<String> validImageVersions = List.of("2020_v10", "2021_v1", "2021_v2", "2021_v3.*");
+    private static final List<String> validImageVersions = List.of("2022_v2.*");
 
     private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2021:11.0.9u11-1";
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
 
-
     private final WPIMavenExtension maven;
     private final SimulationExtension sim;
 
-    private String frcYear = "2021";
+    private String frcYear = "2022";
 
     private final NativePlatforms platforms;
 
