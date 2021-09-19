@@ -12,39 +12,12 @@ deploy {
     targets {
         roborio(RoboRIO) {
             team = project.frc.getTeamNumber()
-            debug = true
+            debug = true // TODO make this automated
 
             frcNativeArtifact('frcCpp') {
             }
         }
-        // frc {
-        //     roboRIO("roborio") {
-        //         // Team number is loaded either from the .wpilib/wpilib_preferences.json
-        //         // or from command line. If not found an exception will be thrown.
-        //         // You can use getTeamOrDefault(team) instead of getTeamNumber if you
-        //         // want to store a team number in this file.
-        //         team = project.frc.getTeamNumber()
-        //     }
-        // }
     }
-    // artifacts {
-    //     frc {
-    //         frcNativeArtifact('frcCpp') {
-    //             target = "roborio"
-    //             component = 'frcUserProgram'
-    //             // Debug can be overridden by command line, for use with VSCode
-    //             debug = project.frc.getDebugOrDefault(false)
-    //         }
-    //     }
-        // // Built in artifact to deploy arbitrary files to the roboRIO.
-        // fileTreeArtifact('frcStaticFileDeploy') {
-        //     // The directory below is the local directory to deploy
-        //     files = fileTree(dir: 'src/main/deploy')
-        //     // Deploy to RoboRIO target, into /home/lvuser/deploy
-        //     targets << "roborio"
-        //     directory = '/home/lvuser/deploy'
-        // }
-    //}
 }
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcCpp

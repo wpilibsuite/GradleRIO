@@ -1,4 +1,0 @@
-
-> Configure project :
-Adding maven
-1st after evaluate
