@@ -35,7 +35,7 @@ public class FRCJREArtifact extends MavenArtifact {
 
         getPostdeploy().add(ctx -> {
             ctx.getLogger().log("Installing JRE...");
-            ctx.execute("opkg remove frc2021-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk");
+            ctx.execute("opkg remove frc2022-openjdk*; opkg install /tmp/frcjre.ipk; rm /tmp/frcjre.ipk");
             ctx.getLogger().log("JRE Deployed!");
         });
 
