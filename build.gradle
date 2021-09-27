@@ -15,29 +15,28 @@ repositories {
 
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
-    api 'edu.wpi.first:gradle-cpp-vscode:0.12.0'
+    api 'edu.wpi.first:gradle-cpp-vscode:1.0.0'
 
-    api 'edu.wpi.first:native-utils:2022.0.2'
+    api 'edu.wpi.first:native-utils:2022.3.0'
 
-    api 'de.undercouch:gradle-download-task:4.1.1'
+    api 'de.undercouch:gradle-download-task:4.1.2'
 
-    testImplementation('org.spockframework:spock-core:1.2-groovy-2.5') {
+    testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'
     }
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation gradleTestKit()
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 
 archivesBaseName = "GradleRIO"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-compileGroovy {
-    sourceCompatibility = '8'
-    targetCompatibility = '8'
-}
+sourceCompatibility = 11
+targetCompatibility = 11
 
 allprojects {
     group = "edu.wpi.first"
@@ -105,6 +104,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '6.0'
+    gradleVersion = '7.1.1'
     distributionType = Wrapper.DistributionType.BIN
 }

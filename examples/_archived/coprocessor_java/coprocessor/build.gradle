@@ -1,4 +1,4 @@
-apply plugin: 'jaci.gradle.EmbeddedTools'
+apply plugin: 'edu.wpi.first.deployutils.DeployUtils'
 
 deploy {
     targets {
@@ -20,7 +20,7 @@ deploy {
 }
 
 repositories {
-    // Since my Apache Commons dependency (defined below) exists in the Maven Central Repository, 
+    // Since my Apache Commons dependency (defined below) exists in the Maven Central Repository,
     // I need to define it as a repository for this project.
     mavenCentral()
 }

@@ -13,7 +13,7 @@ This example makes use of multi-project builds, an extremely powerful feature of
 
 The root project links these projects together through the use of [settings.gradle](settings.gradle). Each project has its own build.gradle, as does the root project.
 
-NOTE: The coprocessor project uses EmbeddedTools, the backing library behind GradleRIO. It features everything that GradleRIO does, without the frc-specific
+NOTE: The coprocessor project uses DeployUtils, the backing library behind GradleRIO. It features everything that GradleRIO does, without the frc-specific
 stuff, which is why we use it on the coprocessor instead of GradleRIO.
 
 ## Toolchains

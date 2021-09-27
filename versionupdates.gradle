@@ -11,7 +11,7 @@ def versionMap = [
   opencvVersion: 'edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:+',
   googleTestVersion: 'edu.wpi.first.thirdparty.frc2022:googletest:+:headers',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',
-  imguiVersions: 'edu.wpi.first.thirdparty.frc2022:imgui:+:headers',
+  imguiVersion: 'edu.wpi.first.thirdparty.frc2022:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 
@@ -42,7 +42,7 @@ String mavenDevRegex = "this\\.useDevelopment\\s*=\\s*(true|false)"
 
 tasks.register('UpdateVersions') {
   doLast {
-    def mavenExtFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.groovy')
+    def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
     def mavenExtText = mavenExtFile.text
     def toSet = "this.useDevelopment = false"
     if (project.hasProperty(useDevelopmentProperty)) {
@@ -52,7 +52,7 @@ tasks.register('UpdateVersions') {
     mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
 
 
-    def extFile = file('src/main/groovy/edu/wpi/first/gradlerio/wpi/WPIExtension.groovy')
+    def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
     def extText = extFile.text
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       versionMap.each { key, value ->

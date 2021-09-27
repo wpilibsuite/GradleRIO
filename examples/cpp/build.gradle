@@ -1,38 +1,26 @@
+import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
+
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2022.0.0-alpha-2"
+    id "edu.wpi.first.GradleRIO" version "2022.0.0"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
+// This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
-        roboRIO("roborio") {
-            // Team number is loaded either from the .wpilib/wpilib_preferences.json
-            // or from command line. If not found an exception will be thrown.
-            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
-            // want to store a team number in this file.
-            team = frc.getTeamNumber()
-        }
-    }
-    artifacts {
-        frcNativeArtifact('frcCpp') {
-            targets << "roborio"
-            component = 'frcUserProgram'
-            // Debug can be overridden by command line, for use with VSCode
-            debug = frc.getDebugOrDefault(false)
-        }
-        // Built in artifact to deploy arbitrary files to the roboRIO.
-        fileTreeArtifact('frcStaticFileDeploy') {
-            // The directory below is the local directory to deploy
-            files = fileTree(dir: 'src/main/deploy')
-            // Deploy to RoboRIO target, into /home/lvuser/deploy
-            targets << "roborio"
-            directory = '/home/lvuser/deploy'
+        roborio(RoboRIO) {
+            team = project.frc.getTeamNumber()
+            debug = true // TODO make this automated
+
+            frcNativeArtifact('frcCpp') {
+            }
         }
     }
 }
+
+def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
 
 // Set this to true to include the src folder in the include directories passed
 // to the compiler. Some eclipse project imports depend on this behavior.
@@ -40,21 +28,26 @@ deploy {
 // imports this is enabled by default. For new projects, its disabled
 def includeSrcInIncludeRoot = false
 
-dependencies {
-    // In C++ for now, the argument must be true
-    simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
-    simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
+// dependencies {
+//     // In C++ for now, the argument must be true
+//     simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
+//     simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
 
-    // Websocket extensions require additional configuration.
-    // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
-    // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
-}
+//     // Websocket extensions require additional configuration.
+//     // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
+//     // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
+// }
 
-// Simulation configuration (e.g. environment variables).
-sim {
-    // Sets the websocket client remote host.
-    // envVar "HALSIMWS_HOST", "10.0.0.2"
-}
+// // Simulation configuration (e.g. environment variables).
+// sim {
+//     // Sets the websocket client remote host.
+//     // envVar "HALSIMWS_HOST", "10.0.0.2"
+// }
+
+wpi.cpp.debugSimulation = false
+
+wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addDriverstation()
 
 model {
     components {
@@ -74,9 +67,13 @@ model {
                 }
             }
 
+            deployArtifact.component = it
+            wpi.cpp.enableExternalTasks(it)
+
+            wpi.sim.enable(it)
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-            wpi.deps.vendor.cpp(it)
-            wpi.deps.wpilib(it)
+            wpi.cpp.vendor.cpp(it)
+            wpi.cpp.deps.wpilib(it)
         }
     }
     testSuites {
@@ -90,9 +87,16 @@ model {
                 }
             }
 
-            wpi.deps.vendor.cpp(it)
-            wpi.deps.wpilib(it)
-            wpi.deps.googleTest(it)
+            wpi.cpp.enableExternalTasks(it)
+
+            wpi.cpp.vendor.cpp(it)
+            wpi.cpp.deps.wpilib(it)
+            wpi.cpp.deps.googleTest(it)
         }
     }
+}
+
+wrapper {
+    gradleVersion = '7.1.1'
+    distributionType = Wrapper.DistributionType.BIN
 }

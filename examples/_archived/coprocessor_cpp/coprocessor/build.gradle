@@ -1,4 +1,4 @@
-apply plugin: 'jaci.gradle.EmbeddedTools'
+apply plugin: 'edu.wpi.first.deployutils.DeployUtils'
 
 deploy {
     targets {
@@ -34,11 +34,11 @@ model {
             // This toolchain will respond to my rpiArm platform
             setTargets('rpiArm')
             eachPlatform {
-                // Defining my gcc, ar, g++, etc binaries to use the 'arm-linux-gnueabihf' prefix, with no suffix. 
+                // Defining my gcc, ar, g++, etc binaries to use the 'arm-linux-gnueabihf' prefix, with no suffix.
                 // This is the prefix the Raspberry Pi uses, but may be different for your coprocessor.
                 defineTools(it, 'arm-linux-gnueabihf-', '')
 
-                // Here we're just simply telling Gradle that we want to compile with C++11. 
+                // Here we're just simply telling Gradle that we want to compile with C++11.
                 linker.withArguments { a -> a << '-std=c++11'}
             }
             // Here I'm telling Gradle where my toolchain is located. In this case, it is relative to my project directory.

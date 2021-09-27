@@ -1,16 +1,16 @@
-// Note 'apply false' for each plugin. This ensures they aren't applied to the root project (here), 
+// Note 'apply false' for each plugin. This ensures they aren't applied to the root project (here),
 // but it makes the plugins available for subprojects.
 plugins {
     // GradleRIO is used for code intended to go on robots, which is why it's only applied to the 'robot' project.
     id "edu.wpi.first.GradleRIO" version "<REPLACEME latest>" apply false
 
-    // EmbeddedTools is the backing library for GradleRIO, and includes everything that's non-frc specific, which
+    // DeployUtils is the backing library for GradleRIO, and includes everything that's non-frc specific, which
     // is why we use it for our coprocessor project.
-    id "jaci.gradle.EmbeddedTools" version "<REPLACEME latest>" apply false
+    id "edu.wpi.first.deployutils.DeployUtils" version "<REPLACEME latest>" apply false
 }
 
 // Using the 'idea' plugin allows us to use IntelliJ IDEA. IntelliJ works out-of-the-box with multiproject builds
-// and so it's very, very easy to integrate with GradleRIO and EmbeddedTools.
+// and so it's very, very easy to integrate with GradleRIO and DeployUtils.
 // We need to apply 'idea' to all projects, including the root project (here).
 allprojects {
     apply plugin: "idea"
