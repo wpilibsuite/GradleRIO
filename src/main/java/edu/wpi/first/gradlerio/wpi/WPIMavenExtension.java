@@ -23,7 +23,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         super(WPIMavenRepo.class, DirectInstantiator.INSTANCE, CollectionCallbackActionDecorator.NOOP);
         this.project = project;
 
-        this.useDevelopment = true; // Do not rename without changing versionupdates.gradle
+        this.useDevelopment = false; // Do not rename without changing versionupdates.gradle
         this.useLocal = true;
         this.useFrcMavenLocalDevelopment = false;
         this.useFrcMavenLocalRelease = false;
