@@ -96,9 +96,9 @@ public class RoboRIO extends WPIRemoteTarget {
             "172.22.11.2", // USB
 
             // Weird Environments
-            "roborio-" + team + "FRC", // Default DNS
-            "roborio-" + team + "FRC.lan", // LAN mDNS/DNS
-            "roborio-" + team + "FRC.frc-field.local" /// Practice Field mDNS
+            "roborio-" + team + "-FRC", // Default DNS
+            "roborio-" + team + "-FRC.lan", // LAN mDNS/DNS
+            "roborio-" + team + "-FRC.frc-field.local" /// Practice Field mDNS
         );
     }
 
