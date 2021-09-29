@@ -22,6 +22,7 @@ public abstract class WPIVersionsExtension {
     private static final String robotBuilderOldVersion = "2021.3.1";
     private static final String pathWeaverVersion = "2021.2.2-21-g765f50b";
     private static final String glassVersion = "2022.0.0-alpha-2-75-gc42e053";
+    private static final String sysIdVersion = "2022.1.1-alpha-1";
 
 
     public abstract Property<String> getWpilibVersion();
@@ -40,6 +41,7 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getRobotBuilderOldVersion();
     public abstract Property<String> getPathWeaverVersion();
     public abstract Property<String> getGlassVersion();
+    public abstract Property<String> getSysIdVersion();
 
     @Inject
     public WPIVersionsExtension() {
@@ -59,6 +61,7 @@ public abstract class WPIVersionsExtension {
         getRobotBuilderOldVersion().convention(robotBuilderOldVersion);
         getPathWeaverVersion().convention(pathWeaverVersion);
         getGlassVersion().convention(glassVersion);
+        getSysIdVersion().convention(sysIdVersion);
     }
 
 }
