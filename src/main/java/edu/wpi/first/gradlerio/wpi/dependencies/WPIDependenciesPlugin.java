@@ -17,6 +17,7 @@ import edu.wpi.first.deployutils.deploy.artifact.Artifact;
 import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
+import edu.wpi.first.gradlerio.PreemptiveDownloadTask;
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJavaArtifact;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
@@ -59,16 +60,18 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
 
         // // We need to register our own task for this, since .doFirst on compileJava (or any Jar task), won"t work
         // // if it"s up-to-date
-        TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
-            t.doFirst(new Action<Task>() {
-                @Override
-                public void execute(Task t) {
-                    // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
-                    // run an online deploy dry or downloadAll task.
-                    downloadDepsPreemptively(project, logger);
-                }
-            });
-        });
+        // TaskProvider<Task> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", t -> {
+        //     t.doFirst(new Action<Task>() {
+        //         @Override
+        //         public void execute(Task t) {
+        //             // On build, download all libs that will be needed for deploy to lessen the cases where the user has to
+        //             // run an online deploy dry or downloadAll task.
+        //             downloadDepsPreemptively(project, logger);
+        //         }
+        //     });
+        // });
+
+        TaskProvider<PreemptiveDownloadTask> lazyPreempt = project.getTasks().register("downloadDepsPreemptively", PreemptiveDownloadTask.class);
 
         project.getTasks().register("vendordep", VendorDepTask.class, task -> {
             task.setGroup("GradleRIO");
@@ -79,34 +82,4 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
             jarTask.dependsOn(lazyPreempt);
         });
     }
-
-    private void downloadDepsPreemptively(Project project, ETLogger logger) {
-        List<Configuration> configs = new ArrayList<>();
-
-        for (RemoteTarget target : project.getExtensions().getByType(DeployExtension.class).getTargets()) {
-            for (Artifact artifact : target.getArtifacts()) {
-                if (artifact instanceof FRCJREArtifact) {
-                    Configuration cfg = ((FRCJREArtifact)artifact).getConfiguration().get();
-                    logger.info("Found JRE Configuration: " + cfg.getName());
-                    configs.add(cfg);
-                } else if (artifact instanceof FRCJavaArtifact) {
-                    Configuration cfg = ((FRCJavaArtifact)artifact).getNativeZipArtifact().getConfiguration().get();
-                    logger.info("Found Java Configuration: " + cfg.getName());
-                    configs.add(cfg);
-                }
-            }
-        }
-
-        for (Configuration cfg : configs) {
-            if (cfg.isCanBeResolved()) {
-                logger.info("Resolving Deps Configuration: " + cfg.getName());
-                for (ResolvedArtifact art : cfg.getResolvedConfiguration().getResolvedArtifacts()) {
-                    logger.info(" ->" + art.getFile());
-                }
-            } else {
-                logger.info("Can't resolve: " + cfg.getName());
-            }
-        }
-    }
-
 }

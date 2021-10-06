@@ -2,7 +2,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1-alpha-2"
+    id "edu.wpi.first.GradleRIO" version "2022.1.1-alpha-222"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11

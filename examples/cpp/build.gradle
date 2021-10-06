@@ -3,7 +3,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1-alpha-2"
+    id "edu.wpi.first.GradleRIO" version "2022.1.1-alpha-222"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
