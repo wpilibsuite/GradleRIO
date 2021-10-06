@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.provider.ProviderFactory;
 
 import edu.wpi.first.deployutils.log.ETLogger;
