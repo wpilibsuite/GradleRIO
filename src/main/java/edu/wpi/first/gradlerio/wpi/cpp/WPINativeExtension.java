@@ -148,7 +148,7 @@ public class WPINativeExtension {
             t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/release_native.json"));
         });
 
-        debugExternalSimulationTask = project.getTasks().register("simulateExternalNative", NativeExternalSimulationTask.class, t -> {
+        debugExternalSimulationTask = project.getTasks().register("simulateExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
             t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/debug_native.json"));
         });
 
@@ -156,7 +156,7 @@ public class WPINativeExtension {
             t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/release_native.json"));
         });
 
-        debugExternalTestSimulationTask = project.getTasks().register("testExternalNative", NativeExternalSimulationTask.class, t -> {
+        debugExternalTestSimulationTask = project.getTasks().register("testExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
             t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/debug_native.json"));
         });
     }
