@@ -3,6 +3,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'idea'
     id 'maven-publish'
+    id 'java'
     id 'groovy'
 }
 

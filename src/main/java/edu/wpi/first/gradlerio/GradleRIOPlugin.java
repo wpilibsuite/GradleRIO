@@ -49,11 +49,6 @@ public class GradleRIOPlugin implements Plugin<Project> {
         //project.getPluginManager().apply(IDEPlugin.class);
         //project.getPluginManager().apply(TestPlugin.class);
 
-        project.getTasks().register("downloadAll", DownloadAllTask.class, t -> {
-            t.setGroup("GradleRIO");
-            t.setDescription("Download all dependencies that may be used by this project");
-        });
-
         project.getTasks().withType(Wrapper.class).configureEach(wrapper -> {
             if (!project.hasProperty("no-gradlerio-wrapper")) {
                 wrapper.setDistributionPath("permwrapper/dists");
@@ -189,12 +184,12 @@ public class GradleRIOPlugin implements Plugin<Project> {
         for (Throwable t : exceptions) {
             if (t instanceof ArtifactResolveException) {
                 if (reasons.add("ArtifactResolve".hashCode())) {
-                    // Encourage user to run downloadAll task to prepare dependencies.
+                    // Encourage user to run build task to prepare dependencies.
                     // ./gradlew deploy -PdeployDry will also work, but for safety we should encourage all downloads
                     // in case requirements change at competition.
                     logger.logErrorHead("Dependency Error!");
                     logger.logError("GradleRIO detected this build failed due to missing dependencies!");
-                    logger.logError("Try again with `./gradlew downloadAll` whilst connected to the internet (not the robot!)");
+                    logger.logError("Try again with `./gradlew build` whilst connected to the internet (not the robot!)");
                     logger.logError("If the error persists, ensure you are not behind a firewall / proxy server (common in schools)");
                 }
             }
