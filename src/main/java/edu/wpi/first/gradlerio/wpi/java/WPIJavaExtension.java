@@ -221,7 +221,7 @@ public class WPIJavaExtension {
         debugJni = project.getObjects().property(Boolean.class);
         debugJni.set(false);
         deps = project.getObjects().newInstance(WPIJavaDepsExtension.class, versions);
-        vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions);
+        vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions, project);
 
         debugNativeConfiguration = project.getConfigurations().create("nativeDebug");
         releaseNativeConfiguration = project.getConfigurations().create("nativeRelease");

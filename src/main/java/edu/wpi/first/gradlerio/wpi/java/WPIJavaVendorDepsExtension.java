@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
@@ -21,18 +23,36 @@ public class WPIJavaVendorDepsExtension {
     private final WPIVendorDepsExtension vendorDeps;
     private final ProviderFactory providerFactory;
     private final WPIVersionsExtension versions;
+    private final Project project;
 
     @Inject
-    public WPIJavaVendorDepsExtension(WPIVendorDepsExtension vendorDeps, WPIVersionsExtension versions, ProviderFactory providerFactory) {
+    public WPIJavaVendorDepsExtension(WPIVendorDepsExtension vendorDeps, WPIVersionsExtension versions, ProviderFactory providerFactory, Project project) {
         this.vendorDeps = vendorDeps;
         this.providerFactory = providerFactory;
         this.versions = versions;
+        this.project = project;
     }
 
     public List<Provider<String>> java(String... ignore) {
         return vendorDeps.getDependenciesMap().entrySet().stream().map(x -> x.getValue()).filter(x -> !WPIVendorDepsExtension.isIgnored(ignore, x))
                 .map(x -> List.of(x.javaDependencies)).flatMap(List<JavaArtifact>::stream).map(art -> {
-                    Callable<String> cbl = () -> art.groupId + ":" + art.artifactId + ":" + WPIVendorDepsExtension.getVersion(art.version, providerFactory, versions);
+                    String baseId = art.groupId + ":" + art.artifactId;
+                    Callable<String> cbl = () -> baseId + ":" + WPIVendorDepsExtension.getVersion(art.version, providerFactory, versions);
+
+                    try {
+                        project.getDependencies().getComponents().withModule(baseId, details -> {
+                            details.allVariants(varMeta -> {
+                                varMeta.withDependencies(col -> {
+                                    col.removeIf(item -> item.getGroup().startsWith("edu.wpi.first"));
+                                });
+                            });
+                        });
+                    } catch (Exception ex) {
+                        Logger logger = Logger.getLogger(this.getClass());
+                        logger.warn("Issue setting component metadata for " + baseId + ". Build could have issues with incorrect transitive dependencies.");
+                        logger.warn("Please create an issue at https://github.com/wpilibsuite/allwpilib with this message so we can investigate");
+                    }
+
                     return providerFactory.provider(cbl);
                 }).collect(Collectors.toList());
     }
