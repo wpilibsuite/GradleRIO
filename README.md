@@ -45,6 +45,11 @@ Download the JSON file from the vendor-provided URL, and save it to the `vendord
 This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project.
 
 ### Insecure Protocol Warning
+
+| :warning: WARNING          |
+|:---------------------------|
+| The following change to your ``build.gradle`` file [enables communication over insecure protocols, thereby allowing for a man-in-the-middle to impersonate the intended server, and giving an attacker the ability to serve malicious executable code onto the system.](https://docs.gradle.org/7.2/dsl/org.gradle.api.artifacts.repositories.MavenArtifactRepository.html#org.gradle.api.artifacts.repositories.MavenArtifactRepository:allowInsecureProtocol) This change should only be made if you understand the consequences, and first you should check for a newer version of the vendor dependency that uses HTTPS for its Maven repository.
+
 If building after adding a vendor library results in an error along the lines of:
 
 ```
