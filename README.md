@@ -44,6 +44,41 @@ Create a folder `vendordeps` in your project directory if it doesn't already exi
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
 This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project.
 
+### Insecure Protocol Warning
+If building after adding a vendor library results in an error along the lines of:
+
+```
+Using insecure protocols with repositories, without explicit opt-in, is unsupported. Switch Maven repository 'WPIcda7b4b1-d003-44ad-a1ef-485c1347059a_0Release(http://www.example.com/maven/)' to redirect to a secure protocol (like HTTPS) or allow insecure protocols.
+```
+
+Add the following line to your ``build.gradle`` after the plugin section.
+```groovy
+wpi.maven.allowInsecureProtocol = true
+```
+
+The top of your ``build.gradle`` file should now look similar to the code below. Ignore any differences in versions.
+
+Java
+```groovy
+plugins {
+  id "java"
+  id "edu.wpi.first.GradleRIO" version "2022.1.1"
+}
+
+wpi.maven.allowInsecureProtocol = true
+```
+
+C++
+```groovy
+plugins {
+  id "cpp"
+  id "google-test-test-suite"
+  id "edu.wpi.first.GradleRIO" version "2022.1.1"
+}
+
+wpi.maven.allowInsecureProtocol = true
+```
+
 ## Commands
 Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `powershell`
 

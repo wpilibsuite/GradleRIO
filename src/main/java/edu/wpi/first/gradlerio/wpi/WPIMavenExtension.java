@@ -17,6 +17,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private boolean useFrcMavenLocalDevelopment;
     private boolean useFrcMavenLocalRelease;
     private boolean useMavenCentral;
+    private boolean allowInsecureProtocol;
 
     @Inject
     public WPIMavenExtension(Project project) {
@@ -28,6 +29,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalDevelopment = false;
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
+        this.allowInsecureProtocol = false;
 
         mirror("Official", mirror -> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
@@ -65,6 +67,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return useMavenCentral;
     }
 
+    public boolean isAllowInsecureProtocol() {
+        return allowInsecureProtocol;
+    }
+
     public void setUseDevelopment(boolean useDevelopment) {
         this.useDevelopment = useDevelopment;
     }
@@ -83,6 +89,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
 
     public void setUseMavenCentral(boolean useMavenCentral) {
         this.useMavenCentral = useMavenCentral;
+    }
+
+    public void setAllowInsecureProtocol(boolean allowInsecureProtocol) {
+        this.allowInsecureProtocol = allowInsecureProtocol;
     }
 
     // Mirror = source for WPILib artifacts

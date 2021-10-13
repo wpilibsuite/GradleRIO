@@ -116,6 +116,10 @@ public class WPIPlugin implements Plugin<Project> {
         for (WPIMavenRepo mirror : sortedMirrors) {
             if (mirror.getRelease() != null) {
                 project.getRepositories().maven(repo -> {
+                    String url = mirror.getRelease();
+                    if (wpi.getMaven().isAllowInsecureProtocol()) {
+                        repo.setAllowInsecureProtocol(true);
+                    }
                     repo.setName("WPI" + mirror.getName() + "Release");
                     repo.setUrl(mirror.getRelease());
                 });
