@@ -1,4 +1,3 @@
-import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "cpp"
@@ -10,11 +9,26 @@ plugins {
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
-        roborio(RoboRIO) {
+        roborio(getTargetTypeClass('RoboRIO')) {
+            // Team number is loaded either from the .wpilib/wpilib_preferences.json
+            // or from command line. If not found an exception will be thrown.
+            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+            // want to store a team number in this file.
             team = project.frc.getTeamNumber()
-            debug = true // TODO make this automated
+            debug = project.frc.getDebugOrDefault(false)
 
-            frcNativeArtifact('frcCpp') {
+            artifacts {
+                // First part is artifact name, 2nd is artifact type
+                // getTargetTypeClass is a shortcut to get the class type using a string
+
+                frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
+                }
+
+                // // Static files artifact
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    files = project.fileTree('src/main/deploy')
+                    directory = '/home/lvuser/deploy'
+                }
             }
         }
     }
@@ -22,32 +36,17 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
 
-// Set this to true to include the src folder in the include directories passed
-// to the compiler. Some eclipse project imports depend on this behavior.
-// We recommend leaving this disabled if possible. Note for eclipse project
-// imports this is enabled by default. For new projects, its disabled
-def includeSrcInIncludeRoot = false
-
-// dependencies {
-//     // In C++ for now, the argument must be true
-//     simulation wpi.deps.sim.gui(wpi.platforms.desktop, true)
-//     simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, true)
-
-//     // Websocket extensions require additional configuration.
-//     // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, true)
-//     // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, true)
-// }
-
-// // Simulation configuration (e.g. environment variables).
-// sim {
-//     // Sets the websocket client remote host.
-//     // envVar "HALSIMWS_HOST", "10.0.0.2"
-// }
+// Simulation configuration
 
 wpi.cpp.debugSimulation = false
 
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
+
+//Sets the websocket client remote host.
+wpi.sim.envVar("HALSIMWS_HOST", "10.0.0.2")
+wpi.sim.addWebsocketsServer().defaultEnabled = true
+wpi.sim.addWebsocketsClient().defaultEnabled = true
 
 model {
     components {
@@ -61,9 +60,6 @@ model {
                 }
                 exportedHeaders {
                     srcDir 'src/main/include'
-                    if (includeSrcInIncludeRoot) {
-                        srcDir 'src/main/cpp'
-                    }
                 }
             }
 
