@@ -62,10 +62,9 @@ public abstract class WPIVendorDepsExtension {
         Object prop = project.findProperty(GRADLERIO_VENDOR_FOLDER_PROPERTY);
         String filepath = DEFAULT_VENDORDEPS_FOLDER_NAME;
         if (prop != null && !prop.equals(DEFAULT_VENDORDEPS_FOLDER_NAME)) {
-            // TODO Fix these
             log.logErrorHead(
-                    "Warning! You have the property $GRADLERIO_VENDOR_FOLDER_PROPERTY set to a non-default value: $prop");
-            log.logError("The default path (from the project root) is $DEFAULT_VENDORDEPS_FOLDER_NAME");
+                    "Warning! You have the property " + GRADLERIO_VENDOR_FOLDER_PROPERTY + " set to a non-default value: " + prop);
+            log.logError("The default path (from the project root) is " + DEFAULT_VENDORDEPS_FOLDER_NAME);
             log.logError(
                     "This can cause GradleRIO to not be able to find the vendordep JSON files, and the dependencies not being loaded.");
             log.logError("This can result in compilation errors and you not being able to deploy code.");
