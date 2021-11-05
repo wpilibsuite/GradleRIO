@@ -24,7 +24,7 @@ deploy {
                 frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
                 }
 
-                // // Static files artifact
+                // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'

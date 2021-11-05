@@ -27,7 +27,7 @@ deploy {
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
                 }
 
-                // // Static files artifact
+                // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
