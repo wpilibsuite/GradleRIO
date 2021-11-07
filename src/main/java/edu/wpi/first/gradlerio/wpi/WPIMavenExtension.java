@@ -17,6 +17,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private boolean useFrcMavenLocalDevelopment;
     private boolean useFrcMavenLocalRelease;
     private boolean useMavenCentral;
+    private boolean useFrcMavenVendorCache;
 
     @Inject
     public WPIMavenExtension(Project project) {
@@ -28,6 +29,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalDevelopment = false;
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
+        this.useFrcMavenVendorCache = true;
 
         mirror("Official", mirror -> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
@@ -39,6 +41,14 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         //     mirror.release = "http://wpimirror.imjac.in/m2/release"
         //     mirror.development = "http://wpimirror.imjac.in/m2/development"
         // }
+    }
+
+    public boolean isUseFrcMavenVendorCache() {
+        return useFrcMavenVendorCache;
+    }
+
+    public void setUseFrcMavenVendorCache(boolean useFrcMavenVendorCache) {
+        this.useFrcMavenVendorCache = useFrcMavenVendorCache;
     }
 
     public Project getProject() {
