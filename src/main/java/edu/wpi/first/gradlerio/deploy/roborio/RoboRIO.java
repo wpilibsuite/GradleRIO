@@ -54,21 +54,6 @@ public class RoboRIO extends WPIRemoteTarget {
         getArtifacts().add(programKillArtifact);
     }
 
-    /**
-     * Create an FRC Native Artifact. Note only Native or Java artifact can be created.
-     *
-     * @param name The artifact name
-     * @param config Configure action
-     * @return Created artifact
-     */
-    public FRCNativeArtifact frcNativeArtifact(String name, Action<? super FRCNativeArtifact> config) {
-        return getArtifacts().create(name, FRCNativeArtifact.class, config);
-    }
-
-    public FRCJavaArtifact frcJavaArtifact(String name, Action<? super FRCJavaArtifact> config) {
-        return getArtifacts().create(name, FRCJavaArtifact.class, config);
-    }
-
     public MultiCommandArtifact getProgramKillArtifact() {
         return programKillArtifact;
     }

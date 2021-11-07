@@ -180,6 +180,14 @@ public class SimulationExtension {
         return addDep("Sim DriverStation", "edu.wpi.first.halsim", "halsim_ds_socket");
     }
 
+    public HalSimExtension addWebsocketsServer() {
+        return addDep("Sim Websockets Server", "edu.wpi.first.halsim", "halsim_ws_server");
+    }
+
+    public HalSimExtension addWebsocketsClient() {
+        return addDep("Sim Websockets Client", "edu.wpi.first.halsim", "halsim_ws_client");
+    }
+
     public List<HalSimPair> getHalSimLocations(List<File> basePaths, boolean debug) {
         List<HalSimPair> extensions = new ArrayList<>();
 
