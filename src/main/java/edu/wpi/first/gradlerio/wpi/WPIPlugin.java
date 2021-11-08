@@ -98,6 +98,13 @@ public class WPIPlugin implements Plugin<Project> {
             });
         }
 
+        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
+            project.getRepositories().maven(repo -> {
+                repo.setName("FRCMavenVendorCache");
+                repo.setUrl("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
+            });
+        }
+
         WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority()).toArray(WPIMavenRepo[]::new);
 
         // If enabled, the development branch should have a higher weight than the release
