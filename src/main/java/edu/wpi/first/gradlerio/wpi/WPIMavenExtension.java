@@ -29,7 +29,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalDevelopment = false;
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
-        this.useFrcMavenVendorCache = false; // Disabled because of perf issues
+        this.useFrcMavenVendorCache = true;
 
         mirror("Official", mirror -> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
