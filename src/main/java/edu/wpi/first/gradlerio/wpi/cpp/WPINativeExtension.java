@@ -21,7 +21,6 @@ import edu.wpi.first.toolchain.NativePlatforms;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.ToolchainPlugin;
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
-import edu.wpi.first.vscode.GradleVsCode;
 
 public class WPINativeExtension {
     private final WPINativeDepsExtension deps;
@@ -127,8 +126,6 @@ public class WPINativeExtension {
             wpiDeps.getImguiVersion().set(versions.getImguiVersion());
             wpiDeps.getWpimathVersion().set(versions.getWpimathVersion());
         });
-
-        project.getPluginManager().apply(GradleVsCode.class);
 
         simulationTaskRelease = project.getTasks().register("simulateNativeRelease", NativeSimulationTask.class);
         simulationTaskDebug = project.getTasks().register("simulateNativeDebug", NativeSimulationTask.class);
