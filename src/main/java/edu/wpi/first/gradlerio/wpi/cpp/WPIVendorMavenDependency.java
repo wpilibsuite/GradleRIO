@@ -12,6 +12,8 @@ import org.gradle.nativeplatform.NativeBinarySpec;
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
+import edu.wpi.first.nativeutils.dependencies.ArtifactType;
+import edu.wpi.first.nativeutils.dependencies.FastDownloadDependencySet;
 import edu.wpi.first.nativeutils.dependencies.ResolvedNativeDependency;
 import edu.wpi.first.nativeutils.dependencies.WPIMavenDependency;
 import edu.wpi.first.nativeutils.dependencies.WPISharedMavenDependency;
@@ -29,7 +31,7 @@ public abstract class WPIVendorMavenDependency extends WPIMavenDependency {
     private final Map<NativeBinarySpec, ResolvedNativeDependency> resolvedDependencies = new HashMap<>();
 
     @Override
-    public ResolvedNativeDependency resolveNativeDependency(NativeBinarySpec binary) {
+    public ResolvedNativeDependency resolveNativeDependency(NativeBinarySpec binary, FastDownloadDependencySet fastDownloadDependencySet) {
         ResolvedNativeDependency resolvedDep = resolvedDependencies.get(binary);
         if (resolvedDep != null) {
             return resolvedDep;
@@ -50,8 +52,8 @@ public abstract class WPIVendorMavenDependency extends WPIMavenDependency {
 
         getTargetPlatforms().addAll(artifact.binaryPlatforms);
 
-        FileCollection headers = getArtifactRoots(getHeaderClassifier().getOrElse(null));
-        FileCollection sources = getArtifactRoots(getSourceClassifier().getOrElse(null));
+        FileCollection headers = getArtifactRoots(getHeaderClassifier().getOrElse(null), ArtifactType.HEADERS, fastDownloadDependencySet);
+        FileCollection sources = getArtifactRoots(getSourceClassifier().getOrElse(null), ArtifactType.SOURCES, fastDownloadDependencySet);
 
         Set<String> targetPlatforms = getTargetPlatforms().get();
         String platformName = binary.getTargetPlatform().getName();
@@ -73,10 +75,10 @@ public abstract class WPIVendorMavenDependency extends WPIMavenDependency {
         FileCollection runtimeFiles;
 
         if (artifact.sharedLibrary) {
-            linkFiles = getArtifactFiles(platformName, buildType, WPISharedMavenDependency.SHARED_MATCHERS, WPISharedMavenDependency.SHARED_EXCLUDES);
-            runtimeFiles = getArtifactFiles(platformName, buildType, WPISharedMavenDependency.RUNTIME_MATCHERS, WPISharedMavenDependency.RUNTIME_EXCLUDES);
+            linkFiles = getArtifactFiles(platformName, buildType, WPISharedMavenDependency.SHARED_MATCHERS, WPISharedMavenDependency.SHARED_EXCLUDES, ArtifactType.LINK, fastDownloadDependencySet);
+            runtimeFiles = getArtifactFiles(platformName, buildType, WPISharedMavenDependency.RUNTIME_MATCHERS, WPISharedMavenDependency.RUNTIME_EXCLUDES, ArtifactType.RUNTIME, fastDownloadDependencySet);
         } else {
-            linkFiles = getArtifactFiles(platformName + "static", buildType, WPIStaticMavenDependency.STATIC_MATCHERS, WPIStaticMavenDependency.EMPTY_LIST);
+            linkFiles = getArtifactFiles(platformName + "static", buildType, WPIStaticMavenDependency.STATIC_MATCHERS, WPIStaticMavenDependency.EMPTY_LIST, ArtifactType.LINK, fastDownloadDependencySet);
             runtimeFiles = getProject().files();
         }
 
