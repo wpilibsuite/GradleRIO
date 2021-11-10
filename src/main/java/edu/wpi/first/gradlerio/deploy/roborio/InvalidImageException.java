@@ -40,5 +40,10 @@ public class InvalidImageException extends RuntimeException {
         this.imageVersion = "";
     }
 
+    public InvalidImageException(String imageFile) {
+        super("Could not parse image version!\n/etc/natinst/share/scs_imagemetadata.ini contents:\n" + imageFile);
+        allowedImageVersions = List.of();
+        this.imageVersion = "";
+    }
 
 }

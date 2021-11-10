@@ -146,7 +146,7 @@ public class RoboRIO extends WPIRemoteTarget {
         }
 
         if (!imageFound) {
-            throw new InvalidImageException();
+            throw new InvalidImageException(content);
         }
     }
 
