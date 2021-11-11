@@ -1,7 +1,7 @@
 plugins {
     id "java"
     id "cpp"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1-beta-1"
+    id "edu.wpi.first.GradleRIO" version "2022.1.1-beta-2"
     id 'edu.wpi.first.GradleJni' version '0.10.1'
 }
 
