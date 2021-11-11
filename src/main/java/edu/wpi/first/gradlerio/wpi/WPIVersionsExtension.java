@@ -6,23 +6,23 @@ import org.gradle.api.provider.Property;
 
 public abstract class WPIVersionsExtension {
 
-    private static final String wpilibVersion = "2022.1.1-beta-1";
+    private static final String wpilibVersion = "2022.1.1-beta-2";
     private static final String niLibrariesVersion = "2022.2.2";
     private static final String opencvVersion = "4.5.2-1";
     private static final String imguiVersion = "1.82-1";
     private static final String ejmlVersion = "0.38";
     private static final String jacksonVersion = "2.10.0";
-    private static final String wpimathVersion = "2022.1.1-beta-1";
+    private static final String wpimathVersion = "2022.1.1-beta-2";
     private static final String googleTestVersion = "1.9.0-5-437e100-1";
 
-    private static final String smartDashboardVersion = "2022.1.1-beta-1";
-    private static final String shuffleboardVersion = "2022.1.1-beta-1";
-    private static final String outlineViewerVersion = "2022.1.1-beta-1";
-    private static final String robotBuilderVersion = "2022.1.1-beta-1";
+    private static final String smartDashboardVersion = "2022.1.1-beta-2";
+    private static final String shuffleboardVersion = "2022.1.1-beta-2";
+    private static final String outlineViewerVersion = "2022.1.1-beta-2";
+    private static final String robotBuilderVersion = "2022.1.1-beta-2";
     private static final String robotBuilderOldVersion = "2021.3.1";
-    private static final String pathWeaverVersion = "2022.1.1-beta-1";
-    private static final String glassVersion = "2022.1.1-beta-1";
-    private static final String sysIdVersion = "2022.1.1-beta-1";
+    private static final String pathWeaverVersion = "2022.1.1-beta-2";
+    private static final String glassVersion = "2022.1.1-beta-2";
+    private static final String sysIdVersion = "2022.1.1-beta-2";
 
 
     public abstract Property<String> getWpilibVersion();
