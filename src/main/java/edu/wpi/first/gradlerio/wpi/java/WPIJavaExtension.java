@@ -117,7 +117,7 @@ public class WPIJavaExtension {
             Provider<ExtractNativeJavaArtifacts> extract) {
         configureExecutableNatives(t, extract);
         if (OperatingSystem.current().isMacOsX()) {
-            t.args("-XstartOnFirstThread");
+            t.jvmArgs("-XstartOnFirstThread");
         }
 
         t.doFirst(new Action<Task>() {
