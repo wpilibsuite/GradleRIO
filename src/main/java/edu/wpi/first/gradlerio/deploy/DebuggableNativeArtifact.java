@@ -1,17 +1,12 @@
 package edu.wpi.first.gradlerio.deploy;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.gradle.api.file.FileCollection;
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet;
 import org.gradle.nativeplatform.NativeDependencySet;
 import org.gradle.nativeplatform.NativeExecutableBinarySpec;
@@ -22,6 +17,7 @@ import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
 import edu.wpi.first.toolchain.ToolchainDiscoverer;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
+import edu.wpi.first.vscode.dependencies.SourceContainingNativeDependencySet;
 
 public class DebuggableNativeArtifact extends NativeExecutableArtifact implements DebuggableArtifact {
 
@@ -65,35 +61,13 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
             List<File> libpaths = new ArrayList<>(Arrays.asList(getInstallTaskProvider().get().getInstallDirectory().get().getAsFile().listFiles(f -> f.isDirectory())));
             libpaths.add(getInstallTaskProvider().get().getInstallDirectory().get().getAsFile());
 
-
-            Map<Class<? extends NativeDependencySet>, Method> depClasses = new HashMap<>();
-
             for (NativeDependencySet ds : bin.getLibs()) {
                 headerpaths.addAll(ds.getIncludeRoots().getFiles());
 
-                Class<? extends NativeDependencySet> cls = ds.getClass();
-                Method sourceMethod = null;
-                if (depClasses.containsKey(cls)) {
-                    sourceMethod = depClasses.get(cls);
-                } else {
-                    try {
-                        sourceMethod = cls.getDeclaredMethod("getSourceFiles");
-                    } catch (NoSuchMethodException | SecurityException e) {
-                        sourceMethod = null;
-                    }
-                    depClasses.put(cls, sourceMethod);
+                if (ds instanceof SourceContainingNativeDependencySet) {
+                    SourceContainingNativeDependencySet scnDs = (SourceContainingNativeDependencySet)ds;
+                    libsrcpaths.addAll(scnDs.getSourceFiles().getFiles());
                 }
-                if (sourceMethod != null) {
-                    try {
-                        Object rootsObject = sourceMethod.invoke(ds);
-                        if (rootsObject instanceof FileCollection) {
-                            libsrcpaths.addAll(((FileCollection) rootsObject).getFiles());
-                        }
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-
             }
 
             return new NativeTargetDebugInfo(debugPort, session.getHost(),
