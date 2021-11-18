@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.provider.ProviderFactory;
 
 import edu.wpi.first.deployutils.log.ETLogger;
@@ -36,26 +35,16 @@ public abstract class WPIVendorDepsExtension {
         return new ArrayList<>(dependencies.values());
     }
 
-    // private final List<DelegatedDependencySet> nativeDependenciesList = new
-    // ArrayList<>();
-
-    // public List<DelegatedDependencySet> getNativeDependenciesList() {
-    // return nativeDependenciesList;
-    // }
-
     private final ETLogger log;
     private final Gson gson = new Gson();
 
     public static final String DEFAULT_VENDORDEPS_FOLDER_NAME = "vendordeps";
     public static final String GRADLERIO_VENDOR_FOLDER_PROPERTY = "gradlerio.vendordep.folder.path";
 
-    private final ProviderFactory providerFactory;
-
     @Inject
-    public WPIVendorDepsExtension(WPIExtension wpiExt, ProviderFactory providerFactory) {
+    public WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt;
         this.log = ETLoggerFactory.INSTANCE.create("WPIVendorDeps");
-        this.providerFactory = providerFactory;
     }
 
     private File vendorFolder(Project project) {
@@ -123,7 +112,8 @@ public abstract class WPIVendorDepsExtension {
                 if (wpiExt.getMaven().matching(x -> x.getRelease().equals(url)).isEmpty()) {
                     String name = dep.uuid + "_" + i++;
                     log.info("Registering vendor dep maven: " + name + " on project " + wpiExt.getProject().getPath());
-                    wpiExt.getMaven().vendor(name, repo -> repo.setRelease(url));
+                    boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false; 
+                    wpiExt.getMaven().vendor(name, repo -> repo.setRelease(url), allowsCache);
                 }
             }
         }
@@ -177,6 +167,7 @@ public abstract class WPIVendorDepsExtension {
         public String name;
         public String version;
         public String uuid;
+        public Boolean mavenUrlsInWpilibCache;
         public String[] mavenUrls;
         public String jsonUrl;
         public String fileName;

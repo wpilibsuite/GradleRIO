@@ -116,9 +116,9 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return mirr;
     }
 
-    public WPIMavenRepo vendor(String name, final Action<WPIMavenRepo> config) {
+    public WPIMavenRepo vendor(String name, final Action<WPIMavenRepo> config, boolean mavenUrlsInWpilibCache) {
         WPIMavenRepo mirr = project.getObjects().newInstance(WPIMavenRepo.class, name);
-        mirr.setPriority(WPIMavenRepo.PRIORITY_VENDOR);
+        mirr.setPriority(mavenUrlsInWpilibCache ? WPIMavenRepo.PRIORITY_VENDOR_ALLOWS_CACHE : WPIMavenRepo.PRIORITY_VENDOR_WITHOUT_CACHE);
         config.execute(mirr);
         this.add(mirr);
         return mirr;

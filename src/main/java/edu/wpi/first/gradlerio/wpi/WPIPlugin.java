@@ -77,6 +77,13 @@ public class WPIPlugin implements Plugin<Project> {
     }
 
     void addMavenRepositories(Project project, WPIExtension wpi) {
+        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
+            wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
+                cache.setRelease("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
+                cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
+            });
+        }
+
         if (wpi.getMaven().isUseLocal()) {
             project.getRepositories().maven(repo -> {
                 repo.setName("WPILocal");
@@ -125,13 +132,6 @@ public class WPIPlugin implements Plugin<Project> {
         // Maven Central is needed for EJML and JUnit
         if (wpi.getMaven().isUseMavenCentral()) {
             project.getRepositories().mavenCentral();
-        }
-
-        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
-            project.getRepositories().maven(repo -> {
-                repo.setName("FRCMavenVendorCache");
-                repo.setUrl("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
-            });
         }
     }
 }

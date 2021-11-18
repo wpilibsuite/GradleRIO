@@ -15,10 +15,12 @@ public class WPIMavenRepo implements Named {
     public static final int PRIORITY_REPO_INUSE = 50;
 
     public static final int PRIORITY_OFFICIAL = 150;
-    public static final int PRIORITY_MIRROR = 200;
+    public static final int PRIORITY_MIRROR = 250;
     public static final int PRIORITY_MIRROR_INUSE = 120;
 
-    public static final int PRIORITY_VENDOR = 175;
+    public static final int PRIORITY_VENDOR_WITHOUT_CACHE = 175;
+    public static final int PRIORITY_WPILIB_VENDOR_CACHE = 200;
+    public static final int PRIORITY_VENDOR_ALLOWS_CACHE = 225;
 
     @Inject
     public WPIMavenRepo(String name) {
