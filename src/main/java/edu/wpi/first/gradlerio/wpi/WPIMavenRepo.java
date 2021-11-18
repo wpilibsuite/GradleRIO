@@ -1,5 +1,7 @@
 package edu.wpi.first.gradlerio.wpi;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import org.gradle.api.Named;
@@ -8,6 +10,7 @@ public class WPIMavenRepo implements Named {
     private String release = null;
     private String development = null;
     private int priority = PRIORITY_REPO;
+    private Set<String> allowedGroupIds;
 
     private String name;
 
@@ -25,6 +28,14 @@ public class WPIMavenRepo implements Named {
     @Inject
     public WPIMavenRepo(String name) {
         this.setName(name);
+    }
+
+    public Set<String> getAllowedGroupIds() {
+        return allowedGroupIds;
+    }
+
+    public void setAllowedGroupIds(Set<String> allowedGroupIds) {
+        this.allowedGroupIds = allowedGroupIds;
     }
 
     public String getRelease() {

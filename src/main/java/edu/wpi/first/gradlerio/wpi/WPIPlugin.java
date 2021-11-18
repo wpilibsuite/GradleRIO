@@ -115,6 +115,13 @@ public class WPIPlugin implements Plugin<Project> {
                     project.getRepositories().maven(repo -> {
                         repo.setName("WPI" + mirror.getName() + "Development");
                         repo.setUrl(mirror.getDevelopment());
+                        if (mirror.getAllowedGroupIds() != null) {
+                            repo.content(desc -> {
+                                for(String group : mirror.getAllowedGroupIds()) {
+                                    desc.includeGroup(group);
+                                }
+                            });
+                        }
                     });
                 }
             }
@@ -125,6 +132,13 @@ public class WPIPlugin implements Plugin<Project> {
                 project.getRepositories().maven(repo -> {
                     repo.setName("WPI" + mirror.getName() + "Release");
                     repo.setUrl(mirror.getRelease());
+                    if (mirror.getAllowedGroupIds() != null) {
+                        repo.content(desc -> {
+                            for(String group : mirror.getAllowedGroupIds()) {
+                                desc.includeGroup(group);
+                            }
+                        });
+                    }
                 });
             }
         }
