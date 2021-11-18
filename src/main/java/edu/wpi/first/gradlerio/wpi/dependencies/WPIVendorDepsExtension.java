@@ -131,12 +131,13 @@ public abstract class WPIVendorDepsExtension {
 
                     String name = dep.uuid + "_" + i++;
                     log.info("Registering vendor dep maven: " + name + " on project " + wpiExt.getProject().getPath());
-                    boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false; 
+                    boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false;
+                    if (allowsCache) {
+                        wpiExt.getMaven().getVendorCacheGroupIds().addAll(groupIds);
+                    }
                     wpiExt.getMaven().vendor(name, repo -> {
                         repo.setRelease(url);
-                        if (!groupIds.isEmpty()) {
-                            repo.setAllowedGroupIds(groupIds);
-                        }
+                        repo.setAllowedGroupIds(groupIds);
                     }, allowsCache);
                 }
             }

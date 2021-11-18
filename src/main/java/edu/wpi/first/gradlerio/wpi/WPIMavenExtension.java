@@ -6,6 +6,7 @@ import org.gradle.api.internal.DefaultNamedDomainObjectSet;
 import org.gradle.api.internal.CollectionCallbackActionDecorator;
 import org.gradle.internal.reflect.DirectInstantiator;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
 
     private final Project project;
 
+    private final Set<String> vendorCacheGroupIds = new HashSet<>();
     private boolean useDevelopment;
     private boolean useLocal;
     private boolean useFrcMavenLocalDevelopment;
@@ -44,6 +46,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         //     mirror.release = "http://wpimirror.imjac.in/m2/release"
         //     mirror.development = "http://wpimirror.imjac.in/m2/development"
         // }
+    }
+
+    public Set<String> getVendorCacheGroupIds() {
+        return vendorCacheGroupIds;
     }
 
     public boolean isUseFrcMavenVendorCache() {
