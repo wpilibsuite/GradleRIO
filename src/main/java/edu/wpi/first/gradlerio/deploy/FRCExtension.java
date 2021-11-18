@@ -10,13 +10,30 @@ import com.google.gson.JsonSyntaxException;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.TaskProvider;
+
+import edu.wpi.first.deployutils.deploy.DeployExtension;
 
 public class FRCExtension {
     private final Project project;
 
     @Inject
-    public FRCExtension(Project project) {
+    public FRCExtension(Project project, DeployExtension deployExtension) {
         this.project = project;
+
+        debugFileTask = project.getTasks().register("writeDebugInfo", DebugFileTask.class, t -> {
+            t.getDebugFile().set(project.getLayout().getBuildDirectory().file("debug/debug_info.json"));
+        });
+
+        deployExtension.getDeployTask().configure(t -> {
+            t.dependsOn(debugFileTask);
+        });
+    }
+
+    private final TaskProvider<DebugFileTask> debugFileTask;
+
+    public TaskProvider<DebugFileTask> getDebugFileTask() {
+        return debugFileTask;
     }
 
     public Project getProject() {

@@ -49,13 +49,13 @@ public class FRCDeployPlugin implements Plugin<Project> {
         // TODO
         //project.getPluginManager().apply(RioLogPlugin.class);
 
-        project.getExtensions().create("frc", FRCExtension.class, project);
-
         DeployExtension deployExtension = project.getExtensions().getByType(DeployExtension.class);
+
+        FRCExtension frcExtension = project.getExtensions().create("frc", FRCExtension.class, project, deployExtension);
 
         // Register the RoboRIO target
         deployExtension.getTargets().registerFactory(RoboRIO.class, name -> {
-            RoboRIO target = project.getObjects().newInstance(RoboRIO.class, name, project, deployExtension);
+            RoboRIO target = project.getObjects().newInstance(RoboRIO.class, name, project, deployExtension, frcExtension);
             configureRoboRIOTypes(target);
             return target;
         });

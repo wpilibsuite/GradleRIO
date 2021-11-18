@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
@@ -16,6 +15,7 @@ import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.FRCExtension;
 import edu.wpi.first.gradlerio.deploy.WPIRemoteTarget;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
@@ -30,8 +30,8 @@ public class RoboRIO extends WPIRemoteTarget {
     private final MultiCommandArtifact programKillArtifact;
 
     @Inject
-    public RoboRIO(String name, Project project, DeployExtension de) {
-        super(name, project, de);
+    public RoboRIO(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
+        super(name, project, de, frcExtension);
         log = Logger.getLogger(this.toString());
 
         setDirectory("/home/lvuser");
