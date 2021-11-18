@@ -30,7 +30,7 @@ public class WPIPlugin implements Plugin<Project> {
         project.getDependencies().registerTransform(UnzipTransform.class, variantTransform -> {
             variantTransform.getFrom().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_ZIP_TYPE);
             variantTransform.getTo().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_DIRECTORY_TYPE);
-          });
+        });
 
         WPIExtension wpiExtension = project.getExtensions().create("wpi", WPIExtension.class, project);
         logger = ETLoggerFactory.INSTANCE.create(this.getClass().getSimpleName());
@@ -42,12 +42,12 @@ public class WPIPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Print all versions of the wpi block");
             task.doLast(new Action<Task>() {
-				@Override
-				public void execute(Task arg0) {
-                                //     wpiExtension.versions().each { String key, Tuple tup ->
-            //         println "${tup.first()}: ${tup[1]} (${key})"
-            //     }
-				}
+                @Override
+                public void execute(Task arg0) {
+                    // wpiExtension.versions().each { String key, Tuple tup ->
+                    // println "${tup.first()}: ${tup[1]} (${key})"
+                    // }
+                }
             });
             // task.doLast {
 
@@ -58,10 +58,12 @@ public class WPIPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Explain all Maven Repos present on this project");
             task.doLast(new Action<Task>() {
-				@Override
-				public void execute(Task arg0) {
+
+                @Override
+                public void execute(Task arg0) {
                     explainRepositories(project);
-				}
+                }
+
             });
         });
 
@@ -105,9 +107,11 @@ public class WPIPlugin implements Plugin<Project> {
             });
         }
 
-        WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority()).toArray(WPIMavenRepo[]::new);
+        WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority())
+                .toArray(WPIMavenRepo[]::new);
 
-        // If enabled, the development branch should have a higher weight than the release
+        // If enabled, the development branch should have a higher weight than the
+        // release
         // branch.
         if (wpi.getMaven().isUseDevelopment()) {
             for (WPIMavenRepo mirror : sortedMirrors) {
@@ -115,13 +119,18 @@ public class WPIPlugin implements Plugin<Project> {
                     project.getRepositories().maven(repo -> {
                         repo.setName("WPI" + mirror.getName() + "Development");
                         repo.setUrl(mirror.getDevelopment());
-                        if (mirror.getAllowedGroupIds() != null) {
-                            repo.content(desc -> {
-                                for(String group : mirror.getAllowedGroupIds()) {
+                        repo.content(desc -> {
+                            if (mirror.getAllowedGroupIds() != null) {
+                                for (String group : mirror.getAllowedGroupIds()) {
                                     desc.includeGroup(group);
                                 }
-                            });
-                        }
+                            }
+                            if (mirror.getAllowedGroupIdsRegex() != null) {
+                                for (String group : mirror.getAllowedGroupIdsRegex()) {
+                                    desc.includeGroupByRegex(group);
+                                }
+                            }
+                        });
                     });
                 }
             }
@@ -134,7 +143,7 @@ public class WPIPlugin implements Plugin<Project> {
                     repo.setUrl(mirror.getRelease());
                     if (mirror.getAllowedGroupIds() != null) {
                         repo.content(desc -> {
-                            for(String group : mirror.getAllowedGroupIds()) {
+                            for (String group : mirror.getAllowedGroupIds()) {
                                 desc.includeGroup(group);
                             }
                         });

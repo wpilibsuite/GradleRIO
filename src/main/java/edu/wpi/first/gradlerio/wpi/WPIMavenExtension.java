@@ -6,6 +6,8 @@ import org.gradle.api.internal.DefaultNamedDomainObjectSet;
 import org.gradle.api.internal.CollectionCallbackActionDecorator;
 import org.gradle.internal.reflect.DirectInstantiator;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
@@ -35,6 +37,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
             mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
             mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
+            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
         });
 
         // mirror("AU") { WPIMavenRepo mirror ->

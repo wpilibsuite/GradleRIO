@@ -11,6 +11,7 @@ public class WPIMavenRepo implements Named {
     private String development = null;
     private int priority = PRIORITY_REPO;
     private Set<String> allowedGroupIds;
+    private Set<String> allowedGroupIdsRegex;
 
     private String name;
 
@@ -28,6 +29,14 @@ public class WPIMavenRepo implements Named {
     @Inject
     public WPIMavenRepo(String name) {
         this.setName(name);
+    }
+
+    public Set<String> getAllowedGroupIdsRegex() {
+        return allowedGroupIdsRegex;
+    }
+
+    public void setAllowedGroupIdsRegex(Set<String> allowedGroupIdsRegex) {
+        this.allowedGroupIdsRegex = allowedGroupIdsRegex;
     }
 
     public Set<String> getAllowedGroupIds() {
