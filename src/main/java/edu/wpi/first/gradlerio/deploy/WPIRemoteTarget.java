@@ -43,7 +43,7 @@ public abstract class WPIRemoteTarget extends StagedDeployTarget {
     }
 
     @Inject
-    public WPIRemoteTarget(String name, Project project, DeployExtension de) {
+    public WPIRemoteTarget(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
         super(name, project, de);
 
         debug = project.getObjects().property(Boolean.class);
@@ -51,12 +51,15 @@ public abstract class WPIRemoteTarget extends StagedDeployTarget {
 
         buildType = debug.map(x -> x ? "debug" : "release");
 
-        debugFileTask = project.getTasks().register("writeDebugInfo" + name, TargetDebugFileTask.class, t -> {
+        debugFileTask = project.getTasks().register("writeTargetDebugInfo" + name, TargetDebugFileTask.class, t -> {
             t.getDebugFile().set(project.getLayout().getBuildDirectory().file("debug/" + name + ".json"));
             t.setTarget(this);
             t.dependsOn(getTargetDiscoveryTask());
         });
-        getDeployTask().configure(t -> t.dependsOn(debugFileTask));
+        frcExtension.getDebugFileTask().configure(t -> {
+            t.getTargets().add(this);
+            t.dependsOn(debugFileTask);
+        });
     }
 
 }
