@@ -21,6 +21,7 @@ import org.gradle.api.provider.ProviderFactory;
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.gradlerio.wpi.WPIMavenRepo;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 
 public abstract class WPIVendorDepsExtension {
@@ -107,28 +108,34 @@ public abstract class WPIVendorDepsExtension {
         }
 
         if (dep != null && dep.mavenUrls != null) {
+            // Enumerate all group ids
+            Set<String> groupIds = new HashSet<>();
+            for (CppArtifact cpp : dep.cppDependencies) {
+                groupIds.add(cpp.groupId);
+            }
+            for (JniArtifact jni : dep.jniDependencies) {
+                groupIds.add(jni.groupId);
+            }
+            for (JavaArtifact java : dep.javaDependencies) {
+                groupIds.add(java.groupId);
+            }
+            if (dep.extraGroupIds != null) {
+                for (String groupId : dep.extraGroupIds) {
+                    groupIds.add(groupId);
+                }
+            }
+
             int i = 0;
             for (String url : dep.mavenUrls) {
+                boolean found = false;
+
+                for (WPIMavenRepo machingRepo : wpiExt.getMaven().matching(x -> x.getRelease().equals(url))) {
+                    found = true;
+                    machingRepo.getAllowedGroupIds().addAll(groupIds);
+                }
+
                 // Only add if the maven doesn"t yet exist.
-
-                if (wpiExt.getMaven().matching(x -> x.getRelease().equals(url)).isEmpty()) {
-                    // Enumerate all group ids
-                    Set<String> groupIds = new HashSet<>();
-                    for (CppArtifact cpp : dep.cppDependencies) {
-                        groupIds.add(cpp.groupId);
-                    }
-                    for (JniArtifact jni : dep.jniDependencies) {
-                        groupIds.add(jni.groupId);
-                    }
-                    for (JavaArtifact java : dep.javaDependencies) {
-                        groupIds.add(java.groupId);
-                    }
-                    if (dep.extraGroupIds != null) {
-                        for (String groupId : dep.extraGroupIds) {
-                            groupIds.add(groupId);
-                        }
-                    }
-
+                if (!found) {
                     String name = dep.uuid + "_" + i++;
                     log.info("Registering vendor dep maven: " + name + " on project " + wpiExt.getProject().getPath());
                     boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false;

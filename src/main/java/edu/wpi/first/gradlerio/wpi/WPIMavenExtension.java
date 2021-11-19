@@ -22,6 +22,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private boolean useFrcMavenLocalRelease;
     private boolean useMavenCentral;
     private boolean useFrcMavenVendorCache;
+    private boolean limitFrcMavenToWPIDeps;
 
     @Inject
     public WPIMavenExtension(Project project) {
@@ -34,18 +35,20 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
         this.useFrcMavenVendorCache = true;
-
-        mirror("Official", mirror -> {
-            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
-            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
-            mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
-            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
-        });
+        this.limitFrcMavenToWPIDeps = true;
 
         // mirror("AU") { WPIMavenRepo mirror ->
         //     mirror.release = "http://wpimirror.imjac.in/m2/release"
         //     mirror.development = "http://wpimirror.imjac.in/m2/development"
         // }
+    }
+
+    public boolean isLimitFrcMavenToWPIDeps() {
+        return limitFrcMavenToWPIDeps;
+    }
+
+    public void setLimitFrcMavenToWPIDeps(boolean limitFrcMavenToWPIDeps) {
+        this.limitFrcMavenToWPIDeps = limitFrcMavenToWPIDeps;
     }
 
     public Set<String> getVendorCacheGroupIds() {

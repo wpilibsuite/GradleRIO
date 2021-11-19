@@ -1,5 +1,7 @@
 package edu.wpi.first.gradlerio.wpi;
 
+import java.util.Set;
+
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -79,6 +81,15 @@ public class WPIPlugin implements Plugin<Project> {
     }
 
     void addMavenRepositories(Project project, WPIExtension wpi) {
+        wpi.getMaven().mirror("Official", mirror -> {
+            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
+            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
+            mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
+            if (wpi.getMaven().isLimitFrcMavenToWPIDeps()) {
+                mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
+            }
+        });
+
         if (wpi.getMaven().isUseFrcMavenVendorCache()) {
             wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
                 cache.setRelease("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
