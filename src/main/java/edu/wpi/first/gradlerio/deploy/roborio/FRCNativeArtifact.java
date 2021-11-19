@@ -22,7 +22,6 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
     private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
     private final List<String> arguments = new ArrayList<>();
-    private int debugPort = 8348;
     private final RoboRIO roboRIO;
 
     private final Property<NativeExecutableSpec> componentSpec;
@@ -103,7 +102,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         boolean debug = roboRIO.getDebug().get();
         if (debug) {
             builder.append("gdbserver host:");
-            builder.append(debugPort);
+            builder.append(getDebugPort());
             builder.append(' ');
         }
         builder.append('\"');

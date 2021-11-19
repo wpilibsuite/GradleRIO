@@ -26,7 +26,7 @@ public class DebuggableJavaArtifact extends JavaArtifact implements DebuggableAr
 
         if (ctx.getController() instanceof IPSessionController) {
             IPSessionController session = (IPSessionController)ctx.getController();
-            return new JavaTargetDebugInfo(debugPort, session.getHost());
+            return new JavaTargetDebugInfo(getName(), debugPort, session.getHost(), getTarget().getProject().getName());
         }
         return null;
     }
