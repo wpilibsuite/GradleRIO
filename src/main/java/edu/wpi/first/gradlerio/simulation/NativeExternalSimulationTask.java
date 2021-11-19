@@ -2,11 +2,8 @@ package edu.wpi.first.gradlerio.simulation;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -18,7 +15,6 @@ import com.google.gson.GsonBuilder;
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.tasks.Internal;
@@ -34,6 +30,7 @@ import org.gradle.nativeplatform.toolchain.Clang;
 
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
+import edu.wpi.first.vscode.dependencies.SourceContainingNativeDependencySet;
 
 public class NativeExternalSimulationTask extends DefaultTask {
 
@@ -125,34 +122,13 @@ public class NativeExternalSimulationTask extends DefaultTask {
             List<File> libpaths = new ArrayList<>(Arrays.asList(install.getInstallDirectory().get().getAsFile().listFiles(f -> f.isDirectory())));
             libpaths.add(install.getInstallDirectory().get().getAsFile());
 
-            Map<Class<? extends NativeDependencySet>, Method> depClasses = new HashMap<>();
-
             for (NativeDependencySet ds : binary.getLibs()) {
                 headerpaths.addAll(ds.getIncludeRoots().getFiles());
 
-                Class<? extends NativeDependencySet> cls = ds.getClass();
-                Method sourceMethod = null;
-                if (depClasses.containsKey(cls)) {
-                    sourceMethod = depClasses.get(cls);
-                } else {
-                    try {
-                        sourceMethod = cls.getDeclaredMethod("getSourceFiles");
-                    } catch (NoSuchMethodException | SecurityException e) {
-                        sourceMethod = null;
-                    }
-                    depClasses.put(cls, sourceMethod);
+                if (ds instanceof SourceContainingNativeDependencySet) {
+                    SourceContainingNativeDependencySet scnDs = (SourceContainingNativeDependencySet)ds;
+                    libsrcpaths.addAll(scnDs.getSourceFiles().getFiles());
                 }
-                if (sourceMethod != null) {
-                    try {
-                        Object rootsObject = sourceMethod.invoke(ds);
-                        if (rootsObject instanceof FileCollection) {
-                            libsrcpaths.addAll(((FileCollection) rootsObject).getFiles());
-                        }
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-
             }
 
             List<HalSimPair> extensions = sim.getHalSimLocations(libpaths, binary.getBuildType().getName().contains("debug"));
