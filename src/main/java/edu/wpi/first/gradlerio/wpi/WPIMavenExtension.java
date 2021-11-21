@@ -22,7 +22,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private boolean useFrcMavenLocalRelease;
     private boolean useMavenCentral;
     private boolean useFrcMavenVendorCache;
-    private boolean limitFrcMavenToWPIDeps;
+    private boolean enableRepositoryGroupLimits;
 
     @Inject
     public WPIMavenExtension(Project project) {
@@ -35,7 +35,7 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
         this.useFrcMavenVendorCache = true;
-        this.limitFrcMavenToWPIDeps = true;
+        this.enableRepositoryGroupLimits = true;
 
         // mirror("AU") { WPIMavenRepo mirror ->
         //     mirror.release = "http://wpimirror.imjac.in/m2/release"
@@ -43,12 +43,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         // }
     }
 
-    public boolean isLimitFrcMavenToWPIDeps() {
-        return limitFrcMavenToWPIDeps;
+    public boolean isEnableRepositoryGroupLimits() {
+        return enableRepositoryGroupLimits;
     }
 
-    public void setLimitFrcMavenToWPIDeps(boolean limitFrcMavenToWPIDeps) {
-        this.limitFrcMavenToWPIDeps = limitFrcMavenToWPIDeps;
+    public void setEnableRepositoryGroupLimits(boolean enableRepositoryGroupLimits) {
+        this.enableRepositoryGroupLimits = enableRepositoryGroupLimits;
     }
 
     public Set<String> getVendorCacheGroupIds() {

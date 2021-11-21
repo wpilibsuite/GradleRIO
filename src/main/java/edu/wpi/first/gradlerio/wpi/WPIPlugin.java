@@ -85,9 +85,7 @@ public class WPIPlugin implements Plugin<Project> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
             mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
             mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
-            if (wpi.getMaven().isLimitFrcMavenToWPIDeps()) {
-                mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
-            }
+            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
         });
 
         if (wpi.getMaven().isUseFrcMavenVendorCache()) {
@@ -122,6 +120,8 @@ public class WPIPlugin implements Plugin<Project> {
         WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority())
                 .toArray(WPIMavenRepo[]::new);
 
+        boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
+
         // If enabled, the development branch should have a higher weight than the
         // release
         // branch.
@@ -131,18 +131,20 @@ public class WPIPlugin implements Plugin<Project> {
                     project.getRepositories().maven(repo -> {
                         repo.setName("WPI" + mirror.getName() + "Development");
                         repo.setUrl(mirror.getDevelopment());
-                        repo.content(desc -> {
-                            if (mirror.getAllowedGroupIds() != null) {
-                                for (String group : mirror.getAllowedGroupIds()) {
-                                    desc.includeGroup(group);
+                        if (enableGroupLimits) {
+                            repo.content(desc -> {
+                                if (mirror.getAllowedGroupIds() != null) {
+                                    for (String group : mirror.getAllowedGroupIds()) {
+                                        desc.includeGroup(group);
+                                    }
                                 }
-                            }
-                            if (mirror.getAllowedGroupIdsRegex() != null) {
-                                for (String group : mirror.getAllowedGroupIdsRegex()) {
-                                    desc.includeGroupByRegex(group);
+                                if (mirror.getAllowedGroupIdsRegex() != null) {
+                                    for (String group : mirror.getAllowedGroupIdsRegex()) {
+                                        desc.includeGroupByRegex(group);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     });
                 }
             }
@@ -153,10 +155,17 @@ public class WPIPlugin implements Plugin<Project> {
                 project.getRepositories().maven(repo -> {
                     repo.setName("WPI" + mirror.getName() + "Release");
                     repo.setUrl(mirror.getRelease());
-                    if (mirror.getAllowedGroupIds() != null) {
+                    if (enableGroupLimits) {
                         repo.content(desc -> {
-                            for (String group : mirror.getAllowedGroupIds()) {
-                                desc.includeGroup(group);
+                            if (mirror.getAllowedGroupIds() != null) {
+                                for (String group : mirror.getAllowedGroupIds()) {
+                                    desc.includeGroup(group);
+                                }
+                            }
+                            if (mirror.getAllowedGroupIdsRegex() != null) {
+                                for (String group : mirror.getAllowedGroupIdsRegex()) {
+                                    desc.includeGroupByRegex(group);
+                                }
                             }
                         });
                     }
