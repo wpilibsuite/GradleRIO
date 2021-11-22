@@ -70,7 +70,7 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
                 }
             }
 
-            return new NativeTargetDebugInfo(debugPort, session.getHost(),
+            return new NativeTargetDebugInfo(getName(), debugPort, session.getHost(),
                 getDeployedFile().getAbsolutePath(), gdbpath, sysroot, srcpaths, headerpaths, libpaths, libsrcpaths);
         }
         return null;
