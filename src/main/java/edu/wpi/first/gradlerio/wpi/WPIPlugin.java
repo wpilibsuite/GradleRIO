@@ -1,5 +1,7 @@
 package edu.wpi.first.gradlerio.wpi;
 
+import java.util.Set;
+
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -30,7 +32,7 @@ public class WPIPlugin implements Plugin<Project> {
         project.getDependencies().registerTransform(UnzipTransform.class, variantTransform -> {
             variantTransform.getFrom().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_ZIP_TYPE);
             variantTransform.getTo().attribute(NATIVE_ARTIFACT_FORMAT, NATIVE_ARTIFACT_DIRECTORY_TYPE);
-          });
+        });
 
         WPIExtension wpiExtension = project.getExtensions().create("wpi", WPIExtension.class, project);
         logger = ETLoggerFactory.INSTANCE.create(this.getClass().getSimpleName());
@@ -42,12 +44,12 @@ public class WPIPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Print all versions of the wpi block");
             task.doLast(new Action<Task>() {
-				@Override
-				public void execute(Task arg0) {
-                                //     wpiExtension.versions().each { String key, Tuple tup ->
-            //         println "${tup.first()}: ${tup[1]} (${key})"
-            //     }
-				}
+                @Override
+                public void execute(Task arg0) {
+                    // wpiExtension.versions().each { String key, Tuple tup ->
+                    // println "${tup.first()}: ${tup[1]} (${key})"
+                    // }
+                }
             });
             // task.doLast {
 
@@ -58,10 +60,12 @@ public class WPIPlugin implements Plugin<Project> {
             task.setGroup("GradleRIO");
             task.setDescription("Explain all Maven Repos present on this project");
             task.doLast(new Action<Task>() {
-				@Override
-				public void execute(Task arg0) {
+
+                @Override
+                public void execute(Task arg0) {
                     explainRepositories(project);
-				}
+                }
+
             });
         });
 
@@ -77,6 +81,21 @@ public class WPIPlugin implements Plugin<Project> {
     }
 
     void addMavenRepositories(Project project, WPIExtension wpi) {
+        wpi.getMaven().mirror("Official", mirror -> {
+            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
+            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
+            mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
+            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
+        });
+
+        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
+            wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
+                cache.setRelease("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
+                cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
+                cache.setAllowedGroupIds(wpi.getMaven().getVendorCacheGroupIds());
+            });
+        }
+
         if (wpi.getMaven().isUseLocal()) {
             project.getRepositories().maven(repo -> {
                 repo.setName("WPILocal");
@@ -98,9 +117,13 @@ public class WPIPlugin implements Plugin<Project> {
             });
         }
 
-        WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority()).toArray(WPIMavenRepo[]::new);
+        WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority())
+                .toArray(WPIMavenRepo[]::new);
 
-        // If enabled, the development branch should have a higher weight than the release
+        boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
+
+        // If enabled, the development branch should have a higher weight than the
+        // release
         // branch.
         if (wpi.getMaven().isUseDevelopment()) {
             for (WPIMavenRepo mirror : sortedMirrors) {
@@ -108,6 +131,20 @@ public class WPIPlugin implements Plugin<Project> {
                     project.getRepositories().maven(repo -> {
                         repo.setName("WPI" + mirror.getName() + "Development");
                         repo.setUrl(mirror.getDevelopment());
+                        if (enableGroupLimits) {
+                            repo.content(desc -> {
+                                if (mirror.getAllowedGroupIds() != null) {
+                                    for (String group : mirror.getAllowedGroupIds()) {
+                                        desc.includeGroup(group);
+                                    }
+                                }
+                                if (mirror.getAllowedGroupIdsRegex() != null) {
+                                    for (String group : mirror.getAllowedGroupIdsRegex()) {
+                                        desc.includeGroupByRegex(group);
+                                    }
+                                }
+                            });
+                        }
                     });
                 }
             }
@@ -118,6 +155,20 @@ public class WPIPlugin implements Plugin<Project> {
                 project.getRepositories().maven(repo -> {
                     repo.setName("WPI" + mirror.getName() + "Release");
                     repo.setUrl(mirror.getRelease());
+                    if (enableGroupLimits) {
+                        repo.content(desc -> {
+                            if (mirror.getAllowedGroupIds() != null) {
+                                for (String group : mirror.getAllowedGroupIds()) {
+                                    desc.includeGroup(group);
+                                }
+                            }
+                            if (mirror.getAllowedGroupIdsRegex() != null) {
+                                for (String group : mirror.getAllowedGroupIdsRegex()) {
+                                    desc.includeGroupByRegex(group);
+                                }
+                            }
+                        });
+                    }
                 });
             }
         }
@@ -125,13 +176,6 @@ public class WPIPlugin implements Plugin<Project> {
         // Maven Central is needed for EJML and JUnit
         if (wpi.getMaven().isUseMavenCentral()) {
             project.getRepositories().mavenCentral();
-        }
-
-        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
-            project.getRepositories().maven(repo -> {
-                repo.setName("FRCMavenVendorCache");
-                repo.setUrl("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
-            });
         }
     }
 }

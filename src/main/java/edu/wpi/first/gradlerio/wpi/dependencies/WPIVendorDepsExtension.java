@@ -6,20 +6,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import com.google.gson.Gson;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.provider.ProviderFactory;
 
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
+import edu.wpi.first.gradlerio.wpi.WPIMavenRepo;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 
 public abstract class WPIVendorDepsExtension {
@@ -36,26 +38,16 @@ public abstract class WPIVendorDepsExtension {
         return new ArrayList<>(dependencies.values());
     }
 
-    // private final List<DelegatedDependencySet> nativeDependenciesList = new
-    // ArrayList<>();
-
-    // public List<DelegatedDependencySet> getNativeDependenciesList() {
-    // return nativeDependenciesList;
-    // }
-
     private final ETLogger log;
     private final Gson gson = new Gson();
 
     public static final String DEFAULT_VENDORDEPS_FOLDER_NAME = "vendordeps";
     public static final String GRADLERIO_VENDOR_FOLDER_PROPERTY = "gradlerio.vendordep.folder.path";
 
-    private final ProviderFactory providerFactory;
-
     @Inject
-    public WPIVendorDepsExtension(WPIExtension wpiExt, ProviderFactory providerFactory) {
+    public WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt;
         this.log = ETLoggerFactory.INSTANCE.create("WPIVendorDeps");
-        this.providerFactory = providerFactory;
     }
 
     private File vendorFolder(Project project) {
@@ -116,14 +108,44 @@ public abstract class WPIVendorDepsExtension {
         }
 
         if (dep != null && dep.mavenUrls != null) {
+            // Enumerate all group ids
+            Set<String> groupIds = new HashSet<>();
+            for (CppArtifact cpp : dep.cppDependencies) {
+                groupIds.add(cpp.groupId);
+            }
+            for (JniArtifact jni : dep.jniDependencies) {
+                groupIds.add(jni.groupId);
+            }
+            for (JavaArtifact java : dep.javaDependencies) {
+                groupIds.add(java.groupId);
+            }
+            if (dep.extraGroupIds != null) {
+                for (String groupId : dep.extraGroupIds) {
+                    groupIds.add(groupId);
+                }
+            }
+
             int i = 0;
             for (String url : dep.mavenUrls) {
-                // Only add if the maven doesn"t yet exist.
+                boolean found = false;
 
-                if (wpiExt.getMaven().matching(x -> x.getRelease().equals(url)).isEmpty()) {
+                for (WPIMavenRepo machingRepo : wpiExt.getMaven().matching(x -> x.getRelease().equals(url))) {
+                    found = true;
+                    machingRepo.getAllowedGroupIds().addAll(groupIds);
+                }
+
+                // Only add if the maven doesn"t yet exist.
+                if (!found) {
                     String name = dep.uuid + "_" + i++;
                     log.info("Registering vendor dep maven: " + name + " on project " + wpiExt.getProject().getPath());
-                    wpiExt.getMaven().vendor(name, repo -> repo.setRelease(url));
+                    boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false;
+                    if (allowsCache) {
+                        wpiExt.getMaven().getVendorCacheGroupIds().addAll(groupIds);
+                    }
+                    wpiExt.getMaven().vendor(name, repo -> {
+                        repo.setRelease(url);
+                        repo.setAllowedGroupIds(groupIds);
+                    }, allowsCache);
                 }
             }
         }
@@ -177,7 +199,9 @@ public abstract class WPIVendorDepsExtension {
         public String name;
         public String version;
         public String uuid;
+        public Boolean mavenUrlsInWpilibCache;
         public String[] mavenUrls;
+        public String[] extraGroupIds;
         public String jsonUrl;
         public String fileName;
         public JavaArtifact[] javaDependencies;

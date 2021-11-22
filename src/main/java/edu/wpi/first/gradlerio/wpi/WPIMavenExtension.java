@@ -6,18 +6,23 @@ import org.gradle.api.internal.DefaultNamedDomainObjectSet;
 import org.gradle.api.internal.CollectionCallbackActionDecorator;
 import org.gradle.internal.reflect.DirectInstantiator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 
     private final Project project;
 
+    private final Set<String> vendorCacheGroupIds = new HashSet<>();
     private boolean useDevelopment;
     private boolean useLocal;
     private boolean useFrcMavenLocalDevelopment;
     private boolean useFrcMavenLocalRelease;
     private boolean useMavenCentral;
     private boolean useFrcMavenVendorCache;
+    private boolean enableRepositoryGroupLimits;
 
     @Inject
     public WPIMavenExtension(Project project) {
@@ -30,17 +35,24 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useFrcMavenLocalRelease = false;
         this.useMavenCentral = true;
         this.useFrcMavenVendorCache = true;
-
-        mirror("Official", mirror -> {
-            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
-            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
-            mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
-        });
+        this.enableRepositoryGroupLimits = true;
 
         // mirror("AU") { WPIMavenRepo mirror ->
         //     mirror.release = "http://wpimirror.imjac.in/m2/release"
         //     mirror.development = "http://wpimirror.imjac.in/m2/development"
         // }
+    }
+
+    public boolean isEnableRepositoryGroupLimits() {
+        return enableRepositoryGroupLimits;
+    }
+
+    public void setEnableRepositoryGroupLimits(boolean enableRepositoryGroupLimits) {
+        this.enableRepositoryGroupLimits = enableRepositoryGroupLimits;
+    }
+
+    public Set<String> getVendorCacheGroupIds() {
+        return vendorCacheGroupIds;
     }
 
     public boolean isUseFrcMavenVendorCache() {
@@ -116,9 +128,9 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return mirr;
     }
 
-    public WPIMavenRepo vendor(String name, final Action<WPIMavenRepo> config) {
+    public WPIMavenRepo vendor(String name, final Action<WPIMavenRepo> config, boolean mavenUrlsInWpilibCache) {
         WPIMavenRepo mirr = project.getObjects().newInstance(WPIMavenRepo.class, name);
-        mirr.setPriority(WPIMavenRepo.PRIORITY_VENDOR);
+        mirr.setPriority(mavenUrlsInWpilibCache ? WPIMavenRepo.PRIORITY_VENDOR_ALLOWS_CACHE : WPIMavenRepo.PRIORITY_VENDOR_WITHOUT_CACHE);
         config.execute(mirr);
         this.add(mirr);
         return mirr;
