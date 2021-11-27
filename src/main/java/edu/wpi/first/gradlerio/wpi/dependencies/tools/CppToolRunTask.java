@@ -39,9 +39,13 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
         }
     }
 
+    private String getArgumentPath(String toolNameLower) {
+        return new File(getProject().getProjectDir(), "." + toolNameLower).getAbsolutePath();
+    }
+
     private void runToolWindows() {
         File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".vbs");
-        ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent");
+        ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent", getArgumentPath(toolName.toLowerCase()));
         try {
             Process proc = builder.start();
             int result = proc.waitFor();
@@ -60,6 +64,7 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
         File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".py");
         getProject().exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
+            spec.args(getArgumentPath(toolName.toLowerCase()));
         });
     }
 
