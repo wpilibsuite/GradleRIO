@@ -31,21 +31,12 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
 
     @TaskAction
     public void runTool() {
-        boolean isWindows = OperatingSystem.current().isWindows();
-        if (isWindows) {
-            runToolWindows();
-        } else {
-            runToolUnix();
-        }
-    }
-
-    private void runToolWindows() {
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".vbs");
-        ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent");
+        ProcessBuilder builder = getProcessBuilder();
         try {
             Process proc = builder.start();
-            int result = proc.waitFor();
-            if (result != 0) {
+            // Wait 3 seconds
+            Thread.sleep(3000);
+            if (!proc.isAlive()) {
                 String stdOut = IOGroovyMethods.getText(proc.getInputStream());
                 String stdErr = IOGroovyMethods.getText(proc.getErrorStream());
                 throw new ToolRunException(stdOut, stdErr);
@@ -53,14 +44,24 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private void runToolUnix() {
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".py");
-        getProject().exec(spec -> {
-            spec.setExecutable(outputFile.getAbsolutePath());
-        });
+    private String getArgumentPath(String toolNameLower) {
+        return new File(getProject().getProjectDir(), "." + toolNameLower).getAbsolutePath();
+    }
+
+    private ProcessBuilder getProcessBuilder() {
+        String toolNameLower = toolName.toLowerCase();
+        if (OperatingSystem.current().isWindows()) {
+            String outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".exe").getAbsolutePath();
+            return new ProcessBuilder(outputFile, getArgumentPath(toolNameLower));
+        } else if (OperatingSystem.current().isMacOsX()) {
+            String outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".app").getAbsolutePath();
+            return new ProcessBuilder("open", outputFile, getArgumentPath(toolNameLower));
+        } else {
+            String outputFile = new File(ToolInstallTask.getToolsFolder(), toolNameLower).getAbsolutePath();
+            return new ProcessBuilder(outputFile, getArgumentPath(toolNameLower));
+        }
     }
 
     @Override
