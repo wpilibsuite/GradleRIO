@@ -2,11 +2,9 @@ package edu.wpi.first.gradlerio.wpi.cpp;
 
 import javax.inject.Inject;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import org.gradle.nativeplatform.test.NativeTestSuiteBinarySpec;
 import org.gradle.platform.base.VariantComponentSpec;

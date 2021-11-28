@@ -18,6 +18,7 @@ import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.JavaArtifact;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.JniArtifact;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.JsonDependency;
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.NamedJsonDependency;
 
 public class WPIJavaVendorDepsExtension {
     private final WPIVendorDepsExtension vendorDeps;
@@ -26,7 +27,8 @@ public class WPIJavaVendorDepsExtension {
     private final Project project;
 
     @Inject
-    public WPIJavaVendorDepsExtension(WPIVendorDepsExtension vendorDeps, WPIVersionsExtension versions, ProviderFactory providerFactory, Project project) {
+    public WPIJavaVendorDepsExtension(WPIVendorDepsExtension vendorDeps, WPIVersionsExtension versions,
+            ProviderFactory providerFactory, Project project) {
         this.vendorDeps = vendorDeps;
         this.providerFactory = providerFactory;
         this.versions = versions;
@@ -34,10 +36,12 @@ public class WPIJavaVendorDepsExtension {
     }
 
     public List<Provider<String>> java(String... ignore) {
-        return vendorDeps.getDependenciesMap().entrySet().stream().map(x -> x.getValue()).filter(x -> !WPIVendorDepsExtension.isIgnored(ignore, x))
+        return vendorDeps.getDependencySet().stream().map(x -> x.getDependency())
+                .filter(x -> !WPIVendorDepsExtension.isIgnored(ignore, x))
                 .map(x -> List.of(x.javaDependencies)).flatMap(List<JavaArtifact>::stream).map(art -> {
                     String baseId = art.groupId + ":" + art.artifactId;
-                    Callable<String> cbl = () -> baseId + ":" + WPIVendorDepsExtension.getVersion(art.version, providerFactory, versions);
+                    Callable<String> cbl = () -> baseId + ":"
+                            + WPIVendorDepsExtension.getVersion(art.version, providerFactory, versions);
 
                     try {
                         project.getDependencies().getComponents().withModule(baseId, details -> {
@@ -49,8 +53,10 @@ public class WPIJavaVendorDepsExtension {
                         });
                     } catch (Exception ex) {
                         Logger logger = Logger.getLogger(this.getClass());
-                        logger.warn("Issue setting component metadata for " + baseId + ". Build could have issues with incorrect transitive dependencies.");
-                        logger.warn("Please create an issue at https://github.com/wpilibsuite/allwpilib with this message so we can investigate");
+                        logger.warn("Issue setting component metadata for " + baseId
+                                + ". Build could have issues with incorrect transitive dependencies.");
+                        logger.warn(
+                                "Please create an issue at https://github.com/wpilibsuite/allwpilib with this message so we can investigate");
                     }
 
                     return providerFactory.provider(cbl);
@@ -69,7 +75,8 @@ public class WPIJavaVendorDepsExtension {
 
         List<Provider<String>> deps = new ArrayList<>();
 
-        for (JsonDependency dep : vendorDeps.getDependenciesMap().values()) {
+        for (NamedJsonDependency d : vendorDeps.getDependencySet()) {
+            JsonDependency dep = d.getDependency();
             if (!WPIVendorDepsExtension.isIgnored(ignore, dep)) {
                 for (JniArtifact jni : dep.jniDependencies) {
                     boolean applies = Arrays.asList(jni.validPlatforms).contains(platform);
@@ -78,7 +85,8 @@ public class WPIJavaVendorDepsExtension {
 
                     if (applies) {
                         String debugString = debug ? "debug" : "";
-                        Callable<String> cbl = () -> jni.groupId + ":" + jni.artifactId + ":" + WPIVendorDepsExtension.getVersion(jni.version, providerFactory, versions) + ":"
+                        Callable<String> cbl = () -> jni.groupId + ":" + jni.artifactId + ":"
+                                + WPIVendorDepsExtension.getVersion(jni.version, providerFactory, versions) + ":"
                                 + platform + debugString + "@" + (jni.isJar ? "jar" : "zip");
                         deps.add(providerFactory.provider(cbl));
                     }
