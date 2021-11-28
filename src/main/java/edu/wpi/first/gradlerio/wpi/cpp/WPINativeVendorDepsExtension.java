@@ -10,6 +10,7 @@ import org.gradle.platform.base.VariantComponentSpec;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.CppArtifact;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.JsonDependency;
+import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension.NamedJsonDependency;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
 import edu.wpi.first.nativeutils.dependencies.AllPlatformsCombinedNativeDependency;
 
@@ -31,15 +32,17 @@ public class WPINativeVendorDepsExtension {
             return project.getObjects().newInstance(WPIVendorMavenDependency.class, name, project);
         });
 
-        for (JsonDependency dep : vendorDeps.getDependenciesMap().values()) {
+        vendorDeps.getDependencySet().all(d -> {
+            JsonDependency dep = d.getDependency();
             // Individual dependencies
             if (dep.cppDependencies.length <= 0) {
-                continue;
+                return;
             }
 
             String depName = dep.uuid + "_" + dep.name;
 
-            AllPlatformsCombinedNativeDependency combinedDep = dependencyContainer.create(depName, AllPlatformsCombinedNativeDependency.class);
+            AllPlatformsCombinedNativeDependency combinedDep = dependencyContainer.create(depName,
+                    AllPlatformsCombinedNativeDependency.class);
 
             for (CppArtifact cpp : dep.cppDependencies) {
                 String name = depName + "_" + cpp.libName;
@@ -47,7 +50,7 @@ public class WPINativeVendorDepsExtension {
                 WPIVendorMavenDependency vendorDep = dependencyContainer.create(name, WPIVendorMavenDependency.class);
                 vendorDep.setArtifact(cpp);
             }
-        }
+        });
     }
 
     public void cpp(Object scope, String... ignore) {
@@ -64,8 +67,8 @@ public class WPINativeVendorDepsExtension {
     }
 
     private void cppVendorLibForBin(NativeBinarySpec bin, String[] ignore) {
-
-        for (JsonDependency dep : vendorDeps.getDependenciesMap().values()) {
+        for (NamedJsonDependency namedDep : vendorDeps.getDependencySet()) {
+            JsonDependency dep = namedDep.getDependency();
             if (WPIVendorDepsExtension.isIgnored(ignore, dep)) {
                 continue;
             }
