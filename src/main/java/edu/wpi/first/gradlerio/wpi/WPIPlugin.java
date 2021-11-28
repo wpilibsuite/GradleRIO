@@ -90,7 +90,7 @@ public class WPIPlugin implements Plugin<Project> {
 
         if (wpi.getMaven().isUseFrcMavenVendorCache()) {
             wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
-                cache.setRelease("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
+                cache.setRelease("https://frcmaven.wpi.edu/artifactory/vendor-mvn-release");
                 cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
                 cache.setAllowedGroupIds(wpi.getMaven().getVendorCacheGroupIds());
             });
