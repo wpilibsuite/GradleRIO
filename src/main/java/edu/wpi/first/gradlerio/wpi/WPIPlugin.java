@@ -81,6 +81,8 @@ public class WPIPlugin implements Plugin<Project> {
     }
 
     void addMavenRepositories(Project project, WPIExtension wpi) {
+        boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
+
         wpi.getMaven().mirror("Official", mirror -> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
             mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
@@ -88,11 +90,12 @@ public class WPIPlugin implements Plugin<Project> {
             mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
         });
 
-        if (wpi.getMaven().isUseFrcMavenVendorCache()) {
+        Set<String> vendorCacheIds = wpi.getMaven().getVendorCacheGroupIds();
+        if (wpi.getMaven().isUseFrcMavenVendorCache() && (!vendorCacheIds.isEmpty() || !enableGroupLimits)) {
             wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
                 cache.setRelease("https://frcmaven.wpi.edu/ui/native/vendor-mvn-release/");
                 cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
-                cache.setAllowedGroupIds(wpi.getMaven().getVendorCacheGroupIds());
+                cache.setAllowedGroupIds(vendorCacheIds);
             });
         }
 
@@ -119,8 +122,6 @@ public class WPIPlugin implements Plugin<Project> {
 
         WPIMavenRepo[] sortedMirrors = wpi.getMaven().stream().sorted((a, b) -> a.getPriority() - b.getPriority())
                 .toArray(WPIMavenRepo[]::new);
-
-        boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
 
         // If enabled, the development branch should have a higher weight than the
         // release
