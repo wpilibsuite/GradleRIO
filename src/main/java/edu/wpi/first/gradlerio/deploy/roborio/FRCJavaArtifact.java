@@ -25,6 +25,8 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
 
+    private boolean useDefaultJvmArgs = true;
+
     private final RoboRIO roboRIO;
 
     @Inject
@@ -116,12 +118,26 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         return arguments;
     }
 
+    public void useDefaultJvmArgs(boolean useDefaultJvmArgs) {
+        this.useDefaultJvmArgs = useDefaultJvmArgs;
+    }
+
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
-        builder.append("/usr/local/frc/JRE/bin/java -XX:+UseConcMarkSweepGC -Djava.library.path=");
+        builder.append("/usr/local/frc/JRE/bin/java");
+        builder.append(" -Djava.library.path=");
         builder.append(FRCDeployPlugin.LIB_DEPLOY_DIR);
-        builder.append(" -Djava.lang.invoke.stringConcat=BC_SB ");
-        builder.append(String.join(" ", jvmArgs));
+
+        String jvmArgsString = String.join(" ", jvmArgs);
+        if(useDefaultJvmArgs) {
+            builder.append(" -Djava.lang.invoke.stringConcat=BC_SB ");
+            builder.append(" -XX:+UseConcMarkSweepGC ");
+        } else {
+            ctx.getLogger().warn("You're not using the default JVM args: things might not work as expected!\n"
+                                + "Your custom JVM args are: " + jvmArgsString);
+        }
+
+        builder.append(jvmArgsString);
         builder.append(" ");
 
         // Debug stuff
