@@ -133,7 +133,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
             builder.append(" -Djava.lang.invoke.stringConcat=BC_SB ");
             builder.append(" -XX:+UseConcMarkSweepGC ");
         } else {
-            ctx.getLogger().warn("You're not using the default JVM args: things might not work as expected!\n"
+            ctx.getLogger().log("You're not using the default JVM args: things might not work as expected!\n"
                                 + "Your custom JVM args are: " + jvmArgsString);
         }
 
