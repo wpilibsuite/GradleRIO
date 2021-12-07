@@ -6,8 +6,8 @@ import org.gradle.api.Project;
 
 import edu.wpi.first.deployutils.deploy.artifact.MavenArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.StagedDeployTarget;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJREArtifact extends MavenArtifact {
@@ -18,7 +18,7 @@ public class FRCJREArtifact extends MavenArtifact {
     }
 
     @Inject
-    public FRCJREArtifact(String name, RemoteTarget target) {
+    public FRCJREArtifact(String name, StagedDeployTarget target) {
         super(name, target);
         String configName = name + "frcjre";
         this.configName = configName;
@@ -39,7 +39,7 @@ public class FRCJREArtifact extends MavenArtifact {
             ctx.getLogger().log("JRE Deployed!");
         });
 
-        getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
+        target.setDeployStage(this, DeployStage.FileDeploy);
     }
 
     private boolean jreMissing(DeployContext ctx) {

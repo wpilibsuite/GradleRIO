@@ -4,16 +4,16 @@ import javax.inject.Inject;
 
 import edu.wpi.first.deployutils.deploy.artifact.AbstractArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.StagedDeployTarget;
 
 public class FRCProgramStartArtifact extends AbstractArtifact {
 
     @Inject
-    public FRCProgramStartArtifact(String name, RemoteTarget target) {
+    public FRCProgramStartArtifact(String name, StagedDeployTarget target) {
         super(name, target);
 
-        this.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramStart);
+        target.setDeployStage(this, DeployStage.ProgramStart);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class RoboRIO extends WPIRemoteTarget {
         validImageVersions = new ArrayList<>(WPIExtension.getValidImageVersions());
 
         programKillArtifact = project.getObjects().newInstance(MultiCommandArtifact.class, "programKill" + name, this);
-        programKillArtifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.ProgramKill);
+        setDeployStage(programKillArtifact, DeployStage.ProgramKill);
         programKillArtifact.addCommand("frcRunRobot", "sed -i -e 's/\"exec /\"/' /usr/local/frc/bin/frcRunRobot.sh");
         programKillArtifact.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
         programKillArtifact.addCommand("freemem", "sed -i -e 's/^StartupDLLs/;StartupDLLs/' /etc/natinst/share/ni-rt.ini");
