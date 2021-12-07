@@ -89,4 +89,12 @@ public abstract class StagedDeployTarget extends RemoteTarget {
         }
         return depTasks;
     }
+
+    public void setDeployStage(Artifact artifact, String stage) {
+        setDeployStage(artifact, DeployStage.valueOf(DeployStage.class, stage));
+    }
+
+    public void setDeployStage(Artifact artifact, DeployStage stage) {
+        artifact.getExtensionContainer().add(DeployStage.class, "stage", stage);
+    }
 }
