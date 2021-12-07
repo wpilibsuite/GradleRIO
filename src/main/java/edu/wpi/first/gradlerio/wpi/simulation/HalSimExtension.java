@@ -55,9 +55,9 @@ public class HalSimExtension implements Named {
 
     public Optional<String> getFilenameForArtifact(ArtifactView view, FileCollection files) {
         // Find artifact matching
-        String idString = getIdString();
+        String idString = getGroupId().get() + ":" + getArtifactId().get() + ":";
         for (ResolvedArtifactResult artifact : view.getArtifacts()) {
-            if (artifact.getId().getComponentIdentifier().toString().equals(idString)) {
+            if (artifact.getId().getComponentIdentifier().getDisplayName().startsWith(idString)) {
                 // Found artifact, now find binary
                 for (File file : files) {
                     if (file.getAbsolutePath().startsWith(artifact.getFile().getAbsolutePath())) {
