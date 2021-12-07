@@ -4,17 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import com.google.gson.Gson;
 
+import org.gradle.api.Named;
+import org.gradle.api.NamedDomainObjectSet;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ProviderFactory;
 
@@ -28,14 +27,10 @@ public abstract class WPIVendorDepsExtension {
 
     private final WPIExtension wpiExt;
 
-    private final Map<String, JsonDependency> dependencies = new HashMap<>();
+    private final NamedDomainObjectSet<NamedJsonDependency> dependencySet;
 
-    public Map<String, JsonDependency> getDependenciesMap() {
-        return dependencies;
-    }
-
-    public List<JsonDependency> getDependencies() {
-        return new ArrayList<>(dependencies.values());
+    public NamedDomainObjectSet<NamedJsonDependency> getDependencySet() {
+        return dependencySet;
     }
 
     private final ETLogger log;
@@ -48,6 +43,7 @@ public abstract class WPIVendorDepsExtension {
     public WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt;
         this.log = ETLoggerFactory.INSTANCE.create("WPIVendorDeps");
+        dependencySet = wpiExt.getProject().getObjects().namedDomainObjectSet(NamedJsonDependency.class);
     }
 
     private File vendorFolder(Project project) {
@@ -103,11 +99,14 @@ public abstract class WPIVendorDepsExtension {
 
     private void load(JsonDependency dep) {
         // Don"t double-add a dependency!
-        if (dependencies.putIfAbsent(dep.uuid, dep) != null) {
+        if (dependencySet.findByName(dep.uuid) != null) {
             return;
         }
 
-        if (dep != null && dep.mavenUrls != null) {
+        NamedJsonDependency namedDep = new NamedJsonDependency(dep.uuid, dep);
+        dependencySet.add(namedDep);
+
+        if (dep.mavenUrls != null) {
             // Enumerate all group ids
             Set<String> groupIds = new HashSet<>();
             for (CppArtifact cpp : dep.cppDependencies) {
@@ -207,6 +206,24 @@ public abstract class WPIVendorDepsExtension {
         public JavaArtifact[] javaDependencies;
         public JniArtifact[] jniDependencies;
         public CppArtifact[] cppDependencies;
+    }
+
+    public static class NamedJsonDependency implements Named {
+        private final JsonDependency dependency;
+        private final String name;
+
+        public NamedJsonDependency(String name, JsonDependency dependency) {
+            this.name = name;
+            this.dependency = dependency;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public JsonDependency getDependency() {
+            return dependency;
+        }
     }
 
 }
