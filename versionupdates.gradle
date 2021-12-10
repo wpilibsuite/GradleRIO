@@ -9,6 +9,7 @@ def versionMap = [
   pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
   sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
+  roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetterVersion:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:+',
   googleTestVersion: 'edu.wpi.first.thirdparty.frc2022:googletest:+:headers',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',

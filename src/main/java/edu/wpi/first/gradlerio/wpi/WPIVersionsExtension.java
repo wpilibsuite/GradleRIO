@@ -23,6 +23,7 @@ public abstract class WPIVersionsExtension {
     private static final String pathWeaverVersion = "2022.1.1-beta-3";
     private static final String glassVersion = "2022.1.1-beta-3";
     private static final String sysIdVersion = "2022.1.1-beta-3";
+    private static final String roboRIOTeamNumberSetterVersion = "2022.1.1-beta-3";
 
 
     public abstract Property<String> getWpilibVersion();
@@ -42,6 +43,7 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getPathWeaverVersion();
     public abstract Property<String> getGlassVersion();
     public abstract Property<String> getSysIdVersion();
+    public abstract Property<String> getRoboRIOTeamNumberSetterVersion();
 
     @Inject
     public WPIVersionsExtension() {
@@ -62,6 +64,7 @@ public abstract class WPIVersionsExtension {
         getPathWeaverVersion().convention(pathWeaverVersion);
         getGlassVersion().convention(glassVersion);
         getSysIdVersion().convention(sysIdVersion);
+        getRoboRIOTeamNumberSetterVersion().convention(roboRIOTeamNumberSetterVersion);
     }
 
 }
