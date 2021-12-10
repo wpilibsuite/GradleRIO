@@ -11,7 +11,7 @@ public abstract class WPIVersionsExtension {
     private static final String opencvVersion = "4.5.2-1";
     private static final String imguiVersion = "1.82-1";
     private static final String ejmlVersion = "0.41";
-    private static final String jacksonVersion = "2.10.0";
+    private static final String jacksonVersion = "2.12.4";
     private static final String wpimathVersion = "2022.1.1-beta-3";
     private static final String googleTestVersion = "1.9.0-5-437e100-1";
 
