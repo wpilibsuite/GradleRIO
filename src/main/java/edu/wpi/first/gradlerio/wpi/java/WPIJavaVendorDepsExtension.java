@@ -8,8 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
@@ -52,7 +53,7 @@ public class WPIJavaVendorDepsExtension {
                             });
                         });
                     } catch (Exception ex) {
-                        Logger logger = Logger.getLogger(this.getClass());
+                        Logger logger = Logging.getLogger(this.getClass());
                         logger.warn("Issue setting component metadata for " + baseId
                                 + ". Build could have issues with incorrect transitive dependencies.");
                         logger.warn(

@@ -7,8 +7,9 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
@@ -32,7 +33,7 @@ public class RoboRIO extends WPIRemoteTarget {
     @Inject
     public RoboRIO(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
         super(name, project, de, frcExtension);
-        log = Logger.getLogger(this.toString());
+        log = Logging.getLogger(this.toString());
 
         setDirectory("/home/lvuser");
 
