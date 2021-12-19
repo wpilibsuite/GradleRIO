@@ -6,18 +6,18 @@ import javax.inject.Inject;
 
 import edu.wpi.first.deployutils.deploy.artifact.FileArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
-import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.gradlerio.deploy.DeployStage;
+import edu.wpi.first.gradlerio.deploy.StagedDeployTarget;
 
 public class RobotCommandArtifact extends FileArtifact {
 
     private Function<DeployContext, String> startCommandFunc;
 
     @Inject
-    public RobotCommandArtifact(String name, RemoteTarget target) {
+    public RobotCommandArtifact(String name, StagedDeployTarget target) {
         super(name, target);
 
-        getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
+        target.setDeployStage(this, DeployStage.FileDeploy);
     }
 
     public Function<DeployContext, String> getStartCommandFunc() {

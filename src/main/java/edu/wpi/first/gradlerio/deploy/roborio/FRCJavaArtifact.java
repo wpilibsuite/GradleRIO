@@ -55,7 +55,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         });
 
         nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
-            artifact.getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
+            target.setDeployStage(artifact, DeployStage.FileDeploy);
 
             var cbl = target.getProject().getProviders().provider(() -> {
                 boolean debug = target.getProject().getExtensions().getByType(WPIExtension.class).getJava().getDebugJni().get();
@@ -81,7 +81,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
             ctx.execute("chmod +x \"" + binFile + "\"; chown lvuser \"" + binFile + "\"");
         });
 
-        getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
+        target.setDeployStage(this, DeployStage.FileDeploy);
     }
 
     public String getJavaCommand() {

@@ -77,7 +77,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
         this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
 
-        getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
+        target.setDeployStage(this, DeployStage.FileDeploy);
     }
 
     private String getBinFile(DeployContext ctx) {
