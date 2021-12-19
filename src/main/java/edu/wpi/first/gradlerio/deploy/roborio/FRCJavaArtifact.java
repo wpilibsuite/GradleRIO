@@ -27,10 +27,18 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
     private final RoboRIO roboRIO;
 
+    private GarbageCollectorType gcType = GarbageCollectorType.CMS;
+
+    private String javaCommand = "/usr/local/frc/JRE/bin/java";
+
     @Inject
     public FRCJavaArtifact(String name, RoboRIO target) {
         super(name, target);
         roboRIO = target;
+
+        jvmArgs.add("-XX:+AlwaysPreTouch");
+        jvmArgs.add("-Djava.lang.invoke.stringConcat=BC_SB");
+        jvmArgs.add("-Djava.library.path=" + FRCDeployPlugin.LIB_DEPLOY_DIR);
 
         var debugConfiguration = target.getProject().getConfigurations().create("roborioDebug");
         var releaseConfiguration = target.getProject().getConfigurations().create("roborioRelease");
@@ -76,6 +84,22 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         getExtensionContainer().add(DeployStage.class, "stage", DeployStage.FileDeploy);
     }
 
+    public String getJavaCommand() {
+        return javaCommand;
+    }
+
+    public void setJavaCommand(String javaCommand) {
+        this.javaCommand = javaCommand;
+    }
+
+    public GarbageCollectorType getGcType() {
+        return gcType;
+    }
+
+    public void setGcType(GarbageCollectorType gcType) {
+        this.gcType = gcType;
+    }
+
     private String getBinFile(DeployContext ctx) {
         return PathUtils.combine(ctx.getWorkingDir(), getFilename().getOrElse(getFile().get().getName()));
     }
@@ -118,9 +142,10 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
-        builder.append("/usr/local/frc/JRE/bin/java -XX:+UseConcMarkSweepGC -Djava.library.path=");
-        builder.append(FRCDeployPlugin.LIB_DEPLOY_DIR);
-        builder.append(" -Djava.lang.invoke.stringConcat=BC_SB ");
+        builder.append(javaCommand);
+        builder.append(" ");
+        builder.append(String.join(" ", gcType.getGcArguments()));
+        builder.append(" ");
         builder.append(String.join(" ", jvmArgs));
         builder.append(" ");
 
