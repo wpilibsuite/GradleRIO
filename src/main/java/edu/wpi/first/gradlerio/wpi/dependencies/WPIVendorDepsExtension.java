@@ -137,14 +137,11 @@ public abstract class WPIVendorDepsExtension {
                 if (!found) {
                     String name = dep.uuid + "_" + i++;
                     log.info("Registering vendor dep maven: " + name + " on project " + wpiExt.getProject().getPath());
-                    boolean allowsCache = dep.mavenUrlsInWpilibCache != null ? dep.mavenUrlsInWpilibCache : false;
-                    if (allowsCache) {
-                        wpiExt.getMaven().getVendorCacheGroupIds().addAll(groupIds);
-                    }
+                    wpiExt.getMaven().getVendorCacheGroupIds().addAll(groupIds);
                     wpiExt.getMaven().vendor(name, repo -> {
                         repo.setRelease(url);
                         repo.setAllowedGroupIds(groupIds);
-                    }, allowsCache);
+                    });
                 }
             }
         }
@@ -198,7 +195,6 @@ public abstract class WPIVendorDepsExtension {
         public String name;
         public String version;
         public String uuid;
-        public Boolean mavenUrlsInWpilibCache;
         public String[] mavenUrls;
         public String[] extraGroupIds;
         public String jsonUrl;
