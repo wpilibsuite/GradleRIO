@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.gradle.BuildResult;
 import org.gradle.api.Action;
@@ -17,6 +16,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.java.archives.Manifest;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.api.tasks.wrapper.Wrapper;
@@ -64,7 +64,7 @@ public class GradleRIOPlugin implements Plugin<Project> {
                     inspector(project);
                 }
             } catch (Exception e) {
-                Logger.getLogger(this.getClass()).info("Inspector failed: " + e.getMessage());
+                Logging.getLogger(this.getClass()).info("Inspector failed: " + e.getMessage());
             }
             ensureSingletons(project, graph);
         });
@@ -144,9 +144,9 @@ public class GradleRIOPlugin implements Plugin<Project> {
             if (t instanceof SingletonTask) {
                 String singletonName = ((SingletonTask)t).getSingletonName();
                 if (visited.add(singletonName)) {
-                    Logger.getLogger(this.getClass()).info("Singleton Task Using: " + t + " for " + singletonName);
+                    Logging.getLogger(this.getClass()).info("Singleton Task Using: " + t + " for " + singletonName);
                 } else {
-                    Logger.getLogger(this.getClass()).info("Singleton Task Disabling: " + t + " for " + singletonName);
+                    Logging.getLogger(this.getClass()).info("Singleton Task Disabling: " + t + " for " + singletonName);
                     t.setEnabled(false);
                 }
             }
