@@ -20,7 +20,7 @@ import edu.wpi.first.toolchain.NativePlatforms;
 public class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
 
-    private static final List<String> validImageVersions = List.of("2022_v2.*");
+    private static final List<String> validImageVersions = List.of("2022_v3.*");
 
     private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2022:11.0.12u5-1";
 
