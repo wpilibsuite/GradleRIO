@@ -5,6 +5,13 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2022.1.1"
 }
 
+def projectFolder = project.buildFile.parentFile
+def testingFolder = projectFolder.parentFile
+
+if (testingFolder.name != 'testing' || projectFolder.name != 'cpp') {
+    throw new GradleException("These projects are not to be used for robot projects. See README.md in the GradleRIO testing folder for the correct templates to use.")
+}
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
