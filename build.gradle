@@ -65,7 +65,7 @@ gradlePlugin {
 
 apply from: 'versionupdates.gradle'
 
-def examplesFolder = file("$rootDir/examples")
+def examplesFolder = file("$rootDir/testing")
 
 tasks.register('PatchExamples') {
     doLast {
