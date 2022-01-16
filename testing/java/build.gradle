@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1"
+    id "edu.wpi.first.GradleRIO" version "2022.2.1"
 }
 
 def projectFolder = project.buildFile.parentFile
