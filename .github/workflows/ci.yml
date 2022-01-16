@@ -38,15 +38,15 @@ jobs:
     - name: Setup RoboRIO Toolchain
       if: ${{ (matrix.language == 'cpp') || (matrix.language == 'jni') }}
       run: ./gradlew installRoboRioToolchain
-      working-directory: examples/${{ matrix.language }}
+      working-directory: testing/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
       run: ./gradlew build
-      working-directory: examples/${{ matrix.language }}
+      working-directory: testing/${{ matrix.language }}
 
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.language }}
-        path: examples/${{ matrix.language }}/build/
+        path: testing/${{ matrix.language }}/build/
 
   publish:
     needs: [build, test_examples]
