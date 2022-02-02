@@ -66,7 +66,7 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
 
                 if (ds instanceof SourceContainingNativeDependencySet) {
                     SourceContainingNativeDependencySet scnDs = (SourceContainingNativeDependencySet)ds;
-                    libsrcpaths.addAll(scnDs.getSourceFiles().getFiles());
+                    libsrcpaths.addAll(scnDs.getSourceRoots().getFiles());
                 }
             }
 
