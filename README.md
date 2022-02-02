@@ -50,7 +50,6 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 ### General
 - `./gradlew build` will build your robot code (and run unit tests if present).
 - `./gradlew deploy` will build and deploy your code.
-- `./gradlew riolog` will display the RoboRIO console output on your computer (run with `-Pfakeds` if you don't have a driverstation connected).
 
 - `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
 
