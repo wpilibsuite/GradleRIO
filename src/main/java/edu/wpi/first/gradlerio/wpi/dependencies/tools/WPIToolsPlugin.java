@@ -34,6 +34,7 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion(), "edu.wpi.first.tools:Glass"));
         cppTools.add(new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "edu.wpi.first.tools:SysId"));
         cppTools.add(new WPICppTool(project, "roboRIOTeamNumberSetter", wpi.getVersions().getRoboRIOTeamNumberSetterVersion(), "edu.wpi.first.tools:roboRIOTeamNumberSetter"));
+        cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(), "edu.wpi.first.tools:DataLogTool"));
 
         project.getTasks().register("InstallAllTools", task -> {
             task.setGroup("GradleRIO");
