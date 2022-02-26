@@ -22,7 +22,7 @@ public class WPIExtension {
 
     private static final List<String> validImageVersions = List.of("2022_v4.*");
 
-    private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2022:11.0.12u5-1";
+    private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2021:11.0.9u11-1";
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
 
