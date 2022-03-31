@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
@@ -111,13 +114,31 @@ public class VendorDepTask extends DefaultTask {
     }
 
     /**
+    * Fetches the SSL property from the WPILib preferences JSON file.
+    * @return The SSL property, defaults to true.
+    */
+    private boolean getSSLEnabled() {
+        File jsonFile = getProject().getRootProject().file(".wpilib/wpilib_preferences.json");
+        if (jsonFile.exists()) {
+            Gson gson = new Gson();
+            try {
+                PreferencesJson json = gson.fromJson(ResourceGroovyMethods.getText(jsonFile), PreferencesJson.class);
+                return json.ssl;
+            } catch (JsonSyntaxException | IOException e) {
+            }
+        }
+        return true;
+    }
+    /**
      * Download a vendor JSON file from a URL
      * @param dest the destination file
      */
     private void downloadRemote(Path dest) throws IOException {
         downloadAction.src(url);
         downloadAction.dest(dest.toFile());
-        downloadAction.acceptAnyCertificate(true); // Allow self-signed certificates.
+        if(getSSLEnabled()) {
+            downloadAction.acceptAnyCertificate(true); // Allow self-signed certificates.
+        }
         downloadAction.execute();
     }
 }
