@@ -114,10 +114,10 @@ public class VendorDepTask extends DefaultTask {
     }
 
     /**
-    * Fetches the SSL property from the WPILib preferences JSON file.
+    * Fetches the SSL certificate checking property from the WPILib preferences JSON file.
     * @return The SSL property, defaults to true.
     */
-    private boolean getSSLEnabled() {
+    private boolean checkSSLCertificates() {
         File jsonFile = getProject().getRootProject().file(".wpilib/wpilib_preferences.json");
         if (jsonFile.exists()) {
             Gson gson = new Gson();
@@ -137,7 +137,7 @@ public class VendorDepTask extends DefaultTask {
     private void downloadRemote(Path dest) throws IOException {
         downloadAction.src(url);
         downloadAction.dest(dest.toFile());
-        if(getSSLEnabled()) {
+        if(!checkSSLCertificates()) {
             downloadAction.acceptAnyCertificate(true); // Allow self-signed certificates.
         }
         downloadAction.execute();
