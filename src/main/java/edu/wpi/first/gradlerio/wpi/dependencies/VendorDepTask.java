@@ -117,6 +117,7 @@ public class VendorDepTask extends DefaultTask {
     private void downloadRemote(Path dest) throws IOException {
         downloadAction.src(url);
         downloadAction.dest(dest.toFile());
+        downloadAction.acceptAnyCertificate(true); // Allow self-signed certificates.
         downloadAction.execute();
     }
 }
