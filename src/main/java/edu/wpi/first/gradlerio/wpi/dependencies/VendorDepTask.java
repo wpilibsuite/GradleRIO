@@ -129,6 +129,7 @@ public class VendorDepTask extends DefaultTask {
         }
         return true;
     }
+    
     /**
      * Download a vendor JSON file from a URL
      * @param dest the destination file
