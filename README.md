@@ -1,6 +1,7 @@
 ![CI](https://github.com/wpilibsuite/GradleRIO/workflows/CI/badge.svg)
 
 # GradleRIO
+
 GradleRIO is a powerful Gradle Plugin that allows teams competing in the FIRST
 robotics competition to produce and build their code.
 
@@ -15,10 +16,14 @@ frc-docs is the best place for documentation: https://docs.wpilib.org/en/stable/
 Other IDEs like IntelliJ IDEA, Eclipse, Visual Studio, and CLion are also supported, unofficially. You may also use this tool exclusively from the command line, allowing use of any IDE or text editor (like Sublime Text, Atom or Vim).
 
 ## Getting Started - Creating a new project
+
 ### With Visual Studio Code (recommended)
+
 For getting started with VS Code, please see the frc-docs documentation:
 https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html
+
 ### Without Visual Studio Code
+
 Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
 
@@ -35,25 +40,31 @@ Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/rel
 Download the .zip file corresponding to your language and extract it.
 
 ## Adding Vendor Libraries
+
 ### With Visual Studio Code
+
 Open the command palette with CTRL + SHIFT + P, or by clicking the WPILib icon.
 Open `WPILib: Manage Vendor Libraries`, `Install new libraries (online)`, and paste the vendor-provided JSON url.
 
 ### Without Visual Studio Code
+
 Create a folder `vendordeps` in your project directory if it doesn't already exist.
 Download the JSON file from the vendor-provided URL, and save it to the `vendordeps` folder.
 This can be done by running `./gradlew vendordep --url=<vendor url here>` in a project.
 
 ## Commands
+
 Windows Users: It is recommended to use Powershell instead of CMD. You can switch to powershell with `powershell`
 
 ### General
+
 - `./gradlew build` will build your robot code (and run unit tests if present).
 - `./gradlew deploy` will build and deploy your code.
 
 - `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
 
 ### Tools
+
 - `./gradlew Glass` will launch Glass, a data visualization tool similar to the SimGUI.
 - `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
 - `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
@@ -65,10 +76,13 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
 
 ## IDE Support
+
 ### Visual Studio Code:
+
 VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Code extension. See frc-docs for instructions.
 
 ### IntelliJ IDEA:
+
 _IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
 To import a gradle project into IntelliJ IDEA please do **one** of the following:
@@ -80,6 +94,7 @@ IntelliJ may ask to import the Gradle project in the bottom right of the IDE, si
 Please see the IntelliJ IDEA help page on gradle for help: https://www.jetbrains.com/help/idea/gradle.html
 
 ### Eclipse
+
 _Eclipse support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
 
 First install buildship, the gradle plugin made by Eclipse for the Eclipse IDE. Installation instructions can be found here: https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md
@@ -92,6 +107,7 @@ Press `Finish` once to finish the import, and `Finish` again to confirm it.
 Please see the buildship github page for help (specifically the user documentation and the forums): https://github.com/eclipse/buildship
 
 ### Visual Studio 2017 Community / Full (not Visual Studio Code)
+
 _VS2017 support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
 To start with, you must apply the `visual-studio` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
@@ -107,6 +123,7 @@ Finally, you can generate and open your solution with the following command:
 Please see the gradle guide on building native software for help: https://docs.gradle.org/current/userguide/native_software.html#native_binaries:visual_studio
 
 ## Upgrading
+
 To upgrade your Gradle project (and GradleRio plugin) from one year to the next follow the [Importing a Gradle Project](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/importing-gradle-project.html) instructions in the WPILib Documentation.
 
 For mid-season updates to GradleRio, edit build.gradle and replace the version in the plugin line (only change the GradleRIO line):
@@ -118,3 +135,9 @@ plugins {
 ```
 
 The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
+
+## Deploying Experimental JDK
+
+1. To get a build of JDK 17, check out the branch for https://github.com/wpilibsuite/frc-openjdk-roborio/pull/7 and do a local build and publish. This will put the JDK in the local maven cache.
+2. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2022:17.0.0u0-1'` to build.gradle, changing the version to the one you built earlier.
+3. Set `gcType = 'G1'` in the java deploy block to use the G1 garbage collector
