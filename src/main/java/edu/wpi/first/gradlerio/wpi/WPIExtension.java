@@ -72,8 +72,7 @@ public class WPIExtension {
             this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");
         } else {
             this.toolsClassifier = (
-                    OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch").equals("amd64") ? "win64" : "win32" :
+                    OperatingSystem.current().isWindows() ? "win64" :
                             OperatingSystem.current().isMacOsX() ? "mac64" :
                                     OperatingSystem.current().isLinux() ? "linux64" :
                                             null
@@ -83,8 +82,7 @@ public class WPIExtension {
             this.cppToolsClassifier = (String)project.findProperty("forceCppToolsClassifier");
         } else {
             this.cppToolsClassifier = (
-                    OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch").equals("amd64") ? "windowsx86-64" : "windowsx86" :
+                    OperatingSystem.current().isWindows() ? "windowsx86-64" :
                             OperatingSystem.current().isMacOsX() ? "osxx86-64" :
                                     OperatingSystem.current().isLinux() ? "linuxx86-64" :
                                             null
