@@ -138,6 +138,5 @@ The latest version can be obtained from here: https://plugins.gradle.org/plugin/
 
 ## Deploying Experimental JDK
 
-1. To get a build of JDK 17, check out the branch for https://github.com/wpilibsuite/frc-openjdk-roborio/pull/7 and do a local build and publish. This will put the JDK in the local maven cache.
-2. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2022:17.0.0u0-1'` to build.gradle, changing the version to the one you built earlier.
-3. Set `gcType = 'G1'` in the java deploy block to use the G1 garbage collector
+1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2022:17.0.3u7-1'` to build.gradle
+2. Set `gcType = 'G1'` in the java deploy block to use the G1 garbage collector
