@@ -27,7 +27,6 @@ public class WPIToolsPlugin implements Plugin<Project> {
         tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(), "edu.wpi.first.tools" , "SmartDashboard", true));
         tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion(), "edu.wpi.first.shuffleboard" , "shuffleboard", true));
         tools.add(new WPITool(project, "RobotBuilder", wpi.getVersions().getRobotBuilderVersion(), "edu.wpi.first.tools" , "RobotBuilder", false));
-        tools.add(new WPITool(project, "RobotBuilder-Old", wpi.getVersions().getRobotBuilderOldVersion(), "edu.wpi.first.tools" , "RobotBuilder-Old", false));
         tools.add(new WPITool(project, "PathWeaver", wpi.getVersions().getPathWeaverVersion(), "edu.wpi.first.tools" , "PathWeaver", true));
 
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(), "edu.wpi.first.tools:OutlineViewer"));

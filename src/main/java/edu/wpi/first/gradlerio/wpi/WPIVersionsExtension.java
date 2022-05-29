@@ -19,7 +19,6 @@ public abstract class WPIVersionsExtension {
     private static final String shuffleboardVersion = "2022.4.1";
     private static final String outlineViewerVersion = "2023.0.0-alpha-1";
     private static final String robotBuilderVersion = "2022.4.1";
-    private static final String robotBuilderOldVersion = "2022.4.1";
     private static final String pathWeaverVersion = "2022.4.1";
     private static final String glassVersion = "2023.0.0-alpha-1";
     private static final String sysIdVersion = "2022.4.1";
@@ -40,7 +39,6 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getShuffleboardVersion();
     public abstract Property<String> getOutlineViewerVersion();
     public abstract Property<String> getRobotBuilderVersion();
-    public abstract Property<String> getRobotBuilderOldVersion();
     public abstract Property<String> getPathWeaverVersion();
     public abstract Property<String> getGlassVersion();
     public abstract Property<String> getSysIdVersion();
@@ -62,7 +60,6 @@ public abstract class WPIVersionsExtension {
         getShuffleboardVersion().convention(shuffleboardVersion);
         getOutlineViewerVersion().convention(outlineViewerVersion);
         getRobotBuilderVersion().convention(robotBuilderVersion);
-        getRobotBuilderOldVersion().convention(robotBuilderOldVersion);
         getPathWeaverVersion().convention(pathWeaverVersion);
         getGlassVersion().convention(glassVersion);
         getSysIdVersion().convention(sysIdVersion);
