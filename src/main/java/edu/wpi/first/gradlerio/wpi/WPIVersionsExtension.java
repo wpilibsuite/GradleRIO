@@ -18,7 +18,7 @@ public abstract class WPIVersionsExtension {
     private static final String smartDashboardVersion = "2022.4.1";
     private static final String shuffleboardVersion = "2022.4.1";
     private static final String outlineViewerVersion = "2023.0.0-alpha-1";
-    private static final String robotBuilderVersion = "2022.4.1";
+    private static final String robotBuilderVersion = "2023.0.0-alpha-1";
     private static final String pathWeaverVersion = "2022.4.1";
     private static final String glassVersion = "2023.0.0-alpha-1";
     private static final String sysIdVersion = "2022.4.1";
