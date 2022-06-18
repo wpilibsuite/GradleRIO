@@ -25,7 +25,7 @@ public class WPIToolsPlugin implements Plugin<Project> {
 
         ToolInstallTask.setToolsFolder(toolFolder);
         tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(), "edu.wpi.first.tools" , "SmartDashboard", true));
-        tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion(), "edu.wpi.first.shuffleboard" , "shuffleboard", true));
+        tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion(), "edu.wpi.first.tools" , "Shuffleboard", true));
         tools.add(new WPITool(project, "RobotBuilder", wpi.getVersions().getRobotBuilderVersion(), "edu.wpi.first.tools" , "RobotBuilder", false));
         tools.add(new WPITool(project, "PathWeaver", wpi.getVersions().getPathWeaverVersion(), "edu.wpi.first.tools" , "PathWeaver", true));
 
