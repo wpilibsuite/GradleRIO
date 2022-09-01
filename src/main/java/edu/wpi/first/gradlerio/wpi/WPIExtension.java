@@ -22,7 +22,7 @@ public class WPIExtension {
 
     private static final List<String> validImageVersions = List.of("2022_v4.*");
 
-    private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2021:11.0.9u11-1";
+    private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2022:17.0.3u7-1";
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
 
@@ -72,8 +72,7 @@ public class WPIExtension {
             this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");
         } else {
             this.toolsClassifier = (
-                    OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch").equals("amd64") ? "win64" : "win32" :
+                    OperatingSystem.current().isWindows() ? "win64" :
                             OperatingSystem.current().isMacOsX() ? "mac64" :
                                     OperatingSystem.current().isLinux() ? "linux64" :
                                             null
@@ -83,8 +82,7 @@ public class WPIExtension {
             this.cppToolsClassifier = (String)project.findProperty("forceCppToolsClassifier");
         } else {
             this.cppToolsClassifier = (
-                    OperatingSystem.current().isWindows() ?
-                            System.getProperty("os.arch").equals("amd64") ? "windowsx86-64" : "windowsx86" :
+                    OperatingSystem.current().isWindows() ? "windowsx86-64" :
                             OperatingSystem.current().isMacOsX() ? "osxx86-64" :
                                     OperatingSystem.current().isLinux() ? "linuxx86-64" :
                                             null
@@ -132,7 +130,6 @@ public class WPIExtension {
     //             "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
     //             "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
     //             "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
-    //             "RobotBuilderOldVersion"  : new Tuple("RobotBuilder-Old", robotBuilderOldVersion, "robotbuilderold"),
     //             "glassVersion"         : new Tuple("Glass", glassVersion, "glass"),
     //             "pathWeaverVersion"    : new Tuple("PathWeaver", pathWeaverVersion, "pathweaver"),
     //     ]

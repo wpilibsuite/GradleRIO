@@ -27,7 +27,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
     private final RoboRIO roboRIO;
 
-    private GarbageCollectorType gcType = GarbageCollectorType.CMS;
+    private GarbageCollectorType gcType = GarbageCollectorType.G1;
 
     private String javaCommand = "/usr/local/frc/JRE/bin/java";
 
