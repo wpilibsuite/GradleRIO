@@ -8,12 +8,12 @@ public abstract class WPIVersionsExtension {
 
     private static final String wpilibVersion = "2023.0.0-alpha-1";
     private static final String niLibrariesVersion = "2022.4.0";
-    private static final String opencvVersion = "4.5.2-1";
-    private static final String imguiVersion = "1.86-1";
+    private static final String opencvVersion = "4.5.5-3";
+    private static final String imguiVersion = "1.88-3";
     private static final String ejmlVersion = "0.41";
     private static final String jacksonVersion = "2.12.4";
     private static final String wpimathVersion = "2023.0.0-alpha-1";
-    private static final String googleTestVersion = "1.9.0-5-437e100-1";
+    private static final String googleTestVersion = "1.11.0-2";
 
     private static final String smartDashboardVersion = "2022.4.1";
     private static final String shuffleboardVersion = "2022.4.1";

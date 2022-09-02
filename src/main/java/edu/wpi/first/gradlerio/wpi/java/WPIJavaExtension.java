@@ -33,8 +33,9 @@ import edu.wpi.first.gradlerio.simulation.JavaExternalSimulationTask;
 import edu.wpi.first.gradlerio.simulation.JavaSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
+import edu.wpi.first.nativeutils.vendordeps.WPIJavaVendorDepsExtension;
+import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension;
 
 public class WPIJavaExtension {
     private final Project project;
@@ -209,8 +210,7 @@ public class WPIJavaExtension {
     }
 
     @Inject
-    public WPIJavaExtension(Project project, SimulationExtension sim, WPIVersionsExtension versions,
-            WPIVendorDepsExtension vendorDeps) {
+    public WPIJavaExtension(Project project, SimulationExtension sim, WPIVersionsExtension versions) {
         this.project = project;
         this.sim = sim;
         extractNativeDebugArtifacts = project.getTasks().register("extractDebugNative",
@@ -221,7 +221,7 @@ public class WPIJavaExtension {
         debugJni = project.getObjects().property(Boolean.class);
         debugJni.set(false);
         deps = project.getObjects().newInstance(WPIJavaDepsExtension.class, versions);
-        vendor = project.getObjects().newInstance(WPIJavaVendorDepsExtension.class, vendorDeps, versions, project);
+        vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class).getJavaVendor();
 
         debugNativeConfiguration = project.getConfigurations().create("nativeDebug");
         releaseNativeConfiguration = project.getConfigurations().create("nativeRelease");

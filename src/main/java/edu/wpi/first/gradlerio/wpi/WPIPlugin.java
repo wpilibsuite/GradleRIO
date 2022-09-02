@@ -14,6 +14,7 @@ import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin;
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin;
 import edu.wpi.first.nativeutils.UnzipTransform;
+import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension.VendorMavenRepo;
 
 public class WPIPlugin implements Plugin<Project> {
     public static final Attribute<String> NATIVE_ARTIFACT_FORMAT = Attribute.of("artifactType", String.class);
@@ -82,6 +83,14 @@ public class WPIPlugin implements Plugin<Project> {
 
     void addMavenRepositories(Project project, WPIExtension wpi) {
         boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
+
+        for(VendorMavenRepo repo : wpi.getVendor().getVendorRepos()) {
+            wpi.getMaven().vendor(repo.getName(), config -> {
+                config.setRelease(repo.getUrl());
+                config.setAllowedGroupIds(repo.getAllowedGroupIds());
+            });
+            wpi.getMaven().getVendorCacheGroupIds().addAll(repo.getAllowedGroupIds());
+        }
 
         wpi.getMaven().mirror("Official", mirror -> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");

@@ -11,10 +11,11 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.cpp.WPINativeExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
+import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension;
+import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsPlugin;
 import edu.wpi.first.toolchain.NativePlatforms;
 
 public class WPIExtension {
@@ -55,15 +56,17 @@ public class WPIExtension {
 
         versions = factory.newInstance(WPIVersionsExtension.class);
 
-        vendor = project.getObjects().newInstance(WPIVendorDepsExtension.class, this);
+        project.getPlugins().apply(WPIVendorDepsPlugin.class);
+        vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
-            cpp = factory.newInstance(WPINativeExtension.class, project, vendor, versions);
+            cpp = factory.newInstance(WPINativeExtension.class, project, versions);
+            vendor.getNativeVendor().initializeNativeDependencies();
         });
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
-            java = factory.newInstance(WPIJavaExtension.class, project, sim, versions, vendor);
+            java = factory.newInstance(WPIJavaExtension.class, project, sim, versions);
         });
 
         maven = factory.newInstance(WPIMavenExtension.class, project);

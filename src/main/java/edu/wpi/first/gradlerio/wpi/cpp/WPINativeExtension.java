@@ -12,9 +12,9 @@ import org.gradle.platform.base.VariantComponentSpec;
 import edu.wpi.first.gradlerio.simulation.NativeExternalSimulationTask;
 import edu.wpi.first.gradlerio.simulation.NativeSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
+import edu.wpi.first.nativeutils.vendordeps.WPINativeVendorDepsExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.ToolchainPlugin;
@@ -91,7 +91,7 @@ public class WPINativeExtension {
     }
 
     @Inject
-    public WPINativeExtension(Project project, WPIVendorDepsExtension vendorDeps, WPIVersionsExtension versions) {
+    public WPINativeExtension(Project project, WPIVersionsExtension versions) {
         project.getPluginManager().apply(ToolchainPlugin.class);
         project.getPluginManager().apply(RoboRioToolchainPlugin.class);
         project.getPluginManager().apply(NativeUtils.class);
@@ -101,12 +101,12 @@ public class WPINativeExtension {
         debugSimulation.set(false);
 
         NativeUtilsExtension nte = project.getExtensions().getByType(NativeUtilsExtension.class);
-        nte.withRoboRIO();
+        nte.withCrossRoboRIO();
         nte.addWpiNativeUtils();
 
         deps = project.getObjects().newInstance(WPINativeDepsExtension.class, nte);
 
-        vendor = project.getObjects().newInstance(WPINativeVendorDepsExtension.class, vendorDeps, nte, project);
+        vendor = nte.getWpi().getVendorDeps().getNativeVendor();
 
         ToolchainExtension te = project.getExtensions().getByType(ToolchainExtension.class);
         te.getCrossCompilers().named(nte.getWpi().platforms.roborio, c -> {
