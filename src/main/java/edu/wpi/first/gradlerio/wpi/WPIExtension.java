@@ -58,6 +58,7 @@ public class WPIExtension {
 
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
+        vendor.getFixedVersion().set(versions.getWpilibVersion());
         sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
