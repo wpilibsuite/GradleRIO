@@ -136,7 +136,9 @@ plugins {
 
 The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
 
-## Deploying Experimental JDK
+## Deploying alternate JRE
 
-1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2022:17.0.3u7-1'` to build.gradle
-2. Set `gcType = 'G1'` in the java deploy block to use the G1 garbage collector
+For 2023, JRE 17 is deployed. To use JRE 11 from previous years, do the following:
+
+1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2021:11.0.9u11-1'` to build.gradle
+2. Set `gcType = 'CMS'` in the java deploy block to use the OMS garbage collector
