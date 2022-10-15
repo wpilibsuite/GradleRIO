@@ -25,19 +25,15 @@ https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html
 ### Without Visual Studio Code
 
 Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
-_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended. You can deselect the option of VS Code if you wish._
+_Note that the offline installer isn't required, but will save you a ton of time and is highly recommended._
 
 **WPILibUtility Standalone Project Builder**
 WPILib provides a standalone project builder that provides the same interface as VS Code, without having to use VS Code.
 
-If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\2021\utility` (windows), or `~/wpilib/2021/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
+If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\<YEAR>\utility` (windows), or `~/wpilib/<YEAR>/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
 Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
 
 Use the WPILib Utility whenever you want to create a new project.
-
-**GradleRIO Example Project**
-Go to the latest release on GitHub: https://github.com/wpilibsuite/GradleRIO/releases.
-Download the .zip file corresponding to your language and extract it.
 
 ## Adding Vendor Libraries
 
@@ -69,7 +65,6 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
 - `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
 - `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
-- `./gradlew RobotBuilder-Old` will launch the old version of Robot Builder, a tool for generating robot projects and source files with the old command framework.
 - `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
 - `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles using WPILib's trajectories and splines.
 
