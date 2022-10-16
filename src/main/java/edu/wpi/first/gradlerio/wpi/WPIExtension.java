@@ -72,25 +72,34 @@ public class WPIExtension {
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
 
+        String desktop = NativePlatforms.desktop;
+        String toolsClassifier = "unknown";
+        String cppToolsClassifier = "unknown";
+        if (desktop.equals("linuxx86-64")) {
+            toolsClassifier = "linuxx64";
+            cppToolsClassifier = "linuxx86-64";
+        } else if (desktop.equals("windowsx86-64")) {
+            toolsClassifier = "winx64";
+            cppToolsClassifier = "windowsx86-64";
+        } else if (desktop.equals("osxx86-64")) {
+            toolsClassifier = "macx64";
+            cppToolsClassifier = "osxx86-64";
+        } else if (desktop.equals("osxarm64")) {
+            toolsClassifier = "macarm64";
+            cppToolsClassifier = "osxaarch64";
+        } else {
+            project.getLogger().warn("Unknown platform. Tools will not work.");
+        }
+
         if (project.hasProperty("forceToolsClassifier")) {
             this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");
         } else {
-            this.toolsClassifier = (
-                    OperatingSystem.current().isWindows() ? "win64" :
-                            OperatingSystem.current().isMacOsX() ? "mac64" :
-                                    OperatingSystem.current().isLinux() ? "linux64" :
-                                            null
-            );
+            this.toolsClassifier = toolsClassifier;
         }
         if (project.hasProperty("forceCppToolsClassifier")) {
             this.cppToolsClassifier = (String)project.findProperty("forceCppToolsClassifier");
         } else {
-            this.cppToolsClassifier = (
-                    OperatingSystem.current().isWindows() ? "windowsx86-64" :
-                            OperatingSystem.current().isMacOsX() ? "osxx86-64" :
-                                    OperatingSystem.current().isLinux() ? "linuxx86-64" :
-                                            null
-            );
+            this.cppToolsClassifier = cppToolsClassifier;
         }
     }
 
