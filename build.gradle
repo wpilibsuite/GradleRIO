@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.12.0'
+    id 'com.gradle.plugin-publish' version '0.15.0'
     id 'java-gradle-plugin'
     id 'idea'
     id 'maven-publish'
@@ -104,6 +104,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '7.3.3'
+    gradleVersion = '7.5.1'
     distributionType = Wrapper.DistributionType.BIN
 }
