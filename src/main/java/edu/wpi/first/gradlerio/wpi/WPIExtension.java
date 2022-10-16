@@ -74,19 +74,14 @@ public class WPIExtension {
 
         String desktop = NativePlatforms.desktop;
         String toolsClassifier = "unknown";
-        String cppToolsClassifier = "unknown";
         if (desktop.equals("linuxx86-64")) {
             toolsClassifier = "linuxx64";
-            cppToolsClassifier = "linuxx86-64";
         } else if (desktop.equals("windowsx86-64")) {
             toolsClassifier = "winx64";
-            cppToolsClassifier = "windowsx86-64";
         } else if (desktop.equals("osxx86-64")) {
             toolsClassifier = "macx64";
-            cppToolsClassifier = "osxx86-64";
         } else if (desktop.equals("osxarm64")) {
             toolsClassifier = "macarm64";
-            cppToolsClassifier = "osxaarch64";
         } else {
             project.getLogger().warn("Unknown platform. Tools will not work.");
         }
@@ -99,7 +94,7 @@ public class WPIExtension {
         if (project.hasProperty("forceCppToolsClassifier")) {
             this.cppToolsClassifier = (String)project.findProperty("forceCppToolsClassifier");
         } else {
-            this.cppToolsClassifier = cppToolsClassifier;
+            this.cppToolsClassifier = desktop;
         }
     }
 
