@@ -16,7 +16,7 @@ public abstract class WPIVersionsExtension {
     private static final String googleTestVersion = "1.11.0-3";
 
     private static final String smartDashboardVersion = "2023.1.1-alpha-1";
-    private static final String shuffleboardVersion = "2022.4.1";
+    private static final String shuffleboardVersion = "2023.1.1-alpha-1";
     private static final String outlineViewerVersion = "2023.1.1-alpha-1";
     private static final String robotBuilderVersion = "2023.1.1-alpha-1";
     private static final String pathWeaverVersion = "2023.1.1-alpha-1";
