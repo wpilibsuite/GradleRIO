@@ -40,7 +40,7 @@ jobs:
       run: ./gradlew installRoboRioToolchain
       working-directory: testing/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
-      run: ./gradlew build --info --stacktrace
+      run: ./gradlew build
       working-directory: testing/${{ matrix.language }}
 
     - uses: actions/upload-artifact@v2
