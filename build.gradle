@@ -8,16 +8,17 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     maven {
         url "https://plugins.gradle.org/m2/"
     }
-    mavenLocal()
+
 }
 
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'edu.wpi.first:native-utils:2023.2.8'
+    api 'edu.wpi.first:native-utils:2023.4.0'
 
     api 'de.undercouch:gradle-download-task:4.1.2'
 
@@ -43,6 +44,10 @@ allprojects {
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
+    }
+
+    tasks.withType(Javadoc) {
+        options.addBooleanOption('Xdoclint:all,-missing', true)
     }
 }
 
