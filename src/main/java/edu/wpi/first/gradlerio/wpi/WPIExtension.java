@@ -72,7 +72,7 @@ public class WPIExtension {
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
 
-        String desktop = NativePlatforms.desktop;
+        String desktop = NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect();
         String toolsClassifier = "unknown";
         if (desktop.equals("linuxx86-64")) {
             toolsClassifier = "linuxx64";
