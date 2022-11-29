@@ -48,7 +48,7 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("edu.wpi.first.hal", "hal-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpinet", "wpinet-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpiutil", "wpiutil-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.apriltags", "apriltags-java", versions.getWpilibVersion());
+        createJavaDependencies("edu.wpi.first.apriltag", "apriltag-java", versions.getWpilibVersion());
 
         createJavaDependencies("edu.wpi.first.thirdparty.frc2023.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
@@ -83,7 +83,7 @@ public class WPIJavaDepsExtension {
             createJniDependency("edu.wpi.first.thirdparty.frc2023.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
             createJniDependency("edu.wpi.first.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.apriltags", "apriltags-cpp", versions.getWpilibVersion(), debug, platform)
+            createJniDependency("edu.wpi.first.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform)
         );
     }
 }
