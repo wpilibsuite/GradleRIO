@@ -82,7 +82,11 @@ public class WPIExtension {
             toolsClassifier = "macx64";
         } else if (desktop.equals("osxarm64")) {
             toolsClassifier = "macarm64";
-        } else {
+        } else if (desktop.equals("linuxarm64")) {
+            toolsClassifier = "linuxarm64";
+        } else if (desktop.equals("linuxarm32")) {
+            toolsClassifier = "liuxarm32";
+        }else {
             project.getLogger().warn("Unknown platform. Tools will not work.");
         }
 
