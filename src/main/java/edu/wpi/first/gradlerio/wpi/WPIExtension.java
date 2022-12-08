@@ -86,7 +86,7 @@ public class WPIExtension {
             toolsClassifier = "linuxarm64";
         } else if (desktop.equals("linuxarm32")) {
             toolsClassifier = "liuxarm32";
-        }else {
+        } else {
             project.getLogger().warn("Unknown platform. Tools will not work.");
         }
 
