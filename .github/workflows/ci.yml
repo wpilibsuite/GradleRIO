@@ -45,11 +45,6 @@ jobs:
       run: ./gradlew build
       working-directory: testing/${{ matrix.language }}
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ${{ matrix.language }}
-        path: testing/${{ matrix.language }}/build/
-
   publish:
     needs: [build, test_examples]
     runs-on: ubuntu-22.04
