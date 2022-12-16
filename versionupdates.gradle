@@ -12,7 +12,7 @@ def versionMap = [
   dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2023.opencv:opencv-java:+',
   googleTestVersion: 'edu.wpi.first.thirdparty.frc2023:googletest:+:headers',
-  niLibrariesVersion: 'edu.wpi.first.ni-libraries:chipobject:+:headers',
+  niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2023:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
@@ -40,7 +40,7 @@ dependencies {
 
 String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
 String mavenDevRegex = "this\\.useDevelopment\\s*=\\s*(true|false)"
-
+String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
 tasks.register('UpdateVersions') {
   doLast {
@@ -66,5 +66,29 @@ tasks.register('UpdateVersions') {
       }
     }
     extFile.text = extText
+
+    def allowedVersions = ""
+    def first = true
+    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
+      if (it.classifier == "allowedimages") {
+        def f = project.zipTree(it.file)
+        f.visit {
+          if (it.name == "allowed_images.txt") {
+            it.file.eachLine {
+              if (!first) {
+                allowedVersions += ', '
+              }
+              first = false
+              allowedVersions += "\"$it\""
+            }
+          }
+        }
+      }
+    }
+
+    def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
+    def rootExtText = rootExtFile.text
+
+    rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")
   }
 }
