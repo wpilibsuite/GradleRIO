@@ -31,7 +31,8 @@ public class WPIToolsPlugin implements Plugin<Project> {
 
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(), "edu.wpi.first.tools:OutlineViewer"));
         cppTools.add(new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion(), "edu.wpi.first.tools:Glass"));
-        cppTools.add(new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "edu.wpi.first.tools:SysId"));
+        // Remove sysid for now
+        //cppTools.add(new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "edu.wpi.first.tools:SysId"));
         cppTools.add(new WPICppTool(project, "roboRIOTeamNumberSetter", wpi.getVersions().getRoboRIOTeamNumberSetterVersion(), "edu.wpi.first.tools:roboRIOTeamNumberSetter"));
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(), "edu.wpi.first.tools:DataLogTool"));
 
