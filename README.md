@@ -136,4 +136,4 @@ The latest version can be obtained from here: https://plugins.gradle.org/plugin/
 For 2023, JRE 17 is deployed. To use JRE 11 from previous years, do the following:
 
 1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2021:11.0.9u11-1'` to build.gradle
-2. Set `gcType = 'CMS'` in the java deploy block to use the OMS garbage collector
+2. Set `gcType = 'CMS'` in the java deploy block to use the CMS garbage collector
