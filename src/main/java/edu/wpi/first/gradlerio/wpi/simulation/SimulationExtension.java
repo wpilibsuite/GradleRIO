@@ -177,7 +177,7 @@ public class SimulationExtension {
     }
 
     public HalSimExtension addDriverstation() {
-        return addDep("Sim DriverStation", "edu.wpi.first.halsim", "halsim_ds_socket");
+        return addDep("Use Real DriverStation", "edu.wpi.first.halsim", "halsim_ds_socket");
     }
 
     public HalSimExtension addWebsocketsServer() {
