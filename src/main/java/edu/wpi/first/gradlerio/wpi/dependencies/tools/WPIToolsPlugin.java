@@ -24,7 +24,12 @@ public class WPIToolsPlugin implements Plugin<Project> {
         File toolFolder = new File(frcHome, "tools");
 
         ToolInstallTask.setToolsFolder(toolFolder);
-        tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(), "edu.wpi.first.tools" , "SmartDashboard", true));
+
+        String toolsClassifier = project.getExtensions().getByType(WPIExtension.class).getToolsClassifier();
+        if (!toolsClassifier.equals("macarm64")) {
+            tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(), "edu.wpi.first.tools" , "SmartDashboard", true));
+        }
+
         tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion(), "edu.wpi.first.tools" , "Shuffleboard", true));
         tools.add(new WPITool(project, "RobotBuilder", wpi.getVersions().getRobotBuilderVersion(), "edu.wpi.first.tools" , "RobotBuilder", false));
         tools.add(new WPITool(project, "PathWeaver", wpi.getVersions().getPathWeaverVersion(), "edu.wpi.first.tools" , "PathWeaver", true));
