@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.language.base.internal.ProjectLayout;
 import org.gradle.language.nativeplatform.tasks.AbstractNativeSourceCompileTask;
@@ -49,7 +51,7 @@ public class WPINativeCompileRules extends RuleSource {
     public void addBinaryFlags(BinaryContainer binaries) {
         binaries.withType(GoogleTestTestSuiteBinarySpec.class, bin -> {
             if (!bin.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
-                ((BinarySpecInternal)bin).setBuildable(false);
+                ((BinarySpecInternal) bin).setBuildable(false);
             }
             bin.getCppCompiler().define("RUNNING_FRC_TESTS");
             bin.getcCompiler().define("RUNNING_FRC_TESTS");
@@ -90,36 +92,39 @@ public class WPINativeCompileRules extends RuleSource {
         boolean hasFirstLine = false;
         boolean hasPrintedFileName = false;
 
-        Iterable<String> fileIterator = new Iterable<String>() {
+        try (Stream<String> rawIterator = Files.lines(file.toPath())) {
+            Iterable<String> fileIterator = new Iterable<String>() {
 
-            @Override
-            public Iterator<String> iterator() {
-                try {
-                    return Files.lines(file.toPath()).iterator();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                @Override
+                public Iterator<String> iterator() {
+                    return rawIterator.iterator();
+                }
+
+            };
+
+            for (String line : fileIterator) {
+                if (!hasFirstLine) {
+                    hasFirstLine = true;
+                } else if (line.startsWith("compiling ")) {
+                    currentFile = line.substring(10, line.indexOf("successful."));
+                    hasPrintedFileName = false;
+                } else if (line.contains("Finished") && line.contains("see full log")) {
+                    // No op
+                } else if (line.trim().equals(currentFile.trim())) {
+                    // No op
+                } else if (!line.isEmpty()) {
+                    if (!hasPrintedFileName) {
+                        hasPrintedFileName = true;
+                        System.out.println("Warnings in file " + currentFile + "....");
+                    }
+                    System.out.println(line);
                 }
             }
-
-        };
-
-        for (String line : fileIterator) {
-            if (!hasFirstLine) {
-                hasFirstLine = true;
-            } else if (line.startsWith("compiling ")) {
-                currentFile = line.substring(10, line.indexOf("successful."));
-                hasPrintedFileName = false;
-            } else if (line.contains("Finished") && line.contains("see full log")) {
-                // No op
-            } else if (line.trim().equals(currentFile.trim())) {
-                // No op
-            } else if (!line.isEmpty()) {
-                if (!hasPrintedFileName) {
-                    hasPrintedFileName = true;
-                    System.out.println("Warnings in file " + currentFile + "....");
-                }
-                System.out.println(line);
-            }
+        } catch (IOException e) {
+            Logging.getLogger(WPINativeCompileRules.class).warn(
+                    "Failed to print warnings file. You might need to manually open it to find any compile warnings",
+                    e);
         }
+
     }
 }
