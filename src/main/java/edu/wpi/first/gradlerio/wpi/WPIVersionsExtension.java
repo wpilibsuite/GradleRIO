@@ -6,24 +6,24 @@ import org.gradle.api.provider.Property;
 
 public abstract class WPIVersionsExtension {
 
-    private static final String wpilibVersion = "2023.4.3";
+    private static final String wpilibVersion = "2023.4.3-143-g1938251";
     private static final String niLibrariesVersion = "2023.3.0";
-    private static final String opencvVersion = "4.6.0-4";
-    private static final String imguiVersion = "1.89.1-1";
+    private static final String opencvVersion = "4.6.0-5";
+    private static final String imguiVersion = "1.89.1-2";
     private static final String ejmlVersion = "0.41";
     private static final String jacksonVersion = "2.12.4";
-    private static final String wpimathVersion = "2023.4.3";
-    private static final String googleTestVersion = "1.12.1-1";
+    private static final String wpimathVersion = "2023.4.3-143-g1938251";
+    private static final String googleTestVersion = "1.12.1-2";
 
-    private static final String smartDashboardVersion = "2023.4.3";
-    private static final String shuffleboardVersion = "2023.4.3";
-    private static final String outlineViewerVersion = "2023.4.3";
-    private static final String robotBuilderVersion = "2023.4.3";
-    private static final String pathWeaverVersion = "2023.4.3";
-    private static final String glassVersion = "2023.4.3";
-    private static final String sysIdVersion = "2023.4.3";
-    private static final String roboRIOTeamNumberSetterVersion = "2023.4.3";
-    private static final String dataLogToolVersion = "2023.4.3";
+    private static final String smartDashboardVersion = "2023.4.3-4-g4ba8651";
+    private static final String shuffleboardVersion = "2023.4.3-2-g1daf755";
+    private static final String outlineViewerVersion = "2023.4.3-143-g1938251";
+    private static final String robotBuilderVersion = "2023.4.3-4-ga238fb8";
+    private static final String pathWeaverVersion = "2023.4.3-1-gdbc32dd";
+    private static final String glassVersion = "2023.4.3-143-g1938251";
+    private static final String sysIdVersion = "2023.4.3-4-g89a81bb";
+    private static final String roboRIOTeamNumberSetterVersion = "2023.4.3-143-g1938251";
+    private static final String dataLogToolVersion = "2023.4.3-143-g1938251";
 
 
     public abstract Property<String> getWpilibVersion();
