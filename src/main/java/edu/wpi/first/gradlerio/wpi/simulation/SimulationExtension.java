@@ -156,7 +156,7 @@ public class SimulationExtension {
         return javaReleaseList;
     }
 
-    private HalSimExtension addDep(String name, String groupId, String artifactId) {
+    public HalSimExtension addDep(String name, String groupId, String artifactId) {
         HalSimExtension ext = halExtensions.create(name);
         ext.getGroupId().set(groupId);
         ext.getArtifactId().set(artifactId);
