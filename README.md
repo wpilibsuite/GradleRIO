@@ -144,3 +144,17 @@ GradleRIO has built in settings for the CMS garbage collector (for JDK 11) and G
 
 1. Set `gcType = 'Other'` in the FRCJavaArtifact block
 2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact (e.g. for the default G1 settings, `jvmArgs.add("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=1", "-XX:GCTimeRatio=1")`
+
+# Using GradleRIO custom builds
+
+To use a custom build of GradleRIO in a robot project, the build must be published.
+
+1. Update the version in `gradle.properties` so that GradleRIO won't overwrite an existing version.
+2. Execute `.\gradlew publishToMavenLocal`
+3. Update the GradleRIO version in your robot projects `build.gradle` to the version you defined in GradleRIO `gradle.properties`.
+```gradle
+plugins {
+    // ... other plugins ...
+    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE PUBLISHED VERSION"
+}
+```
