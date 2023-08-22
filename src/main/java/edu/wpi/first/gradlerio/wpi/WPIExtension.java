@@ -30,7 +30,7 @@ public class WPIExtension {
     private final WPIMavenExtension maven;
     private final SimulationExtension sim;
 
-    private String frcYear = "2023";
+    private String frcYear = "2024";
 
     private final NativePlatforms platforms;
 
