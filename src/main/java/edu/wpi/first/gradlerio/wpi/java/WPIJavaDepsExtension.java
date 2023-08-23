@@ -49,6 +49,7 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("edu.wpi.first.wpinet", "wpinet-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpiutil", "wpiutil-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.apriltag", "apriltag-java", versions.getWpilibVersion());
+        createJavaDependencies("edu.wpi.first.wpiunits", "wpiunits-java", versions.getWpilibVersion());
 
         createJavaDependencies("edu.wpi.first.thirdparty.frc2023.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());

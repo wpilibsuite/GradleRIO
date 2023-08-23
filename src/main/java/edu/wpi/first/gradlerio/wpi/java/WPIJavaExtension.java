@@ -1,7 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.java;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,9 +14,12 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.ArtifactView;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.logging.TestLogEvent;
@@ -152,41 +154,24 @@ public class WPIJavaExtension {
 
         tt.dependsOn(extract);
 
-        tt.getInputs().dir(extract.get().getDestinationDirectory());
-
-        tt.doFirst(new Action<Task>() {
-            @Override
-            public void execute(Task arg0) {
-                Map<String, String> env = new HashMap<>();
-
-                String ldpath = extract.get().getDestinationDirectory().get().getAsFile().getAbsolutePath();
-
-                if (OperatingSystem.current().isUnix()) {
-                    env.put("LD_LIBRARY_PATH", ldpath);
-                    env.put("DYLD_FALLBACK_LIBRARY_PATH", ldpath);
-                    env.put("DYLD_LIBRARY_PATH", ldpath);
-                } else if (OperatingSystem.current().isWindows()) {
-                    env.put("PATH", System.getenv("PATH") + File.pathSeparator + ldpath);
-                }
-
-                t.environment(env);
-
-                String jlp = ldpath;
-
-                if (t.getSystemProperties().containsKey("java.library.path")) {
-                    jlp = (String) t.getSystemProperties().get("java.library.path") + File.pathSeparator + ldpath;
-                }
-                t.getSystemProperties().put("java.library.path", jlp);
-            }
+        Provider<DirectoryProperty> destDir = project.getProviders().provider(() -> {
+            return extract.get().getDestinationDirectory();
         });
+
+        tt.getInputs().dir(destDir);
+
+        tt.doFirst(new TestTaskDoFirstAction(t, destDir));
     }
 
     public void configureTestTasks(Test t) {
+        Property<Boolean> debug = this.getDebugJni();
+        TaskProvider<ExtractNativeJavaArtifacts> debugTask = this.getExtractNativeDebugArtifacts();
+        TaskProvider<ExtractNativeJavaArtifacts> releaseTask = this.getExtractNativeReleaseArtifacts();
         Provider<ExtractNativeJavaArtifacts> extract = project.getProviders().provider(() -> {
-            if (this.getDebugJni().get()) {
-                return this.getExtractNativeDebugArtifacts().get();
+            if (debug.get()) {
+                return debugTask.get();
             } else {
-                return this.getExtractNativeReleaseArtifacts().get();
+                return releaseTask.get();
             }
         });
 
