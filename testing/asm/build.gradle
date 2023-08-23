@@ -1,7 +1,7 @@
 
 plugins {
     id "assembler"
-    id "edu.wpi.first.GradleRIO" version "2023.4.3"
+    id "edu.wpi.first.GradleRIO" version "2024.0.0-alpha-1"
 }
 
 def projectFolder = project.buildFile.parentFile
