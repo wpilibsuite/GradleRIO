@@ -67,7 +67,7 @@ gradlePlugin {
     }
 }
 
-apply from: 'versionupdates.gradle'
+apply from: 'versionupdates.gradle.kts'
 
 def examplesFolder = file("$rootDir/testing")
 
