@@ -1,0 +1,82 @@
+
+plugins {
+    id "assembler"
+    id "edu.wpi.first.GradleRIO" version "2024.0.0-alpha-1"
+}
+
+def projectFolder = project.buildFile.parentFile
+def testingFolder = projectFolder.parentFile
+
+if (testingFolder.name != 'testing' || projectFolder.name != 'asm') {
+    throw new GradleException("These projects are not to be used for robot projects. See README.md in the GradleRIO testing folder for the correct templates to use.")
+}
+
+// Define my targets (RoboRIO) and artifacts (deployable files)
+// This is added by GradleRIO's backing project DeployUtils.
+deploy {
+    targets {
+        roborio(getTargetTypeClass('RoboRIO')) {
+            // Team number is loaded either from the .wpilib/wpilib_preferences.json
+            // or from command line. If not found an exception will be thrown.
+            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+            // want to store a team number in this file.
+            team = project.frc.getTeamNumber()
+            debug = project.frc.getDebugOrDefault(false)
+
+            artifacts {
+                // First part is artifact name, 2nd is artifact type
+                // getTargetTypeClass is a shortcut to get the class type using a string
+
+                frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
+                }
+
+                // Static files artifact
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    files = project.fileTree('src/main/deploy')
+                    directory = '/home/lvuser/deploy'
+                }
+            }
+        }
+    }
+}
+
+def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
+
+// Simulation configuration
+
+wpi.cpp.debugSimulation = false
+
+wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addDriverstation()
+
+//Sets the websocket client remote host.
+wpi.sim.envVar("HALSIMWS_HOST", "10.0.0.2")
+wpi.sim.addWebsocketsServer().defaultEnabled = true
+wpi.sim.addWebsocketsClient().defaultEnabled = true
+
+model {
+    components {
+        frcUserProgram(NativeExecutableSpec) {
+            targetPlatform wpi.platforms.roborio
+
+            sources.asm {
+                source {
+                    srcDir 'src/main/asm'
+                }
+            }
+
+            deployArtifact.component = it
+            wpi.cpp.enableExternalTasks(it)
+
+            wpi.sim.enable(it)
+            // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
+            wpi.cpp.vendor.cpp(it)
+            wpi.cpp.deps.wpilib(it)
+        }
+    }
+}
+
+wrapper {
+    gradleVersion = '8.1'
+    distributionType = Wrapper.DistributionType.BIN
+}
