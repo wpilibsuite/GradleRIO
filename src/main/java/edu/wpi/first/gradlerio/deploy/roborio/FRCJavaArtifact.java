@@ -36,7 +36,6 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         super(name, target);
         roboRIO = target;
 
-        jvmArgs.add("-XX:+AlwaysPreTouch");
         jvmArgs.add("-Djava.lang.invoke.stringConcat=BC_SB");
         jvmArgs.add("-Djava.library.path=" + FRCDeployPlugin.LIB_DEPLOY_DIR);
 
