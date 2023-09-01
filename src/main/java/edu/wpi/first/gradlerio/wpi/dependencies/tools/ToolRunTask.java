@@ -7,9 +7,13 @@ import javax.inject.Inject;
 
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.TaskProvider;
 import org.gradle.internal.os.OperatingSystem;
 
 import edu.wpi.first.gradlerio.SingletonTask;
@@ -18,28 +22,25 @@ import groovy.transform.CompileStatic;
 @CompileStatic
 public class ToolRunTask extends DefaultTask implements SingletonTask {
 
-    private final TaskProvider<ToolInstallTask> installTask;
-    private final String toolName;
+    private final Property<String> toolName;
+    private final DirectoryProperty toolsFolder;
 
     @Internal
-    public String getToolName() {
+    public Property<String> getToolName() {
         return toolName;
     }
 
     @Internal
-    public TaskProvider<ToolInstallTask> getInstallTask() {
-        return installTask;
+    public DirectoryProperty getToolsFolder() {
+        return toolsFolder;
     }
 
     @Inject
-    public ToolRunTask(String name, TaskProvider<ToolInstallTask> installTask) {
+    public ToolRunTask(ObjectFactory objects) {
         setGroup("GradleRIO");
-        setDescription("Run the tool " + name);
 
-
-        this.toolName = name;
-        this.installTask = installTask;
-        dependsOn(installTask);
+        toolName = objects.property(String.class);
+        toolsFolder = objects.directoryProperty();
     }
 
     @TaskAction
@@ -53,8 +54,9 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     private void runToolWindows() {
-        ToolInstallTask iTask = installTask.get();
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), iTask.getToolName() + ".vbs");
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
         ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent");
         Process proc;
         try {
@@ -72,8 +74,9 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     private void runToolUnix() {
-        ToolInstallTask iTask = installTask.get();
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), iTask.getToolName() + ".py");
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
         getProject().exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
         });
@@ -81,7 +84,7 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
 
     @Override
     @Internal
-    public String getSingletonName() {
+    public Provider<String> getSingletonName() {
         return toolName;
     }
 }

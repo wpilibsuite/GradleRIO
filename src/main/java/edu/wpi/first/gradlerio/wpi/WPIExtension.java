@@ -6,8 +6,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
 
@@ -30,7 +33,7 @@ public class WPIExtension {
     private final WPIMavenExtension maven;
     private final SimulationExtension sim;
 
-    private String frcYear = "2024";
+    private Property<String> frcYear;
 
     private final NativePlatforms platforms;
 
@@ -54,15 +57,29 @@ public class WPIExtension {
         ObjectFactory factory = project.getObjects();
         platforms = new NativePlatforms();
 
+        frcYear = factory.property(String.class);
+        frcYear.convention("2024");
+
+        frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
+                .dir(frcYear);
+
         versions = factory.newInstance(WPIVersionsExtension.class);
 
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         vendor.getFixedVersion().set(versions.getWpilibVersion());
-        sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(), NativePlatforms.desktop);
+        vendor.getFrcYear().set(frcYear);
+        vendor.getFrcHome().set(frcHome);
+
+        // TODO in the future make this lazy
+        vendor.loadAll();
+        vendor.validateDependencies();
+
+        sim = factory.newInstance(SimulationExtension.class, project, versions.getWpilibVersion(),
+                NativePlatforms.desktop);
 
         project.getPlugins().withType(NativeComponentPlugin.class, p -> {
-            cpp = factory.newInstance(WPINativeExtension.class, project, versions);
+            cpp = factory.newInstance(WPINativeExtension.class, project, this, versions);
             vendor.getNativeVendor().initializeNativeDependencies();
         });
 
@@ -91,63 +108,65 @@ public class WPIExtension {
         }
 
         if (project.hasProperty("forceToolsClassifier")) {
-            this.toolsClassifier = (String)project.findProperty("forceToolsClassifier");
+            this.toolsClassifier = (String) project.findProperty("forceToolsClassifier");
         } else {
             this.toolsClassifier = toolsClassifier;
         }
         if (project.hasProperty("forceCppToolsClassifier")) {
-            this.cppToolsClassifier = (String)project.findProperty("forceCppToolsClassifier");
+            this.cppToolsClassifier = (String) project.findProperty("forceCppToolsClassifier");
         } else {
             this.cppToolsClassifier = desktop;
         }
     }
 
-    private String frcHomeCache;
+    private final Provider<Directory> frcHome;
 
-    public String getFrcHome() {
-        if (frcHomeCache != null) {
-            return this.frcHomeCache;
-        }
-        String frcHome = "";
+    public Provider<Directory> getFrcHome() {
+        return frcHome;
+    }
+
+    private static File computeHomeRoot() {
+        File homeRoot = null;
         if (OperatingSystem.current().isWindows()) {
             String publicFolder = System.getenv("PUBLIC");
             if (publicFolder == null) {
                 publicFolder = "C:\\Users\\Public";
             }
-            File homeRoot = new File(publicFolder, "wpilib");
-            frcHome = new File(homeRoot, this.frcYear).toString();
+            homeRoot = new File(publicFolder, "wpilib");
         } else {
             String userFolder = System.getProperty("user.home");
-            File homeRoot = new File(userFolder, "wpilib");
-            frcHome = new File(homeRoot, this.frcYear).toString();
+            homeRoot = new File(userFolder, "wpilib");
         }
-        frcHomeCache = frcHome;
-        return frcHomeCache;
+        return homeRoot;
     }
 
     // public Map<String, Tuple> versions() {
-    //     // Format:
-    //     // property: [ PrettyName, Version, RecommendedKey ]
-    //     return [
-    //             "wpilibVersion"        : new Tuple("WPILib", wpilibVersion, "wpilib"),
-    //             "opencvVersion"        : new Tuple("OpenCV", opencvVersion, "opencv"),
-    //             "frcYear   "           : new Tuple("FRC Year", frcYear, "frcYear"),
-    //             "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
-    //             "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
-    //             "wpimathVersion"       : new Tuple("WPIMath", wpimathVersion, "wpimath"),
-    //             "ejmlVersion"          : new Tuple("EJML", ejmlVersion, "ejml"),
-    //             "jacksonVersion"       : new Tuple("Jackson", jacksonVersion, "jackson"),
+    // // Format:
+    // // property: [ PrettyName, Version, RecommendedKey ]
+    // return [
+    // "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
+    // "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
+    // "frcYear " : new Tuple("FRC Year", frcYear, "frcYear"),
+    // "googleTestVersion" : new Tuple("Google Test", googleTestVersion,
+    // "googleTest"),
+    // "imguiVersion" : new Tuple("ImGUI", imguiVersion, "imgui"),
+    // "wpimathVersion" : new Tuple("WPIMath", wpimathVersion, "wpimath"),
+    // "ejmlVersion" : new Tuple("EJML", ejmlVersion, "ejml"),
+    // "jacksonVersion" : new Tuple("Jackson", jacksonVersion, "jackson"),
 
-    //             "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
-    //             "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
-    //             "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
-    //             "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
-    //             "glassVersion"         : new Tuple("Glass", glassVersion, "glass"),
-    //             "pathWeaverVersion"    : new Tuple("PathWeaver", pathWeaverVersion, "pathweaver"),
-    //     ]
+    // "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion,
+    // "smartdashboard"),
+    // "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion,
+    // "shuffleboard"),
+    // "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion,
+    // "outlineviewer"),
+    // "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion,
+    // "robotbuilder"),
+    // "glassVersion" : new Tuple("Glass", glassVersion, "glass"),
+    // "pathWeaverVersion" : new Tuple("PathWeaver", pathWeaverVersion,
+    // "pathweaver"),
+    // ]
     // }
-
-
 
     public static List<String> getValidImageVersions() {
         return validImageVersions;
@@ -179,7 +198,7 @@ public class WPIExtension {
         return maven;
     }
 
-    public String getFrcYear() {
+    public Property<String> getFrcYear() {
         return frcYear;
     }
 
@@ -201,9 +220,5 @@ public class WPIExtension {
 
     public void setJreArtifactLocation(String jreArtifactLocation) {
         this.jreArtifactLocation = jreArtifactLocation;
-    }
-
-    public void setFrcYear(String frcYear) {
-        this.frcYear = frcYear;
     }
 }
