@@ -188,6 +188,10 @@ public class SimulationExtension {
         return addDep("Sim Websockets Client", "edu.wpi.first.halsim", "halsim_ws_client");
     }
 
+    public HalSimExtension addXRPClient() {
+        return addDep("Sim XRP Client", "edu.wpi.first.halsim", "halsim_xrp");
+    }
+
     public List<HalSimPair> getHalSimLocations(List<File> basePaths, boolean debug) {
         List<HalSimPair> extensions = new ArrayList<>();
 
