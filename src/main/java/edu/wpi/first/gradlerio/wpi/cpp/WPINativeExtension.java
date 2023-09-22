@@ -11,6 +11,7 @@ import org.gradle.platform.base.VariantComponentSpec;
 
 import edu.wpi.first.gradlerio.simulation.NativeExternalSimulationTask;
 import edu.wpi.first.gradlerio.simulation.NativeSimulationTask;
+import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.nativeutils.NativeUtils;
 import edu.wpi.first.nativeutils.NativeUtilsExtension;
@@ -91,7 +92,7 @@ public class WPINativeExtension {
     }
 
     @Inject
-    public WPINativeExtension(Project project, WPIVersionsExtension versions) {
+    public WPINativeExtension(Project project, WPIExtension wpi, WPIVersionsExtension versions) {
         project.getPluginManager().apply(ToolchainPlugin.class);
         project.getPluginManager().apply(RoboRioToolchainPlugin.class);
         project.getPluginManager().apply(NativeUtils.class);
@@ -114,9 +115,11 @@ public class WPINativeExtension {
         });
 
         nte.getWpi().addWarnings();
-        //nte.setSinglePrintPerPlatform();
+        // nte.setSinglePrintPerPlatform();
 
         nte.getWpi().configureDependencies(wpiDeps -> {
+            wpiDeps.getGoogleTestYear().set("frc2023");
+            wpiDeps.getOpencvYear().set("frc2023");
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
             wpiDeps.getNiLibVersion().set(versions.getNiLibrariesVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
@@ -139,20 +142,24 @@ public class WPINativeExtension {
             t.dependsOn(simTask);
         });
 
-        releaseExternalSimulationTask = project.getTasks().register("simulateExternalNativeRelease", NativeExternalSimulationTask.class, t -> {
-            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/release_native.json"));
-        });
+        releaseExternalSimulationTask = project.getTasks().register("simulateExternalNativeRelease",
+                NativeExternalSimulationTask.class, t -> {
+                    t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/release_native.json"));
+                });
 
-        debugExternalSimulationTask = project.getTasks().register("simulateExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
-            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/debug_native.json"));
-        });
+        debugExternalSimulationTask = project.getTasks().register("simulateExternalNativeDebug",
+                NativeExternalSimulationTask.class, t -> {
+                    t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("sim/debug_native.json"));
+                });
 
-        releaseExternalTestSimulationTask = project.getTasks().register("testExternalNativeRelease", NativeExternalSimulationTask.class, t -> {
-            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/release_native.json"));
-        });
+        releaseExternalTestSimulationTask = project.getTasks().register("testExternalNativeRelease",
+                NativeExternalSimulationTask.class, t -> {
+                    t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/release_native.json"));
+                });
 
-        debugExternalTestSimulationTask = project.getTasks().register("testExternalNativeDebug", NativeExternalSimulationTask.class, t -> {
-            t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/debug_native.json"));
-        });
+        debugExternalTestSimulationTask = project.getTasks().register("testExternalNativeDebug",
+                NativeExternalSimulationTask.class, t -> {
+                    t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/debug_native.json"));
+                });
     }
 }

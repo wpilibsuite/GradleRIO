@@ -19,43 +19,46 @@ import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
 
 public class ToolInstallTask extends DefaultTask {
-    private final String toolName;
-    private final Configuration configuration;
-    private final String artifactName;
+
     private static final Type mapType = new TypeToken<List<ToolConfig>>() {
     }.getType();
 
-    private static File toolsFolder;
+    private final DirectoryProperty toolsFolder;
+    private final Property<Configuration> configuration;
+    private final Property<String> toolName;
+    private final Property<String> artifactName;
 
-    public static void setToolsFolder(File toolsFolder) {
-        ToolInstallTask.toolsFolder = toolsFolder;
-    }
-
-    public static File getToolsFolder() {
+    @Internal
+    public DirectoryProperty getToolsFolder() {
         return toolsFolder;
     }
 
     @Internal
-    public String getToolName() {
+    public Property<String> getToolName() {
         return toolName;
     }
 
     @Internal
-    public Configuration getConfiguration() {
+    public Property<Configuration> getConfiguration() {
         return configuration;
     }
 
     @Internal
-    public String getArtifactName() {
+    public Property<String> getArtifactName() {
         return artifactName;
     }
 
@@ -77,18 +80,18 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     @Inject
-    public ToolInstallTask(String toolName, Configuration configuration, String artifactName) {
+    public ToolInstallTask(ObjectFactory objects) {
         setGroup("GradleRIO");
-        setDescription("Install the tool " + toolName);
 
-        this.toolName = toolName;
-        this.configuration = configuration;
-        this.artifactName = artifactName;
+        toolsFolder = objects.directoryProperty();
+        configuration = objects.property(Configuration.class);
+        toolName = objects.property(String.class);
+        artifactName = objects.property(String.class);
     }
 
-    private static synchronized Optional<ToolConfig> getExistingToolVersion(String toolName) {
+    private static synchronized Optional<ToolConfig> getExistingToolVersion(Directory toolsFolder, String toolName) {
         // Load JSON file
-        File toolFile = new File(toolsFolder, "tools.json");
+        File toolFile = toolsFolder.file("tools.json").getAsFile();
         if (toolFile.exists()) {
             String toolTxt;
             try {
@@ -104,8 +107,8 @@ public class ToolInstallTask extends DefaultTask {
         }
     }
 
-    private static synchronized void setToolVersion(ToolConfig tool) {
-        File toolFile = new File(toolsFolder, "tools.json");
+    private static synchronized void setToolVersion(Directory toolsFolder, ToolConfig tool) {
+        File toolFile = toolsFolder.file("tools.json").getAsFile();
         Gson gson = new Gson();
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
@@ -130,11 +133,11 @@ public class ToolInstallTask extends DefaultTask {
         }
     }
 
-    private File getScriptFile() {
-        return new File(toolsFolder, toolName + ".vbs");
+    private static File getScriptFile(Directory toolsFolder, String toolName) {
+        return toolsFolder.file(toolName + ".vbs").getAsFile();
     }
 
-    private Dependency getDependencyObject() {
+    private static Dependency getDependencyObject(Configuration configuration, String artifactName) {
         for (Dependency dep : configuration.getDependencies()) {
             if (dep.getName().equals(artifactName)) {
                 return dep;
@@ -146,37 +149,41 @@ public class ToolInstallTask extends DefaultTask {
     @TaskAction
     public void installTool() {
         // First check to see if both script and jar exist
-        boolean jarExists = new File(toolsFolder, toolName + ".jar").exists();
-        boolean scriptExists = getScriptFile().exists();
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        boolean jarExists = toolsFolder.file(toolName + ".jar").getAsFile().exists();
+        boolean scriptExists = getScriptFile(toolsFolder, toolName).exists();
+        Configuration configuration = this.configuration.get();
 
-        Dependency dependency = getDependencyObject();
+        Dependency dependency = getDependencyObject(configuration, this.artifactName.get());
 
         if (dependency == null) {
             throw new GradleException("Tool " + artifactName + " not found in dependency list");
         }
 
         if (!jarExists || !scriptExists) {
-            extractAndInstall(dependency);
+            extractAndInstall(getProject(), toolName, toolsFolder, dependency, configuration);
             return;
         }
 
-        Optional<ToolConfig> existingVersion = getExistingToolVersion(toolName);
+        Optional<ToolConfig> existingVersion = getExistingToolVersion(toolsFolder, toolName);
         if (existingVersion.isEmpty()) {
-            extractAndInstall(dependency);
+            extractAndInstall(getProject(), toolName, toolsFolder, dependency, configuration);
             return;
         }
 
         // Check version
         if (dependency.getVersion().compareTo(existingVersion.get().version) > 0) {
-            extractAndInstall(dependency);
+            extractAndInstall(getProject(), toolName, toolsFolder, dependency, configuration);
         }
     }
 
-    private void extractAndInstall(Dependency dependency) {
+    private static void extractAndInstall(Project project, String toolName, Directory toolsFolder,
+            Dependency dependency, Configuration configuration) {
         File jarfile = configuration.files(dependency).iterator().next();
-        File of = toolsFolder;
+        File of = toolsFolder.getAsFile();
         of.mkdirs();
-        getProject().copy(new Action<CopySpec>() {
+        project.copy(new Action<CopySpec>() {
             @Override
             public void execute(CopySpec cp) {
                 cp.from(jarfile);
@@ -185,20 +192,19 @@ public class ToolInstallTask extends DefaultTask {
             }
         });
         if (OperatingSystem.current().isWindows()) {
-            extractScriptWindows();
+            extractScriptWindows(toolsFolder, toolName);
         } else {
-            extractScriptUnix();
+            extractScriptUnix(project, toolsFolder, toolName);
         }
         ToolConfig ToolConfig = new ToolConfig();
         ToolConfig.name = toolName;
         ToolConfig.version = dependency.getVersion();
         ToolConfig.cpp = false;
-        setToolVersion(ToolConfig);
+        setToolVersion(toolsFolder, ToolConfig);
     }
 
-    private void extractScriptWindows() {
-
-        File outputFile = new File(toolsFolder, toolName + ".vbs");
+    private static void extractScriptWindows(Directory toolsFolder, String toolName) {
+        File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
         try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.vbs")) {
             ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
         } catch (IOException e) {
@@ -206,14 +212,14 @@ public class ToolInstallTask extends DefaultTask {
         }
     }
 
-    private void extractScriptUnix() {
-        File outputFile = new File(toolsFolder, toolName + ".py");
+    private static void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
+        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
         try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.py")) {
             ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        getProject().exec(new Action<ExecSpec>() {
+        project.exec(new Action<ExecSpec>() {
 
             @Override
             public void execute(ExecSpec spec) {

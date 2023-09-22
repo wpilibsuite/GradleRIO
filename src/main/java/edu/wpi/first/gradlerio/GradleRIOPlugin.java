@@ -168,7 +168,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         for (int i = allTasks.size() - 1; i >= 0; i--) {
             Task t = allTasks.get(i);
             if (t instanceof SingletonTask) {
-                String singletonName = ((SingletonTask) t).getSingletonName();
+                String singletonName = ((SingletonTask) t).getSingletonName().get();
                 if (visited.add(singletonName)) {
                     Logging.getLogger(this.getClass()).info("Singleton Task Using: " + t + " for " + singletonName);
                 } else {

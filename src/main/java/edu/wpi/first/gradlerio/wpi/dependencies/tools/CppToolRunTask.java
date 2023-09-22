@@ -7,6 +7,11 @@ import javax.inject.Inject;
 
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
@@ -14,19 +19,25 @@ import org.gradle.internal.os.OperatingSystem;
 import edu.wpi.first.gradlerio.SingletonTask;
 
 public class CppToolRunTask extends DefaultTask implements SingletonTask {
-    private final String toolName;
+    private final Property<String> toolName;
+    private final DirectoryProperty toolsFolder;
 
     @Internal
-    public String getToolName() {
+    public Property<String> getToolName() {
         return toolName;
     }
 
-    @Inject
-    public CppToolRunTask(String name) {
-        setGroup("GradleRIO");
-        setDescription("Run the tool " + name);
+    @Internal
+    public DirectoryProperty getToolsFolder() {
+        return toolsFolder;
+    }
 
-        this.toolName = name;
+    @Inject
+    public CppToolRunTask(ObjectFactory objects) {
+        setGroup("GradleRIO");
+
+        this.toolName = objects.property(String.class);
+        toolsFolder = objects.directoryProperty();
     }
 
     @TaskAction
@@ -44,8 +55,11 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     private void runToolWindows() {
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".vbs");
-        ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent", getArgumentPath(toolName.toLowerCase()));
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
+        ProcessBuilder builder = new ProcessBuilder("wscript.exe", outputFile.getAbsolutePath(), "silent",
+                getArgumentPath(toolName.toLowerCase()));
         try {
             Process proc = builder.start();
             int result = proc.waitFor();
@@ -61,7 +75,9 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     private void runToolUnix() {
-        File outputFile = new File(ToolInstallTask.getToolsFolder(), toolName + ".py");
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
         getProject().exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
             spec.args(getArgumentPath(toolName.toLowerCase()));
@@ -70,7 +86,7 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
 
     @Override
     @Internal
-    public String getSingletonName() {
+    public Provider<String> getSingletonName() {
         return toolName;
     }
 }
