@@ -125,7 +125,7 @@ public class RoboRIO extends WPIRemoteTarget {
 
     private void readAndVerifyImage(DeployContext context) {
         final String imageFile = "/etc/natinst/share/scs_imagemetadata.ini";
-        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s*=\\s*\\\"FRC_roboRIO2?_(\\d{4}_v\\d+(?:\\.\\d+)?)\\\"");
+        final Pattern pattern = Pattern.compile("^IMAGEVERSION\\s*=\\s*\\\"(FRC_)?roboRIO2?_(\\d{4}_v\\d+(?:\\.\\d+)?)\\\"");
 
         String content = context.execute("cat " + imageFile).getResult();
         log.info("Received Image File: ");
