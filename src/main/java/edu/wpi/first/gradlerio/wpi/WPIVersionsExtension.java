@@ -10,7 +10,7 @@ public abstract class WPIVersionsExtension {
     private static final String niLibrariesVersion = "2024.1.1";
     private static final String opencvVersion = "4.8.0-1";
     private static final String imguiVersion = "1.89.9-1";
-    private static final String ejmlVersion = "0.42";
+    private static final String ejmlVersion = "0.43.1";
     private static final String jacksonVersion = "2.15.2";
     private static final String wpimathVersion = "2024.1.1-beta-1";
     private static final String googleTestVersion = "1.14.0-1";
