@@ -57,7 +57,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         @Override
         public void execute(Parameters parameters) {
             Optional<Throwable> failure = parameters.getBuildResult().get().getFailure();
-            if (System.getProperty("user.dir").contains("OneDrive")) {
+            if (System.getProperty("user.dir").toUpperCase().contains("ONEDRIVE")) {
                 throw new OneDriveException();
             }
 
