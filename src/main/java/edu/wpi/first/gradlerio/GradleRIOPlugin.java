@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.inject.Inject;
 
@@ -57,7 +59,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         @Override
         public void execute(Parameters parameters) {
             Optional<Throwable> failure = parameters.getBuildResult().get().getFailure();
-            if (System.getProperty("user.dir").toUpperCase().contains("ONEDRIVE")) {
+            if (Paths.get("").toAbsolutePath().toString().toUpperCase().contains("ONEDRIVE")) {
                 throw new OneDriveException();
             }
 
