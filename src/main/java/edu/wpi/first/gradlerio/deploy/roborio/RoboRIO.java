@@ -136,7 +136,7 @@ public class RoboRIO extends WPIRemoteTarget {
             log.info(line);
             Matcher matcher = pattern.matcher(line.trim());
             if (matcher.matches()) {
-                String imageGroup = matcher.group(1);
+                String imageGroup = matcher.group(2);
                 log.info("Matched version: " + imageGroup);
                 verifyImageVersion(imageGroup);
                 imageFound = true;
