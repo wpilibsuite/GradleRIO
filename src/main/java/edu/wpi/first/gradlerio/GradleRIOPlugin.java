@@ -59,10 +59,6 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         @Override
         public void execute(Parameters parameters) {
             Optional<Throwable> failure = parameters.getBuildResult().get().getFailure();
-            if (Paths.get("").toAbsolutePath().toString().toUpperCase().contains("ONEDRIVE")) {
-                throw new OneDriveException();
-            }
-
             if (failure.isPresent()) {
                 try {
                     checkBuildFailed(failure.get());
@@ -84,6 +80,9 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        if (project.getRootDir().toString().toUpperCase().contains("ONEDRIVE")) {
+            throw new OneDriveException();
+        }
 
         project.getPluginManager().apply(DeployUtils.class);
         project.getPluginManager().apply(FRCDeployPlugin.class);
