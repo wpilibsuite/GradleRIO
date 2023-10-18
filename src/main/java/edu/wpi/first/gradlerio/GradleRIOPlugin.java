@@ -44,6 +44,7 @@ import edu.wpi.first.gradlerio.caching.WrapperInspector;
 import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
+import edu.wpi.first.gradlerio.OneDriveException;
 
 public abstract class GradleRIOPlugin implements Plugin<Project> {
 
@@ -56,9 +57,14 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         @Override
         public void execute(Parameters parameters) {
             Optional<Throwable> failure = parameters.getBuildResult().get().getFailure();
-            if (System.getProperty("user.dir").contains("OneDrive")) {
-                throw new Error("Cannot use project inside OneDrive");
+            try {
+                if (System.getProperty("user.dir").contains("OneDrive")) {
+                    throw new OneDriveException();
+                }
+            } catch(OneDriveException e) {
+                
             }
+
             if (failure.isPresent()) {
                 try {
                     checkBuildFailed(failure.get());
