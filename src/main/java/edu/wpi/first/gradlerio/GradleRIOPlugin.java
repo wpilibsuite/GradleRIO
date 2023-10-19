@@ -79,7 +79,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         if (project.getRootDir().toString().toUpperCase().contains("ONEDRIVE")) {
-            throw new OneDriveException();
+            throw new OneDriveException(project);
         }
 
         project.getPluginManager().apply(DeployUtils.class);
