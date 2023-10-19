@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.inject.Inject;
 
