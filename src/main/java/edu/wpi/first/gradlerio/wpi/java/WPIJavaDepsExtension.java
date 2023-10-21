@@ -57,6 +57,8 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("com.fasterxml.jackson.core", "jackson-annotations", versions.getJacksonVersion());
         createJavaDependencies("com.fasterxml.jackson.core", "jackson-core", versions.getJacksonVersion());
         createJavaDependencies("com.fasterxml.jackson.core", "jackson-databind", versions.getJacksonVersion());
+
+        createJavaDependencies("us.hebi.quickbuf", "quickbuf-runtime", versions.getQuickbufVersion());
     }
 
     public List<Provider<String>> wpilib() {

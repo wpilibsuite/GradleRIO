@@ -6,24 +6,25 @@ import org.gradle.api.provider.Property;
 
 public abstract class WPIVersionsExtension {
 
-    private static final String wpilibVersion = "2024.1.1-beta-1";
+    private static final String wpilibVersion = "2024.1.1-beta-2";
     private static final String niLibrariesVersion = "2024.1.1";
     private static final String opencvVersion = "4.8.0-1";
     private static final String imguiVersion = "1.89.9-1";
     private static final String ejmlVersion = "0.43.1";
     private static final String jacksonVersion = "2.15.2";
-    private static final String wpimathVersion = "2024.1.1-beta-1";
+    private static final String quickbufVersion = "1.3.2";
+    private static final String wpimathVersion = "2024.1.1-beta-2";
     private static final String googleTestVersion = "1.14.0-1";
 
-    private static final String smartDashboardVersion = "2024.1.1-beta-1";
-    private static final String shuffleboardVersion = "2024.1.1-beta-1";
-    private static final String outlineViewerVersion = "2024.1.1-beta-1";
-    private static final String robotBuilderVersion = "2024.1.1-beta-1";
-    private static final String pathWeaverVersion = "2024.1.1-beta-1";
-    private static final String glassVersion = "2024.1.1-beta-1";
-    private static final String sysIdVersion = "2024.1.1-beta-1";
-    private static final String roboRIOTeamNumberSetterVersion = "2024.1.1-beta-1";
-    private static final String dataLogToolVersion = "2024.1.1-beta-1";
+    private static final String smartDashboardVersion = "2024.1.1-beta-2";
+    private static final String shuffleboardVersion = "2024.1.1-beta-2";
+    private static final String outlineViewerVersion = "2024.1.1-beta-2";
+    private static final String robotBuilderVersion = "2024.1.1-beta-2";
+    private static final String pathWeaverVersion = "2024.1.1-beta-2";
+    private static final String glassVersion = "2024.1.1-beta-2";
+    private static final String sysIdVersion = "2024.1.1-beta-2";
+    private static final String roboRIOTeamNumberSetterVersion = "2024.1.1-beta-2";
+    private static final String dataLogToolVersion = "2024.1.1-beta-2";
 
 
     public abstract Property<String> getWpilibVersion();
@@ -35,6 +36,7 @@ public abstract class WPIVersionsExtension {
 
     public abstract Property<String> getEjmlVersion();
     public abstract Property<String> getJacksonVersion();
+    public abstract Property<String> getQuickbufVersion();
     public abstract Property<String> getSmartDashboardVersion();
     public abstract Property<String> getShuffleboardVersion();
     public abstract Property<String> getOutlineViewerVersion();
@@ -56,6 +58,7 @@ public abstract class WPIVersionsExtension {
 
         getEjmlVersion().convention(ejmlVersion);
         getJacksonVersion().convention(jacksonVersion);
+        getQuickbufVersion().convention(quickbufVersion);
         getSmartDashboardVersion().convention(smartDashboardVersion);
         getShuffleboardVersion().convention(shuffleboardVersion);
         getOutlineViewerVersion().convention(outlineViewerVersion);
