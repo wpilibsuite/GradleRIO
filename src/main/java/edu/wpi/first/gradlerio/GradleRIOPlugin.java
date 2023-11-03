@@ -44,6 +44,7 @@ import edu.wpi.first.gradlerio.caching.WrapperInspector;
 import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
+import edu.wpi.first.gradlerio.OneDriveException;
 
 public abstract class GradleRIOPlugin implements Plugin<Project> {
 
@@ -77,6 +78,14 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        boolean onedrive = false;
+        try {
+            onedrive = (project.getRootDir().toString().toUpperCase().contains("ONEDRIVE"));
+        } catch (Exception e) {}
+
+        if (onedrive) {
+            throw new OneDriveException(project);
+        }
 
         project.getPluginManager().apply(DeployUtils.class);
         project.getPluginManager().apply(FRCDeployPlugin.class);
