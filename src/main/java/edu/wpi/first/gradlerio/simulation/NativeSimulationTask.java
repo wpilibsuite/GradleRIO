@@ -55,8 +55,12 @@ public class NativeSimulationTask extends AbstractExecTask<NativeSimulationTask>
             }
         }
 
-        if (binaries.size() != 1) {
+        if (binaries.size() != 1 && binaries.size() != 0) {
              throw new GradleException("Must have 1 and only 1 binary");
+        }
+
+        if (binaries.size() == 0) {
+            throw new GradleException("No binaries found, maybe your project isn't an executable?");
         }
 
         NativeExecutableBinarySpec binary = (NativeExecutableBinarySpec)binaries.get(0);
