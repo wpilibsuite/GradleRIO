@@ -49,9 +49,16 @@ public class NativeSimulationTask extends AbstractExecTask<NativeSimulationTask>
     @TaskAction
     @Override
     protected void exec() {
-        if (binaries.size() != 1) {
-            throw new GradleException("Must have 1 and only 1 binary");
+        for (NativeBinarySpec binary : binaries) {
+            if (!(binary instanceof NativeExecutableBinarySpec)) {
+                binaries.remove(binary);
+            }
         }
+
+        if (binaries.size() != 1) {
+             throw new GradleException("Must have 1 and only 1 binary");
+        }
+
         NativeExecutableBinarySpec binary = (NativeExecutableBinarySpec)binaries.get(0);
         InstallExecutable install = (InstallExecutable)binary.getTasks().getInstall();
 
