@@ -19,6 +19,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.FRCProgramStartArtifact;
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
 import edu.wpi.first.gradlerio.deploy.roborio.RobotCommandArtifact;
 import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
+import edu.wpi.first.gradlerio.deploy.DeployLogFile;
 
 public class FRCDeployPlugin implements Plugin<Project> {
 
@@ -57,6 +58,7 @@ public class FRCDeployPlugin implements Plugin<Project> {
         deployExtension.getTargets().registerFactory(RoboRIO.class, name -> {
             RoboRIO target = project.getObjects().newInstance(RoboRIO.class, name, project, deployExtension, frcExtension);
             configureRoboRIOTypes(target);
+            new DeployLogFile(target);
             return target;
         });
     }
