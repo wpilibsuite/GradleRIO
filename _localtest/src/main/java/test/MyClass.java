@@ -1,22 +1,21 @@
 package test;
-import edu.wpi.first.wpilibj.I2C;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class MyClass extends IterativeRobot {
 
-    public MyClass() {
-        super();
-    }
+  public MyClass() {
+    super();
+  }
 
-    public void robotInit() {
-        System.out.println("Hello World");
-    }
+  public void robotInit() {
+    System.out.println("Hello World");
+  }
 
-    @Override
-    public void teleopPeriodic() {
-    }
+  @Override
+  public void teleopPeriodic() {}
 
-    public int onePlusOne() {
-        return 2;
-    }
+  public int onePlusOne() {
+    return 2;
+  }
 }

@@ -10,8 +10,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.jcraft:jsch:0.1.53'
-//        classpath group: 'edu.wpi.first.deployutils', name: 'DeployUtils', version: '2018.08.21'
-//        classpath group: 'gradle.plugin.edu.wpi.first.deployutils', name: 'DeployTools', version: '2018.08.26'
+        //        classpath group: 'edu.wpi.first.deployutils', name: 'DeployUtils', version: '2018.08.21'
+        //        classpath group: 'gradle.plugin.edu.wpi.first.deployutils', name: 'DeployTools', version: '2018.08.26'
         classpath group: 'edu.wpi.first', name: 'GradleRIO', version: '2019.0.0-alpha-4-pre2'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '3.1.2'
         classpath group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
@@ -30,8 +30,8 @@ plugins {
 apply plugin: 'edu.wpi.first.GradleRIO'
 
 buildScan {
-  licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-  licenseAgree = 'yes'
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
 }
 
 repositories {
@@ -52,7 +52,7 @@ deploy {
         }
         artifact('frcNative', edu.wpi.first.gradlerio.frc.FRCNativeArtifact) {
             targets << 'roborio5333'
-//            robotCommand = false
+            //            robotCommand = false
             component = 'myFrcBinary'
         }
     }
@@ -65,7 +65,7 @@ model {
     components {
         myFrcBinary(NativeExecutableSpec) {
             targetPlatform 'roborio'
-//            targetPlatform 'desktop'
+            //            targetPlatform 'desktop'
             binaries.all {
                 cppCompiler.args('-g')
             }
@@ -83,8 +83,8 @@ dependencies {
     compile wpilib()
     // CTRE Phoenix FRC Beta library
     // Download from Teamforge, not currently publically available
-//    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
-//    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
+    //    compile zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/CTRE_Phoenix.jar') }
+    //    nativeLib zipTree('libs/phoenix_v5.0.4.4.zip').matching { it.include('java/lib/libCTRE_PhoenixCCI.so') }
     simulation sim.nt_ds()
     simulation sim.nt_readout()
 
