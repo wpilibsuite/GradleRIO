@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.codehaus.groovy.runtime.StringGroovyMethods;
+import org.gradle.BuildResult;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -116,6 +117,20 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         getFlowScope().always(BuildListener.class, spec -> {
             spec.getParameters().getBuildResult().set(getFlowProviders().getBuildWorkResult());
         });
+
+        Action<BuildResult> shoutoutDocs = new Action<BuildResult>() {
+            @Override
+            public void execute(BuildResult buildResult){
+                    System.out.println("==============================");
+                    System.out.println("Want more information, resources, help, and tutorials on programming your robot? Check out frc-docs, the official documentation for FRC and WPILib.");
+                    System.out.println("Visit frc-docs at:");
+                    System.out.println("https://docs.wpilib.org");
+                    System.out.println("==============================");
+            }
+        };
+
+        project.getGradle().buildFinished(shoutoutDocs);
+
     }
 
     public static Action<Manifest> javaManifest(String robotMainClass) {
