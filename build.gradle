@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.15.0'
+    id "com.gradle.plugin-publish" version "1.2.1"
     id 'java-gradle-plugin'
     id 'idea'
     id 'maven-publish'
@@ -33,10 +33,14 @@ tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
-archivesBaseName = "GradleRIO"
+base {
+    archivesName = "GradleRIO"
+}
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
 
 allprojects {
     group = "edu.wpi.first"
@@ -50,19 +54,16 @@ allprojects {
     }
 }
 
-pluginBundle {
+gradlePlugin {
     website = 'https://github.com/wpilibsuite/GradleRIO'
     vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
-    description = 'Managing FRC projects, the Gradle way (2019+)'
-    tags = ['frc', 'wpilib', 'gradlerio']
-}
-
-gradlePlugin {
     plugins {
         gradleRio {
             id = 'edu.wpi.first.GradleRIO'
             displayName = 'GradleRIO'
             implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
+            description = 'Managing FRC projects, the Gradle way (2019+)'
+            tags = ['frc', 'wpilib', 'gradlerio']
         }
     }
 }
@@ -108,6 +109,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '8.1'
+    gradleVersion = '8.5'
     distributionType = Wrapper.DistributionType.BIN
 }
