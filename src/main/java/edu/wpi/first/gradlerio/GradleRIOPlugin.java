@@ -44,7 +44,6 @@ import edu.wpi.first.gradlerio.caching.WrapperInspector;
 import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
-import edu.wpi.first.gradlerio.OneDriveException;
 
 public abstract class GradleRIOPlugin implements Plugin<Project> {
 
