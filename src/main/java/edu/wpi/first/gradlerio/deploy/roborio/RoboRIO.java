@@ -12,10 +12,8 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
 import edu.wpi.first.deployutils.deploy.DeployExtension;
-import edu.wpi.first.deployutils.deploy.artifact.MultiCommandArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
-import edu.wpi.first.gradlerio.deploy.DeployStage;
 import edu.wpi.first.gradlerio.deploy.FRCExtension;
 import edu.wpi.first.gradlerio.deploy.WPIRemoteTarget;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
@@ -28,7 +26,7 @@ public class RoboRIO extends WPIRemoteTarget {
     private boolean checkImage = true;
     private final List<String> validImageVersions;
 
-    private final MultiCommandArtifact programKillArtifact;
+    private final FRCProgramKillArtifact programKillArtifact;
 
     @Inject
     public RoboRIO(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
@@ -44,16 +42,14 @@ public class RoboRIO extends WPIRemoteTarget {
         // Make a copy of valid image versions so user defined cannot modify the global array
         validImageVersions = new ArrayList<>(WPIExtension.getValidImageVersions());
 
-        programKillArtifact = project.getObjects().newInstance(MultiCommandArtifact.class, "programKill" + name, this);
-        setDeployStage(programKillArtifact, DeployStage.ProgramKill);
-        programKillArtifact.addCommand("kill", ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
+        programKillArtifact = project.getObjects().newInstance(FRCProgramKillArtifact.class, "programKill" + name, this);
 
         getTargetPlatform().set(NativePlatforms.roborio);
 
         getArtifacts().add(programKillArtifact);
     }
 
-    public MultiCommandArtifact getProgramKillArtifact() {
+    public FRCProgramKillArtifact getProgramKillArtifact() {
         return programKillArtifact;
     }
 

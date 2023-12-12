@@ -83,7 +83,7 @@ public class WPINativeCompileRules extends RuleSource {
     // From
     // https://github.com/wpilibsuite/native-utils/blob/a8ea595670716c7b898878a37e36c2b52e8e3f42/src/main/groovy/edu/wpi/first/nativeutils/rules/BuildConfigRules.groovy#L450
     private static void printWarningsForBinTask(String taskName, Project project) {
-        File file = new File(project.getBuildDir(), "tmp/" + taskName + "/output.txt");
+        File file = project.getLayout().getBuildDirectory().get().file("/tmp/" + taskName + "/output.txt").getAsFile();
 
         if (!file.exists())
             return;

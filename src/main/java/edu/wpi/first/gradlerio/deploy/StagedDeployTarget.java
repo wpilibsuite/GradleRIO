@@ -53,7 +53,7 @@ public abstract class StagedDeployTarget extends RemoteTarget {
 
     private void configureArtifact(Artifact artifact) {
         Callable<TaskProvider<StageDeployTask>> cbl = () -> computeArtifactStageDep(artifact);
-        artifact.dependsOn(cbl);
+        artifact.dependsOnForDeployTask(cbl);
     }
 
     private final DeployStage defaultStage = DeployStage.FileDeploy;
