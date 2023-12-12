@@ -19,7 +19,12 @@ public class FRCProgramStartArtifact extends AbstractArtifact {
     @Override
     public void deploy(DeployContext ctx) {
         ctx.execute("sync");
-        ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null");
+        String result = ctx.execute("/usr/local/natinst/bin/nirtcfg --file=/etc/natinst/share/ni-rt.ini --get section=systemsettings,token=NoApp.enabled,value=unknown").getResult();
+        if (result != null && result.trim().equalsIgnoreCase("true")) {
+            ctx.getLogger().logError("NoApp is set on the device. Robot program cannot be started. Disable NoApp either with the imaging tool or by holding the User button for 5 seconds");
+        } else {
+            ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null");
+        }
     }
 
 }
