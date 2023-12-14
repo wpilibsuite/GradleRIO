@@ -32,6 +32,6 @@ public class FRCProgramKillArtifact extends AbstractArtifact {
         }
         ctx.execute("mv /usr/local/frc/bin/frcKillRobot.sh.tmp /usr/local/frc/bin/frcKillRobot.sh && chmod +x /usr/local/frc/bin/frcKillRobot.sh");
         ctx.execute("sync");
-        ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r 2> /dev/null");
+        ctx.execute(". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t 2> /dev/null");
     }
 }
