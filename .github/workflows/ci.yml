@@ -17,7 +17,7 @@ jobs:
       run: ./gradlew build publishToMavenLocal --stacktrace -PlocalPublish
     - name: Check output
       run: git --no-pager diff --exit-code HEAD
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Maven
         path: ~/.m2/
@@ -34,7 +34,7 @@ jobs:
       with:
         java-version: 11
         distribution: temurin
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Maven
         path: ~/.m2/
