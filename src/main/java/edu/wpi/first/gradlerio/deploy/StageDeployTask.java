@@ -5,24 +5,24 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskProvider;
 
 public abstract class StageDeployTask extends DefaultTask {
-    private DeployStage stage;
-    private TaskProvider<StageDeployTask> previousStage;
+  private DeployStage stage;
+  private TaskProvider<StageDeployTask> previousStage;
 
-    @Internal
-    public DeployStage getStage() {
-        return stage;
-    }
-    public void setStage(DeployStage stage) {
-        this.stage = stage;
-    }
+  @Internal
+  public DeployStage getStage() {
+    return stage;
+  }
 
-    @Internal
-    public TaskProvider<StageDeployTask> getPreviousStage() {
-        return previousStage;
-    }
+  public void setStage(DeployStage stage) {
+    this.stage = stage;
+  }
 
-    public void setPreviousStage(TaskProvider<StageDeployTask> previousStage) {
-        this.previousStage = previousStage;
-    }
+  @Internal
+  public TaskProvider<StageDeployTask> getPreviousStage() {
+    return previousStage;
+  }
 
+  public void setPreviousStage(TaskProvider<StageDeployTask> previousStage) {
+    this.previousStage = previousStage;
+  }
 }

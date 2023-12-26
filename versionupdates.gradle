@@ -1,24 +1,24 @@
 
 def versionMap = [
-  wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
-  shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
-  pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
-  glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
-  sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
-  roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
-  dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2024.opencv:opencv-java:+',
-  googleTestVersion: 'edu.wpi.first.thirdparty.frc2024:googletest:+:headers',
-  niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
-  imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
-  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
+    wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
+    smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
+    outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
+    robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
+    shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
+    pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
+    glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
+    sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
+    roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
+    dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
+    opencvVersion: 'edu.wpi.first.thirdparty.frc2024.opencv:opencv-java:+',
+    googleTestVersion: 'edu.wpi.first.thirdparty.frc2024:googletest:+:headers',
+    niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
+    imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
+    wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 
 configurations {
-  gradleRioVersions
+    gradleRioVersions
 }
 
 def useDevelopmentProperty = 'useDevelopment'
@@ -26,16 +26,16 @@ def useDevelopmentProperty = 'useDevelopment'
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (project.hasProperty(useDevelopmentProperty)) {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/development"
+        repo.url = "https://frcmaven.wpi.edu/artifactory/development"
     } else {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/release"
+        repo.url = "https://frcmaven.wpi.edu/artifactory/release"
     }
 }
 
 dependencies {
-  versionMap.each { key, value ->
-    gradleRioVersions value
-  }
+    versionMap.each { key, value ->
+        gradleRioVersions value
+    }
 }
 
 String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
@@ -43,52 +43,52 @@ String mavenDevRegex = "this\\.useDevelopment\\s*=\\s*(true|false)"
 String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
 tasks.register('UpdateVersions') {
-  doLast {
-    def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
-    def mavenExtText = mavenExtFile.text
-    def toSet = "this.useDevelopment = false"
-    if (project.hasProperty(useDevelopmentProperty)) {
-      toSet = "this.useDevelopment = true"
-    }
-
-    mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
-
-
-    def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
-    def extText = extFile.text
-    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
-      versionMap.each { key, value ->
-        def id = it.moduleVersion.id
-        if (value.startsWith("${id.group}:${it.name}:+".toString())) {
-          def localRegex = regex.replace('placeholder', key)
-          extText = extText.replaceAll(localRegex, "String ${key} = \"${id.version}\"".toString())
+    doLast {
+        def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
+        def mavenExtText = mavenExtFile.text
+        def toSet = "this.useDevelopment = false"
+        if (project.hasProperty(useDevelopmentProperty)) {
+            toSet = "this.useDevelopment = true"
         }
-      }
-    }
-    extFile.text = extText
 
-    def allowedVersions = ""
-    def first = true
-    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
-      if (it.classifier == "allowedimages") {
-        def f = project.zipTree(it.file)
-        f.visit {
-          if (it.name == "allowed_images.txt") {
-            it.file.eachLine {
-              if (!first) {
-                allowedVersions += ', '
-              }
-              first = false
-              allowedVersions += "\"$it\""
+        mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
+
+
+        def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
+        def extText = extFile.text
+        configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
+            versionMap.each { key, value ->
+                def id = it.moduleVersion.id
+                if (value.startsWith("${id.group}:${it.name}:+".toString())) {
+                    def localRegex = regex.replace('placeholder', key)
+                    extText = extText.replaceAll(localRegex, "String ${key} = \"${id.version}\"".toString())
+                }
             }
-          }
         }
-      }
+        extFile.text = extText
+
+        def allowedVersions = ""
+        def first = true
+        configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
+            if (it.classifier == "allowedimages") {
+                def f = project.zipTree(it.file)
+                f.visit {
+                    if (it.name == "allowed_images.txt") {
+                        it.file.eachLine {
+                            if (!first) {
+                                allowedVersions += ', '
+                            }
+                            first = false
+                            allowedVersions += "\"$it\""
+                        }
+                    }
+                }
+            }
+        }
+
+        def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
+        def rootExtText = rootExtFile.text
+
+        rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")
     }
-
-    def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
-    def rootExtText = rootExtFile.text
-
-    rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")
-  }
 }
