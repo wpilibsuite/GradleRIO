@@ -16,6 +16,18 @@ public class InvalidImageException extends RuntimeException {
         return allowedImageVersions;
     }
 
+    private static String parseMessage(String imageVersion) {
+        return "Invalid RoboRIO Image Version!" +
+            "\nRoboRIO image and GradleRIO versions are incompatible:" +
+            "\n\tCurrent image version: " + imageVersion +
+            "\n\tGradleRIO-compatible image versions: 2024_v2.* except 2024_v2.0" +
+            "\nSee https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-3/imaging-your-roborio.html" +
+            "for information about upgrading the RoboRIO image." +
+            "\nSee https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html and" +
+            "\nhttps://docs.wpilib.org/en/stable/docs/software/vscode-overview/importing-gradle-project.html" +
+            "\nfor information about updating WPILib and GradleRIO.";
+    }
+
     private static String parseMessage(String imageVersion, List<String> allowedImageVersions) {
         return "Invalid RoboRIO Image Version!" +
             "\nRoboRIO image and GradleRIO versions are incompatible:" +
@@ -32,6 +44,12 @@ public class InvalidImageException extends RuntimeException {
         super(parseMessage(imageVersion, allowedImageVersions));
         this.imageVersion = imageVersion;
         this.allowedImageVersions = new ArrayList<>(allowedImageVersions);
+    }
+
+    public InvalidImageException(String imageVersion, boolean isSpecialCase) {
+        super(parseMessage(imageVersion));
+        this.imageVersion = imageVersion;
+        this.allowedImageVersions = new ArrayList<>();
     }
 
     public InvalidImageException() {
