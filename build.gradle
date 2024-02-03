@@ -109,6 +109,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '8.5'
+    gradleVersion = '8.6'
     distributionType = Wrapper.DistributionType.BIN
 }
