@@ -143,7 +143,12 @@ For 2023, JRE 17 is deployed. To use JRE 11 from previous years, do the followin
 GradleRIO has built in settings for the CMS garbage collector (for JDK 11) and G1 (for JDK 17). 
 
 1. Set `gcType = 'Other'` in the FRCJavaArtifact block
-2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact (e.g. for the default G1 settings, `jvmArgs.add("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=1", "-XX:GCTimeRatio=1")`
+2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact. For the default G1 settings:
+   ```
+   jvmArgs.add("-XX:+UseG1GC")
+   jvmArgs.add("-XX:MaxGCPauseMillis=1")
+   jvmArgs.add("-XX:GCTimeRatio=1")
+   ```
 
 # Using GradleRIO custom builds
 
