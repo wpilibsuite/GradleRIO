@@ -1,4 +1,3 @@
-
 plugins {
     id "cpp"
     id "google-test-test-suite"
@@ -100,6 +99,6 @@ model {
 }
 
 wrapper {
-    gradleVersion = '8.1'
+    gradleVersion = '8.5'
     distributionType = Wrapper.DistributionType.BIN
 }
