@@ -100,6 +100,6 @@ wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
 wrapper {
-    gradleVersion = '8.5'
+    gradleVersion = '8.1'
     distributionType = Wrapper.DistributionType.BIN
 }
