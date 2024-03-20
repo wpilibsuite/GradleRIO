@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
      matrix:
-        language: [cpp, java, asm] #, jni, kotlin]
+        language: [cpp, java, asm, kotlin] #, jni]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
