@@ -25,12 +25,18 @@ public class FRCExtension {
             t.getDebugFile().set(project.getLayout().getBuildDirectory().file("debug/debug_info.json"));
         });
 
+        deployLogFile = project.getTasks().register("writeDeployFile", CreateLogFileTask.class, t -> {
+            t.getDeployFile().set(project.getLayout().getBuildDirectory().file("debug/deploy.json"));
+        });
+
         deployExtension.getDeployTask().configure(t -> {
             t.dependsOn(debugFileTask);
+            t.dependsOn(deployLogFile);
         });
     }
 
     private final TaskProvider<DebugFileTask> debugFileTask;
+    private final TaskProvider<CreateLogFileTask> deployLogFile;
 
     public TaskProvider<DebugFileTask> getDebugFileTask() {
         return debugFileTask;
