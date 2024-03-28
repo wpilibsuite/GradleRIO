@@ -32,40 +32,21 @@ public class CreateLogFileTask extends DefaultTask {
     @TaskAction
     public void execute() {
         Gson builder = new GsonBuilder().create();
-        Grgit grgit = Grgit.open();
+        Grgit grgit;
         HashMap<String, String> data = new HashMap<String, String>();
-        boolean inGitRepo = false;
-
-        String[] command = { "git", "rev-parse", "--is-inside-work-tree" };
-        try {
-            // TODO! use grgit for this
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
-        }
 
         try {
-            data.put(DEPLOY_ITEMS[0], Runtime.getRuntime().exec("hostname").getOutputStream().toString().strip());
-        } catch (IOException e) {
-            throw new GradleException("Couldn't get hostname", e);
-        }
+            grgit = Grgit.open();
 
-        data.put(DEPLOY_ITEMS[1], System.getProperty("user.name"));
-        data.put(DEPLOY_ITEMS[2], LocalDateTime.now().toString());
-        data.put(DEPLOY_ITEMS[3], System.getProperty("user.dir"));
-
-        if (inGitRepo) {
-            String[] command2 = { "git", "rev-parse", "HEAD" };
             try {
-                // TODO! use grgit for this
-                data.put(DEPLOY_ITEMS[4], Runtime.getRuntime().exec(command2).getOutputStream().toString().strip());
-            } catch (IOException e) {
+                data.put(DEPLOY_ITEMS[4], grgit.getResolve().toRevisionString("HEAD"));
+            } catch (Exception e) {
                 throw new GradleException("Couldn't get git hash", e);
             }
 
-            String[] command3 = { "git", "rev-parse", "--abbrev-ref", "HEAD" };
             try {
-                data.put(DEPLOY_ITEMS[5], Runtime.getRuntime().exec(command3).getOutputStream().toString().strip());
-            } catch (IOException e) {
+                data.put(DEPLOY_ITEMS[5], grgit.getResolve().toBranchName("HEAD"));
+            } catch (Exception e) {
                 throw new GradleException("Couldn't get git branch", e);
             }
 
@@ -78,7 +59,17 @@ public class CreateLogFileTask extends DefaultTask {
             } catch (Exception e) {
                 throw new GradleException("Couldn't get git description", e);
             }
+        } catch (Exception e) {}
+
+        try {
+            data.put(DEPLOY_ITEMS[0], Runtime.getRuntime().exec("hostname").getOutputStream().toString().strip());
+        } catch (IOException e) {
+            throw new GradleException("Couldn't get hostname", e);
         }
+
+        data.put(DEPLOY_ITEMS[1], System.getProperty("user.name"));
+        data.put(DEPLOY_ITEMS[2], LocalDateTime.now().toString());
+        data.put(DEPLOY_ITEMS[3], System.getProperty("user.dir"));
 
         deployFile = new File(builder.toJson(data));
     }
