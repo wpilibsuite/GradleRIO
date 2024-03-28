@@ -32,6 +32,7 @@ public class CreateLogFileTask extends DefaultTask {
     };
     private File deployFile;
     private String json;
+    private String gitDirectory;
 
     @Inject
     public CreateLogFileTask() {
@@ -42,7 +43,9 @@ public class CreateLogFileTask extends DefaultTask {
         Grgit grgit;
 
         try {
-            grgit = Grgit.open();
+            HashMap<String, Object> openargs = new HashMap<String, Object>();
+            openargs.put("dir", gitDirectory);
+            grgit = Grgit.open(openargs);
 
             try {
                 data.put(DEPLOY_ITEMS[4], grgit.getResolve().toRevisionString("HEAD"));
@@ -89,6 +92,10 @@ public class CreateLogFileTask extends DefaultTask {
 
     public void setDeployFile(String path) {
       deployFile = new File(path);
+    }
+
+    public void setGitDirectory(String dir) {
+        gitDirectory = dir;
     }
 
     @OutputFile
