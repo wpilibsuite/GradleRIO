@@ -138,6 +138,19 @@ For 2024, JRE 17 is deployed. To use JRE 11 from previous years, do the followin
 1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2021:11.0.9u11-1'` to build.gradle
 2. Set `gcType = 'CMS'` in the FRCJavaArtifact block to use the CMS garbage collector
 
+## Using pre deploy tasks
+
+Your project has a couple of different deploy tasks, normally an FRCUserProgram artifact (either for Java or C++) and a StaticFileArtifact with the deploy directory. By default these tasks will not delete anything that doesn't need to be overwritten. In particular with the deploy directory this can lead to a large build up of unused files. We can clear these out before our deploy like this:
+```gradle
+frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+    predeploy << { execute 'rm -rf /home/lvuser/deploy' } // << Add this line
+    files = project.fileTree('src/main/deploy')
+    directory = '/home/lvuser/deploy'
+}
+```
+
+You can add a variety of different things for predeploy other than this as it just takes in a function of what to execute.
+
 ## Using alternate garbage collector
 
 GradleRIO has built in settings for several different garbage collectors. The CMS garbage collector was used for JDK 11 in 2022 and earlier, but was removed in later JDKs. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
