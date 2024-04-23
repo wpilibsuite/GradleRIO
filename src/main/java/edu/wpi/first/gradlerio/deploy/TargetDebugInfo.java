@@ -1,5 +1,3 @@
 package edu.wpi.first.gradlerio.deploy;
 
-public abstract class TargetDebugInfo {
-
-}
+public abstract class TargetDebugInfo {}

@@ -7,9 +7,8 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.util.RuntimeLoader;
+import java.io.IOException;
 
 public class JNICode {
   static RuntimeLoader<JNICode> loader = null;
@@ -18,7 +17,9 @@ public class JNICode {
     try {
       // Change this name to match the library name of the jni library in build.gradle
       // For the last parameter, make it match this class
-      loader = new RuntimeLoader<>("JNILibrary", RuntimeLoader.getDefaultExtractionRoot(), JNICode.class);
+      loader =
+          new RuntimeLoader<>(
+              "JNILibrary", RuntimeLoader.getDefaultExtractionRoot(), JNICode.class);
       loader.loadLibrary();
     } catch (IOException ex) {
       ex.printStackTrace();
