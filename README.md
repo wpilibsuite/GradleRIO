@@ -131,16 +131,9 @@ plugins {
 
 The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
 
-## Deploying alternate JRE
-
-For 2024, JRE 17 is deployed. To use JRE 11 from previous years, do the following:
-
-1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2021:11.0.9u11-1'` to build.gradle
-2. Set `gcType = 'CMS'` in the FRCJavaArtifact block to use the CMS garbage collector
-
 ## Using alternate garbage collector
 
-GradleRIO has built in settings for several different garbage collectors. The CMS garbage collector was used for JDK 11 in 2022 and earlier, but was removed in later JDKs. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
+GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
 
 The `Other` `gcType` can be used for complete customization
 
