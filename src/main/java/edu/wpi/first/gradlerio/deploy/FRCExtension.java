@@ -25,12 +25,19 @@ public class FRCExtension {
             t.getDebugFile().set(project.getLayout().getBuildDirectory().file("debug/debug_info.json"));
         });
 
+        zipSourcesTask = project.getTasks().register("writeSourcesZip", ZipSourcesTask.class, t -> {
+            t.setBuildDirectory(project.getLayout().getBuildDirectory().toString());
+            t.setProjectDirectory(project.getProjectDir().toString());
+        });
+
         deployExtension.getDeployTask().configure(t -> {
             t.dependsOn(debugFileTask);
+            t.dependsOn(zipSourcesTask);
         });
     }
 
     private final TaskProvider<DebugFileTask> debugFileTask;
+    private final TaskProvider<ZipSourcesTask> zipSourcesTask;
 
     public TaskProvider<DebugFileTask> getDebugFileTask() {
         return debugFileTask;
