@@ -3,7 +3,6 @@ package edu.wpi.first.gradlerio.deploy.roborio;
 import java.util.List;
 
 public enum GarbageCollectorType {
-    CMS("-XX:+UseConcMarkSweepGC"),
     G1("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=1", "-XX:GCTimeRatio=1"),
     G1_LongPause("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=5", "-XX:GCTimeRatio=1"),
     G1_Base("-XX:+UseG1GC"),

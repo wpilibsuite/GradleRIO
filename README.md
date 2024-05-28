@@ -131,19 +131,19 @@ plugins {
 
 The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
 
-## Deploying alternate JRE
-
-For 2023, JRE 17 is deployed. To use JRE 11 from previous years, do the following:
-
-1. Add `wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2021:11.0.9u11-1'` to build.gradle
-2. Set `gcType = 'CMS'` in the FRCJavaArtifact block to use the CMS garbage collector
-
 ## Using alternate garbage collector
 
-GradleRIO has built in settings for the CMS garbage collector (for JDK 11) and G1 (for JDK 17). 
+GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
+
+The `Other` `gcType` can be used for complete customization
 
 1. Set `gcType = 'Other'` in the FRCJavaArtifact block
-2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact (e.g. for the default G1 settings, `jvmArgs.add("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=1", "-XX:GCTimeRatio=1")`
+2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact. For the default G1 settings:
+   ```
+   jvmArgs.add("-XX:+UseG1GC")
+   jvmArgs.add("-XX:MaxGCPauseMillis=1")
+   jvmArgs.add("-XX:GCTimeRatio=1")
+   ```
 
 # Using GradleRIO custom builds
 
