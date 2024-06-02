@@ -87,4 +87,8 @@ public class FRCExtension {
         }
         return -1;
     }
+
+    public boolean isClearFiles() {
+        return project.hasProperty("clearFiles");
+    }
 }

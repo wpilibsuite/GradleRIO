@@ -5,6 +5,7 @@ public enum DeployStage {
     ProgramKill,
     AfterProgramKill,
     FileRetreival,
+    FileClear,
     FileDeploy,
     BeforeProgramStart,
     ProgramStart,

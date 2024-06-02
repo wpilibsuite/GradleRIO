@@ -10,6 +10,7 @@ import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.artifact.Artifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.target.location.DeployLocation;
+import edu.wpi.first.gradlerio.deploy.roborio.ClearFilesArtifact;
 import edu.wpi.first.gradlerio.deploy.roborio.DSDeployLocation;
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJNILibraryArtifact;
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
@@ -31,6 +32,7 @@ public class FRCDeployPlugin implements Plugin<Project> {
         ExtensiblePolymorphicDomainObjectContainer<DeployLocation> locations = target.getLocations();
         ExtensiblePolymorphicDomainObjectContainer<Artifact> artifacts = target.getArtifacts();
 
+        NamedObjectFactory.registerType(ClearFilesArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCJavaArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCNativeArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCJREArtifact.class, artifacts, target, objects);
