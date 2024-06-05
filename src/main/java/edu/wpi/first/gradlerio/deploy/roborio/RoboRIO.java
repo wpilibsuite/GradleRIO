@@ -95,7 +95,7 @@ public class RoboRIO extends WPIRemoteTarget {
         }
 
         getLocations().create("ds", DSDeployLocation.class, ds -> {
-            ds.setUser("admin");
+            ds.setUser("lvuser");
             ds.setPassword("");
             ds.setIpv6(false);
         });
@@ -105,7 +105,7 @@ public class RoboRIO extends WPIRemoteTarget {
         getLocations().create(address, SshDeployLocation.class, loc -> {
             loc.setAddress(address);
             loc.setIpv6(false);
-            loc.setUser("admin");
+            loc.setUser("lvuser");
             loc.setPassword("");
         });
     }
