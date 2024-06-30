@@ -19,9 +19,10 @@ dependencies {
 
     api 'edu.wpi.first:native-utils:2024.6.1'
 
-    api 'de.undercouch:gradle-download-task:4.1.2'
+    api 'org.eclipse.jgit:org.eclipse.jgit:6.10.+'
 
-    implementation 'org.ajoberstar.grgit:grgit-core:5.0.0'
+
+    api 'de.undercouch:gradle-download-task:4.1.2'
 
     testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'

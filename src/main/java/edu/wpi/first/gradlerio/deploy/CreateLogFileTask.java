@@ -3,12 +3,11 @@ package edu.wpi.first.gradlerio.deploy;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 
-import org.ajoberstar.grgit.Grgit;
-
 import javax.inject.Inject;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
-
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
@@ -17,7 +16,6 @@ import org.gradle.api.tasks.OutputFile;
 import java.util.HashMap;
 import java.io.IOException;
 import java.io.File;
-import java.lang.Runtime;
 import java.time.LocalDateTime;
 
 public class CreateLogFileTask extends DefaultTask {
@@ -40,31 +38,27 @@ public class CreateLogFileTask extends DefaultTask {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         Gson jsongen = builder.create();
-        Grgit grgit;
 
         try {
-            HashMap<String, Object> openargs = new HashMap<String, Object>();
-            openargs.put("dir", gitDirectory);
-            grgit = Grgit.open(openargs);
+          Repository repository = new FileRepositoryBuilder().setGitDir(new File(gitDirectory))
+            .readEnvironment() // scan environment GIT_* variables
+            .findGitDir() // scan up the file system tree
+            .build();
 
             try {
-                data.put(DEPLOY_ITEMS[4], grgit.getResolve().toRevisionString("HEAD"));
+                data.put(DEPLOY_ITEMS[4], repository.resolve("HEAD").toString());
             } catch (Exception e) {
                 throw new GradleException("Couldn't get git hash", e);
             }
 
             try {
-                data.put(DEPLOY_ITEMS[5], grgit.getResolve().toBranchName("HEAD"));
+                data.put(DEPLOY_ITEMS[5], repository.getBranch());
             } catch (Exception e) {
                 throw new GradleException("Couldn't get git branch", e);
             }
 
             try {
-                HashMap<String, Object> args = new HashMap<String, Object>();
-                args.put("dirty", "-dirty");
-                args.put("always", true);
-
-                data.put(DEPLOY_ITEMS[6], grgit.describe(args));
+                data.put(DEPLOY_ITEMS[6], repository.getGitwebDescription());
             } catch (Exception e) {
                 throw new GradleException("Couldn't get git description", e);
             }
@@ -72,7 +66,9 @@ public class CreateLogFileTask extends DefaultTask {
         }
 
         try {
-            data.put(DEPLOY_ITEMS[0], Runtime.getRuntime().exec("hostname").getOutputStream().toString().strip());
+            var pb = new ProcessBuilder("hostname");
+            var process = pb.start();
+            data.put(DEPLOY_ITEMS[0], process.getOutputStream().toString());
         } catch (IOException e) {
             throw new GradleException("Couldn't get hostname", e);
         }
