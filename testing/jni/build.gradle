@@ -39,12 +39,6 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                 }
-
-              //frcNativeLibraryArtifact('jniLibrary') {
-              //    targets << "roborio"
-              //    component = 'JNILibrary'
-              //    buildType = 'release'
-              //}
             }
         }
     }
@@ -66,9 +60,6 @@ model {
     components {
         JNILibrary(JniNativeLibrarySpec) {
             targetPlatform wpi.platforms.roborio
-            //if (includeDesktopSupport) {
-            //    targetPlatform wpi.platforms.desktop
-            //}
 
             enableCheckTask true
             javaCompileTasks << compileJava
@@ -82,14 +73,10 @@ model {
                         srcDirs 'src/main/native/cpp'
                         include '**/*.cpp'
                     }
-                    exportedHeaders {
-                        srcDir 'src/main/native/include'
-                        include '**/*.h'
-                    }
                 }
             }
 
-          nativeUtils.useRequiredLibrary(it, "driver_shared")
+          nativeUtils.useRequiredLibrary(it, "JNILibrary")
         }
     }
 }
