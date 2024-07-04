@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-JAVA_REL=11
+JAVA_REL=17
 JAVA_HOME="/usr/lib/jvm/java-$JAVA_REL-openjdk-amd64"
 
 set -ex
