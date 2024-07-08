@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "cpp"
     id "edu.wpi.first.GradleRIO" version "2024.3.2"
-    id 'edu.wpi.first.GradleJni' version '0.10.1'
+    id 'edu.wpi.first.GradleJni' version '1.1.0'
 }
 
 def projectFolder = project.buildFile.parentFile
@@ -76,7 +76,7 @@ model {
                 }
             }
 
-          nativeUtils.useRequiredLibrary(it, "JNILibrary")
+          nativeUtils.useRequiredLibrary(it, "driver_shared")
         }
     }
 }
