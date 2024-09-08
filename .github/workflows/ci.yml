@@ -21,7 +21,6 @@ jobs:
       with:
         name: Maven
         path: ~/.m2/repository/
-        include-hidden-files: true
 
   test_examples:
     needs: build
