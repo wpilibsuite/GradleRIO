@@ -213,8 +213,8 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     private static void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
-        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.py")) {
+        File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.sh")) {
             ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
