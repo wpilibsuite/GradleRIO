@@ -77,6 +77,6 @@ model {
 }
 
 wrapper {
-    gradleVersion = '8.1'
+    gradleVersion = '8.10.1'
     distributionType = Wrapper.DistributionType.BIN
 }
