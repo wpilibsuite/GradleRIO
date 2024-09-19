@@ -118,12 +118,10 @@ public class WPINativeExtension {
         // nte.setSinglePrintPerPlatform();
 
         nte.getWpi().configureDependencies(wpiDeps -> {
-            wpiDeps.getGoogleTestYear().set("frc2024");
             wpiDeps.getOpencvYear().set("frc2024");
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
             wpiDeps.getNiLibVersion().set(versions.getNiLibrariesVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
-            wpiDeps.getGoogleTestVersion().set(versions.getGoogleTestVersion());
             wpiDeps.getImguiVersion().set(versions.getImguiVersion());
             wpiDeps.getWpimathVersion().set(versions.getWpimathVersion());
         });
