@@ -14,7 +14,6 @@ public abstract class WPIVersionsExtension {
     private static final String jacksonVersion = "2.15.2";
     private static final String quickbufVersion = "1.3.3";
     private static final String wpimathVersion = "2025.0.0-alpha-2";
-    private static final String googleTestVersion = "1.14.0-1";
 
     private static final String smartDashboardVersion = "2025.0.0-alpha-1";
     private static final String shuffleboardVersion = "2025.0.0-alpha-2";
@@ -30,7 +29,6 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getWpilibVersion();
     public abstract Property<String> getNiLibrariesVersion();
     public abstract Property<String> getOpencvVersion();
-    public abstract Property<String> getGoogleTestVersion();
     public abstract Property<String> getImguiVersion();
     public abstract Property<String> getWpimathVersion();
 
@@ -52,7 +50,6 @@ public abstract class WPIVersionsExtension {
         getWpilibVersion().convention(wpilibVersion);
         getNiLibrariesVersion().convention(niLibrariesVersion);
         getOpencvVersion().convention(opencvVersion);
-        getGoogleTestVersion().convention(googleTestVersion);
         getImguiVersion().convention(imguiVersion);
         getWpimathVersion().convention(wpimathVersion);
 
