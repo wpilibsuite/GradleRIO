@@ -14,20 +14,24 @@ public class WPIJavaDepsExtension {
 
     private final ProviderFactory providers;
 
+    private static String dependencyNotation(String groupId, String artifactId, Provider<String> version) {
+        return groupId + ":" + artifactId + ":" + version.get();
+    }
+
     private void createJavaDependencies(String groupdId, String artifactId, Provider<String> version) {
         wpilibDeps.add(providers.provider(() -> {
-            return groupdId + ":" + artifactId + ":" + version.get();
+            return dependencyNotation(groupdId, artifactId, version);
         }));
 
         wpilibSources.add(providers.provider(() -> {
-            return groupdId + ":" + artifactId + ":" + version.get() + ":sources";
+            return dependencyNotation(groupdId, artifactId, version) + ":sources";
         }));
     }
 
     private Provider<String> createJniDependency(String groupdId, String artifactId, Provider<String> version, boolean debug, String platform) {
         String debugString = debug ? "debug" : "";
         return providers.provider(() -> {
-            return groupdId + ":" + artifactId + ":" + version.get() + ":" + platform + debugString + "@zip";
+            return dependencyNotation(groupdId, artifactId, version) + ":" + platform + debugString + "@zip";
         });
     }
 
@@ -50,6 +54,7 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("edu.wpi.first.wpiutil", "wpiutil-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.apriltag", "apriltag-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.wpiunits", "wpiunits-java", versions.getWpilibVersion());
+        createJavaDependencies("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
 
         createJavaDependencies("edu.wpi.first.thirdparty.frc2024.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
@@ -63,6 +68,16 @@ public class WPIJavaDepsExtension {
 
     public List<Provider<String>> wpilib() {
         return wpilibDeps;
+    }
+
+    /** Dependencies required for using WPILib's Java annotations during compilation. */
+    public List<Provider<String>> wpilibAnnotations() {
+        // epilogue-runtime is a dependency of epilogue-processor, and needs to be on the annotation processor
+        // classpath at compile time for the processor to function
+        return List.of(
+                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-processor-java", versions.getWpilibVersion())),
+                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion()))
+        );
     }
 
     public List<Provider<String>> wpilibSources() {
