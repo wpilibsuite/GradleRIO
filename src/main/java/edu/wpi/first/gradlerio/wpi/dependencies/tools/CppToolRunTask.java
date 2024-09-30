@@ -77,7 +77,7 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
     private void runToolUnix() {
         Directory toolsFolder = this.toolsFolder.get();
         String toolName = this.toolName.get();
-        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
+        File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
         getProject().exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
             spec.args(getArgumentPath(toolName.toLowerCase()));
