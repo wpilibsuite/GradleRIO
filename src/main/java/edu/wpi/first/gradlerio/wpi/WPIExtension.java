@@ -58,7 +58,7 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         frcYear = factory.property(String.class);
-        frcYear.convention("2024");
+        frcYear.convention("2025");
 
         frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(frcYear);
@@ -147,8 +147,6 @@ public class WPIExtension {
     // "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
     // "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
     // "frcYear " : new Tuple("FRC Year", frcYear, "frcYear"),
-    // "googleTestVersion" : new Tuple("Google Test", googleTestVersion,
-    // "googleTest"),
     // "imguiVersion" : new Tuple("ImGUI", imguiVersion, "imgui"),
     // "wpimathVersion" : new Tuple("WPIMath", wpimathVersion, "wpimath"),
     // "ejmlVersion" : new Tuple("EJML", ejmlVersion, "ejml"),
