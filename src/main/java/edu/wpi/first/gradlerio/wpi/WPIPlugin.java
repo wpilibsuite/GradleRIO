@@ -70,9 +70,7 @@ public class WPIPlugin implements Plugin<Project> {
             });
         });
 
-        project.afterEvaluate(ae -> {
-            addMavenRepositories(project, wpiExtension);
-        });
+        addMavenRepositories(project, wpiExtension);
     }
 
     void explainRepositories(Project project) {
