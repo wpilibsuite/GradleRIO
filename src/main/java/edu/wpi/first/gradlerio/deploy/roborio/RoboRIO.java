@@ -150,10 +150,6 @@ public class RoboRIO extends WPIRemoteTarget {
     }
 
     private void verifyImageVersion(String image) {
-        if (image.equalsIgnoreCase("2024_v2.0")) {
-            throw new InvalidImageException(image, true);
-        }
-
         boolean foundMatch = validImageVersions.stream().filter(x -> {
             int index = x.indexOf("*");
             if (index == -1) {
