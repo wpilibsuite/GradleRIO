@@ -13,6 +13,11 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
+import org.gradle.plugins.ide.eclipse.EclipsePlugin;
+import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
+import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
+import org.gradle.plugins.ide.eclipse.model.EclipseModel;
+import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.cpp.WPINativeExtension;
@@ -85,6 +90,20 @@ public class WPIExtension {
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
             java = factory.newInstance(WPIJavaExtension.class, project, sim, versions);
+
+            project.getPluginManager().apply(EclipsePlugin.class);
+            EclipseModel eclipse = project.getExtensions().getByType(EclipseModel.class);
+            EclipseClasspath eclipseClasspath = eclipse.getClasspath();
+            eclipseClasspath.containers("org.eclipse.buildship.core.gradleclasspathcontainer");
+            eclipseClasspath.getFile().whenMerged(cp -> {
+                if (cp instanceof org.gradle.plugins.ide.eclipse.model.Classpath ecp) {
+                    List<ClasspathEntry> entries = ecp.getEntries();
+                    // TODO make this grab the build folder dynamically, and include everything else necessary
+                    SourceFolder src = new SourceFolder("build/generated/sources/annotationProcessor/java/main", null);
+                    entries.add(src);
+                }
+            });
+
         });
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
