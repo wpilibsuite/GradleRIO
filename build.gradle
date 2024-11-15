@@ -52,6 +52,10 @@ allprojects {
     tasks.withType(Javadoc) {
         options.addBooleanOption('Xdoclint:all,-missing', true)
     }
+
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+  }
 }
 
 gradlePlugin {
@@ -109,6 +113,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '8.10.2'
+    gradleVersion = '8.11'
     distributionType = Wrapper.DistributionType.BIN
 }

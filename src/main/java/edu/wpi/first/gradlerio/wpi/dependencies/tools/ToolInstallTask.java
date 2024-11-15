@@ -22,6 +22,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -30,6 +31,7 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecSpec;
 
 public class ToolInstallTask extends DefaultTask {
@@ -41,6 +43,7 @@ public class ToolInstallTask extends DefaultTask {
     private final Property<Configuration> configuration;
     private final Property<String> toolName;
     private final Property<String> artifactName;
+    private final ExecOperations operations;
 
     @Internal
     public DirectoryProperty getToolsFolder() {
@@ -80,13 +83,14 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     @Inject
-    public ToolInstallTask(ObjectFactory objects) {
+    public ToolInstallTask(ObjectFactory objects, ExecOperations execOperations) {
         setGroup("GradleRIO");
 
         toolsFolder = objects.directoryProperty();
         configuration = objects.property(Configuration.class);
         toolName = objects.property(String.class);
         artifactName = objects.property(String.class);
+        operations = execOperations;
     }
 
     private static synchronized Optional<ToolConfig> getExistingToolVersion(Directory toolsFolder, String toolName) {
@@ -178,9 +182,19 @@ public class ToolInstallTask extends DefaultTask {
         }
     }
 
-    private static void extractAndInstall(Project project, String toolName, Directory toolsFolder,
+    private void extractAndInstall(Project project, String toolName, Directory toolsFolder,
             Dependency dependency, Configuration configuration) {
-        File jarfile = configuration.files(dependency).iterator().next();
+
+        File jarfile = configuration.getIncoming().artifactView(viewCfg -> {
+            viewCfg.componentFilter(filter -> {
+                if (filter instanceof ModuleComponentIdentifier idf) {
+                    return idf.getGroup().equals(dependency.getGroup()) && idf.getModule().equals(dependency.getName())
+                            && idf.getVersion().equals(dependency.getVersion());
+                }
+                return false;
+            });
+        }).getFiles().iterator().next();
+
         File of = toolsFolder.getAsFile();
         of.mkdirs();
         project.copy(new Action<CopySpec>() {
@@ -212,14 +226,15 @@ public class ToolInstallTask extends DefaultTask {
         }
     }
 
-    private static void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
+    private void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
         File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
         try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.sh")) {
             ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        project.exec(new Action<ExecSpec>() {
+
+        operations.exec(new Action<ExecSpec>() {
 
             @Override
             public void execute(ExecSpec spec) {
