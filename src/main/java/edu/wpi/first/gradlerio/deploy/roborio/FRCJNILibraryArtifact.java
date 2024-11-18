@@ -74,7 +74,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact {
     }
 
     public FileCollection computeFiles() {
-        Set<File> configFileCaches = configuration.get().getResolvedConfiguration().getFiles();
+        Set<File> configFileCaches = configuration.get().getIncoming().getFiles().getFiles();
         if (zipped) {
             Optional<FileTree> allFiles = configFileCaches.stream().map(file -> getTarget().getProject().zipTree(file).matching(filter)).filter(x -> x != null).reduce((a, b) -> a.plus(b));
             if (allFiles.isPresent()) {
