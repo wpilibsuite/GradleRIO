@@ -52,7 +52,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
         getPostdeploy().add(ctx -> {
             FRCDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
-            ctx.execute("sudo ldconfig");
+            ctx.execute("sudo ldconfig " + FRCDeployPlugin.LIB_DEPLOY_DIR);
         });
 
         robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
