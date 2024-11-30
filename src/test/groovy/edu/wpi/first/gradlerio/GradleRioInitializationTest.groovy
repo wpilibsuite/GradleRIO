@@ -23,7 +23,7 @@ class GradleRioInitializationTest extends Specification {
         buildFile << """
 plugins {
     id 'cpp'
-    id 'edu.wpi.first.GradleRIO'
+    id 'edu.wpi.first.GradleRIO2027'
 }
 """
         buildFile2 << ""
@@ -44,7 +44,7 @@ plugins {
         buildFile << """
 plugins {
     id 'java'
-    id 'edu.wpi.first.GradleRIO'
+    id 'edu.wpi.first.GradleRIO2027'
 }
 """
         buildFile2 << ""
@@ -65,7 +65,7 @@ plugins {
         buildFile2 << """
 plugins {
     id 'cpp'
-    id 'edu.wpi.first.GradleRIO'
+    id 'edu.wpi.first.GradleRIO2027'
 }
 """
         buildFile << ""
@@ -86,7 +86,7 @@ plugins {
         buildFile2 << """
 plugins {
     id 'java'
-    id 'edu.wpi.first.GradleRIO'
+    id 'edu.wpi.first.GradleRIO2027'
 }
 """
         buildFile << ""
