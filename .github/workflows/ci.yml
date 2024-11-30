@@ -41,10 +41,10 @@ jobs:
 
     - name: Setup RoboRIO Toolchain
       if: ${{ (matrix.language == 'cpp') || (matrix.language == 'asm') }}
-      run: ./gradlew installRoboRioToolchain
+      run: ../../gradlew installRoboRioToolchain
       working-directory: testing/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
-      run: ./gradlew build
+      run: ../../gradlew build
       working-directory: testing/${{ matrix.language }}
 
   publish:
