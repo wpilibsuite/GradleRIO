@@ -1,17 +1,16 @@
 
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
+  // smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
   outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
-  shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
-  pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
+  // robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
+  // shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
+  // pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
   sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
   roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
   dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2024.opencv:opencv-java:+',
-  niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
@@ -22,12 +21,14 @@ configurations {
 
 def useDevelopmentProperty = 'useDevelopment'
 
+ext.useDevelopment = true
+
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (project.hasProperty(useDevelopmentProperty)) {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/development"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/development-2027"
     } else {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/release"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/release-2027"
     }
 }
 

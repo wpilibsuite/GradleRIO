@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
      matrix:
-        language: [cpp, java, asm] #, jni, kotlin]
+        language: [cpp, java] #, asm, jni, kotlin]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
@@ -39,9 +39,9 @@ jobs:
         name: Maven
         path: ~/.m2/repository/
 
-    - name: Setup RoboRIO Toolchain
+    - name: Setup SystemCore Toolchain
       if: ${{ (matrix.language == 'cpp') || (matrix.language == 'asm') }}
-      run: ../../gradlew installRoboRioToolchain
+      run: ../../gradlew installSystemCoreToolchain
       working-directory: testing/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
       run: ../../gradlew build

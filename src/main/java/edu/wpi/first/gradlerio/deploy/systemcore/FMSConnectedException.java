@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy.roborio;
+package edu.wpi.first.gradlerio.deploy.systemcore;
 
 public class FMSConnectedException extends RuntimeException {
     private static final long serialVersionUID = 1L;
