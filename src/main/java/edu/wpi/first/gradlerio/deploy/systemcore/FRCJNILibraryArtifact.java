@@ -47,7 +47,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact {
 
         getPostdeploy().add(ctx -> {
             FRCDeployPlugin.ownDirectory(ctx, FRCDeployPlugin.LIB_DEPLOY_DIR);
-            ctx.execute("ldconfig");
+            ctx.execute("sudo ldconfig");
         });
     }
 

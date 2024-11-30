@@ -52,7 +52,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
         getPostdeploy().add(ctx -> {
             FRCDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
-            ctx.execute("ldconfig");
+            ctx.execute("sudo ldconfig");
         });
 
         robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
@@ -62,10 +62,11 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
         getPostdeploy().add(ctx -> {
             String binFile = getBinFile(ctx);
+            ctx.execute("chmod +x \"" + binFile + "\"; chown systemcore \"" + binFile + "\"");
             // Let user program set RT thread priorities by making CAP_SYS_NICE
             // permitted, inheritable, and effective. See "man 7 capabilities"
             // for docs on capabilities and file capability sets.
-            ctx.execute("setcap cap_sys_nice+eip \"" + binFile + "\"");
+            ctx.execute("sudo setcap cap_sys_nice+eip \"" + binFile + "\"");
         });
 
         this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
