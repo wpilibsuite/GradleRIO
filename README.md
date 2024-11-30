@@ -125,7 +125,7 @@ For mid-season updates to GradleRio, edit build.gradle and replace the version i
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
+    id "edu.wpi.first.GradleRIO2027" version "REPLACE ME WITH THE LATEST VERSION"
 }
 ```
 
@@ -155,6 +155,6 @@ To use a custom build of GradleRIO in a robot project, the build must be publish
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE PUBLISHED VERSION"
+    id "edu.wpi.first.GradleRIO2027" version "REPLACE ME WITH THE PUBLISHED VERSION"
 }
 ```
