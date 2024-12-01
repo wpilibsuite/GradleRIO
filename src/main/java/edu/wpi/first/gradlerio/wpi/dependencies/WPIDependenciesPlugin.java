@@ -67,7 +67,7 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
         for (Configuration cfg : configs) {
             if (cfg.isCanBeResolved()) {
                 logger.info("Resolving Deps Configuration: " + cfg.getName());
-                files.addAll(cfg.getResolvedConfiguration().getFiles());
+                files.addAll(cfg.getIncoming().getFiles().getFiles());
             } else {
                 logger.info("Can't resolve: " + cfg.getName());
             }

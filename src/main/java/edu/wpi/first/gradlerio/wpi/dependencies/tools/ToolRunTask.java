@@ -15,6 +15,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.process.ExecOperations;
 
 import edu.wpi.first.gradlerio.SingletonTask;
 import groovy.transform.CompileStatic;
@@ -24,6 +25,7 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
 
     private final Property<String> toolName;
     private final DirectoryProperty toolsFolder;
+    private final ExecOperations operations;
 
     @Internal
     public Property<String> getToolName() {
@@ -36,11 +38,12 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
     }
 
     @Inject
-    public ToolRunTask(ObjectFactory objects) {
+    public ToolRunTask(ObjectFactory objects, ExecOperations execOperations) {
         setGroup("GradleRIO");
 
         toolName = objects.property(String.class);
         toolsFolder = objects.directoryProperty();
+        operations = execOperations;
     }
 
     @TaskAction
@@ -76,8 +79,8 @@ public class ToolRunTask extends DefaultTask implements SingletonTask {
     private void runToolUnix() {
         Directory toolsFolder = this.toolsFolder.get();
         String toolName = this.toolName.get();
-        File outputFile = toolsFolder.file(toolName + ".py").getAsFile();
-        getProject().exec(spec -> {
+        File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
+        operations.exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
         });
     }

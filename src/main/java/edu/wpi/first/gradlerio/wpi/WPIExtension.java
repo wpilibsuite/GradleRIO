@@ -13,6 +13,11 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.nativeplatform.plugins.NativeComponentPlugin;
+import org.gradle.plugins.ide.eclipse.EclipsePlugin;
+import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
+import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
+import org.gradle.plugins.ide.eclipse.model.EclipseModel;
+import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.cpp.WPINativeExtension;
@@ -24,7 +29,7 @@ import edu.wpi.first.toolchain.NativePlatforms;
 public class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
 
-    private static final List<String> validImageVersions = List.of("2024_v2.*");
+    private static final List<String> validImageVersions = List.of("2025_v1.*");
 
     private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2024:17.0.9u7-3";
 
@@ -58,7 +63,7 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         frcYear = factory.property(String.class);
-        frcYear.convention("2024");
+        frcYear.convention("2025");
 
         frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(frcYear);
@@ -85,6 +90,20 @@ public class WPIExtension {
 
         project.getPlugins().withType(JavaPlugin.class, p -> {
             java = factory.newInstance(WPIJavaExtension.class, project, sim, versions);
+
+            project.getPluginManager().apply(EclipsePlugin.class);
+            EclipseModel eclipse = project.getExtensions().getByType(EclipseModel.class);
+            EclipseClasspath eclipseClasspath = eclipse.getClasspath();
+            eclipseClasspath.containers("org.eclipse.buildship.core.gradleclasspathcontainer");
+            eclipseClasspath.getFile().whenMerged(cp -> {
+                if (cp instanceof org.gradle.plugins.ide.eclipse.model.Classpath ecp) {
+                    List<ClasspathEntry> entries = ecp.getEntries();
+                    // TODO make this grab the build folder dynamically, and include everything else necessary
+                    SourceFolder src = new SourceFolder("build/generated/sources/annotationProcessor/java/main", null);
+                    entries.add(src);
+                }
+            });
+
         });
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
@@ -147,8 +166,6 @@ public class WPIExtension {
     // "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
     // "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
     // "frcYear " : new Tuple("FRC Year", frcYear, "frcYear"),
-    // "googleTestVersion" : new Tuple("Google Test", googleTestVersion,
-    // "googleTest"),
     // "imguiVersion" : new Tuple("ImGUI", imguiVersion, "imgui"),
     // "wpimathVersion" : new Tuple("WPIMath", wpimathVersion, "wpimath"),
     // "ejmlVersion" : new Tuple("EJML", ejmlVersion, "ejml"),

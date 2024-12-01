@@ -2,7 +2,6 @@ package edu.wpi.first.gradlerio.wpi.dependencies.tools;
 
 import org.gradle.api.Named;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
@@ -18,7 +17,7 @@ public class WPICppTool implements Named {
     private final Provider<String> version;
 
     public WPICppTool(Project project, String name, Provider<String> version, String artifactId, Provider<Directory> toolsFolder) {
-        Configuration config = project.getConfigurations().getByName("wpiCppTools");
+        //Configuration config = project.getConfigurations().getByName("wpiCppTools");
         String toolsClassifier = project.getExtensions().getByType(WPIExtension.class).getCppToolsClassifier();
         Provider<String> fullId = project.getProviders().provider(() -> {
             String id = artifactId;

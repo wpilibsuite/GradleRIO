@@ -17,7 +17,7 @@ repositories {
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'edu.wpi.first:native-utils:2024.6.1'
+    api 'edu.wpi.first:native-utils:2025.6.0'
 
     api 'org.eclipse.jgit:org.eclipse.jgit:6.10.+'
 
@@ -55,6 +55,10 @@ allprojects {
     tasks.withType(Javadoc) {
         options.addBooleanOption('Xdoclint:all,-missing', true)
     }
+
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+  }
 }
 
 gradlePlugin {
@@ -112,6 +116,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '8.5'
+    gradleVersion = '8.11'
     distributionType = Wrapper.DistributionType.BIN
 }
