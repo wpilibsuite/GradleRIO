@@ -27,7 +27,7 @@ public class FRCExtension {
 
         deployLogFile = project.getTasks().register("writeDeployFile", CreateLogFileTask.class, t -> {
             t.setGitDirectory(project.getRootDir().toString());
-            t.setDeployFile(project.getLayout().getBuildDirectory().toString() + "debug/deploy_info.json");
+            t.getDeployFile().set(project.getLayout().getBuildDirectory().file("debug/deploy_info.json"));
         });
 
         deployExtension.getDeployTask().configure(t -> {

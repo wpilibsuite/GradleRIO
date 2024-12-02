@@ -7,12 +7,17 @@ import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.LogLevel;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.OutputFile;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.io.File;
@@ -31,6 +36,11 @@ public class CreateLogFileTask extends DefaultTask {
     private RegularFileProperty deployFile;
     private String json;
     private String gitDirectory;
+
+    @Inject
+    public CreateLogFileTask(Project project) {
+      deployFile = project.getObjects().fileProperty();
+    }
 
     @TaskAction
     public void execute() throws IOException {
@@ -78,10 +88,6 @@ public class CreateLogFileTask extends DefaultTask {
 
         json = jsongen.toJson(data);
         ResourceGroovyMethods.setText(deployFile.getAsFile().get(), json);
-    }
-
-    public void setDeployFile(String path) {
-      deployFile.fileValue(new File(path));
     }
 
     public void setGitDirectory(String dir) {
