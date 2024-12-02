@@ -93,8 +93,8 @@ public class WPIPlugin implements Plugin<Project> {
         }
 
         wpi.getMaven().mirror("Official", mirror -> {
-            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release");
-            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development");
+            mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release-2027");
+            mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development-2027");
             mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
             mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
         });

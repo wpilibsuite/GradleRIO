@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy.roborio;
+package edu.wpi.first.gradlerio.deploy.systemcore;
 
 import java.util.function.Function;
 
@@ -32,8 +32,8 @@ public class RobotCommandArtifact extends FileArtifact {
     public void deploy(DeployContext ctx) {
         String content = startCommandFunc.apply(ctx);
 
-        ctx.execute("echo '" + content + "' > /home/lvuser/robotCommand");
-        ctx.execute("chmod +x /home/lvuser/robotCommand; chown lvuser /home/lvuser/robotCommand");
+        ctx.execute("echo '" + content + "' > /home/systemcore/robotCommand");
+        ctx.execute("chmod +x /home/systemcore/robotCommand; chown systemcore /home/systemcore/robotCommand");
     }
 
 }

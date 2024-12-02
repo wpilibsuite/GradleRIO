@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy.roborio;
+package edu.wpi.first.gradlerio.deploy.systemcore;
 
 import java.io.File;
 import java.util.Optional;
@@ -47,7 +47,7 @@ public class FRCJNILibraryArtifact extends FileCollectionArtifact {
 
         getPostdeploy().add(ctx -> {
             FRCDeployPlugin.ownDirectory(ctx, FRCDeployPlugin.LIB_DEPLOY_DIR);
-            ctx.execute("ldconfig");
+            ctx.execute("sudo ldconfig " + FRCDeployPlugin.LIB_DEPLOY_DIR);
         });
     }
 

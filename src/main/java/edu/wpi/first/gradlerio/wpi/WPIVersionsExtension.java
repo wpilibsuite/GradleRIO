@@ -6,28 +6,26 @@ import org.gradle.api.provider.Property;
 
 public abstract class WPIVersionsExtension {
 
-    private static final String wpilibVersion = "2025.1.1-beta-2";
-    private static final String niLibrariesVersion = "2025.0.0";
-    private static final String opencvVersion = "4.8.0-4";
+    private static final String wpilibVersion = "2025.1.1-beta-2-39-ga954091";
+    private static final String opencvVersion = "4.8.0-2";
     private static final String imguiVersion = "1.89.9-1";
     private static final String ejmlVersion = "0.43.1";
     private static final String jacksonVersion = "2.15.2";
     private static final String quickbufVersion = "1.3.3";
-    private static final String wpimathVersion = "2025.1.1-beta-2";
+    private static final String wpimathVersion = "2025.1.1-beta-2-39-ga954091";
 
     private static final String smartDashboardVersion = "2025.1.1-beta-2";
     private static final String shuffleboardVersion = "2025.1.1-beta-2";
-    private static final String outlineViewerVersion = "2025.1.1-beta-2";
+    private static final String outlineViewerVersion = "2025.1.1-beta-2-39-ga954091";
     private static final String robotBuilderVersion = "2025.1.1-beta-2";
     private static final String pathWeaverVersion = "2025.1.1-beta-2";
-    private static final String glassVersion = "2025.1.1-beta-2";
-    private static final String sysIdVersion = "2025.1.1-beta-2";
-    private static final String roboRIOTeamNumberSetterVersion = "2025.1.1-beta-2";
-    private static final String dataLogToolVersion = "2025.1.1-beta-2";
+    private static final String glassVersion = "2025.1.1-beta-2-39-ga954091";
+    private static final String sysIdVersion = "2025.1.1-beta-2-39-ga954091";
+    private static final String roboRIOTeamNumberSetterVersion = "2025.1.1-beta-2-39-ga954091";
+    private static final String dataLogToolVersion = "2025.1.1-beta-2-39-ga954091";
 
 
     public abstract Property<String> getWpilibVersion();
-    public abstract Property<String> getNiLibrariesVersion();
     public abstract Property<String> getOpencvVersion();
     public abstract Property<String> getImguiVersion();
     public abstract Property<String> getWpimathVersion();
@@ -48,7 +46,6 @@ public abstract class WPIVersionsExtension {
     @Inject
     public WPIVersionsExtension() {
         getWpilibVersion().convention(wpilibVersion);
-        getNiLibrariesVersion().convention(niLibrariesVersion);
         getOpencvVersion().convention(opencvVersion);
         getImguiVersion().convention(imguiVersion);
         getWpimathVersion().convention(wpimathVersion);

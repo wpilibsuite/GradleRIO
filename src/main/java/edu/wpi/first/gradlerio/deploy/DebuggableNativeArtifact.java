@@ -16,7 +16,7 @@ import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
 import edu.wpi.first.toolchain.ToolchainDiscoverer;
 import edu.wpi.first.toolchain.ToolchainExtension;
-import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
+import edu.wpi.first.toolchain.systemcore.SystemCoreToolchainPlugin;
 import edu.wpi.first.vscode.dependencies.SourceContainingNativeDependencySet;
 
 public class DebuggableNativeArtifact extends NativeExecutableArtifact implements DebuggableArtifact {
@@ -42,7 +42,7 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
             // TODO get all this from the VS Code plugin without needing to enumerate EVERYTHING
 
             ToolchainDiscoverer toolchain = getTarget().getProject().getExtensions().getByType(ToolchainExtension.class)
-                    .getToolchainDescriptors().getByName(RoboRioToolchainPlugin.toolchainName).discover();
+                    .getToolchainDescriptors().getByName(SystemCoreToolchainPlugin.toolchainName).discover();
             String gdbpath = toolchain.gdbFile().get().getAbsolutePath();
             String sysroot = toolchain.sysroot().get().getAbsolutePath();
 

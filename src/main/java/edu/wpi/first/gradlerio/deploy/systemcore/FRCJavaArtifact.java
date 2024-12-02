@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy.roborio;
+package edu.wpi.first.gradlerio.deploy.systemcore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,36 +17,28 @@ import edu.wpi.first.gradlerio.wpi.WPIExtension;
 
 public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
-    private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
-    private final FRCJREArtifact jreArtifact;
+
     private final FRCJNILibraryArtifact nativeZipArtifact;
 
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
 
-    private final RoboRIO roboRIO;
+    private final SystemCore systemCore;
 
-    private GarbageCollectorType gcType = GarbageCollectorType.Serial;
+    private GarbageCollectorType gcType = GarbageCollectorType.G1_Base;
 
-    private String javaCommand = "/usr/local/frc/JRE/bin/java";
+    private String javaCommand = "/usr/bin/java";
 
     @Inject
-    public FRCJavaArtifact(String name, RoboRIO target) {
+    public FRCJavaArtifact(String name, SystemCore target) {
         super(name, target);
-        roboRIO = target;
+        systemCore = target;
 
-        jvmArgs.add("-Djava.lang.invoke.stringConcat=BC_SB");
         jvmArgs.add("-Djava.library.path=" + FRCDeployPlugin.LIB_DEPLOY_DIR);
 
-        var debugConfiguration = target.getProject().getConfigurations().create("roborioDebug");
-        var releaseConfiguration = target.getProject().getConfigurations().create("roborioRelease");
-
-        programStartArtifact = target.getArtifacts().create("programStart" + name, FRCProgramStartArtifact.class, art -> {
-        });
-
-        jreArtifact = target.getArtifacts().create("jre" + name, FRCJREArtifact.class, art -> {
-        });
+        var debugConfiguration = target.getProject().getConfigurations().create("systemcoreDebug");
+        var releaseConfiguration = target.getProject().getConfigurations().create("systemcoreRelease");
 
         robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
             art.setStartCommandFunc(this::generateStartCommand);
@@ -71,13 +63,6 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
             artifact.getFilter().include("**/*.so");
             artifact.getFilter().getExcludes().add("**/*.so.debug");
             artifact.getFilter().getExcludes().add("**/*.so.*.debug");
-        });
-
-        programStartArtifact.getPostdeploy().add(this::postStart);
-
-        getPostdeploy().add(ctx -> {
-            String binFile = getBinFile(ctx);
-            ctx.execute("chmod +x \"" + binFile + "\"; chown lvuser \"" + binFile + "\"");
         });
 
         target.setDeployStage(this, DeployStage.FileDeploy);
@@ -115,14 +100,6 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         super.setJarTask(jarTask);
     }
 
-    public FRCJREArtifact getJreArtifact() {
-        return jreArtifact;
-    }
-
-    public FRCProgramStartArtifact getProgramStartArtifact() {
-        return programStartArtifact;
-    }
-
     public RobotCommandArtifact getRobotCommandArtifact() {
         return robotCommandArtifact;
     }
@@ -149,7 +126,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         builder.append(" ");
 
         // Debug stuff
-        boolean debug = roboRIO.getDebug().get();
+        boolean debug = systemCore.getDebug().get();
         if (debug) {
             builder.append("-XX:+UsePerfData -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:");
             builder.append(getDebugPort());
@@ -165,16 +142,4 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
         return builder.toString();
     }
-
-    private void postStart(DeployContext ctx) {
-        boolean debug = roboRIO.getDebug().get();
-        if (debug) {
-            ctx.getLogger().withLock(x -> {
-                x.log("====================================================================");
-                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
-                x.log("====================================================================");
-            });
-        }
-    }
-
 }

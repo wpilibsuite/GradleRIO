@@ -42,7 +42,7 @@ import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.caching.WrapperInspector;
 import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
-import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO;
+import edu.wpi.first.gradlerio.deploy.systemcore.SystemCore;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
 
 public abstract class GradleRIOPlugin implements Plugin<Project> {
@@ -240,7 +240,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
                     RemoteTarget target = ((TargetDiscoveryTask) task).getTarget();
                     if (reasons.add(("Target" + target.getName()).hashCode())) {
                         logger.logErrorHead("Missing Target!");
-                        if (target instanceof RoboRIO) {
+                        if (target instanceof SystemCore) {
                             logger.logErrorHead("=============================================");
                             logger.logErrorHead("Are you connected to the robot, and is it on?");
                             logger.logErrorHead("=============================================");

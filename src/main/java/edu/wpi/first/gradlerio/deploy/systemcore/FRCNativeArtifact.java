@@ -1,4 +1,4 @@
-package edu.wpi.first.gradlerio.deploy.roborio;
+package edu.wpi.first.gradlerio.deploy.systemcore;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,10 +19,9 @@ import edu.wpi.first.gradlerio.deploy.FRCDeployPlugin;
 
 public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
-    private final FRCProgramStartArtifact programStartArtifact;
     private final RobotCommandArtifact robotCommandArtifact;
     private final List<String> arguments = new ArrayList<>();
-    private final RoboRIO roboRIO;
+    private final SystemCore systemCore;
 
     private final Property<NativeExecutableSpec> componentSpec;
 
@@ -31,9 +30,9 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
     }
 
     @Inject
-    public FRCNativeArtifact(String name, RoboRIO target) {
+    public FRCNativeArtifact(String name, SystemCore target) {
         super(name, target);
-        roboRIO = target;
+        systemCore = target;
 
         componentSpec = target.getProject().getObjects().property(NativeExecutableSpec.class);
 
@@ -53,10 +52,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
         getPostdeploy().add(ctx -> {
             FRCDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
-            ctx.execute("ldconfig");
-        });
-
-        programStartArtifact = target.getArtifacts().create("programStart" + name, FRCProgramStartArtifact.class, art -> {
+            ctx.execute("sudo ldconfig " + FRCDeployPlugin.LIB_DEPLOY_DIR);
         });
 
         robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
@@ -64,15 +60,13 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
             art.dependsOn(getInstallTaskProvider());
         });
 
-        programStartArtifact.getPostdeploy().add(this::postStart);
-
         getPostdeploy().add(ctx -> {
             String binFile = getBinFile(ctx);
-            ctx.execute("chmod +x \"" + binFile + "\"; chown lvuser \"" + binFile + "\"");
+            ctx.execute("chmod +x \"" + binFile + "\"; chown systemcore \"" + binFile + "\"");
             // Let user program set RT thread priorities by making CAP_SYS_NICE
             // permitted, inheritable, and effective. See "man 7 capabilities"
             // for docs on capabilities and file capability sets.
-            ctx.execute("setcap cap_sys_nice+eip \"" + binFile + "\"");
+            ctx.execute("sudo setcap cap_sys_nice+eip \"" + binFile + "\"");
         });
 
         this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
@@ -85,10 +79,6 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         return PathUtils.combine(ctx.getWorkingDir(), getFilename().getOrElse(exeFile.getName()));
     }
 
-    public FRCProgramStartArtifact getProgramStartArtifact() {
-        return programStartArtifact;
-    }
-
     public RobotCommandArtifact getRobotCommandArtifact() {
         return robotCommandArtifact;
     }
@@ -99,7 +89,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
-        boolean debug = roboRIO.getDebug().get();
+        boolean debug = systemCore.getDebug().get();
         if (debug) {
             builder.append("gdbserver host:");
             builder.append(getDebugPort());
@@ -112,16 +102,5 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         builder.append(String.join(" ", arguments));
 
         return builder.toString();
-    }
-
-    private void postStart(DeployContext ctx) {
-        boolean debug = roboRIO.getDebug().get();
-        if (debug) {
-            ctx.getLogger().withLock(x -> {
-                x.log("====================================================================");
-                x.log("DEBUGGING ACTIVE ON PORT " + getDebugPort() + "!");
-                x.log("====================================================================");
-            });
-        }
     }
 }

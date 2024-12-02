@@ -57,7 +57,7 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew build` will build your robot code (and run unit tests if present).
 - `./gradlew deploy` will build and deploy your code.
 
-- `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
+- `./gradlew installSystemCoreToolchain` will install the C++ Toolchains for your system (required for C++).
 
 ### Tools
 
@@ -133,7 +133,7 @@ The latest version can be obtained from here: https://plugins.gradle.org/plugin/
 
 ## Using alternate garbage collector
 
-GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
+GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/systemcore/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
 
 The `Other` `gcType` can be used for complete customization
 

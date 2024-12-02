@@ -19,8 +19,7 @@ import edu.wpi.first.deployutils.deploy.target.RemoteTarget;
 import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.PreemptiveDownloadTask;
-import edu.wpi.first.gradlerio.deploy.roborio.FRCJREArtifact;
-import edu.wpi.first.gradlerio.deploy.roborio.FRCJavaArtifact;
+import edu.wpi.first.gradlerio.deploy.systemcore.FRCJavaArtifact;
 
 public class WPIDependenciesPlugin implements Plugin<Project> {
 
@@ -52,11 +51,7 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
 
         for (RemoteTarget target : project.getExtensions().getByType(DeployExtension.class).getTargets()) {
             for (Artifact artifact : target.getArtifacts()) {
-                if (artifact instanceof FRCJREArtifact) {
-                    Configuration cfg = ((FRCJREArtifact)artifact).getConfiguration().get();
-                    logger.info("Found JRE Configuration: " + cfg.getName());
-                    configs.add(cfg);
-                } else if (artifact instanceof FRCJavaArtifact) {
+                if (artifact instanceof FRCJavaArtifact) {
                     Configuration cfg = ((FRCJavaArtifact)artifact).getNativeZipArtifact().getConfiguration().get();
                     logger.info("Found Java Configuration: " + cfg.getName());
                     configs.add(cfg);

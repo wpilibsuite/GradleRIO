@@ -19,7 +19,7 @@ import edu.wpi.first.nativeutils.vendordeps.WPINativeVendorDepsExtension;
 import edu.wpi.first.toolchain.NativePlatforms;
 import edu.wpi.first.toolchain.ToolchainExtension;
 import edu.wpi.first.toolchain.ToolchainPlugin;
-import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin;
+import edu.wpi.first.toolchain.systemcore.SystemCoreToolchainPlugin;
 
 public class WPINativeExtension {
     private final WPINativeDepsExtension deps;
@@ -94,7 +94,7 @@ public class WPINativeExtension {
     @Inject
     public WPINativeExtension(Project project, WPIExtension wpi, WPIVersionsExtension versions) {
         project.getPluginManager().apply(ToolchainPlugin.class);
-        project.getPluginManager().apply(RoboRioToolchainPlugin.class);
+        project.getPluginManager().apply(SystemCoreToolchainPlugin.class);
         project.getPluginManager().apply(NativeUtils.class);
         project.getPluginManager().apply(WPINativeCompileRules.class);
 
@@ -102,7 +102,7 @@ public class WPINativeExtension {
         debugSimulation.set(false);
 
         NativeUtilsExtension nte = project.getExtensions().getByType(NativeUtilsExtension.class);
-        nte.withCrossRoboRIO();
+        nte.withCrossSystemCore();
         nte.addWpiNativeUtils();
 
         deps = project.getObjects().newInstance(WPINativeDepsExtension.class, nte);
@@ -110,7 +110,7 @@ public class WPINativeExtension {
         vendor = nte.getWpi().getVendorDeps().getNativeVendor();
 
         ToolchainExtension te = project.getExtensions().getByType(ToolchainExtension.class);
-        te.getCrossCompilers().named(nte.getWpi().platforms.roborio, c -> {
+        te.getCrossCompilers().named(nte.getWpi().platforms.systemcore, c -> {
             c.getOptional().set(false);
         });
 
@@ -118,9 +118,8 @@ public class WPINativeExtension {
         // nte.setSinglePrintPerPlatform();
 
         nte.getWpi().configureDependencies(wpiDeps -> {
-            wpiDeps.getOpencvYear().set("frc2024");
+            wpiDeps.getOpencvYear().set("frc2025");
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
-            wpiDeps.getNiLibVersion().set(versions.getNiLibrariesVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
             wpiDeps.getImguiVersion().set(versions.getImguiVersion());
             wpiDeps.getWpimathVersion().set(versions.getWpimathVersion());
