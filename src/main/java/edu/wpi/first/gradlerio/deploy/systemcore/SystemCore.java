@@ -50,7 +50,7 @@ public class SystemCore extends WPIRemoteTarget {
             "10." + (team / 100) + "." + (team % 100) + ".2", // 10.TE.AM.2
             "robot.local",
             "limelight.local"
-            // "172.22.11.2", // USB
+            "172.28.0.1", // USB
 
             // // Weird Environments
             // "roborio-" + team + "-FRC", // Default DNS
