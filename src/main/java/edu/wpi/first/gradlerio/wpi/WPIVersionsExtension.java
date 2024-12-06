@@ -7,7 +7,7 @@ import org.gradle.api.provider.Property;
 public abstract class WPIVersionsExtension {
 
     private static final String wpilibVersion = "2025.1.1-beta-2-41-g38b09a6";
-    private static final String opencvVersion = "4.10.0-1";
+    private static final String opencvVersion = "4.8.0-2";
     private static final String imguiVersion = "1.89.9-1";
     private static final String ejmlVersion = "0.43.1";
     private static final String jacksonVersion = "2.15.2";
