@@ -14,7 +14,7 @@ public class SystemCore extends WPIRemoteTarget {
 
     private int team;
     private String username = "systemcore";
-    private String password = "systemcorerules2027";
+    private String password = "systemcore";
 
     @Inject
     public SystemCore(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
@@ -48,8 +48,9 @@ public class SystemCore extends WPIRemoteTarget {
         setAddresses(
             "roborio-" + team + "-FRC.local", // Default mDNS
             "10." + (team / 100) + "." + (team % 100) + ".2", // 10.TE.AM.2
-            "robot.local"
-            // "172.22.11.2", // USB
+            "robot.local",
+            "limelight.local",
+            "172.28.0.1" // USB
 
             // // Weird Environments
             // "roborio-" + team + "-FRC", // Default DNS
