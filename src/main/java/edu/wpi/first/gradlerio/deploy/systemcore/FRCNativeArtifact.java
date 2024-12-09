@@ -89,6 +89,9 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
 
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
+        builder.append("LD_LIBRARY_PATH=\"");
+        builder.append(FRCDeployPlugin.LIB_DEPLOY_DIR);
+        builder.append("\" ");
         boolean debug = systemCore.getDebug().get();
         if (debug) {
             builder.append("gdbserver host:");
