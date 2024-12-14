@@ -37,6 +37,10 @@ public class RoboRIO extends WPIRemoteTarget {
 
         setMaxChannels(4);
 
+        // Increase timeout. The only time this is really used is if the host is resolved,
+        // but takes forever to connect, which can happen if the CPU is loaded.
+        setTimeout(7);
+
         setOnlyIf(ctx -> verifyOnlyIf(ctx));
 
         // Make a copy of valid image versions so user defined cannot modify the global array

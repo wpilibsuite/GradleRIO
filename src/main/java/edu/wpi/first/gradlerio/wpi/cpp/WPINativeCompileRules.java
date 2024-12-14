@@ -1,7 +1,6 @@
 package edu.wpi.first.gradlerio.wpi.cpp;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -120,7 +119,7 @@ public class WPINativeCompileRules extends RuleSource {
                     System.out.println(line);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logging.getLogger(WPINativeCompileRules.class).warn(
                     "Failed to print warnings file. You might need to manually open it to find any compile warnings",
                     e);

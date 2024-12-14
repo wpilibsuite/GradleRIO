@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2024.1.1-beta-4"
+    id "edu.wpi.first.GradleRIO" version "2025.1.1-beta-2"
 }
 
 def projectFolder = project.buildFile.parentFile
@@ -11,8 +11,8 @@ if (testingFolder.name != 'testing' || projectFolder.name != 'java') {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 def ROBOT_MAIN_CLASS = "frc.team0000.robot.Main"
@@ -100,6 +100,6 @@ wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
 wrapper {
-    gradleVersion = '8.1'
+    gradleVersion = '8.10.2'
     distributionType = Wrapper.DistributionType.BIN
 }
