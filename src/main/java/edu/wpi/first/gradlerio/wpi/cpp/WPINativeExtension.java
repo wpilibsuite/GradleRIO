@@ -118,7 +118,7 @@ public class WPINativeExtension {
         // nte.setSinglePrintPerPlatform();
 
         nte.getWpi().configureDependencies(wpiDeps -> {
-            wpiDeps.getOpencvYear().set("frc2024");
+            wpiDeps.getOpencvYear().set("frc2025");
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
             wpiDeps.getNiLibVersion().set(versions.getNiLibrariesVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
