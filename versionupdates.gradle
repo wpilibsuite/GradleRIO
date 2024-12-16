@@ -10,7 +10,7 @@ def versionMap = [
   sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
   roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
   dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2024.opencv:opencv-java:+',
+  opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
