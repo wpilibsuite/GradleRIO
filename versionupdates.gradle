@@ -13,7 +13,8 @@ def versionMap = [
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
-  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
+  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+',
+  wpicalToolVersion: 'edu.wpi.first.tools:wpical:+:windowsx86-64@zip',
 ]
 
 configurations {

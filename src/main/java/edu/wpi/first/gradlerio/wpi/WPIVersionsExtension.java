@@ -24,6 +24,7 @@ public abstract class WPIVersionsExtension {
     private static final String sysIdVersion = "2025.1.1-beta-3";
     private static final String roboRIOTeamNumberSetterVersion = "2025.1.1-beta-3";
     private static final String dataLogToolVersion = "2025.1.1-beta-3";
+    private static final String wpicalToolVersion = "2025.1.1";
 
 
     public abstract Property<String> getWpilibVersion();
@@ -44,6 +45,7 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getSysIdVersion();
     public abstract Property<String> getRoboRIOTeamNumberSetterVersion();
     public abstract Property<String> getDataLogToolVersion();
+    public abstract Property<String> getwpicalToolVersion();
 
     @Inject
     public WPIVersionsExtension() {
@@ -65,6 +67,7 @@ public abstract class WPIVersionsExtension {
         getSysIdVersion().convention(sysIdVersion);
         getRoboRIOTeamNumberSetterVersion().convention(roboRIOTeamNumberSetterVersion);
         getDataLogToolVersion().convention(dataLogToolVersion);
+        getwpicalToolVersion().convention(wpicalToolVersion);
     }
 
 }

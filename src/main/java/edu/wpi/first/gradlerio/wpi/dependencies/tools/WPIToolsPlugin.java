@@ -51,6 +51,9 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
                 "edu.wpi.first.tools:DataLogTool", toolsFolder));
 
+        cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getwpicalToolVersion(),
+                "edu.wpi.first.tools:wpical", toolsFolder));
+
         project.getTasks().register("InstallAllTools", task -> {
             task.setGroup("GradleRIO");
             task.setDescription("Install All Tools");
