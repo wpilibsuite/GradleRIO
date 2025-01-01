@@ -16,10 +16,10 @@ public abstract class WPIVersionsExtension {
     private static final String wpimathVersion = "2025.1.1";
 
     private static final String smartDashboardVersion = "2025.1.1";
-    private static final String shuffleboardVersion = "2025.1.1-beta-3";
+    private static final String shuffleboardVersion = "2025.1.1";
     private static final String outlineViewerVersion = "2025.1.1";
-    private static final String robotBuilderVersion = "2025.1.1-beta-3";
-    private static final String pathWeaverVersion = "2025.1.1-beta-3";
+    private static final String robotBuilderVersion = "2025.1.1";
+    private static final String pathWeaverVersion = "2025.1.1";
     private static final String glassVersion = "2025.1.1";
     private static final String sysIdVersion = "2025.1.1";
     private static final String roboRIOTeamNumberSetterVersion = "2025.1.1";
