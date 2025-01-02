@@ -25,7 +25,7 @@ public class WPIToolsPlugin implements Plugin<Project> {
         Provider<Directory> toolsFolder = project.provider(() -> frcHome.get().dir("tools"));
 
         String toolsClassifier = project.getExtensions().getByType(WPIExtension.class).getToolsClassifier();
-        if (!toolsClassifier.equals("macarm64")) {
+        if (!toolsClassifier.equals("macarm64") && !toolsClassifier.equals("linuxarm64")) {
             tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(),
                     "edu.wpi.first.tools", "SmartDashboard", true, toolsFolder));
         }
@@ -51,8 +51,10 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
                 "edu.wpi.first.tools:DataLogTool", toolsFolder));
 
-        cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getwpicalToolVersion(),
-                "edu.wpi.first.tools:wpical", toolsFolder));
+        if (!toolsClassifier.equals("linuxarm64")) {
+            cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getwpicalToolVersion(),
+                    "edu.wpi.first.tools:wpical", toolsFolder));
+        }
 
         project.getTasks().register("InstallAllTools", task -> {
             task.setGroup("GradleRIO");
