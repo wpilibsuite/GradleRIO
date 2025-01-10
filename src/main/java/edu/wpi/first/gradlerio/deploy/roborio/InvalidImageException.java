@@ -22,7 +22,7 @@ public class InvalidImageException extends RuntimeException {
             "\n\tCurrent image version: " + imageVersion +
             "\n\tGradleRIO-compatible image versions: " + String.join(", ", allowedImageVersions) +
             "\nSee https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-3/imaging-your-roborio.html" +
-            "for information about upgrading the RoboRIO image." +
+            "\nfor information about upgrading the RoboRIO image." +
             "\nSee https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html and" +
             "\nhttps://docs.wpilib.org/en/stable/docs/software/vscode-overview/importing-gradle-project.html" +
             "\nfor information about updating WPILib and GradleRIO.";
