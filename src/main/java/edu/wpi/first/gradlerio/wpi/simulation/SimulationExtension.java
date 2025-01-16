@@ -99,6 +99,7 @@ public class SimulationExtension {
 
         PatternFilterable filterable = new PatternSet();
         filterable.include("**/*.so*", "**/*.dylib", "**/*.pdb", "**/*.dll");
+        filterable.exclude("**/*.so.debug", "**/*.so.*.debug");
 
         debugArtifactView = debugConfiguration.getIncoming().artifactView(viewConfiguration -> {
             viewConfiguration.attributes(attributeContainer -> {
