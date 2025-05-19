@@ -40,19 +40,19 @@ public class WPINativeDepsExtension {
     }
 
     void wpilib(VariantComponentSpec component) {
-        useLibrary(component, "wpilib_executable_shared", "vision_shared");
+        useLibrary(component, "wpilib_shared_2027", "vision_shared");
     }
 
     void wpilib(NativeBinarySpec binary) {
-        useLibrary(binary, "wpilib_executable_shared", "vision_shared");
+        useLibrary(binary, "wpilib_shared_2027", "vision_shared");
     }
 
     void wpilibStatic(VariantComponentSpec component) {
-        useLibrary(component, "wpilib_executable_static", "vision_static");
+        useLibrary(component, "wpilib_static_2027", "vision_static");
     }
 
     void wpilibStatic(NativeBinarySpec binary) {
-        useLibrary(binary, "wpilib_executable_static", "vision_static");
+        useLibrary(binary, "wpilib_static_2027", "vision_static");
     }
 
     void googleTest(VariantComponentSpec component) {
