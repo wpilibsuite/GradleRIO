@@ -15,6 +15,8 @@ import edu.wpi.first.gradlerio.deploy.systemcore.FRCJNILibraryArtifact;
 import edu.wpi.first.gradlerio.deploy.systemcore.FRCJavaArtifact;
 import edu.wpi.first.gradlerio.deploy.systemcore.FRCNativeArtifact;
 import edu.wpi.first.gradlerio.deploy.systemcore.RobotCommandArtifact;
+import edu.wpi.first.gradlerio.deploy.systemcore.RobotProgramKillArtifact;
+import edu.wpi.first.gradlerio.deploy.systemcore.RobotProgramStartArtifact;
 import edu.wpi.first.gradlerio.deploy.systemcore.SystemCore;
 import edu.wpi.first.deployutils.deploy.NamedObjectFactory;
 
@@ -31,6 +33,8 @@ public class FRCDeployPlugin implements Plugin<Project> {
 
         NamedObjectFactory.registerType(FRCJavaArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCNativeArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(RobotProgramKillArtifact.class, artifacts, target, objects);
+        NamedObjectFactory.registerType(RobotProgramStartArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(FRCJNILibraryArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(RobotCommandArtifact.class, artifacts, target, objects);
 

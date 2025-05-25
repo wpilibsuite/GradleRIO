@@ -16,6 +16,9 @@ public class SystemCore extends WPIRemoteTarget {
     private String username = "systemcore";
     private String password = "systemcore";
 
+    private final RobotProgramKillArtifact programKillArtifact;
+    private final RobotProgramStartArtifact programStartArtifact;
+
     @Inject
     public SystemCore(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
         super(name, project, de, frcExtension);
@@ -28,7 +31,21 @@ public class SystemCore extends WPIRemoteTarget {
         // but takes forever to connect, which can happen if the CPU is loaded.
         setTimeout(7);
 
+        programKillArtifact = project.getObjects().newInstance(RobotProgramKillArtifact.class, "programKill" + name, this);
+        programStartArtifact = project.getObjects().newInstance(RobotProgramStartArtifact.class, "programStart" + name, this);
+
         getTargetPlatform().set(NativePlatforms.systemcore);
+
+        getArtifacts().add(programKillArtifact);
+        getArtifacts().add(programStartArtifact);
+    }
+
+    public RobotProgramKillArtifact getProgramKillArtifact() {
+        return programKillArtifact;
+    }
+
+    public RobotProgramStartArtifact getProgramStartArtifact() {
+        return programStartArtifact;
     }
 
     void setUsername(String username) {
