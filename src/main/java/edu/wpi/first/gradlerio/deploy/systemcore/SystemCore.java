@@ -63,11 +63,10 @@ public class SystemCore extends WPIRemoteTarget {
     public void setTeam(int team) {
         this.team = team;
         setAddresses(
-            "roborio-" + team + "-FRC.local", // Default mDNS
             "10." + (team / 100) + "." + (team % 100) + ".2", // 10.TE.AM.2
             "robot.local",
-            "limelight.local",
-            "172.28.0.1" // USB
+            "172.28.0.1", // USB
+            "172.30.0.1" // WiFi
 
             // // Weird Environments
             // "roborio-" + team + "-FRC", // Default DNS

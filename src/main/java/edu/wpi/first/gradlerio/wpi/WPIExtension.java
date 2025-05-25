@@ -31,8 +31,6 @@ public class WPIExtension {
 
     private static final List<String> validImageVersions = List.of();
 
-    private String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2024:17.0.9u7-3";
-
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
 
     private final WPIMavenExtension maven;
@@ -63,7 +61,7 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         frcYear = factory.property(String.class);
-        frcYear.convention("2025");
+        frcYear.convention("2027_alpha1");
 
         frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(frcYear);
@@ -189,10 +187,6 @@ public class WPIExtension {
         return validImageVersions;
     }
 
-    public String getJreArtifactLocation() {
-        return jreArtifactLocation;
-    }
-
     private final WPIVersionsExtension versions;
 
     public WPIVersionsExtension getVersions() {
@@ -233,9 +227,5 @@ public class WPIExtension {
 
     public String getCppToolsClassifier() {
         return cppToolsClassifier;
-    }
-
-    public void setJreArtifactLocation(String jreArtifactLocation) {
-        this.jreArtifactLocation = jreArtifactLocation;
     }
 }
