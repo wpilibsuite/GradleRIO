@@ -59,15 +59,15 @@ allprojects {
 }
 
 gradlePlugin {
-    website = 'https://github.com/wpilibsuite/GradleRIO'
-    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
+    website = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
+    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
     plugins {
         gradleRio {
             id = 'edu.wpi.first.GradleRIO2027'
             displayName = 'GradleRIO2027'
             implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
-            description = 'Managing FRC projects, the Gradle way (2019+)'
-            tags = ['frc', 'wpilib', 'gradlerio']
+            description = 'Managing FRC projects, the Gradle way (2027+)'
+            tags = ['frc', 'wpilib', 'gradlerio', 'systemcore']
         }
     }
 }
