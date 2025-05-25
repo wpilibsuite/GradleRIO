@@ -18,8 +18,8 @@ public class RobotProgramStartArtifact extends AbstractArtifact {
 
     @Override
     public void deploy(DeployContext ctx) {
-        ctx.execute("sudo sync");
         ctx.execute("sudo systemctl enable robot 2> /dev/null");
         ctx.execute("sudo systemctl start robot 2> /dev/null");
+        ctx.execute("sudo sync");
     }
 }
