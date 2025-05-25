@@ -48,7 +48,7 @@ public class SystemCore extends WPIRemoteTarget {
         setAddresses(
             "10." + (team / 100) + "." + (team % 100) + ".2", // 10.TE.AM.2
             "robot.local",
-            "172.28.0.1" // USB
+            "172.28.0.1", // USB
             "172.30.0.1" // WiFi
 
             // // Weird Environments
