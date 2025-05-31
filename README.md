@@ -62,11 +62,7 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 ### Tools
 
 - `./gradlew Glass` will launch Glass, a data visualization tool similar to the SimGUI.
-- `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
-- `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
-- `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
 - `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
-- `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles using WPILib's trajectories and splines.
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
 

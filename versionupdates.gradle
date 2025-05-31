@@ -1,14 +1,9 @@
 
 def versionMap = [
   wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  // smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
   outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  // robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
-  // shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
-  // pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
   glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
   sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
-  roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
   dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',

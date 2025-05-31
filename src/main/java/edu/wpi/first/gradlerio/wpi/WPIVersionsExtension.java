@@ -14,14 +14,9 @@ public abstract class WPIVersionsExtension {
     private static final String quickbufVersion = "1.3.3";
     private static final String wpimathVersion = "2025.3.2-123-g22d12d2";
 
-    private static final String smartDashboardVersion = "2025.1.1-beta-2";
-    private static final String shuffleboardVersion = "2025.1.1-beta-2";
     private static final String outlineViewerVersion = "2025.3.2-123-g22d12d2";
-    private static final String robotBuilderVersion = "2025.1.1-beta-2";
-    private static final String pathWeaverVersion = "2025.1.1-beta-2";
     private static final String glassVersion = "2025.3.2-123-g22d12d2";
     private static final String sysIdVersion = "2025.3.2-123-g22d12d2";
-    private static final String roboRIOTeamNumberSetterVersion = "2025.1.1-beta-3-86-g666d163";
     private static final String dataLogToolVersion = "2025.3.2-123-g22d12d2";
 
 
@@ -33,11 +28,7 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getEjmlVersion();
     public abstract Property<String> getJacksonVersion();
     public abstract Property<String> getQuickbufVersion();
-    public abstract Property<String> getSmartDashboardVersion();
-    public abstract Property<String> getShuffleboardVersion();
     public abstract Property<String> getOutlineViewerVersion();
-    public abstract Property<String> getRobotBuilderVersion();
-    public abstract Property<String> getPathWeaverVersion();
     public abstract Property<String> getGlassVersion();
     public abstract Property<String> getSysIdVersion();
     public abstract Property<String> getRoboRIOTeamNumberSetterVersion();
@@ -53,14 +44,9 @@ public abstract class WPIVersionsExtension {
         getEjmlVersion().convention(ejmlVersion);
         getJacksonVersion().convention(jacksonVersion);
         getQuickbufVersion().convention(quickbufVersion);
-        getSmartDashboardVersion().convention(smartDashboardVersion);
-        getShuffleboardVersion().convention(shuffleboardVersion);
         getOutlineViewerVersion().convention(outlineViewerVersion);
-        getRobotBuilderVersion().convention(robotBuilderVersion);
-        getPathWeaverVersion().convention(pathWeaverVersion);
         getGlassVersion().convention(glassVersion);
         getSysIdVersion().convention(sysIdVersion);
-        getRoboRIOTeamNumberSetterVersion().convention(roboRIOTeamNumberSetterVersion);
         getDataLogToolVersion().convention(dataLogToolVersion);
     }
 
