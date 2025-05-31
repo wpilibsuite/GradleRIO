@@ -24,19 +24,6 @@ public class WPIToolsPlugin implements Plugin<Project> {
         Provider<Directory> frcHome = wpi.getFrcHome();
         Provider<Directory> toolsFolder = project.provider(() -> frcHome.get().dir("tools"));
 
-        String toolsClassifier = project.getExtensions().getByType(WPIExtension.class).getToolsClassifier();
-        if (!toolsClassifier.equals("macarm64")) {
-            tools.add(new WPITool(project, "SmartDashboard", wpi.getVersions().getSmartDashboardVersion(),
-                    "edu.wpi.first.tools", "SmartDashboard", true, toolsFolder));
-        }
-
-        tools.add(new WPITool(project, "ShuffleBoard", wpi.getVersions().getShuffleboardVersion(),
-                "edu.wpi.first.tools", "Shuffleboard", true, toolsFolder));
-        tools.add(new WPITool(project, "RobotBuilder", wpi.getVersions().getRobotBuilderVersion(),
-                "edu.wpi.first.tools", "RobotBuilder", false, toolsFolder));
-        tools.add(new WPITool(project, "PathWeaver", wpi.getVersions().getPathWeaverVersion(), "edu.wpi.first.tools",
-                "PathWeaver", true, toolsFolder));
-
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(),
                 "edu.wpi.first.tools:OutlineViewer", toolsFolder));
         cppTools.add(
@@ -45,9 +32,6 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(
                 new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "edu.wpi.first.tools:SysId",
                         toolsFolder));
-        cppTools.add(new WPICppTool(project, "roboRIOTeamNumberSetter",
-                wpi.getVersions().getRoboRIOTeamNumberSetterVersion(), "edu.wpi.first.tools:roboRIOTeamNumberSetter",
-                toolsFolder));
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
                 "edu.wpi.first.tools:DataLogTool", toolsFolder));
 
