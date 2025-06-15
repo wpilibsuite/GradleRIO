@@ -16,8 +16,6 @@ configurations {
 
 def useDevelopmentProperty = 'useDevelopment'
 
-ext.useDevelopment = true
-
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (project.hasProperty(useDevelopmentProperty)) {
