@@ -218,18 +218,18 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     private static void extractScriptWindows(Directory toolsFolder, String toolName) {
-        File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.vbs")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+        File outputFile = toolsFolder.file(toolName + ".exe").getAsFile();
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/processstarter.exe")) {
+            ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
-        File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.sh")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+        File outputFile = toolsFolder.file(toolName).getAsFile();
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/processstarter")) {
+            ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
