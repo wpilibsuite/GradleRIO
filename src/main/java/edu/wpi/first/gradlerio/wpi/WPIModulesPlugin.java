@@ -36,17 +36,17 @@ public class WPIModulesPlugin implements Plugin<Project> {
         var moduleNames =
             moduleFinder.findAll().stream().map(mod -> mod.descriptor().name()).collect(Collectors.joining(","));
 
+        project.getLogger().debug("Adding modules to the compile task `{}`:", compileJava.getName());
+        moduleFinder.findAll().stream().sorted(Comparator.comparing(mod -> mod.descriptor().name())).forEach(mod -> {
+          project.getLogger().debug("Adding module {} from {}", mod.descriptor().name(), mod.location().map(URI::toString).orElse("<unknown location>"));
+        });
+
         var compilerArgs = new ArrayList<>(compileJava.getOptions().getCompilerArgs());
         compilerArgs.add("--module-path");
         compilerArgs.add(compileJava.getClasspath().getAsPath());
 
         compilerArgs.add("--add-modules");
         compilerArgs.add(moduleNames);
-
-        project.getLogger().debug("Adding modules to the compile task `{}`:", compileJava.getName());
-        moduleFinder.findAll().stream().sorted(Comparator.comparing(mod -> mod.descriptor().name())).forEach(mod -> {
-          project.getLogger().debug("Adding module {} from {}", mod.descriptor().name(), mod.location().map(URI::toString).orElse("<unknown location>"));
-        });
 
         compileJava.getOptions().setCompilerArgs(compilerArgs);
       });
