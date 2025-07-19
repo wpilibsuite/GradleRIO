@@ -19,6 +19,18 @@ public class WPIModulesPlugin implements Plugin<Project> {
   public void apply(Project project) {
     project.getTasks().withType(JavaCompile.class).forEach(compileJava -> {
       compileJava.doFirst((task) -> {
+        // Find all modular JAR files on the classpath, extract their module names (which may be different from
+        // the names of the containing JARs!), and pass those module names to the compile task using the --add-modules
+        // command line flag.
+        //
+        // --module-path is added as well so the compiler knows where to find those modules
+        //
+        // This is compatible with the modularity.inferModulePath setting that users can apply themselves (and which
+        // defaults to `true` in modern versions of Gradle), and is also compatible with user programs that manually
+        // specify a module-info.java file.  We primarily expect our users not to write a module-info file, though,
+        // but still want to allow them to use `import module` statements. Thus, this plugin.
+        //
+        // See: https://dev.java/learn/modules/add-modules-reads/
         var moduleFinder =
             ModuleFinder.of(compileJava.getClasspath().getFiles().stream().map(File::toPath).toArray(Path[]::new));
         var moduleNames =
