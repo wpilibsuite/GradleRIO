@@ -17,9 +17,9 @@ repositories {
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'edu.wpi.first:native-utils:2025.12.1'
+    api 'edu.wpi.first:native-utils:2026.0.0'
 
-    api 'de.undercouch:gradle-download-task:4.1.2'
+    api 'de.undercouch:gradle-download-task:5.6.0'
 
     testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'
