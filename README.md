@@ -27,14 +27,6 @@ https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html
 Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended._
 
-**WPILibUtility Standalone Project Builder**
-WPILib provides a standalone project builder that provides the same interface as VS Code, without having to use VS Code.
-
-If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\<YEAR>\utility` (windows), or `~/wpilib/<YEAR>/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
-Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
-
-Use the WPILib Utility whenever you want to create a new project.
-
 ## Adding Vendor Libraries
 
 ### With Visual Studio Code
