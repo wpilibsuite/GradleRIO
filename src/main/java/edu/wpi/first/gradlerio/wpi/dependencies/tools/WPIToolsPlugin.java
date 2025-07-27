@@ -54,6 +54,9 @@ public class WPIToolsPlugin implements Plugin<Project> {
         if (!toolsClassifier.equals("linuxarm64")) {
             cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getwpicalToolVersion(),
                     "edu.wpi.first.tools:wpical", toolsFolder));
+
+        cppTools.add(new WPICppTool(project, "processstarter", wpi.getVersions().getprocessstarterToolVersion(),
+                    "edu.wpi.first.tools:processstarter", toolsFolder));
         }
 
         project.getTasks().register("InstallAllTools", task -> {
