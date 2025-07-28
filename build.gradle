@@ -14,6 +14,10 @@ repositories {
     mavenLocal()
 }
 
+configurations {
+    processstarterDownload
+}
+
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
@@ -27,6 +31,13 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation gradleTestKit()
+
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:windowsx86-64@zip'
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxx86-64@zip'
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxarm32@zip'
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxarm64@zip'
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:osxuniversal@zip'
+    processstarterDownload 'edu.wpi.first.tools:processstarter:+:windowsarm64@zip'
 }
 
 tasks.withType(Test).configureEach {
@@ -116,3 +127,38 @@ wrapper {
     gradleVersion = '8.11'
     distributionType = Wrapper.DistributionType.BIN
 }
+
+task processprocessstarterDownload {
+    inputs.files configurations.processstarterDownload
+    doLast {
+        configurations.processstarterDownload.each { downloadedFile ->
+            def destinationDir = file("${buildDir}/resources/main")
+            def matcher = downloadedFile.name =~ /processstarter-(.+?)-(.+)\.zip/
+            if (matcher.matches()) {
+                def extVersion = matcher[0][1]
+                def classifier = matcher[0][2]
+
+                // Unzip and copy files
+                copy {
+                    from(zipTree(downloadedFile)) {
+                        include 'processstarter*'
+
+                    }
+                    into destinationDir
+                }
+
+                // Rename the extracted file
+                destinationDir.eachFile { extractedFile ->
+                    if (extractedFile.name.startsWith('processstarter') && !extractedFile.name.contains('-')) {
+                        def newName = "processstarter-${classifier}${extractedFile.name.substring('processstarter'.length())}"
+                        extractedFile.renameTo(new File(destinationDir, newName))
+                    }
+                }
+            } else {
+                println "Filename ${downloadedFile.name} does not match expected pattern."
+            }
+        }
+    }
+}
+
+jar.dependsOn processprocessstarterDownload
