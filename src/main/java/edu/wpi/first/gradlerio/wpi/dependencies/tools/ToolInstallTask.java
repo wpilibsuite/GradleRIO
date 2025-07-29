@@ -222,7 +222,6 @@ public class ToolInstallTask extends DefaultTask {
     private static void extractScriptWindows(Directory toolsFolder, String toolName) {
         File outputFile = toolsFolder.file(toolName + ".exe").getAsFile();
         String inputFileName = "/processstarter-" + NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect() + ".exe";
-        System.out.println("Extracting Windows: " + inputFileName + " to " + outputFile.getAbsolutePath());
         try (InputStream it = ToolInstallTask.class.getResourceAsStream(inputFileName)) {
             ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
@@ -232,7 +231,13 @@ public class ToolInstallTask extends DefaultTask {
 
     private void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
         File outputFile = toolsFolder.file(toolName).getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/processstarter")) {
+        String inputFileName = "/processstarter-";
+        if (OperatingSystem.current().isMacOsX())
+            inputFileName += "osxuniversal";
+        else
+            inputFileName += NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect();
+        System.out.println("Extracting Unix: " + inputFileName + " to " + outputFile.getAbsolutePath());
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream(inputFileName)) {
             ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
