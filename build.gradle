@@ -133,30 +133,35 @@ task processprocessstarterDownload {
     doLast {
         configurations.processstarterDownload.each { downloadedFile ->
             def destinationDir = file("${buildDir}/resources/main")
-            def matcher = downloadedFile.name =~ /processstarter-(.+?)-(.+)\.zip/
-            if (matcher.matches()) {
-                def extVersion = matcher[0][1]
-                def classifier = matcher[0][2]
-
                 // Unzip and copy files
                 copy {
                     from(zipTree(downloadedFile)) {
                         include 'processstarter*'
-
                     }
                     into destinationDir
                 }
 
-                // Rename the extracted file
+                // Rename the extracted file to include the classifier
                 destinationDir.eachFile { extractedFile ->
+
                     if (extractedFile.name.startsWith('processstarter') && !extractedFile.name.contains('-')) {
-                        def newName = "processstarter-${classifier}${extractedFile.name.substring('processstarter'.length())}"
-                        extractedFile.renameTo(new File(destinationDir, newName))
+                        def destinationFile = file("${buildDir}/resources/main/processstarter")
+                        if (downloadedFile.name.contains("linuxarm32")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxarm32")
+                        } else if (downloadedFile.name.contains("linuxarm64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxarm64")
+                        } else if (downloadedFile.name.contains("linuxx86-64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxx86-64")
+                        } else if (downloadedFile.name.contains("osxuniversal")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-osxuniversal")
+                        } else if (downloadedFile.name.contains("windowsx86-64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-windowsx86-64.exe")
+                        } else if (downloadedFile.name.contains("windowsarm64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-windowsarm64.exe")
+                        }
+                        extractedFile.renameTo(destinationFile)
                     }
                 }
-            } else {
-                println "Filename ${downloadedFile.name} does not match expected pattern."
-            }
         }
     }
 }
