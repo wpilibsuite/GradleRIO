@@ -56,7 +56,7 @@ public class WPIToolsPlugin implements Plugin<Project> {
                     "edu.wpi.first.tools:wpical", toolsFolder));
 
         cppTools.add(new WPICppTool(project, "processstarter", wpi.getVersions().getprocessstarterToolVersion(),
-                    "edu.wpi.first.tools:processstarter", toolsFolder));
+                "edu.wpi.first.tools:processstarter", toolsFolder));
         }
 
         project.getTasks().register("InstallAllTools", task -> {
