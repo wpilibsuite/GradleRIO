@@ -18,7 +18,10 @@ configurations {
     processstarterDownload
 }
 
+def processstarterToolVersion = "2025.3.2"
+
 dependencies {
+
     api 'com.google.code.gson:gson:2.13.1'
 
     api 'edu.wpi.first:native-utils:2025.9.1'
@@ -32,12 +35,12 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation gradleTestKit()
 
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:windowsx86-64@zip'
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxx86-64@zip'
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxarm32@zip'
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:linuxarm64@zip'
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:osxuniversal@zip'
-    processstarterDownload 'edu.wpi.first.tools:processstarter:+:windowsarm64@zip'
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsx86-64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxx86-64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm32@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:osxuniversal@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsarm64@zip"
 }
 
 tasks.withType(Test).configureEach {
@@ -123,11 +126,6 @@ examplesFolder.eachFile { File file ->
 
 jar.finalizedBy zipExamples
 
-wrapper {
-    gradleVersion = '8.11'
-    distributionType = Wrapper.DistributionType.BIN
-}
-
 task processprocessstarterDownload {
     inputs.files configurations.processstarterDownload
     doLast {
@@ -167,3 +165,8 @@ task processprocessstarterDownload {
 }
 
 jar.dependsOn processprocessstarterDownload
+
+wrapper {
+    gradleVersion = '8.11'
+    distributionType = Wrapper.DistributionType.BIN
+}
