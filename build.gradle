@@ -14,7 +14,14 @@ repositories {
     mavenLocal()
 }
 
+configurations {
+    processstarterDownload
+}
+
+def processstarterToolVersion = "2025.3.2"
+
 dependencies {
+
     api 'com.google.code.gson:gson:2.13.1'
 
     api 'edu.wpi.first:native-utils:2025.9.1'
@@ -27,6 +34,13 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation gradleTestKit()
+
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsx86-64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxx86-64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm32@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm64@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:osxuniversal@zip"
+    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsarm64@zip"
 }
 
 tasks.withType(Test).configureEach {
@@ -111,6 +125,46 @@ examplesFolder.eachFile { File file ->
 }
 
 jar.finalizedBy zipExamples
+
+task processprocessstarterDownload {
+    inputs.files configurations.processstarterDownload
+    doLast {
+        configurations.processstarterDownload.each { downloadedFile ->
+            def destinationDir = file("${buildDir}/resources/main")
+                // Unzip and copy files
+                copy {
+                    from(zipTree(downloadedFile)) {
+                        include 'processstarter*'
+                    }
+                    into destinationDir
+                }
+
+                // Rename the extracted file to include the classifier
+                destinationDir.eachFile { extractedFile ->
+
+                    if (extractedFile.name.startsWith('processstarter') && !extractedFile.name.contains('-')) {
+                        def destinationFile = file("${buildDir}/resources/main/processstarter")
+                        if (downloadedFile.name.contains("linuxarm32")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxarm32")
+                        } else if (downloadedFile.name.contains("linuxarm64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxarm64")
+                        } else if (downloadedFile.name.contains("linuxx86-64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-linuxx86-64")
+                        } else if (downloadedFile.name.contains("osxuniversal")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-osxuniversal")
+                        } else if (downloadedFile.name.contains("windowsx86-64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-windowsx86-64.exe")
+                        } else if (downloadedFile.name.contains("windowsarm64")) {
+                            destinationFile = file("${buildDir}/resources/main/processstarter-windowsarm64.exe")
+                        }
+                        extractedFile.renameTo(destinationFile)
+                    }
+                }
+        }
+    }
+}
+
+jar.dependsOn processprocessstarterDownload
 
 wrapper {
     gradleVersion = '8.11'

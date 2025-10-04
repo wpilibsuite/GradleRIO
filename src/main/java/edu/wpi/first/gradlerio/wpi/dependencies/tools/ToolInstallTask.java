@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import edu.wpi.first.toolchain.NativePlatforms;
+
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.Action;
@@ -138,7 +140,7 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     private static File getScriptFile(Directory toolsFolder, String toolName) {
-        return toolsFolder.file(toolName + ".vbs").getAsFile();
+        return toolsFolder.file(toolName + ".exe").getAsFile();
     }
 
     private static Dependency getDependencyObject(Configuration configuration, String artifactName) {
@@ -218,18 +220,25 @@ public class ToolInstallTask extends DefaultTask {
     }
 
     private static void extractScriptWindows(Directory toolsFolder, String toolName) {
-        File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.vbs")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+        File outputFile = toolsFolder.file(toolName + ".exe").getAsFile();
+        String inputFileName = "/processstarter-" + NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect() + ".exe";
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream(inputFileName)) {
+            ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
-        File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
-        try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.sh")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+        File outputFile = toolsFolder.file(toolName).getAsFile();
+        String inputFileName = "/processstarter-";
+        if (OperatingSystem.current().isMacOsX())
+            inputFileName += "osxuniversal";
+        else
+            inputFileName += NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect();
+        System.out.println("Extracting Unix: " + inputFileName + " to " + outputFile.getAbsolutePath());
+        try (InputStream it = ToolInstallTask.class.getResourceAsStream(inputFileName)) {
+            ResourceGroovyMethods.setBytes(outputFile, IOGroovyMethods.getBytes(it));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

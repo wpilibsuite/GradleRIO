@@ -15,6 +15,7 @@ def versionMap = [
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
   wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+',
   wpicalToolVersion: 'edu.wpi.first.tools:wpical:+:windowsx86-64@zip',
+  processstarterToolVersion: 'edu.wpi.first.tools:processstarter:+:windowsx86-64@zip',
 ]
 
 configurations {
@@ -39,6 +40,7 @@ dependencies {
 }
 
 String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
+String buildRegex = "def\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
 String mavenDevRegex = "this\\.useDevelopment\\s*=\\s*(true|false)"
 String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
@@ -66,6 +68,19 @@ tasks.register('UpdateVersions') {
       }
     }
     extFile.text = extText
+
+    def buildFile = file('build.gradle')
+    def buildText = buildFile.text
+    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
+      versionMap.each { key, value ->
+        def id = it.moduleVersion.id
+        if (value.startsWith("${id.group}:${it.name}:+".toString())) {
+          def localBuildRegex = buildRegex.replace('placeholder', key)
+          buildText = buildText.replaceAll(localBuildRegex, "def ${key} = \"${id.version}\"".toString())
+        }
+      }
+    }
+    buildFile.text = buildText
 
     def allowedVersions = ""
     def first = true
