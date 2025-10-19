@@ -39,6 +39,7 @@ public class WPIExtension {
     private final SimulationExtension sim;
 
     private Property<String> frcYear;
+    private Property<String> frcYearRelease;
 
     private final NativePlatforms platforms;
 
@@ -63,7 +64,10 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         frcYear = factory.property(String.class);
-        frcYear.convention("2026beta");
+        frcYear.convention("2026");
+
+        frcYearRelease = factory.property(String.class);
+        frcYearRelease.convention("beta");
 
         frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(frcYear);
@@ -73,7 +77,7 @@ public class WPIExtension {
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         vendor.getFixedVersion().set(versions.getWpilibVersion());
-        vendor.getFrcYear().set(frcYear);
+        vendor.getFrcYear().set(frcYear.get()+frcYearRelease.get());
         vendor.getFrcHome().set(frcHome);
 
         // TODO in the future make this lazy
