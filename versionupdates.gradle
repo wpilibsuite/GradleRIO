@@ -7,7 +7,6 @@ def versionMap = [
   dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
-  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+'
 ]
 
 configurations {
