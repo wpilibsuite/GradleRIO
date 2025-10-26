@@ -45,7 +45,7 @@ public class WPIJavaDepsExtension {
         this.versions = versions;
 
         createJavaDependencies("edu.wpi.first.wpilibj", "wpilibj-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.wpimath", "wpimath-java", versions.getWpimathVersion());
+        createJavaDependencies("edu.wpi.first.wpimath", "wpimath-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.ntcore", "ntcore-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.cscore", "cscore-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.cameraserver", "cameraserver-java", versions.getWpilibVersion());
@@ -56,6 +56,8 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("edu.wpi.first.wpiunits", "wpiunits-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
         createJavaDependencies("edu.wpi.first.datalog", "datalog-java", versions.getWpilibVersion());
+
+        createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 
         createJavaDependencies("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
@@ -77,7 +79,8 @@ public class WPIJavaDepsExtension {
         // classpath at compile time for the processor to function
         return List.of(
                 providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-processor-java", versions.getWpilibVersion())),
-                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion()))
+                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion())),
+                providers.provider(() -> dependencyNotation("org.wpilib", "wpilibj-javac-plugin-java", versions.getWpilibVersion()))
         );
     }
 
@@ -96,7 +99,7 @@ public class WPIJavaDepsExtension {
     private List<Provider<String>> getWpilibJniInternal(boolean debug, String platform) {
         return List.of(
             createJniDependency("edu.wpi.first.hal", "hal-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.wpimath", "wpimath-cpp", versions.getWpimathVersion(), debug, platform),
+            createJniDependency("edu.wpi.first.wpimath", "wpimath-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),

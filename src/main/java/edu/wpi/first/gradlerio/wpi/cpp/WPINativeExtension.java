@@ -122,7 +122,6 @@ public class WPINativeExtension {
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
             wpiDeps.getImguiVersion().set(versions.getImguiVersion());
-            wpiDeps.getWpimathVersion().set(versions.getWpimathVersion());
         });
 
         simulationTaskRelease = project.getTasks().register("simulateNativeRelease", NativeSimulationTask.class);
