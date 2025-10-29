@@ -98,8 +98,3 @@ model {
         }
     }
 }
-
-wrapper {
-    gradleVersion = '8.11'
-    distributionType = Wrapper.DistributionType.BIN
-}
