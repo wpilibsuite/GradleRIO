@@ -96,7 +96,8 @@ public class WPIPlugin implements Plugin<Project> {
             mirror.setRelease("https://frcmaven.wpi.edu/artifactory/release-2027");
             mirror.setDevelopment("https://frcmaven.wpi.edu/artifactory/development-2027");
             mirror.setPriority(WPIMavenRepo.PRIORITY_OFFICIAL);
-            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*"));
+            mirror.setAllowedGroupIdsRegex(Set.of("edu\\.wpi\\.first\\..*", "org\\.wpilib\\..*"));
+            mirror.setAllowedGroupIds(Set.of("org.wpilib"));
         });
 
         Set<String> vendorCacheIds = wpi.getMaven().getVendorCacheGroupIds();
