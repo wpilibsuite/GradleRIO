@@ -44,18 +44,18 @@ public class WPIJavaDepsExtension {
         this.providers = providers;
         this.versions = versions;
 
-        createJavaDependencies("edu.wpi.first.wpilibj", "wpilibj-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.wpimath", "wpimath-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.ntcore", "ntcore-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.cscore", "cscore-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.cameraserver", "cameraserver-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.hal", "hal-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.wpinet", "wpinet-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.wpiutil", "wpiutil-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.apriltag", "apriltag-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.wpiunits", "wpiunits-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
-        createJavaDependencies("edu.wpi.first.datalog", "datalog-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.wpilibj", "wpilibj-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.wpimath", "wpimath-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.ntcore", "ntcore-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.cscore", "cscore-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.cameraserver", "cameraserver-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.hal", "hal-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.wpinet", "wpinet-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.wpiutil", "wpiutil-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.apriltag", "apriltag-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.wpiunits", "wpiunits-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.datalog", "datalog-java", versions.getWpilibVersion());
 
         createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 
@@ -78,8 +78,8 @@ public class WPIJavaDepsExtension {
         // epilogue-runtime is a dependency of epilogue-processor, and needs to be on the annotation processor
         // classpath at compile time for the processor to function. Same with annotations for wpilibj-javac-plugin.
         return List.of(
-                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-processor-java", versions.getWpilibVersion())),
-                providers.provider(() -> dependencyNotation("edu.wpi.first.epilogue", "epilogue-runtime-java", versions.getWpilibVersion())),
+                providers.provider(() -> dependencyNotation("org.wpilib.epilogue", "epilogue-processor-java", versions.getWpilibVersion())),
+                providers.provider(() -> dependencyNotation("org.wpilib.epilogue", "epilogue-runtime-java", versions.getWpilibVersion())),
                 providers.provider(() -> dependencyNotation("org.wpilib", "wpilibj-javac-plugin-java", versions.getWpilibVersion())),
                 providers.provider(() -> dependencyNotation("org.wpilib", "annotations-java", versions.getWpilibVersion()))
         );
@@ -99,15 +99,15 @@ public class WPIJavaDepsExtension {
 
     private List<Provider<String>> getWpilibJniInternal(boolean debug, String platform) {
         return List.of(
-            createJniDependency("edu.wpi.first.hal", "hal-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.wpimath", "wpimath-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.hal", "hal-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.wpimath", "wpimath-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.datalog", "datalog-cpp", versions.getWpilibVersion(), debug, platform)
+            createJniDependency("org.wpilib.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform),
+            createJniDependency("org.wpilib.datalog", "datalog-cpp", versions.getWpilibVersion(), debug, platform)
         );
     }
 }

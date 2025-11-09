@@ -173,23 +173,23 @@ public class SimulationExtension {
     }
 
     public HalSimExtension addGui() {
-        return addDep("Sim GUI", "edu.wpi.first.halsim", "halsim_gui");
+        return addDep("Sim GUI", "org.wpilib.halsim", "halsim_gui");
     }
 
     public HalSimExtension addDriverstation() {
-        return addDep("Use Real DriverStation", "edu.wpi.first.halsim", "halsim_ds_socket");
+        return addDep("Use Real DriverStation", "org.wpilib.halsim", "halsim_ds_socket");
     }
 
     public HalSimExtension addWebsocketsServer() {
-        return addDep("Sim Websockets Server", "edu.wpi.first.halsim", "halsim_ws_server");
+        return addDep("Sim Websockets Server", "org.wpilib.halsim", "halsim_ws_server");
     }
 
     public HalSimExtension addWebsocketsClient() {
-        return addDep("Sim Websockets Client", "edu.wpi.first.halsim", "halsim_ws_client");
+        return addDep("Sim Websockets Client", "org.wpilib.halsim", "halsim_ws_client");
     }
 
     public HalSimExtension addXRPClient() {
-        return addDep("Sim XRP Client", "edu.wpi.first.halsim", "halsim_xrp");
+        return addDep("Sim XRP Client", "org.wpilib.halsim", "halsim_xrp");
     }
 
     public List<HalSimPair> getHalSimLocations(List<File> basePaths, boolean debug) {

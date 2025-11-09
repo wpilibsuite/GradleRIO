@@ -25,15 +25,15 @@ public class WPIToolsPlugin implements Plugin<Project> {
         Provider<Directory> toolsFolder = project.provider(() -> frcHome.get().dir("tools"));
 
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(),
-                "edu.wpi.first.tools:OutlineViewer", toolsFolder));
+                "org.wpilib.tools:OutlineViewer", toolsFolder));
         cppTools.add(
-                new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion(), "edu.wpi.first.tools:Glass",
+                new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion(), "org.wpilib.tools:Glass",
                         toolsFolder));
         cppTools.add(
-                new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "edu.wpi.first.tools:SysId",
+                new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "org.wpilib.tools:SysId",
                         toolsFolder));
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
-                "edu.wpi.first.tools:DataLogTool", toolsFolder));
+                "org.wpilib.tools:DataLogTool", toolsFolder));
 
         project.getTasks().register("InstallAllTools", task -> {
             task.setGroup("GradleRIO");
