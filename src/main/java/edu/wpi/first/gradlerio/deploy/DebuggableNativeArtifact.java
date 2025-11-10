@@ -14,9 +14,9 @@ import org.gradle.nativeplatform.NativeExecutableBinarySpec;
 import edu.wpi.first.deployutils.deploy.artifact.NativeExecutableArtifact;
 import edu.wpi.first.deployutils.deploy.context.DeployContext;
 import edu.wpi.first.deployutils.deploy.sessions.IPSessionController;
-import edu.wpi.first.toolchain.ToolchainDiscoverer;
-import edu.wpi.first.toolchain.ToolchainExtension;
-import edu.wpi.first.toolchain.systemcore.SystemCoreToolchainPlugin;
+import org.wpilib.toolchain.ToolchainDiscoverer;
+import org.wpilib.toolchain.ToolchainExtension;
+import org.wpilib.toolchain.systemcore.SystemCoreToolchainPlugin;
 import edu.wpi.first.vscode.dependencies.SourceContainingNativeDependencySet;
 
 public class DebuggableNativeArtifact extends NativeExecutableArtifact implements DebuggableArtifact {

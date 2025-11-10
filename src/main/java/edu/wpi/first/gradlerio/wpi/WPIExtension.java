@@ -22,9 +22,9 @@ import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 import edu.wpi.first.gradlerio.wpi.java.WPIJavaExtension;
 import edu.wpi.first.gradlerio.wpi.cpp.WPINativeExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
-import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension;
-import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsPlugin;
-import edu.wpi.first.toolchain.NativePlatforms;
+import org.wpilib.nativeutils.vendordeps.WPIVendorDepsExtension;
+import org.wpilib.nativeutils.vendordeps.WPIVendorDepsPlugin;
+import org.wpilib.toolchain.NativePlatforms;
 
 public class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs

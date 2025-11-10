@@ -8,7 +8,7 @@ import edu.wpi.first.deployutils.deploy.DeployExtension;
 import edu.wpi.first.deployutils.deploy.target.location.SshDeployLocation;
 import edu.wpi.first.gradlerio.deploy.FRCExtension;
 import edu.wpi.first.gradlerio.deploy.WPIRemoteTarget;
-import edu.wpi.first.toolchain.NativePlatforms;
+import org.wpilib.toolchain.NativePlatforms;
 
 public class SystemCore extends WPIRemoteTarget {
 

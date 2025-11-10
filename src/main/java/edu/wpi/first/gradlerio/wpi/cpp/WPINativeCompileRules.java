@@ -26,8 +26,8 @@ import org.gradle.platform.base.ComponentSpec;
 import org.gradle.platform.base.ComponentSpecContainer;
 import org.gradle.platform.base.internal.BinarySpecInternal;
 
-import edu.wpi.first.nativeutils.NativeUtilsExtension;
-import edu.wpi.first.toolchain.NativePlatforms;
+import org.wpilib.nativeutils.NativeUtilsExtension;
+import org.wpilib.toolchain.NativePlatforms;
 
 public class WPINativeCompileRules extends RuleSource {
 

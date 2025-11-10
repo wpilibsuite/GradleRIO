@@ -13,8 +13,8 @@ import edu.wpi.first.deployutils.log.ETLogger;
 import edu.wpi.first.deployutils.log.ETLoggerFactory;
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin;
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin;
-import edu.wpi.first.nativeutils.UnzipTransform;
-import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension.VendorMavenRepo;
+import org.wpilib.nativeutils.UnzipTransform;
+import org.wpilib.nativeutils.vendordeps.WPIVendorDepsExtension.VendorMavenRepo;
 
 public class WPIPlugin implements Plugin<Project> {
     public static final Attribute<String> NATIVE_ARTIFACT_FORMAT = Attribute.of("artifactType", String.class);
