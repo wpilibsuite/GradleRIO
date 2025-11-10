@@ -9,14 +9,14 @@
 
 #include <iostream>
 
-#include <frc/smartdashboard/SmartDashboard.h>
+#include "wpi/smartdashboard/SmartDashboard.hpp"
 
 constexpr bool testBool = false;
 
 Robot::Robot() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  wpi::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
 /**
@@ -68,5 +68,5 @@ void Robot::TeleopPeriodic() {}
 void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() { return wpi::StartRobot<Robot>(); }
 #endif
