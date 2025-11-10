@@ -1,10 +1,10 @@
 
 def versionMap = [
-  wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
-  sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
-  dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
+  wpilibVersion: 'org.wpilib.wpilibj:wpilibj-java:+',
+  outlineViewerVersion: 'org.wpilib.tools:OutlineViewer:+:windowsx86-64@zip',
+  glassVersion: 'org.wpilib.tools:Glass:+:windowsx86-64@zip',
+  sysIdVersion: 'org.wpilib.tools:SysId:+:windowsx86-64@zip',
+  dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
 ]

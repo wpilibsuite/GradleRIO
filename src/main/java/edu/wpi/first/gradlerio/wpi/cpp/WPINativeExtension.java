@@ -13,13 +13,13 @@ import edu.wpi.first.gradlerio.simulation.NativeExternalSimulationTask;
 import edu.wpi.first.gradlerio.simulation.NativeSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIExtension;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
-import edu.wpi.first.nativeutils.NativeUtils;
-import edu.wpi.first.nativeutils.NativeUtilsExtension;
-import edu.wpi.first.nativeutils.vendordeps.WPINativeVendorDepsExtension;
-import edu.wpi.first.toolchain.NativePlatforms;
-import edu.wpi.first.toolchain.ToolchainExtension;
-import edu.wpi.first.toolchain.ToolchainPlugin;
-import edu.wpi.first.toolchain.systemcore.SystemCoreToolchainPlugin;
+import org.wpilib.nativeutils.NativeUtils;
+import org.wpilib.nativeutils.NativeUtilsExtension;
+import org.wpilib.nativeutils.vendordeps.WPINativeVendorDepsExtension;
+import org.wpilib.toolchain.NativePlatforms;
+import org.wpilib.toolchain.ToolchainExtension;
+import org.wpilib.toolchain.ToolchainPlugin;
+import org.wpilib.toolchain.systemcore.SystemCoreToolchainPlugin;
 
 public class WPINativeExtension {
     private final WPINativeDepsExtension deps;

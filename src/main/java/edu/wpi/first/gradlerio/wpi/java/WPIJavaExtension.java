@@ -34,8 +34,8 @@ import edu.wpi.first.gradlerio.simulation.JavaSimulationTask;
 import edu.wpi.first.gradlerio.wpi.WPIPlugin;
 import edu.wpi.first.gradlerio.wpi.WPIVersionsExtension;
 import edu.wpi.first.gradlerio.wpi.simulation.SimulationExtension;
-import edu.wpi.first.nativeutils.vendordeps.WPIJavaVendorDepsExtension;
-import edu.wpi.first.nativeutils.vendordeps.WPIVendorDepsExtension;
+import org.wpilib.nativeutils.vendordeps.WPIJavaVendorDepsExtension;
+import org.wpilib.nativeutils.vendordeps.WPIVendorDepsExtension;
 
 public class WPIJavaExtension {
     private final Project project;
