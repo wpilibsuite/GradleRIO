@@ -99,8 +99,3 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
-
-wrapper {
-    gradleVersion = '8.11'
-    distributionType = Wrapper.DistributionType.BIN
-}
