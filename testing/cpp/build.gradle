@@ -2,7 +2,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2026.0.0-alpha-1"
+    id "edu.wpi.first.GradleRIO" version "2026.1.1-beta-1"
 }
 
 def projectFolder = project.buildFile.parentFile
