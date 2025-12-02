@@ -26,7 +26,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
 
     private final SystemCore systemCore;
 
-    private GarbageCollectorType gcType = GarbageCollectorType.G1_Base;
+    private GarbageCollectorType gcType = GarbageCollectorType.ZGC;
 
     private String javaCommand = "/usr/bin/java";
 
