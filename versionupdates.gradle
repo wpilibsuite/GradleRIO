@@ -36,7 +36,7 @@ String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
 tasks.register('UpdateVersions') {
   doLast {
-    def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
+    def mavenExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIMavenExtension.java')
     def mavenExtText = mavenExtFile.text
     def toSet = "this.useDevelopment = false"
     if (project.hasProperty(useDevelopmentProperty)) {
@@ -46,7 +46,7 @@ tasks.register('UpdateVersions') {
     mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
 
 
-    def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
+    def extFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIVersionsExtension.java')
     def extText = extFile.text
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       versionMap.each { key, value ->
@@ -78,7 +78,7 @@ tasks.register('UpdateVersions') {
       }
     }
 
-    def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
+    def rootExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIExtension.java')
     def rootExtText = rootExtFile.text
 
     rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")
