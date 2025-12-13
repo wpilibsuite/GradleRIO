@@ -17,7 +17,7 @@ repositories {
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'org.wpilib:native-utils:2027.1.0'
+    api 'org.wpilib:native-utils:2027.1.1'
 
     api 'de.undercouch:gradle-download-task:4.1.2'
 
