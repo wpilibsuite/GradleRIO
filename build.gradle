@@ -9,7 +9,7 @@ plugins {
 
 repositories {
     maven {
-        url "https://plugins.gradle.org/m2/"
+        url = "https://plugins.gradle.org/m2/"
     }
     mavenLocal()
 }
@@ -17,15 +17,16 @@ repositories {
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'org.wpilib:native-utils:2027.0.0'
+    api 'org.wpilib:native-utils:2027.1.0'
 
     api 'de.undercouch:gradle-download-task:4.1.2'
 
-    testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
+    testImplementation('org.spockframework:spock-core:2.4-M6-groovy-4.0') {
         exclude group: 'org.codehaus.groovy'
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation gradleTestKit()
 }
 
@@ -43,7 +44,7 @@ java {
 }
 
 allprojects {
-    group = "edu.wpi.first"
+    group = "org.wpilib"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -63,9 +64,9 @@ gradlePlugin {
     vcsUrl = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
     plugins {
         gradleRio {
-            id = 'edu.wpi.first.GradleRIO2027'
-            displayName = 'GradleRIO2027'
-            implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
+            id = 'org.wpilib.GradleRIO'
+            displayName = 'GradleRIO'
+            implementationClass = 'org.wpilib.gradlerio.GradleRIOPlugin'
             description = 'Managing FRC projects, the Gradle way (2027+)'
             tags = ['frc', 'wpilib', 'gradlerio', 'systemcore']
         }
@@ -78,14 +79,14 @@ def examplesFolder = file("$rootDir/testing")
 
 tasks.register('PatchExamples') {
     doLast {
-        String regex = "(id\\s*?[\\\"|\\']edu\\.wpi\\.first\\.GradleRIO2027[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
+        String regex = "(id\\s*?[\\\"|\\']org\\.wpilib\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
 
         examplesFolder.eachFile { File file ->
             if (file.isDirectory() && file.name != '_archived') {
                 def buildGradleFile = new File(file, 'build.gradle')
                 if (buildGradleFile.exists() && buildGradleFile.isFile()) {
                     def text = buildGradleFile.text
-                    text = text.replaceAll(regex, "id \"edu.wpi.first.GradleRIO2027\" version \"${version}\"")
+                    text = text.replaceAll(regex, "id \"org.wpilib.GradleRIO\" version \"${version}\"")
                     buildGradleFile.text = text
                 }
             }
@@ -113,6 +114,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '8.11'
+    gradleVersion = '9.2.0'
     distributionType = Wrapper.DistributionType.BIN
 }

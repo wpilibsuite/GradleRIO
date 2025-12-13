@@ -1,8 +1,8 @@
 plugins {
     id "java"
     id "cpp"
-    id "edu.wpi.first.GradleRIO2027" version "2027.0.0-alpha-2"
-    id 'edu.wpi.first.GradleJni' version '0.10.1'
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-2"
+    id 'org.wpilib.GradleJni' version '2027.0.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -110,5 +110,5 @@ dependencies {
 // knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    manifest org.wpilib.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
