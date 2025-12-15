@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO2027" version "2027.0.0-alpha-2"
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-2"
 }
 
 def projectFolder = project.buildFile.parentFile
@@ -91,7 +91,7 @@ wpi.sim.addWebsocketsClient().defaultEnabled = true
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 
-    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    manifest org.wpilib.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

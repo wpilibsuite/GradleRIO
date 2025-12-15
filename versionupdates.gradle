@@ -1,10 +1,10 @@
 
 def versionMap = [
-  wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
-  sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
-  dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
+  wpilibVersion: 'org.wpilib.wpilibj:wpilibj-java:+',
+  outlineViewerVersion: 'org.wpilib.tools:OutlineViewer:+:windowsx86-64@zip',
+  glassVersion: 'org.wpilib.tools:Glass:+:windowsx86-64@zip',
+  sysIdVersion: 'org.wpilib.tools:SysId:+:windowsx86-64@zip',
+  dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
 ]
@@ -36,7 +36,7 @@ String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
 tasks.register('UpdateVersions') {
   doLast {
-    def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
+    def mavenExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIMavenExtension.java')
     def mavenExtText = mavenExtFile.text
     def toSet = "this.useDevelopment = false"
     if (project.hasProperty(useDevelopmentProperty)) {
@@ -46,7 +46,7 @@ tasks.register('UpdateVersions') {
     mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
 
 
-    def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
+    def extFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIVersionsExtension.java')
     def extText = extFile.text
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       versionMap.each { key, value ->
@@ -78,7 +78,7 @@ tasks.register('UpdateVersions') {
       }
     }
 
-    def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
+    def rootExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIExtension.java')
     def rootExtText = rootExtFile.text
 
     rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")
