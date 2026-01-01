@@ -67,7 +67,7 @@ public class WPIExtension {
         frcYear.convention("2026");
 
         frcYearRelease = factory.property(String.class);
-        frcYearRelease.convention("beta");
+        frcYearRelease.convention("");
 
         frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(frcYear);
