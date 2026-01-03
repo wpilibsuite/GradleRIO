@@ -7,6 +7,7 @@ def versionMap = [
   dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
   opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
   imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
+  wpicalToolVersion: 'org.wpilib.tools:wpical:+:windowsx86-64@zip',
 ]
 
 configurations {
