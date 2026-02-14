@@ -28,11 +28,11 @@ public class TestTaskDoFirstAction implements Action<Task> {
         String ldpath = extract.get().get().getAsFile().getAbsolutePath();
 
         if (OperatingSystem.current().isUnix()) {
-            env.put("LD_LIBRARY_PATH", ldpath);
-            env.put("DYLD_FALLBACK_LIBRARY_PATH", ldpath);
-            env.put("DYLD_LIBRARY_PATH", ldpath);
+            appendPath(env, "LD_LIBRARY_PATH", ldpath);
+            appendPath(env, "DYLD_FALLBACK_LIBRARY_PATH", ldpath);
+            appendPath(env, "DYLD_LIBRARY_PATH", ldpath);
         } else if (OperatingSystem.current().isWindows()) {
-            env.put("PATH", System.getenv("PATH") + File.pathSeparator + ldpath);
+            appendPath(env, "PATH", ldpath);
         }
 
         t.environment(env);
@@ -46,4 +46,12 @@ public class TestTaskDoFirstAction implements Action<Task> {
 
     }
 
+    private static void appendPath(Map<String, String> env, String envName, String ldpath) {
+        String currentPath = System.getenv(envName);
+        if (currentPath != null) {
+            env.put(envName, ldpath + File.pathSeparator + currentPath);
+        } else {
+            env.put(envName, ldpath);
+        }
+    }
 }
