@@ -49,7 +49,7 @@ public class TestTaskDoFirstAction implements Action<Task> {
     private static void appendPath(Map<String, String> env, String envName, String ldpath) {
         String currentPath = System.getenv(envName);
         if (currentPath != null) {
-            env.put(envName, currentPath + File.pathSeparator + ldpath);
+            env.put(envName, ldpath + File.pathSeparator + currentPath);
         } else {
             env.put(envName, ldpath);
         }
