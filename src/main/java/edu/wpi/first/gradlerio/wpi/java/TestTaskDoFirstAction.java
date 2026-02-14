@@ -28,9 +28,9 @@ public class TestTaskDoFirstAction implements Action<Task> {
         String ldpath = extract.get().get().getAsFile().getAbsolutePath();
 
         if (OperatingSystem.current().isUnix()) {
-            env.put("LD_LIBRARY_PATH", ldpath);
-            env.put("DYLD_FALLBACK_LIBRARY_PATH", ldpath);
-            env.put("DYLD_LIBRARY_PATH", ldpath);
+            env.put("LD_LIBRARY_PATH", getPath("LD_LIBRARY_PATH", ldpath));
+            env.put("DYLD_FALLBACK_LIBRARY_PATH", getPath("DYLD_FALLBACK_LIBRARY_PATH", ldpath));
+            env.put("DYLD_LIBRARY_PATH", getPath("DYLD_LIBRARY_PATH", ldpath));
         } else if (OperatingSystem.current().isWindows()) {
             env.put("PATH", System.getenv("PATH") + File.pathSeparator + ldpath);
         }
@@ -44,6 +44,14 @@ public class TestTaskDoFirstAction implements Action<Task> {
         }
         t.getSystemProperties().put("java.library.path", jlp);
 
+    }
+
+    private static String getPath(String env, String ldpath) {
+        String currentPath = System.getenv(env);
+        if (currentPath != null) {
+            return currentPath + File.pathSeparator + ldpath;
+        }
+        return ldpath;
     }
 
 }
