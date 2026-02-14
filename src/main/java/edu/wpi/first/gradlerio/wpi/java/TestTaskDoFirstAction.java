@@ -46,8 +46,8 @@ public class TestTaskDoFirstAction implements Action<Task> {
 
     }
 
-    private static String getPath(String env, String ldpath) {
-        String currentPath = System.getenv(env);
+    private static String getPath(String envName, String ldpath) {
+        String currentPath = System.getenv(envName);
         if (currentPath != null) {
             return currentPath + File.pathSeparator + ldpath;
         }
