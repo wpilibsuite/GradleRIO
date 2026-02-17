@@ -1,6 +1,7 @@
 package org.wpilib.gradlerio.wpi.java;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,9 +117,15 @@ public class WPIJavaExtension {
     private void configureSimulationTask(JavaSimulationTask t, boolean debug,
             Provider<ExtractNativeJavaArtifacts> extract) {
         configureExecutableNatives(t, extract);
+        List<String> jvmArgs = new ArrayList<>();
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
         if (OperatingSystem.current().isMacOsX()) {
-            t.jvmArgs("-XstartOnFirstThread");
+            jvmArgs.add("-XstartOnFirstThread");
         }
+        t.jvmArgs(jvmArgs);
 
         t.doFirst(new Action<Task>() {
 
