@@ -4,24 +4,24 @@ pluginManagement {
     repositories {
         mavenLocal()
         gradlePluginPortal()
-        String frcYear = '2027_alpha1'
-        File frcHome
+        String firstYear = '2027_alpha1'
+        File firstHome
         if (OperatingSystem.current().isWindows()) {
             String publicFolder = System.getenv('PUBLIC')
             if (publicFolder == null) {
                 publicFolder = "C:\\Users\\Public"
             }
             def homeRoot = new File(publicFolder, "wpilib")
-            frcHome = new File(homeRoot, frcYear)
+            firstHome = new File(homeRoot, firstYear)
         } else {
             def userFolder = System.getProperty("user.home")
             def homeRoot = new File(userFolder, "wpilib")
-            frcHome = new File(homeRoot, frcYear)
+            firstHome = new File(homeRoot, firstYear)
         }
-        def frcHomeMaven = new File(frcHome, 'maven')
+        def firstHomeMaven = new File(firstHome, 'maven')
         maven {
-            name = 'frcHome'
-            url = frcHomeMaven
+            name = 'firstHome'
+            url = firstHomeMaven
         }
     }
 }

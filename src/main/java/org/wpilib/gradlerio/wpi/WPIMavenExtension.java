@@ -18,10 +18,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private final Set<String> vendorCacheGroupIds = new HashSet<>();
     private boolean useDevelopment;
     private boolean useLocal;
-    private boolean useFrcMavenLocalDevelopment;
-    private boolean useFrcMavenLocalRelease;
+    private boolean useFirstMavenLocalDevelopment;
+    private boolean useFirstMavenLocalRelease;
     private boolean useMavenCentral;
-    private boolean useFrcMavenVendorCache;
+    private boolean useFirstMavenVendorCache;
     private boolean enableRepositoryGroupLimits;
 
     @Inject
@@ -31,10 +31,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
 
         this.useDevelopment = true; // Do not rename without changing versionupdates.gradle
         this.useLocal = true;
-        this.useFrcMavenLocalDevelopment = false;
-        this.useFrcMavenLocalRelease = false;
+        this.useFirstMavenLocalDevelopment = false;
+        this.useFirstMavenLocalRelease = false;
         this.useMavenCentral = true;
-        this.useFrcMavenVendorCache = true;
+        this.useFirstMavenVendorCache = true;
         this.enableRepositoryGroupLimits = true;
 
         // mirror("AU") { WPIMavenRepo mirror ->
@@ -55,12 +55,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return vendorCacheGroupIds;
     }
 
-    public boolean isUseFrcMavenVendorCache() {
-        return useFrcMavenVendorCache;
+    public boolean isUseFirstMavenVendorCache() {
+        return useFirstMavenVendorCache;
     }
 
-    public void setUseFrcMavenVendorCache(boolean useFrcMavenVendorCache) {
-        this.useFrcMavenVendorCache = useFrcMavenVendorCache;
+    public void setUseFirstMavenVendorCache(boolean useFirstMavenVendorCache) {
+        this.useFirstMavenVendorCache = useFirstMavenVendorCache;
     }
 
     public Project getProject() {
@@ -75,12 +75,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return useLocal;
     }
 
-    public boolean isUseFrcMavenLocalDevelopment() {
-        return useFrcMavenLocalDevelopment;
+    public boolean isUseFirstMavenLocalDevelopment() {
+        return useFirstMavenLocalDevelopment;
     }
 
-    public boolean isUseFrcMavenLocalRelease() {
-        return useFrcMavenLocalRelease;
+    public boolean isUseFirstMavenLocalRelease() {
+        return useFirstMavenLocalRelease;
     }
 
     public boolean isUseMavenCentral() {
@@ -95,12 +95,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useLocal = useLocal;
     }
 
-    public void setUseFrcMavenLocalDevelopment(boolean useFrcMavenLocalDevelopment) {
-        this.useFrcMavenLocalDevelopment = useFrcMavenLocalDevelopment;
+    public void setUseFirstMavenLocalDevelopment(boolean useFirstMavenLocalDevelopment) {
+        this.useFirstMavenLocalDevelopment = useFirstMavenLocalDevelopment;
     }
 
-    public void setUseFrcMavenLocalRelease(boolean useFrcMavenLocalRelease) {
-        this.useFrcMavenLocalRelease = useFrcMavenLocalRelease;
+    public void setUseFirstMavenLocalRelease(boolean useFirstMavenLocalRelease) {
+        this.useFirstMavenLocalRelease = useFirstMavenLocalRelease;
     }
 
     public void setUseMavenCentral(boolean useMavenCentral) {

@@ -20,18 +20,18 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.frc.getTeamNumber()
-            debug = project.frc.getDebugOrDefault(false)
+            team = project.first.getTeamNumber()
+            debug = project.first.getDebugOrDefault(false)
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
-                frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
+                firstCpp(getArtifactTypeClass('FIRSTNativeArtifact')) {
                 }
 
                 // Static files artifact
-                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                firstStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/systemcore/deploy'
                 }
@@ -40,7 +40,7 @@ deploy {
     }
 }
 
-def deployArtifact = deploy.targets.systemcore.artifacts.frcCpp
+def deployArtifact = deploy.targets.systemcore.artifacts.firstCpp
 
 // Simulation configuration
 
@@ -56,7 +56,7 @@ wpi.sim.addWebsocketsClient().defaultEnabled = true
 
 model {
     components {
-        frcUserProgram(NativeExecutableSpec) {
+        firstUserProgram(NativeExecutableSpec) {
             targetPlatform wpi.platforms.systemcore
 
             sources.asm {

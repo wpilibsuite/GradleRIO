@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 
 import org.wpilib.deployutils.deploy.DeployExtension;
 import org.wpilib.deployutils.deploy.target.location.SshDeployLocation;
-import org.wpilib.gradlerio.deploy.FRCExtension;
+import org.wpilib.gradlerio.deploy.FIRSTExtension;
 import org.wpilib.gradlerio.deploy.WPIRemoteTarget;
 import org.wpilib.toolchain.NativePlatforms;
 
@@ -20,8 +20,8 @@ public class SystemCore extends WPIRemoteTarget {
     private final RobotProgramStartArtifact programStartArtifact;
 
     @Inject
-    public SystemCore(String name, Project project, DeployExtension de, FRCExtension frcExtension) {
-        super(name, project, de, frcExtension);
+    public SystemCore(String name, Project project, DeployExtension de, FIRSTExtension firstExtension) {
+        super(name, project, de, firstExtension);
 
         setDirectory("/home/systemcore");
 

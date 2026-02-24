@@ -52,8 +52,8 @@ public class WPINativeCompileRules extends RuleSource {
             if (!bin.getTargetPlatform().getName().equals(NativePlatforms.desktop)) {
                 ((BinarySpecInternal) bin).setBuildable(false);
             }
-            bin.getCppCompiler().define("RUNNING_FRC_TESTS");
-            bin.getcCompiler().define("RUNNING_FRC_TESTS");
+            bin.getCppCompiler().define("RUNNING_FIRST_TESTS");
+            bin.getcCompiler().define("RUNNING_FIRST_TESTS");
         });
     }
 
