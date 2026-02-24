@@ -20,16 +20,16 @@ import org.wpilib.deployutils.deploy.target.location.SshDeployLocation;
 import org.wpilib.deployutils.log.ETLogger;
 import org.wpilib.deployutils.log.ETLoggerFactory;
 
-public class DSDeployLocation extends SshDeployLocation {
+public class NiDsDeployLocation extends SshDeployLocation {
 
     @Inject
-    public DSDeployLocation(String name, RemoteTarget target) {
+    public NiDsDeployLocation(String name, RemoteTarget target) {
         super(name, target);
     }
 
     private String dsAddress = "localhost";
     private Optional<String> cachedAddress = Optional.empty();
-    private ETLogger log = ETLoggerFactory.INSTANCE.create("DSDeployLocation");
+    private ETLogger log = ETLoggerFactory.INSTANCE.create("NiDsDeployLocation");
     private int timeout = 1000;
     private int port = 1742;
 
@@ -70,6 +70,7 @@ public class DSDeployLocation extends SshDeployLocation {
     }
 
     private String determineAddress() {
+        log.log("NI Driver Station: Attempting to determine robot IP address");
         try (Socket socket = new Socket()) {
             InetAddress addr = InetAddress.getByName(dsAddress);
             socket.connect(new InetSocketAddress(addr, port), timeout);
@@ -87,8 +88,8 @@ public class DSDeployLocation extends SshDeployLocation {
             if (data.robotIP != null) {
                 long ipLong = data.robotIP;
                 if (ipLong == 0) {
-                    log.debug("Driver Station isn't connected to robot.");
-                    return "ds_comms_failed.ds_not_connected_to_robot";
+                    log.debug("NI Driver Station isn't connected to robot.");
+                    return "ni_ds_comms_failed.ds_not_connected_to_robot";
                 }
 
                 InetAddress ip = InetAddress.getByAddress(new byte[] {
@@ -98,13 +99,13 @@ public class DSDeployLocation extends SshDeployLocation {
                     (byte) (ipLong & 0xff)
                 });
 
-                log.log("Driver Station reported IP: " + ip.getHostAddress());
+                log.log("NI Driver Station reported IP: " + ip.getHostAddress());
                 cachedAddress = Optional.of(ip.getHostAddress());
                 return ip.getHostAddress();
             } else {
-                log.debug("Driver Station didn't provide robotIP in JSON response");
+                log.debug("NI Driver Station didn't provide robotIP in JSON response");
             }
-            return "ds_comms_failed.no_address";
+            return "ni_ds_comms_failed.no_address";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

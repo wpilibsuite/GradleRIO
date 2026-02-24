@@ -83,7 +83,13 @@ public class SystemCore extends WPIRemoteTarget {
             this.addAddress(addr);
         }
 
-        getLocations().create("ds", DSDeployLocation.class, ds -> {
+        getLocations().create("ds", FirstDsDeployLocation.class, ds -> {
+            ds.setUser(username);
+            ds.setPassword(password);
+            ds.setIpv6(false);
+        });
+
+        getLocations().create("nids", NiDsDeployLocation.class, ds -> {
             ds.setUser(username);
             ds.setPassword(password);
             ds.setIpv6(false);
