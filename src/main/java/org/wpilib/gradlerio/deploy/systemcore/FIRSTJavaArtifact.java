@@ -12,14 +12,14 @@ import org.wpilib.deployutils.PathUtils;
 import org.wpilib.deployutils.deploy.context.DeployContext;
 import org.wpilib.gradlerio.deploy.DebuggableJavaArtifact;
 import org.wpilib.gradlerio.deploy.DeployStage;
-import org.wpilib.gradlerio.deploy.FRCDeployPlugin;
+import org.wpilib.gradlerio.deploy.FIRSTDeployPlugin;
 import org.wpilib.gradlerio.wpi.WPIExtension;
 
-public class FRCJavaArtifact extends DebuggableJavaArtifact {
+public class FIRSTJavaArtifact extends DebuggableJavaArtifact {
 
     private final RobotCommandArtifact robotCommandArtifact;
 
-    private final FRCJNILibraryArtifact nativeZipArtifact;
+    private final FIRSTJNILibraryArtifact nativeZipArtifact;
 
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
@@ -31,11 +31,15 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
     private String javaCommand = "/usr/bin/java";
 
     @Inject
-    public FRCJavaArtifact(String name, SystemCore target) {
+    public FIRSTJavaArtifact(String name, SystemCore target) {
         super(name, target);
         systemCore = target;
 
-        jvmArgs.add("-Djava.library.path=" + FRCDeployPlugin.LIB_DEPLOY_DIR);
+        jvmArgs.add("-Djava.library.path=" + FIRSTDeployPlugin.LIB_DEPLOY_DIR);
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
 
         var debugConfiguration = target.getProject().getConfigurations().create("systemcoreDebug");
         var releaseConfiguration = target.getProject().getConfigurations().create("systemcoreRelease");
@@ -45,7 +49,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
             art.dependsOn(getJarProvider());
         });
 
-        nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FRCJNILibraryArtifact.class, artifact -> {
+        nativeZipArtifact = target.getArtifacts().create("nativeZips" + name, FIRSTJNILibraryArtifact.class, artifact -> {
             target.setDeployStage(artifact, DeployStage.FileDeploy);
 
             var cbl = target.getProject().getProviders().provider(() -> {
@@ -104,7 +108,7 @@ public class FRCJavaArtifact extends DebuggableJavaArtifact {
         return robotCommandArtifact;
     }
 
-    public FRCJNILibraryArtifact getNativeZipArtifact() {
+    public FIRSTJNILibraryArtifact getNativeZipArtifact() {
         return nativeZipArtifact;
     }
 

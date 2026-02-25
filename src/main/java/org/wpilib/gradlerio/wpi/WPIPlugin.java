@@ -101,8 +101,8 @@ public class WPIPlugin implements Plugin<Project> {
         });
 
         Set<String> vendorCacheIds = wpi.getMaven().getVendorCacheGroupIds();
-        if (wpi.getMaven().isUseFrcMavenVendorCache() && (!vendorCacheIds.isEmpty() || !enableGroupLimits)) {
-            wpi.getMaven().repo("FRCMavenVendorCache", cache -> {
+        if (wpi.getMaven().isUseFirstMavenVendorCache() && (!vendorCacheIds.isEmpty() || !enableGroupLimits)) {
+            wpi.getMaven().repo("FIRSTMavenVendorCache", cache -> {
                 cache.setRelease("https://frcmaven.wpi.edu/artifactory/vendor-mvn-release");
                 cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
                 cache.setAllowedGroupIds(vendorCacheIds);
@@ -112,20 +112,20 @@ public class WPIPlugin implements Plugin<Project> {
         if (wpi.getMaven().isUseLocal()) {
             project.getRepositories().maven(repo -> {
                 repo.setName("WPILocal");
-                repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getFrcHome().map(x -> x.dir("maven")));
+                repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getFirstHome().map(x -> x.dir("maven")));
             });
         }
 
-        if (wpi.getMaven().isUseFrcMavenLocalDevelopment()) {
+        if (wpi.getMaven().isUseFirstMavenLocalDevelopment()) {
             project.getRepositories().maven(repo -> {
-                repo.setName("FRCDevelopmentLocal");
+                repo.setName("FIRSTDevelopmentLocal");
                 repo.setUrl(System.getProperty("user.home") + "/releases/maven/development");
             });
         }
 
-        if (wpi.getMaven().isUseFrcMavenLocalRelease()) {
+        if (wpi.getMaven().isUseFirstMavenLocalRelease()) {
             project.getRepositories().maven(repo -> {
-                repo.setName("FRCReleaseLocal");
+                repo.setName("FIRSTReleaseLocal");
                 repo.setUrl(System.getProperty("user.home") + "/releases/maven/release");
             });
         }

@@ -35,7 +35,7 @@ public class WPIExtension {
     private final WPIMavenExtension maven;
     private final SimulationExtension sim;
 
-    private Property<String> frcYear;
+    private Property<String> firstYear;
 
     private final NativePlatforms platforms;
 
@@ -59,19 +59,19 @@ public class WPIExtension {
         ObjectFactory factory = project.getObjects();
         platforms = new NativePlatforms();
 
-        frcYear = factory.property(String.class);
-        frcYear.convention("2027_alpha1");
+        firstYear = factory.property(String.class);
+        firstYear.convention("2027_alpha1");
 
-        frcHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
-                .dir(frcYear);
+        firstHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
+                .dir(firstYear);
 
         versions = factory.newInstance(WPIVersionsExtension.class);
 
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         vendor.getFixedVersion().set(versions.getWpilibVersion());
-        vendor.getFrcYear().set(frcYear);
-        vendor.getFrcHome().set(frcHome);
+        vendor.getFirstYear().set(firstYear);
+        vendor.getFirstHome().set(firstHome);
 
         // TODO in the future make this lazy
         vendor.loadAll();
@@ -135,10 +135,10 @@ public class WPIExtension {
         }
     }
 
-    private final Provider<Directory> frcHome;
+    private final Provider<Directory> firstHome;
 
-    public Provider<Directory> getFrcHome() {
-        return frcHome;
+    public Provider<Directory> getFirstHome() {
+        return firstHome;
     }
 
     private static File computeHomeRoot() {
@@ -208,8 +208,8 @@ public class WPIExtension {
         return maven;
     }
 
-    public Property<String> getFrcYear() {
-        return frcYear;
+    public Property<String> getFirstYear() {
+        return firstYear;
     }
 
     public NativePlatforms getPlatforms() {

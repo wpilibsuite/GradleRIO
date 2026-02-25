@@ -20,8 +20,8 @@ public class WPIToolsPlugin implements Plugin<Project> {
         List<WPITool> tools = new ArrayList<>();
         List<WPICppTool> cppTools = new ArrayList<>();
 
-        Provider<Directory> frcHome = wpi.getFrcHome();
-        Provider<Directory> toolsFolder = project.provider(() -> frcHome.get().dir("tools"));
+        Provider<Directory> firstHome = wpi.getFirstHome();
+        Provider<Directory> toolsFolder = project.provider(() -> firstHome.get().dir("tools"));
 
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(),
                 "org.wpilib.tools:OutlineViewer", toolsFolder));
@@ -34,7 +34,7 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
                 "org.wpilib.tools:DataLogTool", toolsFolder));
 
-        cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getwpicalToolVersion(),
+        cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getWpicalToolVersion(),
                 "org.wpilib.tools:wpical", toolsFolder));
 
         project.getTasks().register("InstallAllTools", task -> {

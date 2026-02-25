@@ -41,7 +41,7 @@ import org.wpilib.deployutils.deploy.target.discovery.TargetDiscoveryTask;
 import org.wpilib.deployutils.log.ETLogger;
 import org.wpilib.deployutils.log.ETLoggerFactory;
 import org.wpilib.gradlerio.caching.WrapperInspector;
-import org.wpilib.gradlerio.deploy.FRCDeployPlugin;
+import org.wpilib.gradlerio.deploy.FIRSTDeployPlugin;
 import org.wpilib.gradlerio.deploy.systemcore.SystemCore;
 import org.wpilib.gradlerio.wpi.WPIPlugin;
 
@@ -87,7 +87,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
         }
 
         project.getPluginManager().apply(DeployUtils.class);
-        project.getPluginManager().apply(FRCDeployPlugin.class);
+        project.getPluginManager().apply(FIRSTDeployPlugin.class);
         project.getPluginManager().apply(WPIPlugin.class);
         // project.getPluginManager().apply(ClionPlugin.class);
         // project.getPluginManager().apply(IDEPlugin.class);
