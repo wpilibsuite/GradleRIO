@@ -67,8 +67,8 @@ gradlePlugin {
             id = 'org.wpilib.GradleRIO'
             displayName = 'GradleRIO'
             implementationClass = 'org.wpilib.gradlerio.GradleRIOPlugin'
-            description = 'Managing FRC projects, the Gradle way (2027+)'
-            tags = ['frc', 'wpilib', 'gradlerio', 'systemcore']
+            description = 'Managing FIRST projects, the Gradle way (2027+)'
+            tags = ['frc', 'ftc', 'first', 'wpilib', 'gradlerio', 'systemcore']
         }
     }
 }
