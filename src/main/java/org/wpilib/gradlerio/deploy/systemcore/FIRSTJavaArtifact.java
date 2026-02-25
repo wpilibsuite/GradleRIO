@@ -36,6 +36,10 @@ public class FIRSTJavaArtifact extends DebuggableJavaArtifact {
         systemCore = target;
 
         jvmArgs.add("-Djava.library.path=" + FIRSTDeployPlugin.LIB_DEPLOY_DIR);
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
 
         var debugConfiguration = target.getProject().getConfigurations().create("systemcoreDebug");
         var releaseConfiguration = target.getProject().getConfigurations().create("systemcoreRelease");
