@@ -60,19 +60,21 @@ public class SystemCore extends WPIRemoteTarget {
         return team;
     }
 
+    public void useDefaultSystemcoreHostName() {
+        this.addAddress("robot.local");
+    }
+
+    public void useCustomSystemcoreHostName(String hostName) {
+        this.addAddress(hostName);
+    }
+
     public void setTeam(int team) {
         this.team = team;
         setAddresses(
             "10." + (team / 100) + "." + (team % 100) + ".2", // 10.TE.AM.2
-            "robot.local",
             "172.26.0.1", // Windows USB
             "172.27.0.1", // Unix USB
             "172.30.0.1" // WiFi
-
-            // // Weird Environments
-            // "roborio-" + team + "-FRC", // Default DNS
-            // "roborio-" + team + "-FRC.lan", // LAN mDNS/DNS
-            // "roborio-" + team + "-FRC.frc-field.local" /// Practice Field mDNS
         );
     }
 
@@ -83,7 +85,13 @@ public class SystemCore extends WPIRemoteTarget {
             this.addAddress(addr);
         }
 
-        getLocations().create("ds", DSDeployLocation.class, ds -> {
+        getLocations().create("ds", FirstDsDeployLocation.class, ds -> {
+            ds.setUser(username);
+            ds.setPassword(password);
+            ds.setIpv6(false);
+        });
+
+        getLocations().create("nids", NiDsDeployLocation.class, ds -> {
             ds.setUser(username);
             ds.setPassword(password);
             ds.setIpv6(false);
