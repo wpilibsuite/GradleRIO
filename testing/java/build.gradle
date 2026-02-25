@@ -29,7 +29,7 @@ deploy {
             team = project.frc.getTeamNumber()
             // Use the default systemcore host name. This must be called after setting team
             // as happens on the line above
-            project.frc.useDefaultSystemcoreHostName()
+            useDefaultSystemcoreHostName()
             debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
