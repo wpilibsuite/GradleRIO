@@ -3,9 +3,11 @@ package org.wpilib.gradlerio.deploy.systemcore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -51,7 +53,7 @@ public class NiDsDeployLocation extends SshDeployLocation {
 
     @Override
     public String getAddress() {
-        return cachedAddress.orElseGet(this::determineAddress);
+        return cachedAddress.get();
     }
 
     @Override
@@ -65,17 +67,27 @@ public class NiDsDeployLocation extends SshDeployLocation {
     }
 
     private static class DsJsonData {
-        @SerializedName("FMS Connected") public Boolean fmsConnected;
+        @SerializedName("FMS Connected")
+        public Boolean fmsConnected;
         public Long robotIP;
     }
 
+    @Override
+    public void discover() {
+        cachedAddress = Optional.of("NI DS Connection Issue");
+        cachedAddress = Optional.of(determineAddress());
+    }
+
     private String determineAddress() {
-        log.log("NI Driver Station: Attempting to determine robot IP address");
+        log.debug("NI Driver Station: Attempting to determine robot IP address");
         try (Socket socket = new Socket()) {
             InetAddress addr = InetAddress.getByName(dsAddress);
             socket.connect(new InetSocketAddress(addr, port), timeout);
 
+            socket.setSoTimeout(timeout);
+
             String jsonText = new BufferedReader(new InputStreamReader(socket.getInputStream())).readLine();
+            log.debug("NI Driver Station: Received JSON response: " + jsonText);
             Gson gson = new Gson();
             DsJsonData data = gson.fromJson(jsonText, DsJsonData.class);
 
@@ -89,27 +101,32 @@ public class NiDsDeployLocation extends SshDeployLocation {
                 long ipLong = data.robotIP;
                 if (ipLong == 0) {
                     log.debug("NI Driver Station isn't connected to robot.");
-                    return "ni_ds_comms_failed.ds_not_connected_to_robot";
+                    throw new RobotNotConnectedToDsException("NI Driver Station isn't connected to robot.");
                 }
 
                 InetAddress ip = InetAddress.getByAddress(new byte[] {
-                    (byte) ((ipLong >> 24) & 0xff),
-                    (byte) ((ipLong >> 16) & 0xff),
-                    (byte) ((ipLong >> 8) & 0xff),
-                    (byte) (ipLong & 0xff)
+                        (byte) ((ipLong >> 24) & 0xff),
+                        (byte) ((ipLong >> 16) & 0xff),
+                        (byte) ((ipLong >> 8) & 0xff),
+                        (byte) (ipLong & 0xff)
                 });
 
                 log.log("NI Driver Station reported IP: " + ip.getHostAddress());
-                cachedAddress = Optional.of(ip.getHostAddress());
                 return ip.getHostAddress();
             } else {
                 log.debug("NI Driver Station didn't provide robotIP in JSON response");
+                throw new RuntimeException("NI Driver Station didn't provide robotIP in JSON response");
             }
-            return "ni_ds_comms_failed.no_address";
         } catch (IOException e) {
+            if (e instanceof SocketTimeoutException) {
+                log.debug("Timed out trying to communicate with NI Driver Station");
+                throw new RobotNotConnectedToDsException("Timed out trying to communicate with NI Driver Station");
+            } else if (e instanceof ConnectException ex && ex.getMessage().contains("Connection refused")) {
+                log.debug("Could not connect to NI Driver Station (connection refused)");
+                throw new RobotNotConnectedToDsException(
+                        "Could not connect to NI Driver Station (connection refused)");
+            }
             throw new RuntimeException(e);
         }
     }
-
-
 }
