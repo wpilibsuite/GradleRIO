@@ -70,8 +70,8 @@ public class WPIExtension {
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         vendor.getFixedVersion().set(versions.getWpilibVersion());
-        vendor.getFrcYear().set(frcYear);
-        vendor.getFrcHome().set(frcHome);
+        vendor.getFirstYear().set(frcYear);
+        vendor.getFirstHome().set(frcHome);
 
         // TODO in the future make this lazy
         vendor.loadAll();
