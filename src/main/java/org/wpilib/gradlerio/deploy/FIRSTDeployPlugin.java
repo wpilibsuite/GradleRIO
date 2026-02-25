@@ -10,7 +10,8 @@ import org.wpilib.deployutils.deploy.DeployExtension;
 import org.wpilib.deployutils.deploy.artifact.Artifact;
 import org.wpilib.deployutils.deploy.context.DeployContext;
 import org.wpilib.deployutils.deploy.target.location.DeployLocation;
-import org.wpilib.gradlerio.deploy.systemcore.DSDeployLocation;
+import org.wpilib.gradlerio.deploy.systemcore.NiDsDeployLocation;
+import org.wpilib.gradlerio.deploy.systemcore.FirstDsDeployLocation;
 import org.wpilib.gradlerio.deploy.systemcore.FIRSTJNILibraryArtifact;
 import org.wpilib.gradlerio.deploy.systemcore.FIRSTJavaArtifact;
 import org.wpilib.gradlerio.deploy.systemcore.FIRSTNativeArtifact;
@@ -38,7 +39,8 @@ public class FIRSTDeployPlugin implements Plugin<Project> {
         NamedObjectFactory.registerType(FIRSTJNILibraryArtifact.class, artifacts, target, objects);
         NamedObjectFactory.registerType(RobotCommandArtifact.class, artifacts, target, objects);
 
-        NamedObjectFactory.registerType(DSDeployLocation.class, locations, target, objects);
+        NamedObjectFactory.registerType(NiDsDeployLocation.class, locations, target, objects);
+        NamedObjectFactory.registerType(FirstDsDeployLocation.class, locations, target, objects);
     }
 
     @Override

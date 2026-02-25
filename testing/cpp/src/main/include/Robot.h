@@ -7,6 +7,9 @@
 
 #pragma once
 
+// TODO Remove this once WPILib updates
+#define __FRC_SYSTEMCORE__ 1
+
 #include <string>
 
 #include "wpi/framework/TimedRobot.hpp"
