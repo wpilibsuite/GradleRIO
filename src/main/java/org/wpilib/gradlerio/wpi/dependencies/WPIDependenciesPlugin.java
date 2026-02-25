@@ -19,7 +19,7 @@ import org.wpilib.deployutils.deploy.target.RemoteTarget;
 import org.wpilib.deployutils.log.ETLogger;
 import org.wpilib.deployutils.log.ETLoggerFactory;
 import org.wpilib.gradlerio.PreemptiveDownloadTask;
-import org.wpilib.gradlerio.deploy.systemcore.FRCJavaArtifact;
+import org.wpilib.gradlerio.deploy.systemcore.FIRSTJavaArtifact;
 
 public class WPIDependenciesPlugin implements Plugin<Project> {
 
@@ -51,8 +51,8 @@ public class WPIDependenciesPlugin implements Plugin<Project> {
 
         for (RemoteTarget target : project.getExtensions().getByType(DeployExtension.class).getTargets()) {
             for (Artifact artifact : target.getArtifacts()) {
-                if (artifact instanceof FRCJavaArtifact) {
-                    Configuration cfg = ((FRCJavaArtifact)artifact).getNativeZipArtifact().getConfiguration().get();
+                if (artifact instanceof FIRSTJavaArtifact) {
+                    Configuration cfg = ((FIRSTJavaArtifact)artifact).getNativeZipArtifact().getConfiguration().get();
                     logger.info("Found Java Configuration: " + cfg.getName());
                     configs.add(cfg);
                 }

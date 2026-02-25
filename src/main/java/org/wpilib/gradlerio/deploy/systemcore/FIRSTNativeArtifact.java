@@ -15,9 +15,9 @@ import org.wpilib.deployutils.PathUtils;
 import org.wpilib.deployutils.deploy.context.DeployContext;
 import org.wpilib.gradlerio.deploy.DebuggableNativeArtifact;
 import org.wpilib.gradlerio.deploy.DeployStage;
-import org.wpilib.gradlerio.deploy.FRCDeployPlugin;
+import org.wpilib.gradlerio.deploy.FIRSTDeployPlugin;
 
-public class FRCNativeArtifact extends DebuggableNativeArtifact {
+public class FIRSTNativeArtifact extends DebuggableNativeArtifact {
 
     private final RobotCommandArtifact robotCommandArtifact;
     private final List<String> arguments = new ArrayList<>();
@@ -30,7 +30,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
     }
 
     @Inject
-    public FRCNativeArtifact(String name, SystemCore target) {
+    public FIRSTNativeArtifact(String name, SystemCore target) {
         super(name, target);
         systemCore = target;
 
@@ -51,8 +51,8 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
         filterable.getExcludes().add("**/*.so.*.debug");
 
         getPostdeploy().add(ctx -> {
-            FRCDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
-            ctx.execute("sudo ldconfig " + FRCDeployPlugin.LIB_DEPLOY_DIR);
+            FIRSTDeployPlugin.ownDirectory(ctx, getLibraryDirectory().get());
+            ctx.execute("sudo ldconfig " + FIRSTDeployPlugin.LIB_DEPLOY_DIR);
         });
 
         robotCommandArtifact = target.getArtifacts().create("robotCommand" + name, RobotCommandArtifact.class, art -> {
@@ -69,7 +69,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
             ctx.execute("sudo setcap cap_sys_nice+eip \"" + binFile + "\"");
         });
 
-        this.getLibraryDirectory().set(FRCDeployPlugin.LIB_DEPLOY_DIR);
+        this.getLibraryDirectory().set(FIRSTDeployPlugin.LIB_DEPLOY_DIR);
 
         target.setDeployStage(this, DeployStage.FileDeploy);
     }
@@ -90,7 +90,7 @@ public class FRCNativeArtifact extends DebuggableNativeArtifact {
     private String generateStartCommand(DeployContext ctx) {
         StringBuilder builder = new StringBuilder();
         builder.append("LD_LIBRARY_PATH=\"");
-        builder.append(FRCDeployPlugin.LIB_DEPLOY_DIR);
+        builder.append(FIRSTDeployPlugin.LIB_DEPLOY_DIR);
         builder.append("\" ");
         boolean debug = systemCore.getDebug().get();
         if (debug) {

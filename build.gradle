@@ -17,7 +17,7 @@ repositories {
 dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 
-    api 'org.wpilib:native-utils:2027.1.1'
+    api 'org.wpilib:native-utils:2027.3.2'
 
     api 'de.undercouch:gradle-download-task:4.1.2'
 
@@ -67,8 +67,8 @@ gradlePlugin {
             id = 'org.wpilib.GradleRIO'
             displayName = 'GradleRIO'
             implementationClass = 'org.wpilib.gradlerio.GradleRIOPlugin'
-            description = 'Managing FRC projects, the Gradle way (2027+)'
-            tags = ['frc', 'wpilib', 'gradlerio', 'systemcore']
+            description = 'Managing FIRST projects, the Gradle way (2027+)'
+            tags = ['frc', 'ftc', 'first', 'wpilib', 'gradlerio', 'systemcore']
         }
     }
 }
