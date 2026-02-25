@@ -67,6 +67,6 @@ void Robot::TeleopPeriodic() {}
 
 void Robot::TestPeriodic() {}
 
-#ifndef RUNNING_FIRST_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() { return wpi::StartRobot<Robot>(); }
 #endif
