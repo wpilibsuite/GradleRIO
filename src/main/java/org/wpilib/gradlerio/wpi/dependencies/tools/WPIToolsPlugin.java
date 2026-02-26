@@ -20,8 +20,8 @@ public class WPIToolsPlugin implements Plugin<Project> {
         List<WPITool> tools = new ArrayList<>();
         List<WPICppTool> cppTools = new ArrayList<>();
 
-        Provider<Directory> firstHome = wpi.getFirstHome();
-        Provider<Directory> toolsFolder = project.provider(() -> firstHome.get().dir("tools"));
+        Provider<Directory> wpilibHome = wpi.getWpilibHome();
+        Provider<Directory> toolsFolder = project.provider(() -> wpilibHome.get().dir("tools"));
 
         cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(),
                 "org.wpilib.tools:OutlineViewer", toolsFolder));

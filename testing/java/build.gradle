@@ -26,21 +26,21 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.first.getTeamNumber()
+            team = project.wpilib.getTeamNumber()
             // Use the default systemcore host name. This must be called after setting team
             // as happens on the line above
             useDefaultSystemcoreHostName()
-            debug = project.first.getDebugOrDefault(false)
+            debug = project.wpilib.getDebugOrDefault(false)
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
-                firstJava(getArtifactTypeClass('FIRSTJavaArtifact')) {
+                wpilibJava(getArtifactTypeClass('WPILibJavaArtifact')) {
                 }
 
                 // Static files artifact
-                firstStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                wpilibStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/systemcore/deploy'
                 }
@@ -49,7 +49,7 @@ deploy {
     }
 }
 
-def deployArtifact = deploy.targets.systemcore.artifacts.firstJava
+def deployArtifact = deploy.targets.systemcore.artifacts.wpilibJava
 
 wpi.java.debugJni = false
 

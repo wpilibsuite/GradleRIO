@@ -6,16 +6,16 @@ import org.gradle.api.Project;
 
 //import org.wpilib.deployutils.deploy.artifact.NativeArtifact;
 
-public class FIRSTNativeLibraryArtifact { // TODO Extend NativeLibraryArtifact
+public class WPILibNativeLibraryArtifact { // TODO Extend NativeLibraryArtifact
 
     // @Inject
-    // public FIRSTNativeLibraryArtifact(String name, Project project) {
+    // public WPILibNativeLibraryArtifact(String name, Project project) {
     //     super(name, project);
 
-    //     getDirectory().set(FIRSTPlugin.LIB_DEPLOY_DIR);
+    //     getDirectory().set(WPILibDeployPlugin.LIB_DEPLOY_DIR);
 
     //     getPostdeploy().add(ctx -> {
-    //         FIRSTPlugin.ownDirectory(ctx, FIRSTPlugin.LIB_DEPLOY_DIR);
+    //         WPILibDeployPlugin.ownDirectory(ctx, WPILibDeployPlugin.LIB_DEPLOY_DIR);
     //         ctx.execute("ldconfig");
     //     });
 

@@ -43,7 +43,7 @@ public abstract class WPIRemoteTarget extends StagedDeployTarget {
     }
 
     @Inject
-    public WPIRemoteTarget(String name, Project project, DeployExtension de, FIRSTExtension firstExtension) {
+    public WPIRemoteTarget(String name, Project project, DeployExtension de, WPILibExtension firstExtension) {
         super(name, project, de);
 
         debug = project.getObjects().property(Boolean.class);

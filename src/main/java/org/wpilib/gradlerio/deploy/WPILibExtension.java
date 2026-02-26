@@ -14,11 +14,11 @@ import org.gradle.api.tasks.TaskProvider;
 
 import org.wpilib.deployutils.deploy.DeployExtension;
 
-public class FIRSTExtension {
+public class WPILibExtension {
     private final Project project;
 
     @Inject
-    public FIRSTExtension(Project project, DeployExtension deployExtension) {
+    public WPILibExtension(Project project, DeployExtension deployExtension) {
         this.project = project;
 
         debugFileTask = project.getTasks().register("writeDebugInfo", DebugFileTask.class, t -> {

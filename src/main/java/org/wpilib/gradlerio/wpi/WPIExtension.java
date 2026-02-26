@@ -35,7 +35,7 @@ public class WPIExtension {
     private final WPIMavenExtension maven;
     private final SimulationExtension sim;
 
-    private Property<String> firstYear;
+    private Property<String> wpilibYear;
 
     private final NativePlatforms platforms;
 
@@ -59,19 +59,19 @@ public class WPIExtension {
         ObjectFactory factory = project.getObjects();
         platforms = new NativePlatforms();
 
-        firstYear = factory.property(String.class);
-        firstYear.convention("2027_alpha1");
+        wpilibYear = factory.property(String.class);
+        wpilibYear.convention("2027_alpha4");
 
-        firstHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
-                .dir(firstYear);
+        wpilibHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
+                .dir(wpilibYear);
 
         versions = factory.newInstance(WPIVersionsExtension.class);
 
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
         vendor.getFixedVersion().set(versions.getWpilibVersion());
-        vendor.getFirstYear().set(firstYear);
-        vendor.getFirstHome().set(firstHome);
+        vendor.getWpilibYear().set(wpilibYear);
+        vendor.getWpilibHome().set(wpilibHome);
 
         // TODO in the future make this lazy
         vendor.loadAll();
@@ -135,10 +135,10 @@ public class WPIExtension {
         }
     }
 
-    private final Provider<Directory> firstHome;
+    private final Provider<Directory> wpilibHome;
 
-    public Provider<Directory> getFirstHome() {
-        return firstHome;
+    public Provider<Directory> getWpilibHome() {
+        return wpilibHome;
     }
 
     private static File computeHomeRoot() {
@@ -208,8 +208,8 @@ public class WPIExtension {
         return maven;
     }
 
-    public Property<String> getFirstYear() {
-        return firstYear;
+    public Property<String> getWpilibYear() {
+        return wpilibYear;
     }
 
     public NativePlatforms getPlatforms() {

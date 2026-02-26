@@ -16,18 +16,18 @@ import org.gradle.api.tasks.util.PatternSet;
 import org.wpilib.deployutils.deploy.artifact.FileCollectionArtifact;
 import org.wpilib.deployutils.deploy.context.DeployContext;
 import org.wpilib.deployutils.deploy.target.RemoteTarget;
-import org.wpilib.gradlerio.deploy.FIRSTDeployPlugin;
+import org.wpilib.gradlerio.deploy.WPILibDeployPlugin;
 
-public class FIRSTJNILibraryArtifact extends FileCollectionArtifact {
+public class WPILibJNILibraryArtifact extends FileCollectionArtifact {
     private Property<Configuration> configuration;
     private boolean zipped;
     private PatternFilterable filter;
 
     @Inject
-    public FIRSTJNILibraryArtifact(String name, RemoteTarget target) {
+    public WPILibJNILibraryArtifact(String name, RemoteTarget target) {
         super(name, target);
 
-        getDirectory().set(FIRSTDeployPlugin.LIB_DEPLOY_DIR);
+        getDirectory().set(WPILibDeployPlugin.LIB_DEPLOY_DIR);
 
         filter = new PatternSet();
 
@@ -46,8 +46,8 @@ public class FIRSTJNILibraryArtifact extends FileCollectionArtifact {
         });
 
         getPostdeploy().add(ctx -> {
-            FIRSTDeployPlugin.ownDirectory(ctx, FIRSTDeployPlugin.LIB_DEPLOY_DIR);
-            ctx.execute("sudo ldconfig " + FIRSTDeployPlugin.LIB_DEPLOY_DIR);
+            WPILibDeployPlugin.ownDirectory(ctx, WPILibDeployPlugin.LIB_DEPLOY_DIR);
+            ctx.execute("sudo ldconfig " + WPILibDeployPlugin.LIB_DEPLOY_DIR);
         });
     }
 
