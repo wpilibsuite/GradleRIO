@@ -101,8 +101,8 @@ public class WPIPlugin implements Plugin<Project> {
         });
 
         Set<String> vendorCacheIds = wpi.getMaven().getVendorCacheGroupIds();
-        if (wpi.getMaven().isUseFirstMavenVendorCache() && (!vendorCacheIds.isEmpty() || !enableGroupLimits)) {
-            wpi.getMaven().repo("FIRSTMavenVendorCache", cache -> {
+        if (wpi.getMaven().isUseWpilibMavenVendorCache() && (!vendorCacheIds.isEmpty() || !enableGroupLimits)) {
+            wpi.getMaven().repo("WPILibMavenVendorCache", cache -> {
                 cache.setRelease("https://frcmaven.wpi.edu/artifactory/vendor-mvn-release");
                 cache.setPriority(WPIMavenRepo.PRIORITY_WPILIB_VENDOR_CACHE);
                 cache.setAllowedGroupIds(vendorCacheIds);
@@ -112,20 +112,20 @@ public class WPIPlugin implements Plugin<Project> {
         if (wpi.getMaven().isUseLocal()) {
             project.getRepositories().maven(repo -> {
                 repo.setName("WPILocal");
-                repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getFirstHome().map(x -> x.dir("maven")));
+                repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getWpilibHome().map(x -> x.dir("maven")));
             });
         }
 
-        if (wpi.getMaven().isUseFirstMavenLocalDevelopment()) {
+        if (wpi.getMaven().isUseWpilibMavenLocalDevelopment()) {
             project.getRepositories().maven(repo -> {
-                repo.setName("FIRSTDevelopmentLocal");
+                repo.setName("WPILibDevelopmentLocal");
                 repo.setUrl(System.getProperty("user.home") + "/releases/maven/development");
             });
         }
 
-        if (wpi.getMaven().isUseFirstMavenLocalRelease()) {
+        if (wpi.getMaven().isUseWpilibMavenLocalRelease()) {
             project.getRepositories().maven(repo -> {
-                repo.setName("FIRSTReleaseLocal");
+                repo.setName("WPILibReleaseLocal");
                 repo.setUrl(System.getProperty("user.home") + "/releases/maven/release");
             });
         }

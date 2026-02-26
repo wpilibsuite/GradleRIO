@@ -18,10 +18,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
     private final Set<String> vendorCacheGroupIds = new HashSet<>();
     private boolean useDevelopment;
     private boolean useLocal;
-    private boolean useFirstMavenLocalDevelopment;
-    private boolean useFirstMavenLocalRelease;
+    private boolean useWpilibMavenLocalDevelopment;
+    private boolean useWpilibMavenLocalRelease;
     private boolean useMavenCentral;
-    private boolean useFirstMavenVendorCache;
+    private boolean useWpilibMavenVendorCache;
     private boolean enableRepositoryGroupLimits;
 
     @Inject
@@ -31,10 +31,10 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
 
         this.useDevelopment = true; // Do not rename without changing versionupdates.gradle
         this.useLocal = true;
-        this.useFirstMavenLocalDevelopment = false;
-        this.useFirstMavenLocalRelease = false;
+        this.useWpilibMavenLocalDevelopment = false;
+        this.useWpilibMavenLocalRelease = false;
         this.useMavenCentral = true;
-        this.useFirstMavenVendorCache = true;
+        this.useWpilibMavenVendorCache = true;
         this.enableRepositoryGroupLimits = true;
 
         // mirror("AU") { WPIMavenRepo mirror ->
@@ -55,12 +55,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return vendorCacheGroupIds;
     }
 
-    public boolean isUseFirstMavenVendorCache() {
-        return useFirstMavenVendorCache;
+    public boolean isUseWpilibMavenVendorCache() {
+        return useWpilibMavenVendorCache;
     }
 
-    public void setUseFirstMavenVendorCache(boolean useFirstMavenVendorCache) {
-        this.useFirstMavenVendorCache = useFirstMavenVendorCache;
+    public void setUseWpilibMavenVendorCache(boolean useWpilibMavenVendorCache) {
+        this.useWpilibMavenVendorCache = useWpilibMavenVendorCache;
     }
 
     public Project getProject() {
@@ -75,12 +75,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         return useLocal;
     }
 
-    public boolean isUseFirstMavenLocalDevelopment() {
-        return useFirstMavenLocalDevelopment;
+    public boolean isUseWpilibMavenLocalDevelopment() {
+        return useWpilibMavenLocalDevelopment;
     }
 
-    public boolean isUseFirstMavenLocalRelease() {
-        return useFirstMavenLocalRelease;
+    public boolean isUseWpilibMavenLocalRelease() {
+        return useWpilibMavenLocalRelease;
     }
 
     public boolean isUseMavenCentral() {
@@ -95,12 +95,12 @@ public class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo>
         this.useLocal = useLocal;
     }
 
-    public void setUseFirstMavenLocalDevelopment(boolean useFirstMavenLocalDevelopment) {
-        this.useFirstMavenLocalDevelopment = useFirstMavenLocalDevelopment;
+    public void setUseWpilibMavenLocalDevelopment(boolean useWpilibMavenLocalDevelopment) {
+        this.useWpilibMavenLocalDevelopment = useWpilibMavenLocalDevelopment;
     }
 
-    public void setUseFirstMavenLocalRelease(boolean useFirstMavenLocalRelease) {
-        this.useFirstMavenLocalRelease = useFirstMavenLocalRelease;
+    public void setUseWpilibMavenLocalRelease(boolean useWpilibMavenLocalRelease) {
+        this.useWpilibMavenLocalRelease = useWpilibMavenLocalRelease;
     }
 
     public void setUseMavenCentral(boolean useMavenCentral) {
