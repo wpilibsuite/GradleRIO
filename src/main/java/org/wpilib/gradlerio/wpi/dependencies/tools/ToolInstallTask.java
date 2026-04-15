@@ -126,11 +126,11 @@ public class ToolInstallTask extends DefaultTask {
                 tools.removeIf(x -> x.name.equals(tool.name));
                 tools.add(tool);
                 String json = builder.create().toJson(tools);
-                ResourceGroovyMethods.setText(toolFile, json);
+                ResourceGroovyMethods.setText(toolFile, json, "UTF-8");
             } else {
                 ToolConfig[] tools = new ToolConfig[] { tool };
                 String json = builder.create().toJson(tools);
-                ResourceGroovyMethods.setText(toolFile, json);
+                ResourceGroovyMethods.setText(toolFile, json, "UTF-8");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -220,7 +220,7 @@ public class ToolInstallTask extends DefaultTask {
     private static void extractScriptWindows(Directory toolsFolder, String toolName) {
         File outputFile = toolsFolder.file(toolName + ".vbs").getAsFile();
         try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.vbs")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it), "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -229,7 +229,7 @@ public class ToolInstallTask extends DefaultTask {
     private void extractScriptUnix(Project project, Directory toolsFolder, String toolName) {
         File outputFile = toolsFolder.file(toolName + ".sh").getAsFile();
         try (InputStream it = ToolInstallTask.class.getResourceAsStream("/ScriptBase.sh")) {
-            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it));
+            ResourceGroovyMethods.setText(outputFile, IOGroovyMethods.getText(it), "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
