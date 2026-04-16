@@ -44,6 +44,6 @@ public abstract class DebugFileTask extends DefaultTask {
         builder.setPrettyPrinting();
         File outputFile = getDebugFile().get().getAsFile();
         outputFile.getParentFile().mkdirs();
-        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(debugInfo));
+        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(debugInfo), "UTF-8");
     }
 }

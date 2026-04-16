@@ -139,6 +139,6 @@ public class NativeExternalSimulationTask extends DefaultTask {
         builder.setPrettyPrinting();
         File outputFile = simulationFile.get().getAsFile();
         outputFile.getParentFile().mkdirs();
-        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(simInfo));
+        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(simInfo), "UTF-8");
     }
 }

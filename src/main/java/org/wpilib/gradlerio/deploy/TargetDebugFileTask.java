@@ -58,6 +58,6 @@ public class TargetDebugFileTask extends DefaultTask {
         builder.setPrettyPrinting();
         File outputFile = debugFile.get().getAsFile();
         outputFile.getParentFile().mkdirs();
-        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(debugList));
+        ResourceGroovyMethods.setText(outputFile, builder.create().toJson(debugList), "UTF-8");
     }
 }
