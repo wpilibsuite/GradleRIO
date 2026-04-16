@@ -59,12 +59,8 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 
         createJavaDependencies("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-java", versions.getOpencvVersion());
+        createJavaDependencies("io.avaje", "avaje-jsonb", versions.getAvajeVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
-
-        createJavaDependencies("com.fasterxml.jackson.core", "jackson-annotations", versions.getJacksonVersion());
-        createJavaDependencies("com.fasterxml.jackson.core", "jackson-core", versions.getJacksonVersion());
-        createJavaDependencies("com.fasterxml.jackson.core", "jackson-databind", versions.getJacksonVersion());
-
         createJavaDependencies("us.hebi.quickbuf", "quickbuf-runtime", versions.getQuickbufVersion());
     }
 
@@ -72,11 +68,12 @@ public class WPIJavaDepsExtension {
         return wpilibDeps;
     }
 
-    /** Dependencies required for using WPILib's Java annotations during compilation. */
+    /** Dependencies required for using WPILib's Java annotations and other libraries during compilation. */
     public List<Provider<String>> wpilibAnnotations() {
         // epilogue-runtime is a dependency of epilogue-processor, and needs to be on the annotation processor
         // classpath at compile time for the processor to function. Same with annotations for wpilibj-javac-plugin.
         return List.of(
+                providers.provider(() -> dependencyNotation("io.avaje", "avaje-jsonb-generator", versions.getAvajeVersion())),
                 providers.provider(() -> dependencyNotation("org.wpilib.epilogue", "epilogue-processor-java", versions.getWpilibVersion())),
                 providers.provider(() -> dependencyNotation("org.wpilib.epilogue", "epilogue-runtime-java", versions.getWpilibVersion())),
                 providers.provider(() -> dependencyNotation("org.wpilib", "wpilibj-javac-plugin-java", versions.getWpilibVersion())),
