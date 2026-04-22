@@ -122,6 +122,7 @@ public class WPIJavaExtension {
         jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
         jvmArgs.add("--add-opens");
         jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
+        jvmArgs.add("--enable-native-access=ALL-UNNAMED");
         if (OperatingSystem.current().isMacOsX()) {
             jvmArgs.add("-XstartOnFirstThread");
         }
