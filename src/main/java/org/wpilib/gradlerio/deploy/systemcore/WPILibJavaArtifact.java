@@ -40,6 +40,7 @@ public class WPILibJavaArtifact extends DebuggableJavaArtifact {
         jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
         jvmArgs.add("--add-opens");
         jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
+        jvmArgs.add("--enable-native-access=ALL-UNNAMED");
 
         var debugConfiguration = target.getProject().getConfigurations().create("systemcoreDebug");
         var releaseConfiguration = target.getProject().getConfigurations().create("systemcoreRelease");
