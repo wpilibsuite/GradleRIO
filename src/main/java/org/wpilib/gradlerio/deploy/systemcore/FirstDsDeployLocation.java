@@ -33,7 +33,7 @@ public class FirstDsDeployLocation extends SshDeployLocation {
     private Optional<String> cachedAddress = Optional.empty();
     private ETLogger log = ETLoggerFactory.INSTANCE.create("FirstDsDeployLocation");
     private int timeout = 1000;
-    private int port = 1744;
+    private int port = 6770;
 
     public int getPort() {
         return port;
