@@ -58,7 +58,7 @@ public class WPIJavaDepsExtension {
 
         createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 
-        createJavaDependencies("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-java", versions.getOpencvVersion());
+        createJavaDependencies("org.wpilib.thirdparty.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("io.avaje", "avaje-jsonb", versions.getAvajeVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
         createJavaDependencies("us.hebi.quickbuf", "quickbuf-runtime", versions.getQuickbufVersion());
@@ -99,7 +99,7 @@ public class WPIJavaDepsExtension {
             createJniDependency("org.wpilib.wpimath", "wpimath-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("org.wpilib.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("org.wpilib.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform),
-            createJniDependency("edu.wpi.first.thirdparty.frc2025.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
+            createJniDependency("org.wpilib.thirdparty.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform),
             createJniDependency("org.wpilib.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("org.wpilib.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform),
             createJniDependency("org.wpilib.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform),
