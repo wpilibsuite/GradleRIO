@@ -5,8 +5,7 @@ def versionMap = [
   glassVersion: 'org.wpilib.tools:Glass:+:windowsx86-64@zip',
   sysIdVersion: 'org.wpilib.tools:SysId:+:windowsx86-64@zip',
   dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
-  imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
+  opencvVersion: 'org.wpilib.thirdparty.opencv:opencv-java:+',
   wpicalToolVersion: 'org.wpilib.tools:wpical:+:windowsx86-64@zip',
 ]
 
