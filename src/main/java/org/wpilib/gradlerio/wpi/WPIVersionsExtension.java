@@ -10,8 +10,8 @@ public abstract class WPIVersionsExtension {
     private static final String opencvVersion = "4.10.0-3";
     private static final String imguiVersion = "1.89.9-1";
     private static final String avajeVersion = "3.11";
-    private static final String ejmlVersion = "0.43.1";
-    private static final String quickbufVersion = "1.3.3";
+    private static final String ejmlVersion = "0.44.0";
+    private static final String quickbufVersion = "1.4";
 
     private static final String outlineViewerVersion = "2027.0.0-alpha-4";
     private static final String glassVersion = "2027.0.0-alpha-4";
