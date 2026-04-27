@@ -23,7 +23,7 @@ class Robot : public wpi::TimedRobot {
   void AutonomousPeriodic() override;
   void TeleopInit() override;
   void TeleopPeriodic() override;
-  void TestPeriodic() override;
+  void UtilityPeriodic() override;
 
  private:
   wpi::SendableChooser<std::string> m_chooser;
