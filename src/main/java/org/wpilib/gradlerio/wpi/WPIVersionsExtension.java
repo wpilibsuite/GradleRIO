@@ -29,7 +29,6 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getOutlineViewerVersion();
     public abstract Property<String> getGlassVersion();
     public abstract Property<String> getSysIdVersion();
-    public abstract Property<String> getRoboRIOTeamNumberSetterVersion();
     public abstract Property<String> getDataLogToolVersion();
     public abstract Property<String> getWpicalToolVersion();
 
