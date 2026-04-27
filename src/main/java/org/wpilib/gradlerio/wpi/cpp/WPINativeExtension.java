@@ -117,10 +117,8 @@ public class WPINativeExtension {
         // nte.setSinglePrintPerPlatform();
 
         nte.getWpi().configureDependencies(wpiDeps -> {
-            wpiDeps.getOpencvYear().set("frc2025");
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
-            wpiDeps.getImguiVersion().set(versions.getImguiVersion());
         });
 
         simulationTaskRelease = project.getTasks().register("simulateNativeRelease", NativeSimulationTask.class);

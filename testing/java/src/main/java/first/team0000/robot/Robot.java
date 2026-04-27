@@ -81,9 +81,9 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called periodically during test mode.
+   * This function is called periodically during utility mode.
    */
   @Override
-  public void testPeriodic() {
+  public void utilityPeriodic() {
   }
 }
