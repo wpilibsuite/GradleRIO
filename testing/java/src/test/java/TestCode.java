@@ -1,5 +1,5 @@
 import org.junit.Test;
-import edu.wpi.first.cscore.*;
+import org.wpilib.vision.camera.CameraServerJNI;
 
 public class TestCode {
     @Test

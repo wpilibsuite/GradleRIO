@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* Open Source Software - may be modified and shared by FIRST teams. The code */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
@@ -9,14 +9,14 @@
 
 #include <iostream>
 
-#include <frc/smartdashboard/SmartDashboard.h>
+#include "wpi/smartdashboard/SmartDashboard.hpp"
 
 constexpr bool testBool = false;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  wpi::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
 /**
@@ -65,8 +65,8 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {}
 
-void Robot::TestPeriodic() {}
+void Robot::UtilityPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+#ifndef RUNNING_WPILIB_TESTS
+int main() { return wpi::StartRobot<Robot>(); }
 #endif

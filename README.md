@@ -27,14 +27,6 @@ https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html
 Follow the installation instructions on frc-docs: https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
 _Note that the offline installer isn't required, but will save you a ton of time and is highly recommended._
 
-**WPILibUtility Standalone Project Builder**
-WPILib provides a standalone project builder that provides the same interface as VS Code, without having to use VS Code.
-
-If you've used the installer, find and run `wpilibutility` in `C:\Users\Public\wpilib\<YEAR>\utility` (windows), or `~/wpilib/<YEAR>/utility`(mac/linux). Note that mac users will have to extract the .tar.gz file, then run.
-Alternatively, download it from the VSCode-WPILib releases, extract it, and run it: https://github.com/wpilibsuite/vscode-wpilib/releases
-
-Use the WPILib Utility whenever you want to create a new project.
-
 ## Adding Vendor Libraries
 
 ### With Visual Studio Code
@@ -57,16 +49,12 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew build` will build your robot code (and run unit tests if present).
 - `./gradlew deploy` will build and deploy your code.
 
-- `./gradlew installRoboRioToolchain` will install the C++ Toolchains for your system (required for C++).
+- `./gradlew installSystemCoreToolchain` will install the C++ Toolchains for your system (required for C++).
 
 ### Tools
 
 - `./gradlew Glass` will launch Glass, a data visualization tool similar to the SimGUI.
-- `./gradlew ShuffleBoard` will launch Shuffleboard, the 2018 replacement for SmartDashboard.
-- `./gradlew SmartDashboard` will launch Smart Dashboard (note: SmartDashboard is legacy software, use ShuffleBoard instead!).
-- `./gradlew RobotBuilder` will launch Robot Builder, a tool for generating robot projects and source files.
 - `./gradlew OutlineViewer` will launch Outline Viewer, for viewing NetworkTables.
-- `./gradlew PathWeaver` will launch PathWeaver, a tool for generating motion profiles using WPILib's trajectories and splines.
 
 **At Competition? Connected to the Robot?** Run with the `--offline` flag. e.g. `./gradlew deploy --offline`
 
@@ -74,11 +62,11 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 
 ### Visual Studio Code:
 
-VS Code is fully supported by GradleRIO for FRC. To use it, use the WPILib VS Code extension. See frc-docs for instructions.
+VS Code is fully supported by GradleRIO for WPILib. To use it, use the WPILib VS Code extension. See frc-docs for instructions.
 
 ### IntelliJ IDEA:
 
-_IntelliJ IDEA support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
+_IntelliJ IDEA support is unofficial in the WPILib sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
 To import a gradle project into IntelliJ IDEA please do **one** of the following:
 - In the welcome screen click `Import Project` and select the `build.gradle` file of the project.
@@ -90,7 +78,7 @@ Please see the IntelliJ IDEA help page on gradle for help: https://www.jetbrains
 
 ### Eclipse
 
-_Eclipse support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
+_Eclipse support is unofficial in the WPILib sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event. **Eclipse is only supported for JAVA (not C++)**_
 
 First install buildship, the gradle plugin made by Eclipse for the Eclipse IDE. Installation instructions can be found here: https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md
 
@@ -103,7 +91,7 @@ Please see the buildship github page for help (specifically the user documentati
 
 ### Visual Studio 2017 Community / Full (not Visual Studio Code)
 
-_VS2017 support is unofficial in the FRC sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
+_VS2017 support is unofficial in the WPILib sense, but is well supported by the Gradle team. CSA Support isn't guaranteed, so make sure you're prepared to fix any issues yourself if you're at an event._
 
 To start with, you must apply the `visual-studio` plugin to build.gradle. In your `build.gradle`, put the following code in the `plugins {}` block.
 ```gradle
@@ -125,20 +113,20 @@ For mid-season updates to GradleRio, edit build.gradle and replace the version i
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
+    id "org.wpilib.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
 }
 ```
 
-The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
+The latest version can be obtained from here: https://plugins.gradle.org/plugin/org.wpilib.GradleRIO
 
 ## Using alternate garbage collector
 
-GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/roborio/GarbageCollectorType.java. To use another Garbage Collector, in the FRCJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
+GradleRIO has built in settings for several different garbage collectors. The G1 Garbage Collector was used for 2023. The Serial Garbage Collector is used for 2024. A list of all Garbage Collectors and settings that GradleRIO has built-in support for setting is available at: https://github.com/wpilibsuite/GradleRIO/blob/main/src/main/java/edu/wpi/first/gradlerio/deploy/systemcore/GarbageCollectorType.java. To use another Garbage Collector, in the WPILibJavaArtifact block, add `gcType = ` and set it to the value found in the `GarbageCollectorType` enum.
 
 The `Other` `gcType` can be used for complete customization
 
-1. Set `gcType = 'Other'` in the FRCJavaArtifact block
-2. Add the appropriate jvmArg for the Garbage Collector and settings in the FRCJavaArtifact. For the default G1 settings:
+1. Set `gcType = 'Other'` in the WPILibJavaArtifact block
+2. Add the appropriate jvmArg for the Garbage Collector and settings in the WPILibJavaArtifact. For the default G1 settings:
    ```
    jvmArgs.add("-XX:+UseG1GC")
    jvmArgs.add("-XX:MaxGCPauseMillis=1")
@@ -155,6 +143,6 @@ To use a custom build of GradleRIO in a robot project, the build must be publish
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE PUBLISHED VERSION"
+    id "org.wpilib.GradleRIO" version "REPLACE ME WITH THE PUBLISHED VERSION"
 }
 ```

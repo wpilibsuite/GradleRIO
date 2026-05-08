@@ -1,21 +1,13 @@
 
 def versionMap = [
-  wpilibVersion: 'edu.wpi.first.wpilibj:wpilibj-java:+',
-  smartDashboardVersion: 'edu.wpi.first.tools:SmartDashboard:+:win64',
-  outlineViewerVersion: 'edu.wpi.first.tools:OutlineViewer:+:windowsx86-64@zip',
-  robotBuilderVersion: 'edu.wpi.first.tools:RobotBuilder:+',
-  shuffleboardVersion: 'edu.wpi.first.tools:Shuffleboard:+:win64',
-  pathWeaverVersion: 'edu.wpi.first.tools:PathWeaver:+:win64',
-  glassVersion: 'edu.wpi.first.tools:Glass:+:windowsx86-64@zip',
-  sysIdVersion: 'edu.wpi.first.tools:SysId:+:windowsx86-64@zip',
-  roboRIOTeamNumberSetterVersion: 'edu.wpi.first.tools:roboRIOTeamNumberSetter:+:windowsx86-64@zip',
-  dataLogToolVersion: 'edu.wpi.first.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:+',
-  niLibrariesVersion: 'edu.wpi.first.ni-libraries:runtime:+:allowedimages@zip',
-  imguiVersion: 'edu.wpi.first.thirdparty.frc2024:imgui:+:headers',
-  wpimathVersion: 'edu.wpi.first.wpimath:wpimath-java:+',
-  wpicalToolVersion: 'edu.wpi.first.tools:wpical:+:windowsx86-64@zip',
-  processstarterToolVersion: 'edu.wpi.first.tools:processstarter:+:windowsx86-64@zip',
+  wpilibVersion: 'org.wpilib.wpilibj:wpilibj-java:+',
+  outlineViewerVersion: 'org.wpilib.tools:OutlineViewer:+:windowsx86-64@zip',
+  glassVersion: 'org.wpilib.tools:Glass:+:windowsx86-64@zip',
+  sysIdVersion: 'org.wpilib.tools:SysId:+:windowsx86-64@zip',
+  dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
+  opencvVersion: 'org.wpilib.thirdparty.opencv:opencv-java:+',
+  wpicalToolVersion: 'org.wpilib.tools:wpical:+:windowsx86-64@zip',
+  processstarterToolVersion: 'org.wpilib.tools:processstarter:+:windowsx86-64@zip',
 ]
 
 configurations {
@@ -27,9 +19,9 @@ def useDevelopmentProperty = 'useDevelopment'
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (project.hasProperty(useDevelopmentProperty)) {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/development"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/development-2027"
     } else {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/release"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/release-2027"
     }
 }
 
@@ -46,7 +38,7 @@ String validVersionsRegex = "validImageVersions = List\\.of\\((.+)\\);"
 
 tasks.register('UpdateVersions') {
   doLast {
-    def mavenExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIMavenExtension.java')
+    def mavenExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIMavenExtension.java')
     def mavenExtText = mavenExtFile.text
     def toSet = "this.useDevelopment = false"
     if (project.hasProperty(useDevelopmentProperty)) {
@@ -56,7 +48,7 @@ tasks.register('UpdateVersions') {
     mavenExtFile.text = mavenExtText.replaceAll(mavenDevRegex, toSet)
 
 
-    def extFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIVersionsExtension.java')
+    def extFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIVersionsExtension.java')
     def extText = extFile.text
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       versionMap.each { key, value ->
@@ -101,7 +93,7 @@ tasks.register('UpdateVersions') {
       }
     }
 
-    def rootExtFile = file('src/main/java/edu/wpi/first/gradlerio/wpi/WPIExtension.java')
+    def rootExtFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIExtension.java')
     def rootExtText = rootExtFile.text
 
     rootExtFile.text = rootExtText.replaceAll(validVersionsRegex, "validImageVersions = List.of($allowedVersions);")

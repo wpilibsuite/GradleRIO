@@ -9,7 +9,7 @@ plugins {
 
 repositories {
     maven {
-        url "https://plugins.gradle.org/m2/"
+        url = "https://plugins.gradle.org/m2/"
     }
     mavenLocal()
 }
@@ -18,29 +18,29 @@ configurations {
     processstarterDownload
 }
 
-def processstarterToolVersion = "2026.2.1"
+def processstarterToolVersion = "2027.0.0-alpha-6"
 
 dependencies {
-
     api 'com.google.code.gson:gson:2.13.1'
 
-    api 'edu.wpi.first:native-utils:2026.0.1'
+    api 'org.wpilib:native-utils:2027.7.1'
 
     api 'de.undercouch:gradle-download-task:5.6.0'
 
-    testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
+    testImplementation('org.spockframework:spock-core:2.4-M6-groovy-4.0') {
         exclude group: 'org.codehaus.groovy'
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation gradleTestKit()
 
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsx86-64@zip"
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxx86-64@zip"
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm32@zip"
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:linuxarm64@zip"
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:osxuniversal@zip"
-    processstarterDownload "edu.wpi.first.tools:processstarter:$processstarterToolVersion:windowsarm64@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:windowsx86-64@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxx86-64@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxarm32@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxarm64@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:osxuniversal@zip"
+    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:windowsarm64@zip"
 }
 
 tasks.withType(Test).configureEach {
@@ -57,7 +57,7 @@ java {
 }
 
 allprojects {
-    group = "edu.wpi.first"
+    group = "org.wpilib"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -73,15 +73,15 @@ allprojects {
 }
 
 gradlePlugin {
-    website = 'https://github.com/wpilibsuite/GradleRIO'
-    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
+    website = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
+    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
     plugins {
         gradleRio {
-            id = 'edu.wpi.first.GradleRIO'
+            id = 'org.wpilib.GradleRIO'
             displayName = 'GradleRIO'
-            implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
-            description = 'Managing FRC projects, the Gradle way (2019+)'
-            tags = ['frc', 'wpilib', 'gradlerio']
+            implementationClass = 'org.wpilib.gradlerio.GradleRIOPlugin'
+            description = 'Managing FIRST projects, the Gradle way (2027+)'
+            tags = ['frc', 'ftc', 'first', 'wpilib', 'gradlerio', 'systemcore']
         }
     }
 }
@@ -92,14 +92,14 @@ def examplesFolder = file("$rootDir/testing")
 
 tasks.register('PatchExamples') {
     doLast {
-        String regex = "(id\\s*?[\\\"|\\']edu\\.wpi\\.first\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
+        String regex = "(id\\s*?[\\\"|\\']org\\.wpilib\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
 
         examplesFolder.eachFile { File file ->
             if (file.isDirectory() && file.name != '_archived') {
                 def buildGradleFile = new File(file, 'build.gradle')
                 if (buildGradleFile.exists() && buildGradleFile.isFile()) {
                     def text = buildGradleFile.text
-                    text = text.replaceAll(regex, "id \"edu.wpi.first.GradleRIO\" version \"${version}\"")
+                    text = text.replaceAll(regex, "id \"org.wpilib.GradleRIO\" version \"${version}\"")
                     buildGradleFile.text = text
                 }
             }
@@ -167,6 +167,6 @@ task processprocessstarterDownload {
 jar.dependsOn processprocessstarterDownload
 
 wrapper {
-    gradleVersion = '8.11'
+    gradleVersion = '9.2.0'
     distributionType = Wrapper.DistributionType.BIN
 }

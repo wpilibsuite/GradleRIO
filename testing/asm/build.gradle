@@ -1,7 +1,7 @@
 
 plugins {
     id "assembler"
-    id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-6"
 }
 
 def projectFolder = project.buildFile.parentFile
@@ -11,36 +11,39 @@ if (testingFolder.name != 'testing' || projectFolder.name != 'asm') {
     throw new GradleException("These projects are not to be used for robot projects. See README.md in the GradleRIO testing folder for the correct templates to use.")
 }
 
-// Define my targets (RoboRIO) and artifacts (deployable files)
+// Define my targets (SystemCore) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
-        roborio(getTargetTypeClass('RoboRIO')) {
+        systemcore(getTargetTypeClass('SystemCore')) {
             // Team number is loaded either from the .wpilib/wpilib_preferences.json
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.frc.getTeamNumber()
-            debug = project.frc.getDebugOrDefault(false)
+            team = project.wpilib.getTeamNumber()
+            // Use the default systemcore host name. This must be called after setting team
+            // as happens on the line above
+            useDefaultSystemcoreHostName()
+            debug = project.wpilib.getDebugOrDefault(false)
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
-                frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
+                wpilibCpp(getArtifactTypeClass('WPILibNativeArtifact')) {
                 }
 
                 // Static files artifact
-                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                wpilibStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
-                    directory = '/home/lvuser/deploy'
+                    directory = '/home/systemcore/deploy'
                 }
             }
         }
     }
 }
 
-def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
+def deployArtifact = deploy.targets.systemcore.artifacts.wpilibCpp
 
 // Simulation configuration
 
@@ -56,8 +59,8 @@ wpi.sim.addWebsocketsClient().defaultEnabled = true
 
 model {
     components {
-        frcUserProgram(NativeExecutableSpec) {
-            targetPlatform wpi.platforms.roborio
+        wpilibUserProgram(NativeExecutableSpec) {
+            targetPlatform wpi.platforms.systemcore
 
             sources.asm {
                 source {
