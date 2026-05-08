@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-5"
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-6"
 }
 
 def projectFolder = project.buildFile.parentFile
