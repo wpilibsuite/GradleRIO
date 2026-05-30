@@ -1,4 +1,5 @@
-package org.wpilib.gradlerio.diagrams;
+
+package org.wpilib.gradlerio.graphgen;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
 @DisableCachingByDefault
 public abstract class MakeStateMachineGraphsTask extends DefaultTask {
     private record Transition(String fromState, String toState, String transitionCond) {}
-    private static class Diagram {
+    private static class StateMachineGraph {
         List<Transition> transitions = new ArrayList<>();
         String initialState;
         List<String> stateDefinitionOrder = new ArrayList<>();
@@ -44,13 +45,43 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         extractFromDirectory(getJavaRoot().getOrElse("src/main/java"));
     }
 
-    private void extractFromFile(File sourceFile, Map<String, Diagram> diagrams) throws IOException {
-        // 1. Initialize configuration
+    private void extractFromDirectory(String rootDir) throws IOException {
+        var graphs = new LinkedHashMap<String, StateMachineGraph>();
+        // Init configuration for javaparser
         var config = new ParserConfiguration();
         config.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
         config.setPreprocessUnicodeEscapes(true);
         var parser = new JavaParser(config);
 
+        Files.walk(Paths.get(rootDir))
+            .filter(path -> path.toString().endsWith(".java"))
+            .forEach(path -> {
+                try {
+                    extractFromFile(parser, path.toFile(), graphs);
+                } catch (IOException e) {
+                    System.err.println("Failed to parse: " + path + " — " + e.getMessage());
+                }
+            });
+
+        for (var entry: graphs.entrySet()) {
+            var methodName = entry.getKey();
+            var graph = entry.getValue();
+            var deployDir = getJavaRoot().getOrElse("src/main/java/") + "../deploy/stateMachineGraphs/";
+            var file = new File(deployDir + methodName + ".mermaid");
+            if (file.getParentFile() != null) {
+                file.getParentFile().mkdirs();
+            }
+            try (var writer = new FileWriter(file)) {
+                writer.write(generateMermaid(graph));
+            }
+        }
+    }
+
+    private void extractFromFile(
+        JavaParser parser,
+        File sourceFile,
+        Map<String, StateMachineGraph> graphs
+    ) throws IOException {
         var content = Files.readString(sourceFile.toPath());
         // JavaParser 3.28.1 (and earlier) has issues with unnamed variables (JEP 456).
         // We replace them with a valid identifier before parsing.
@@ -83,20 +114,20 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             }
 
             var stateMachineDef = stateMachineDefs.getFirst().getVariable(0).getInitializer().orElseThrow();
-            var rawDiagramName = stateMachineDef.asObjectCreationExpr().getArgument(0);
-            if (!rawDiagramName.isStringLiteralExpr()) {
+            var rawGraphName = stateMachineDef.asObjectCreationExpr().getArgument(0);
+            if (!rawGraphName.isStringLiteralExpr()) {
                 throw new RuntimeException(
-                    "The diagram generator requires the name " +
+                    "The graph generator requires the name " +
                     "of the state machine in '" + method.getNameAsString() +
-                    "' to be a single string literal (e.g. new StateMachine(\"My Diagram\"))."
+                    "' to be a single string literal (e.g. new StateMachine(\"My Auto\"))."
                 );
             }
-            var diagramName = rawDiagramName.toString().substring(1, rawDiagramName.toString().length() - 1);
-            if (diagrams.containsKey(diagramName)) {
-                throw new RuntimeException("You already have a State Machine named '" + diagramName + "'");
+            var graphName = rawGraphName.toString().substring(1, rawGraphName.toString().length() - 1);
+            if (graphs.containsKey(graphName)) {
+                throw new RuntimeException("You already have a State Machine named '" + graphName + "'");
             }
-            var diagram = new Diagram();
-            diagrams.put(diagramName, diagram);
+            var graph = new StateMachineGraph();
+            graphs.put(graphName, graph);
 
             variableDefs.stream()
                 .filter(v -> {
@@ -105,11 +136,11 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                             initializer.get().isMethodCallExpr() &&
                             initializer.get().asMethodCallExpr().getNameAsString().equals("addState");
                 })
-                .forEachOrdered(v -> diagram.stateDefinitionOrder.add(v.getVariable(0).getNameAsString()));
+                .forEachOrdered(v -> graph.stateDefinitionOrder.add(v.getVariable(0).getNameAsString()));
 
             method.findAll(MethodCallExpr.class).forEach(call -> {
                 if (call.getNameAsString().equals("setInitialState")) {
-                    diagram.initialState = call.getArguments().getFirst().orElseThrow().toString();
+                    graph.initialState = call.getArguments().getFirst().orElseThrow().toString();
                     return;
                 }
 
@@ -143,11 +174,11 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 if (toStateCall.getNameAsString().equals("switchTo")) {
                     var fromState = toStateCall.getScope().orElseThrow().toString();
                     if (toState.isLambdaExpr()) {
-                        diagram.transitions.addAll(
+                        graph.transitions.addAll(
                             transitionsFromLambdaExpr(toState, fromState, transitionCond)
                         );
                     } else {
-                        diagram.transitions.add(new Transition(fromState, toState.toString(), transitionCond));
+                        graph.transitions.add(new Transition(fromState, toState.toString(), transitionCond));
                     }
                 } else if (toStateCall.getNameAsString().equals("to")) {
                     // If it's just a regular "to", there must be a switchFromAny before it.
@@ -158,12 +189,12 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                     if (argList.isEmpty()) return;
                     for (var fromState: argList.get()) {
                         if (toState.isLambdaExpr()) {
-                            diagram.transitions.addAll(
+                            graph.transitions.addAll(
                                 transitionsFromLambdaExpr(toState, fromState.toString(), transitionCond)
                             );
                         } else {
                             var t = new Transition(fromState.toString(), toState.toString(), transitionCond);
-                            diagram.transitions.add(t);
+                            graph.transitions.add(t);
                         }
                     }
                 }
@@ -189,42 +220,15 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         return transitions;
     }
 
-    private void extractFromDirectory(String rootDir) throws IOException {
-        Map<String, Diagram> diagrams = new LinkedHashMap<>();
-
-        Files.walk(Paths.get(rootDir))
-            .filter(path -> path.toString().endsWith(".java"))
-            .forEach(path -> {
-                try {
-                    extractFromFile(path.toFile(), diagrams);
-                } catch (IOException e) {
-                    System.err.println("Failed to parse: " + path + " — " + e.getMessage());
-                }
-            });
-
-        for (var entry : diagrams.entrySet()) {
-            var methodName = entry.getKey();
-            var diagram = entry.getValue();
-            var deployDir = getJavaRoot().getOrElse("src/main/java/") + "../deploy/stateMachineGraphs/";
-            var file = new File(deployDir + methodName + ".mermaid");
-            if (file.getParentFile() != null) {
-                file.getParentFile().mkdirs();
-            }
-            try (var writer = new FileWriter(file)) {
-                writer.write(generateMermaid(diagram));
-            }
-        }
-    }
-
-    private String generateMermaid(Diagram diagram) {
+    private String generateMermaid(StateMachineGraph graph) {
         StringBuilder sb = new StringBuilder();
         sb.append("---\n");
         sb.append("state_definition_order: ");
-        sb.append(diagram.stateDefinitionOrder);
+        sb.append(graph.stateDefinitionOrder);
         sb.append("\n---\n");
         sb.append("stateDiagram-v2\n");
         sb.append("    direction LR\n\n");
-        for (var t : diagram.transitions) {
+        for (var t : graph.transitions) {
             sb.append("    ")
                 .append(sanitize(t.fromState()))
                 .append(" --> ")
@@ -233,10 +237,10 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 .append(sanitize(t.transitionCond()))
                 .append("\n");
         }
-        if (diagram.initialState != null) {
+        if (graph.initialState != null) {
             sb.append("\n    classDef initialState color: #00FF00");
             sb.append("\n    class ");
-            sb.append(diagram.initialState);
+            sb.append(graph.initialState);
             sb.append(" initialState\n");
         }
         return sb.toString();

@@ -1,4 +1,5 @@
-package org.wpilib.gradlerio.diagrams;
+
+package org.wpilib.gradlerio.graphgen;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -30,17 +31,21 @@ public class ReturnConditionAnalyzer {
         return result;
     }
 
-    private static void walkBlock(List<Statement> stmts,
-                           List<String> pathConds,
-                           Map<String, String> result) {
+    private static void walkBlock(
+        List<Statement> stmts,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         for (Statement stmt : stmts) {
             walkStatement(stmt, pathConds, result);
         }
     }
 
-    private static void walkStatement(Statement stmt,
-                               List<String> pathConds,
-                               Map<String, String> result) {
+    private static void walkStatement(
+        Statement stmt,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         if (stmt.isReturnStmt()) {
             handleReturn(stmt.asReturnStmt(), pathConds, result);
         } else if (stmt.isIfStmt()) {
@@ -62,9 +67,11 @@ public class ReturnConditionAnalyzer {
         }
     }
 
-    private static void handleReturn(ReturnStmt ret,
-                              List<String> pathConds,
-                              Map<String, String> result) {
+    private static void handleReturn(
+        ReturnStmt ret,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         ret.getExpression().ifPresent(expr -> {
             if (expr.isSwitchExpr()) {
                 // return switch (x) { case 1 -> a; ... }
@@ -77,9 +84,11 @@ public class ReturnConditionAnalyzer {
         });
     }
 
-    private static void handleInlineConditional(Expression expr,
-                                         List<String> pathConds,
-                                         Map<String, String> result) {
+    private static void handleInlineConditional(
+        Expression expr,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         if (!expr.isConditionalExpr()) {
             mergeCondition(result, expr.toString().trim(), joinConditions(pathConds));
             return;
@@ -91,30 +100,38 @@ public class ReturnConditionAnalyzer {
         handleInlineConditional(conditional.getElseExpr(), append(pathConds, negate(cond)), result);
     }
 
-    private static void handleYield(YieldStmt yield,
-                             List<String> pathConds,
-                             Map<String, String> result) {
+    private static void handleYield(
+        YieldStmt yield,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         String varName = yield.getExpression().toString().trim();
         String condition = joinConditions(pathConds);
         mergeCondition(result, varName, condition.isEmpty() ? "true" : condition);
     }
 
-    private static void handleSwitchStmt(SwitchStmt sw,
-                                  List<String> pathConds,
-                                  Map<String, String> result) {
+    private static void handleSwitchStmt(
+        SwitchStmt sw,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         walkSwitchEntries(sw.getSelector().toString(), sw.getEntries(), pathConds, result);
     }
 
-    private static void handleSwitchExpr(SwitchExpr sw,
-                                  List<String> pathConds,
-                                  Map<String, String> result) {
+    private static void handleSwitchExpr(
+        SwitchExpr sw,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         walkSwitchEntries(sw.getSelector().toString(), sw.getEntries(), pathConds, result);
     }
 
-    private static void walkSwitchEntries(String selector,
-                                   List<SwitchEntry> entries,
-                                   List<String> pathConds,
-                                   Map<String, String> result) {
+    private static void walkSwitchEntries(
+        String selector,
+        List<SwitchEntry> entries,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         // Collect every non-default label up front for building default negations
         List<String> nonDefaultLabels = entries.stream()
                 .flatMap(e -> e.getLabels().stream())
@@ -163,9 +180,11 @@ public class ReturnConditionAnalyzer {
                 && entry.getStatements().get(0).isExpressionStmt();
     }
 
-    private static void handleIf(IfStmt ifStmt,
-                          List<String> pathConds,
-                          Map<String, String> result) {
+    private static void handleIf(
+        IfStmt ifStmt,
+        List<String> pathConds,
+        Map<String, String> result
+    ) {
         String cond = ifStmt.getCondition().toString();
 
         List<String> thenConds = append(pathConds, cond);
