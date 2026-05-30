@@ -21,6 +21,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
+/**
+ * A gradle task that generates state machine names
+ */
 @DisableCachingByDefault
 public abstract class MakeStateMachineGraphsTask extends DefaultTask {
     private record Transition(String fromState, String toState, String transitionCond) {}

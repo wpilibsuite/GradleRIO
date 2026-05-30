@@ -30,10 +30,6 @@ public class ReturnConditionAnalyzer {
         return result;
     }
 
-    // -----------------------------------------------------------------------
-    // Recursive statement walker
-    // -----------------------------------------------------------------------
-
     private static void walkBlock(List<Statement> stmts,
                            List<String> pathConds,
                            Map<String, String> result) {
@@ -66,10 +62,6 @@ public class ReturnConditionAnalyzer {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Return — handles both plain returns and "return <switchExpr>"
-    // -----------------------------------------------------------------------
-
     private static void handleReturn(ReturnStmt ret,
                               List<String> pathConds,
                               Map<String, String> result) {
@@ -99,11 +91,6 @@ public class ReturnConditionAnalyzer {
         handleInlineConditional(conditional.getElseExpr(), append(pathConds, negate(cond)), result);
     }
 
-    // -----------------------------------------------------------------------
-    // Yield — used inside arrow-switch arms that contain a block
-    //   e.g.  case 1 -> { yield x; }
-    // -----------------------------------------------------------------------
-
     private static void handleYield(YieldStmt yield,
                              List<String> pathConds,
                              Map<String, String> result) {
@@ -112,29 +99,17 @@ public class ReturnConditionAnalyzer {
         mergeCondition(result, varName, condition.isEmpty() ? "true" : condition);
     }
 
-    // -----------------------------------------------------------------------
-    // Classic switch statement  (case N:  ...  return x;)
-    // -----------------------------------------------------------------------
-
     private static void handleSwitchStmt(SwitchStmt sw,
                                   List<String> pathConds,
                                   Map<String, String> result) {
         walkSwitchEntries(sw.getSelector().toString(), sw.getEntries(), pathConds, result);
     }
 
-    // -----------------------------------------------------------------------
-    // Modern switch expression  (case N -> x  /  case N -> { yield x; })
-    // -----------------------------------------------------------------------
-
     private static void handleSwitchExpr(SwitchExpr sw,
                                   List<String> pathConds,
                                   Map<String, String> result) {
         walkSwitchEntries(sw.getSelector().toString(), sw.getEntries(), pathConds, result);
     }
-
-    // -----------------------------------------------------------------------
-    // Shared switch-entry walker (handles both SwitchStmt and SwitchExpr)
-    // -----------------------------------------------------------------------
 
     private static void walkSwitchEntries(String selector,
                                    List<SwitchEntry> entries,
@@ -150,7 +125,7 @@ public class ReturnConditionAnalyzer {
             List<String> entryConds;
 
             if (entry.getLabels().isEmpty()) {
-                // default / default ->
+                // "default" / "default ->" clauses
                 List<String> negs = nonDefaultLabels.stream()
                         .map(l -> selector + " != " + l)
                         .collect(Collectors.toList());
@@ -179,20 +154,14 @@ public class ReturnConditionAnalyzer {
         }
     }
 
-    /**
-     * Returns true when this is an arrow-case entry whose body is a single
-     * bare expression (not a block and not a throw/yield statement).
-     * e.g.  case 1 -> x;
-     */
+    // Returns true when this is an arrow-case entry whose body is a single
+    // bare expression (not a block and not a throw/yield statement).
+    // e.g. case 1 -> x;
     private static boolean isArrowExpressionEntry(SwitchEntry entry) {
         if (entry.getType() != SwitchEntry.Type.EXPRESSION) return false;
         return entry.getStatements().size() == 1
                 && entry.getStatements().get(0).isExpressionStmt();
     }
-
-    // -----------------------------------------------------------------------
-    // If / else-if / else
-    // -----------------------------------------------------------------------
 
     private static void handleIf(IfStmt ifStmt,
                           List<String> pathConds,
@@ -208,10 +177,7 @@ public class ReturnConditionAnalyzer {
         });
     }
 
-    // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
-
+    // parses a boolean, Trigger, or BooleanSupplier, and returns the negation of that value.
     private static String negate(String cond) {
         cond = cond.trim();
         if (cond.startsWith("!(") && cond.endsWith(")")) return cond.substring(2, cond.length() - 1);
@@ -243,12 +209,6 @@ public class ReturnConditionAnalyzer {
         return String.join(" && ", conds);
     }
 
-    /**
-     * Merges a new condition for a variable into the result map.
-     * If the variable already has a condition, the two are OR-ed together:
-     *   (existing) || (incoming)
-     * This handles the case where the same variable is returned from multiple branches.
-     */
     private static void mergeCondition(Map<String, String> result, String varName, String newCond) {
         result.merge(varName, newCond, (existing, incoming) ->
                 "(" + existing + ") || (" + incoming + ")");
