@@ -37,7 +37,6 @@ dependencies {
 
     processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:windowsx86-64@zip"
     processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxx86-64@zip"
-    processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxarm32@zip"
     processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:linuxarm64@zip"
     processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:osxuniversal@zip"
     processstarterDownload "org.wpilib.tools:processstarter:$processstarterToolVersion:windowsarm64@zip"
