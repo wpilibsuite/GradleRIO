@@ -170,17 +170,19 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 }
 
                 var toStateCall = toStateCallOpt.get();
-                var toState = toStateCall.getArguments().getFirst().orElseThrow();
-                if (toStateCall.getNameAsString().equals("switchTo")) {
+                var toStateExpr = toStateCall.getArguments().getFirst();
+                var toState = toStateExpr.map(Expression::toString).orElse("Exit_State_Machine");
+                boolean toStateIsLambda = toStateExpr.isPresent() && toStateExpr.get().isLambdaExpr();
+                if (List.of("switchTo", "exitStateMachine").contains(toStateCall.getNameAsString())) {
                     var fromState = toStateCall.getScope().orElseThrow().toString();
-                    if (toState.isLambdaExpr()) {
+                    if (toStateIsLambda) {
                         graph.transitions.addAll(
-                            transitionsFromLambdaExpr(toState, fromState, transitionCond)
+                            transitionsFromLambdaExpr(toStateExpr.get(), fromState, transitionCond)
                         );
                     } else {
-                        graph.transitions.add(new Transition(fromState, toState.toString(), transitionCond));
+                        graph.transitions.add(new Transition(fromState, toState, transitionCond));
                     }
-                } else if (toStateCall.getNameAsString().equals("to")) {
+                } else if (List.of("to", "toExitStateMachine").contains(toStateCall.getNameAsString())) {
                     // If it's just a regular "to", there must be a switchFromAny before it.
                     var argList = toStateCall.getScope()
                             .filter(s -> s instanceof MethodCallExpr)
@@ -188,13 +190,12 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                             .map(MethodCallExpr::getArguments);
                     if (argList.isEmpty()) return;
                     for (var fromState: argList.get()) {
-                        if (toState.isLambdaExpr()) {
+                        if (toStateIsLambda) {
                             graph.transitions.addAll(
-                                transitionsFromLambdaExpr(toState, fromState.toString(), transitionCond)
+                                transitionsFromLambdaExpr(toStateExpr.get(), fromState.toString(), transitionCond)
                             );
                         } else {
-                            var t = new Transition(fromState.toString(), toState.toString(), transitionCond);
-                            graph.transitions.add(t);
+                            graph.transitions.add(new Transition(fromState.toString(), toState, transitionCond));
                         }
                     }
                 }
