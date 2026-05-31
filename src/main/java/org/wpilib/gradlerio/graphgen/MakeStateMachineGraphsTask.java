@@ -101,13 +101,24 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             if (!method.getTypeAsString().equals("StateMachine") || annotationOpt.isEmpty()) return;
 
             var variableDefs = method.findAll(VariableDeclarationExpr.class);
+            var stateSupplierTypes = List.of("Supplier<StateMachine.State>", "Supplier<State>");
+            boolean hasStateSupplierVar = variableDefs.stream()
+                .filter(dec -> dec.getVariables().size() == 1)
+                .anyMatch(dec -> stateSupplierTypes.contains(dec.getVariable(0).getTypeAsString()));
+            if (hasStateSupplierVar) {
+                throw new RuntimeException(
+                    "Methods annotated with @MakeStateMachineGraph cannot contain variables of type Supplier<StateMachine.State>."
+                );
+            }
             var stateMachineDefs = variableDefs
                 .stream()
                 .filter(v -> {
+                    // we cannot check the type itself, because of var declarations -
+                    // so, we check for the instantiation of the StateMachine class
                     var def = v.getVariable(0).getInitializer();
                     return def.isPresent() &&
-                            def.get().isObjectCreationExpr() &&
-                            def.get().asObjectCreationExpr().getType().asString().equals("StateMachine");
+                        def.get().isObjectCreationExpr() &&
+                        def.get().asObjectCreationExpr().getType().asString().endsWith("StateMachine");
                 })
                 .toList();
             if (stateMachineDefs.isEmpty()) {
@@ -125,7 +136,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 throw new RuntimeException(
                     "The graph generator requires the name " +
                     "of the state machine in '" + method.getNameAsString() +
-                    "' to be a single string literal (e.g. new StateMachine(\"My Auto\"))."
+                    "' to be a simple string literal (e.g. new StateMachine(\"My Auto\"))."
                 );
             }
             var graphName = rawGraphName.toString().substring(1, rawGraphName.toString().length() - 1);
@@ -193,6 +204,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                     var argList = toStateCall.getScope()
                             .filter(s -> s instanceof MethodCallExpr)
                             .map(s -> ((MethodCallExpr) s))
+                            .filter(s -> s.getNameAsString().equals("switchFromAny"))
                             .map(MethodCallExpr::getArguments);
                     if (argList.isEmpty()) return;
                     for (var fromState: argList.get()) {
@@ -221,7 +233,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             if (additionalCond.contains("||") || additionalCond.contains(".or(")) {
                 additionalCond = "(" + additionalCond + ")";
             }
-            var fullCond = transitionCond + " and " + additionalCond;
+            var fullCond = transitionCond + (additionalCond.isEmpty() ? "" : (" and " + additionalCond));
             transitions.add(new Transition(fromState, innerToState, fullCond));
         }
         return transitions;

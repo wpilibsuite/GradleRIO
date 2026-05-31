@@ -26,7 +26,7 @@ public class ReturnConditionAnalyzer {
         if (body.isBlockStmt()) {
             walkBlock(body.asBlockStmt().getStatements(), Collections.emptyList(), result);
         } else {
-            walkStatement(body, Collections.emptyList(), result);
+            walkStatement(body, Collections.emptyList(), result, true);
         }
         return result;
     }
@@ -46,6 +46,15 @@ public class ReturnConditionAnalyzer {
         List<String> pathConds,
         Map<String, String> result
     ) {
+        walkStatement(stmt, pathConds, result, false);
+    }
+
+    private static void walkStatement(
+        Statement stmt,
+        List<String> pathConds,
+        Map<String, String> result,
+        boolean isLambdaInline
+    ) {
         if (stmt.isReturnStmt()) {
             handleReturn(stmt.asReturnStmt(), pathConds, result);
         } else if (stmt.isIfStmt()) {
@@ -58,8 +67,11 @@ public class ReturnConditionAnalyzer {
             walkBlock(stmt.asBlockStmt().getStatements(), pathConds, result);
         } else if (stmt.isExpressionStmt()) {
             var expr = stmt.asExpressionStmt().getExpression();
-            if (!expr.isConditionalExpr()) return;
-            handleInlineConditional(expr, pathConds, result);
+            if (expr.isConditionalExpr()) {
+                handleInlineConditional(expr, pathConds, result);
+            } else if (isLambdaInline) {
+                result.put(expr.toString(), "");
+            }
         } else if (!stmt.isEmptyStmt()) {
             // For any other statement type, descend into direct child statements
             stmt.findAll(Statement.class, s -> s != stmt && s.getParentNode().map(p -> p == stmt).orElse(false))

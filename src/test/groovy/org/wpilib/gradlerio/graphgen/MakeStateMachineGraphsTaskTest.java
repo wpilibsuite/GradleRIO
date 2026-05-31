@@ -215,4 +215,29 @@ class MakeStateMachineGraphsTaskTest {
 
         assertThrows(RuntimeException.class, () -> taskProvider.get().run());
     }
+
+    @Test
+    void stateSupplierInStateMachineThrows() throws IOException {
+        String content = """
+            package frc.robot;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+            
+            public class Robot {
+                @MakeStateMachineGraph
+                public StateMachine doubleSM() {
+                    StateMachine sm1 = new StateMachine("SM1");
+                    State state1 = sm1.addState(cmd("state1"));
+                    Supplier<StateMachine.State> derived = () -> state1;
+                    return sm1;
+                }
+            
+                private Command cmd(String name) {
+                    return Command.noRequirements(coro -> while(true) coro.yield()).named(name);
+                }
+            }
+            """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        assertThrows(RuntimeException.class, () -> taskProvider.get().run());
+    }
 }
