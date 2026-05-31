@@ -40,12 +40,19 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
     @Optional
     public abstract Property<String> getJavaRoot();
 
+    @Input
+    @Optional
+    public abstract Property<String> getDeployDirectory();
+
     @TaskAction
     public void run() throws IOException {
-        extractFromDirectory(getJavaRoot().getOrElse("src/main/java"));
+        extractFromDirectory(
+            getJavaRoot().getOrElse("src/main/java/"),
+            getDeployDirectory().getOrElse("src/main/deploy/")
+        );
     }
 
-    private void extractFromDirectory(String rootDir) throws IOException {
+    private void extractFromDirectory(String javaRoot, String deployDir) throws IOException {
         var graphs = new LinkedHashMap<String, StateMachineGraph>();
         // Init configuration for javaparser
         var config = new ParserConfiguration();
@@ -53,7 +60,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         config.setPreprocessUnicodeEscapes(true);
         var parser = new JavaParser(config);
 
-        Files.walk(Paths.get(rootDir))
+        Files.walk(Paths.get(javaRoot))
             .filter(path -> path.toString().endsWith(".java"))
             .forEach(path -> {
                 try {
@@ -66,8 +73,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         for (var entry: graphs.entrySet()) {
             var methodName = entry.getKey();
             var graph = entry.getValue();
-            var deployDir = getJavaRoot().getOrElse("src/main/java/") + "../deploy/stateMachineGraphs/";
-            var file = new File(deployDir + methodName + ".mermaid");
+            var file = new File(deployDir, "/stateMachineGraphs/" + methodName + ".mermaid");
             if (file.getParentFile() != null) {
                 file.getParentFile().mkdirs();
             }
