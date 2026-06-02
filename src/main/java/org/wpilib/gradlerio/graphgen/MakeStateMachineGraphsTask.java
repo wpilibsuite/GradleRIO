@@ -181,7 +181,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                     expr = expr.replace("() -> ", "");
                     expr = expr.replace(".getAsBoolean()", "");
                     if (expr.contains("||") || expr.contains(".or(")) {
-                        expr = "(" + expr + ")";
+                        expr = Utils.addParentheses(expr);
                     }
                     transitionCond = prefix + expr;
                 }
@@ -231,7 +231,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             var innerToState = entry.getKey();
             var additionalCond = entry.getValue();
             if (additionalCond.contains("||") || additionalCond.contains(".or(")) {
-                additionalCond = "(" + additionalCond + ")";
+                additionalCond = Utils.addParentheses(additionalCond);
             }
             var fullCond = transitionCond + (additionalCond.isEmpty() ? "" : (" and " + additionalCond));
             transitions.add(new Transition(fromState, innerToState, fullCond));

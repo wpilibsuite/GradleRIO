@@ -1,4 +1,3 @@
-
 package org.wpilib.gradlerio.graphgen;
 
 import com.github.javaparser.ast.expr.Expression;
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
  * Statically analyzes a lambda body and builds a map of: returnedVariableName -> condition string
  * that must be true for that return to execute.
  */
-public class ReturnConditionAnalyzer {
+class ReturnConditionAnalyzer {
     /**
      * Analyzes a lambda expression to determine
      *
@@ -36,9 +35,57 @@ public class ReturnConditionAnalyzer {
         List<String> pathConds,
         Map<String, String> result
     ) {
+        List<String> currentConds = pathConds;
         for (Statement stmt : stmts) {
-            walkStatement(stmt, pathConds, result);
+            walkStatement(stmt, currentConds, result);
+            // If this statement only covers some paths (e.g. if-without-else, switch-without-default),
+            // subsequent statements are only reached when none of those paths fired.
+            String fallThrough = fallThroughCondition(stmt);
+            if (fallThrough != null) {
+                currentConds = append(currentConds, fallThrough);
+            }
         }
+    }
+
+    private static String fallThroughCondition(Statement stmt) {
+        if (stmt.isIfStmt()) {
+            // Walk the if/else-if chain collecting every condition; if there is a
+            // final else the chain is exhaustive and nothing falls through.
+            List<String> branchConds = new ArrayList<>();
+            Statement cur = stmt;
+            while (cur.isIfStmt()) {
+                IfStmt ifStmt = cur.asIfStmt();
+                branchConds.add(ifStmt.getCondition().toString());
+                if (ifStmt.getElseStmt().isEmpty()) {
+                    // No final else — fall-through is possible when all conditions are false.
+                    String combined = branchConds.size() == 1
+                        ? branchConds.get(0)
+                        : Utils.addParentheses(String.join(" || ", branchConds));
+                    return negate(combined);
+                }
+                cur = ifStmt.getElseStmt().get();
+            }
+            // Ended with a concrete else block — all paths covered, no fall-through.
+            return null;
+        }
+
+        if (stmt.isSwitchStmt()) {
+            SwitchStmt sw = stmt.asSwitchStmt();
+            boolean hasDefault = sw.getEntries().stream().anyMatch(e -> e.getLabels().isEmpty());
+            if (hasDefault) return null;
+            // No default: falls through when no case label matches.
+            String selector = sw.getSelector().toString();
+            List<String> nonDefaultLabels = sw.getEntries().stream()
+                    .flatMap(e -> e.getLabels().stream())
+                    .map(Expression::toString)
+                    .toList();
+            List<String> negs = nonDefaultLabels.stream()
+                    .map(l -> selector + " != " + l)
+                    .collect(Collectors.toList());
+            return joinConditions(negs);
+        }
+
+        return null;
     }
 
     private static void walkStatement(
@@ -166,7 +213,7 @@ public class ReturnConditionAnalyzer {
                         .collect(Collectors.toList());
                 String labelCond = labelConds.size() == 1
                         ? labelConds.get(0)
-                        : "(" + String.join(" || ", labelConds) + ")";
+                        : Utils.addParentheses(String.join(" || ", labelConds));
                 entryConds = append(pathConds, labelCond);
             }
 
@@ -221,7 +268,7 @@ public class ReturnConditionAnalyzer {
         if (cond.contains(" < "))  return cond.replace(" < ",  " >= ");
 
         boolean hasLogicalOps = cond.contains("&&") || cond.contains("||") || cond.contains(".and(") || cond.contains(".or(");
-        if (hasLogicalOps) return "!(" + cond + ")";
+        if (hasLogicalOps) return "!" + Utils.addParentheses(cond);
         if (cond.startsWith("!") && !cond.startsWith("!(")) {
             return cond.substring(1);
         }
@@ -242,6 +289,6 @@ public class ReturnConditionAnalyzer {
 
     private static void mergeCondition(Map<String, String> result, String varName, String newCond) {
         result.merge(varName, newCond, (existing, incoming) ->
-                "(" + existing + ") || (" + incoming + ")");
+            Utils.addParentheses(existing) + " || " + Utils.addParentheses(incoming));
     }
 }

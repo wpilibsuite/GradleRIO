@@ -76,10 +76,20 @@ class MakeStateMachineGraphsTaskTest {
         assertTrue(Files.exists(mermaidFile), "Mermaid file should be generated");
         
         String mermaidContent = Files.readString(mermaidFile);
-        assertTrue(mermaidContent.contains("state_definition_order: [state1, state2]"));
-        assertTrue(mermaidContent.contains("state1 --> state2 : true"));
-        assertTrue(mermaidContent.contains("state2 --> Exit_State_Machine : when complete"));
-        assertTrue(mermaidContent.contains("class state1 initialState"));
+        String expected = """
+        ---
+        state_definition_order: [state1, state2]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            state1 --> state2 : true
+            state2 --> Exit_State_Machine : when complete
+        
+            classDef initialState color: #00FF00
+            class state1 initialState
+        """;
+        assertEquals(mermaidContent.strip(), expected.strip());
     }
 
     @Test
@@ -115,16 +125,23 @@ class MakeStateMachineGraphsTaskTest {
         taskProvider.get().run();
 
         String mermaidContent = Files.readString(outputDir.resolve("Complex Auto.mermaid"));
-        System.out.println(mermaidContent);
-        assertTrue(mermaidContent.contains("s1 --> s2 : when complete and someCondition()"));
-        assertTrue(mermaidContent.contains("s1 --> s3 : emergency()"));
-        assertTrue(mermaidContent.contains("s2 --> s3 : emergency()"));
-        assertTrue(mermaidContent.contains("s3 --> Exit_State_Machine : done()"));
+        String expected = """
+        ---
+        state_definition_order: [s1, s2, s3]
+        ---
+        stateDiagram-v2
+            direction LR
+
+            s1 --> s2 : when complete and someCondition()
+            s1 --> s3 : emergency()
+            s2 --> s3 : emergency()
+            s3 --> Exit_State_Machine : done()
+        """;
+        assertEquals(mermaidContent.strip(), expected.strip());
     }
 
     @Test
-    void testLambdaTransitions() throws IOException {
-        // This tests the interaction with ReturnConditionAnalyzer
+    void testIfElseInLambdaTransition() throws IOException {
         String content = """
             package frc.robot;
            
@@ -157,8 +174,62 @@ class MakeStateMachineGraphsTaskTest {
         taskProvider.get().run();
 
         String mermaidContent = Files.readString(outputDir.resolve("Lambda Auto.mermaid"));
-        assertTrue(mermaidContent.contains("start --> left : check() and cond"));
-        assertTrue(mermaidContent.contains("start --> right : check() and !cond"));
+        String expected = """
+        ---
+        state_definition_order: [start, left, right]
+        ---
+        stateDiagram-v2
+            direction LR
+
+            start --> left : check() and cond
+            start --> right : check() and !cond
+        """;
+        assertEquals(mermaidContent.strip(), expected.strip());
+    }
+
+    @Test
+    void testEarlyReturnInLambdaTransition() throws IOException {
+        String content = """
+            package frc.robot;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+            
+            public class Robot {
+                @MakeStateMachineGraph
+                public StateMachine doubleSM() {
+                    StateMachine sm1 = new StateMachine("Early Return Auto");
+                    State a = sm1.addState(cmd("a"));
+                    State b = sm1.addState(cmd("b"));
+                    State c = sm1.addState(cmd("c"));
+            
+                    a.switchTo(() -> {
+                        switch (number) {
+                            case 0, 1:
+                                return b;
+                        }
+                        if (conditionC) return c;
+                        return a;
+                    }).whenComplete();
+                    return sm1;
+                }
+            }
+            """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        taskProvider.get().run();
+
+        String earlyReturnContent = Files.readString(outputDir.resolve("Early Return Auto.mermaid"));
+        String expected = """
+        ---
+        state_definition_order: [a, b, c]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            a --> b : when complete and (number == 0 || number == 1)
+            a --> c : when complete and number != 0 && number != 1 && conditionC
+            a --> a : when complete and number != 0 && number != 1 && !conditionC
+        """;
+        assertEquals(earlyReturnContent.strip(), expected.strip());
     }
 
     @Test
@@ -190,10 +261,18 @@ class MakeStateMachineGraphsTaskTest {
 
         // Should not throw exception despite '_' being invalid in some Java versions for identifiers
         assertDoesNotThrow(() -> taskProvider.get().run());
-        
+
         String mermaidContent = Files.readString(outputDir.resolve("Unnamed Auto.mermaid"));
-        System.out.println(mermaidContent);
-        assertTrue(mermaidContent.contains("s1 --> s2"));
+        String expected = """
+        ---
+        state_definition_order: [s1, s2]
+        ---
+        stateDiagram-v2
+            direction LR
+
+            s1 --> s2 : true
+        """;
+        assertEquals(mermaidContent.strip(), expected.strip());
     }
 
     @Test
