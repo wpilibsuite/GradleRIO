@@ -176,14 +176,10 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 if (isWhenComplete) {
                     transitionCond = "when complete";
                 } else {
-                    var prefix = isWhen ? "" : "when complete and ";
                     var expr = transitionCondExpr.orElseThrow().toString();
                     expr = expr.replace("() -> ", "");
                     expr = expr.replace(".getAsBoolean()", "");
-                    if (expr.contains("||") || expr.contains(".or(")) {
-                        expr = Utils.addParentheses(expr);
-                    }
-                    transitionCond = prefix + expr;
+                    transitionCond = isWhen ? expr : Utils.joinWithAnd("when complete", expr);
                 }
 
                 var toStateCall = toStateCallOpt.get();
@@ -227,13 +223,14 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         String transitionCond
     ) {
         var transitions = new ArrayList<Transition>();
-        for (var entry: ReturnConditionAnalyzer.analyze(toState.asLambdaExpr()).entrySet()) {
+        var body = toState.asLambdaExpr().getBody();
+        var returnConditions = body.isBlockStmt()
+            ? CodeBlockAnalyzer.analyze(body.asBlockStmt())
+            : ExpressionAnalyzer.analyze(body.asExpressionStmt().getExpression());
+        for (var entry: returnConditions.entrySet()) {
             var innerToState = entry.getKey();
             var additionalCond = entry.getValue();
-            if (additionalCond.contains("||") || additionalCond.contains(".or(")) {
-                additionalCond = Utils.addParentheses(additionalCond);
-            }
-            var fullCond = transitionCond + (additionalCond.isEmpty() ? "" : (" and " + additionalCond));
+            var fullCond = Utils.joinWithAnd(transitionCond, additionalCond);
             transitions.add(new Transition(fromState, innerToState, fullCond));
         }
         return transitions;
@@ -253,7 +250,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 .append(" --> ")
                 .append(sanitize(t.toState()))
                 .append(" : ")
-                .append(sanitize(t.transitionCond()))
+                .append(sanitizeTransitionCond(t.transitionCond()))
                 .append("\n");
         }
         if (graph.initialState != null) {
@@ -263,6 +260,16 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             sb.append(" initialState\n");
         }
         return sb.toString();
+    }
+
+    private String sanitizeTransitionCond(String condition) {
+        condition = sanitize(condition);
+        if (condition.isEmpty() || condition.equals("true")) {
+            condition = "instant";
+        } else if (condition.equals("false")) {
+            condition = "never";
+        }
+        return condition;
     }
 
     private String sanitize(String s) {

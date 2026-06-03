@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MakeStateMachineGraphsTaskTest {
-
     @TempDir
     Path tempDir;
 
@@ -83,13 +82,13 @@ class MakeStateMachineGraphsTaskTest {
         stateDiagram-v2
             direction LR
         
-            state1 --> state2 : true
+            state1 --> state2 : instant
             state2 --> Exit_State_Machine : when complete
         
             classDef initialState color: #00FF00
             class state1 initialState
         """;
-        assertEquals(mermaidContent.strip(), expected.strip());
+        assertEquals(expected.strip(), mermaidContent.strip());
     }
 
     @Test
@@ -132,12 +131,12 @@ class MakeStateMachineGraphsTaskTest {
         stateDiagram-v2
             direction LR
 
-            s1 --> s2 : when complete and someCondition()
+            s1 --> s2 : when complete && someCondition()
             s1 --> s3 : emergency()
             s2 --> s3 : emergency()
             s3 --> Exit_State_Machine : done()
         """;
-        assertEquals(mermaidContent.strip(), expected.strip());
+        assertEquals(expected.strip(), mermaidContent.strip());
     }
 
     @Test
@@ -181,14 +180,63 @@ class MakeStateMachineGraphsTaskTest {
         stateDiagram-v2
             direction LR
 
-            start --> left : check() and cond
-            start --> right : check() and !cond
+            start --> left : check() && cond
+            start --> right : check() && !cond
         """;
-        assertEquals(mermaidContent.strip(), expected.strip());
+        assertEquals(expected.strip(), mermaidContent.strip());
     }
 
     @Test
-    void testEarlyReturnInLambdaTransition() throws IOException {
+    void testNestedLogicStatements() throws IOException {
+        String content = """
+            package frc.robot;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+            
+            public class Robot {
+                @MakeStateMachineGraph
+                public StateMachine doubleSM() {
+                    StateMachine sm1 = new StateMachine("Early Return Auto");
+                    State a = sm1.addState(cmd("a"));
+                    State b = sm1.addState(cmd("b"));
+                    State c = sm1.addState(cmd("c"));
+            
+                    a.switchTo(() -> {
+                        switch (number) {
+                            case 0, 1:
+                                if (condition1) {
+                                    if (condition2) {
+                                        return c;
+                                    }
+                                }
+                                return b;
+                        }
+                        return a;
+                    }).whenComplete();
+                    return sm1;
+                }
+            }
+            """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        taskProvider.get().run();
+
+        String mermaidContent = Files.readString(outputDir.resolve("Early Return Auto.mermaid"));
+        String expected = """
+        ---
+        state_definition_order: [a, b, c]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            a --> a : when complete && !(number == 0 || number == 1)
+            a --> b : when complete && (((number == 0 || number == 1) && condition1) && !condition2) || ((number == 0 || number == 1) && !condition1)
+            a --> c : when complete && (((number == 0 || number == 1) && condition1) && condition2)
+        """;
+        assertEquals(expected.strip(), mermaidContent.strip());
+    }
+
+    @Test
+    void sdf() throws IOException {
         String content = """
             package frc.robot;
             import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
@@ -206,7 +254,11 @@ class MakeStateMachineGraphsTaskTest {
                             case 0, 1:
                                 return b;
                         }
-                        if (conditionC) return c;
+                        if (conditionC) {
+                            return c;
+                        } else {
+                            System.out.println("No Return Here!");
+                        }
                         return a;
                     }).whenComplete();
                     return sm1;
@@ -217,7 +269,7 @@ class MakeStateMachineGraphsTaskTest {
 
         taskProvider.get().run();
 
-        String earlyReturnContent = Files.readString(outputDir.resolve("Early Return Auto.mermaid"));
+        String mermaidContent = Files.readString(outputDir.resolve("Early Return Auto.mermaid"));
         String expected = """
         ---
         state_definition_order: [a, b, c]
@@ -225,11 +277,11 @@ class MakeStateMachineGraphsTaskTest {
         stateDiagram-v2
             direction LR
         
-            a --> b : when complete and (number == 0 || number == 1)
-            a --> c : when complete and number != 0 && number != 1 && conditionC
-            a --> a : when complete and number != 0 && number != 1 && !conditionC
+            a --> a : when complete && (!(number == 0 || number == 1) && !conditionC)
+            a --> b : when complete && (number == 0 || number == 1)
+            a --> c : when complete && (!(number == 0 || number == 1) && conditionC)
         """;
-        assertEquals(earlyReturnContent.strip(), expected.strip());
+        assertEquals(expected.strip(), mermaidContent.strip());
     }
 
     @Test
@@ -270,9 +322,9 @@ class MakeStateMachineGraphsTaskTest {
         stateDiagram-v2
             direction LR
 
-            s1 --> s2 : true
+            s1 --> s2 : instant
         """;
-        assertEquals(mermaidContent.strip(), expected.strip());
+        assertEquals(expected.strip(), mermaidContent.strip());
     }
 
     @Test
