@@ -98,16 +98,36 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         var cu = parser.parse(content).getResult().orElseThrow();
         cu.findAll(MethodDeclaration.class).forEach(method -> {
             var annotationOpt = method.getAnnotationByName("MakeStateMachineGraph");
-            if (!method.getTypeAsString().equals("StateMachine") || annotationOpt.isEmpty()) return;
+            if (annotationOpt.isEmpty()) return;
+            var extractedType = "StateMachine";
+            if (annotationOpt.get().isNormalAnnotationExpr()) {
+                var data = annotationOpt.get()
+                    .asNormalAnnotationExpr()
+                    .getPairs()
+                    .stream()
+                    .filter(pair -> pair.getNameAsString().equals("stateMachineType"))
+                    .findFirst();
+                if (data.isPresent()) {
+                    var valueExpr = data.get().getValue();
+                    if (valueExpr.isStringLiteralExpr()) {
+                        extractedType = valueExpr.asStringLiteralExpr().getValue();
+                    }
+                }
+            }
+            final var stateMachineType = extractedType;
+
+            if (!method.getTypeAsString().equals(stateMachineType)) {
+                throw new RuntimeException("Method " + method.getNameAsString() + " is annotated with @MakeStateMachineGraph, but it does not return " + stateMachineType);
+            }
 
             var variableDefs = method.findAll(VariableDeclarationExpr.class);
-            var stateSupplierTypes = List.of("Supplier<StateMachine.State>", "Supplier<State>");
+            var stateSupplierTypes = List.of("Supplier<" + stateMachineType + ".State>", "Supplier<State>");
             boolean hasStateSupplierVar = variableDefs.stream()
                 .filter(dec -> dec.getVariables().size() == 1)
                 .anyMatch(dec -> stateSupplierTypes.contains(dec.getVariable(0).getTypeAsString()));
             if (hasStateSupplierVar) {
                 throw new RuntimeException(
-                    "Methods annotated with @MakeStateMachineGraph cannot contain variables of type Supplier<StateMachine.State>."
+                    "Methods annotated with @MakeStateMachineGraph cannot contain variables of type Supplier<" + stateMachineType + ".State>."
                 );
             }
             var stateMachineDefs = variableDefs
@@ -118,15 +138,15 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                     var def = v.getVariable(0).getInitializer();
                     return def.isPresent() &&
                         def.get().isObjectCreationExpr() &&
-                        def.get().asObjectCreationExpr().getType().asString().endsWith("StateMachine");
+                        def.get().asObjectCreationExpr().getType().asString().endsWith(stateMachineType);
                 })
                 .toList();
             if (stateMachineDefs.isEmpty()) {
-                throw new RuntimeException("No StateMachine declaration found in " + method.getNameAsString());
+                throw new RuntimeException("No " + stateMachineType + " declaration found in " + method.getNameAsString());
             } else if (stateMachineDefs.size() > 1) {
                 throw new RuntimeException(
-                    "Multiple StateMachine declarations found in " + method.getNameAsString()
-                    + ". Currently, the @MakeStateMachineGraph annotation doesn't support multiple StateMachine declarations in the same method."
+                    "Multiple " + stateMachineType + " declarations found in " + method.getNameAsString()
+                    + ". Currently, the @MakeStateMachineGraph annotation doesn't support multiple state machine declarations in the same method."
                 );
             }
 
@@ -136,12 +156,12 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 throw new RuntimeException(
                     "The graph generator requires the name " +
                     "of the state machine in '" + method.getNameAsString() +
-                    "' to be a simple string literal (e.g. new StateMachine(\"My Auto\"))."
+                    "' to be a simple string literal (e.g. new " + stateMachineType + "(\"My Auto\"))."
                 );
             }
             var graphName = rawGraphName.toString().substring(1, rawGraphName.toString().length() - 1);
             if (graphs.containsKey(graphName)) {
-                throw new RuntimeException("You already have a State Machine named '" + graphName + "'");
+                throw new RuntimeException("2 state machines are named '" + graphName + "'");
             }
             var graph = new StateMachineGraph();
             graphs.put(graphName, graph);

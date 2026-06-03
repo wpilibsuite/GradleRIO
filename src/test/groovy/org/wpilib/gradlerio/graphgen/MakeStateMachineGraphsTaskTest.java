@@ -49,8 +49,7 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine simpleAuto() {
-                    System.out.println("Processing simpleAuto");
-                    StateMachine sm = new StateMachine("Simple Auto");
+                    var sm = new StateMachine("Simple Auto");
                     var state1 = sm.addState(cmd("State1"));
                     var state2 = sm.addState(cmd("State2"));
           
@@ -102,7 +101,7 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine complexAuto() {
-                    StateMachine sm = new StateMachine("Complex Auto");
+                    var sm = new StateMachine("Complex Auto");
                     var s1 = sm.addState(cmd("S1"));
                     var s2 = sm.addState(cmd("S2"));
                     var s3 = sm.addState(cmd("S3"));
@@ -150,7 +149,7 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine lambdaAuto() {
-                    StateMachine sm = new StateMachine("Lambda Auto");
+                    var sm = new StateMachine("Lambda Auto");
                     var start = sm.addState(cmd("Start"));
                     var left = sm.addState(cmd("Left"));
                     var right = sm.addState(cmd("Right"));
@@ -195,10 +194,10 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine doubleSM() {
-                    StateMachine sm1 = new StateMachine("Early Return Auto");
-                    State a = sm1.addState(cmd("a"));
-                    State b = sm1.addState(cmd("b"));
-                    State c = sm1.addState(cmd("c"));
+                    var sm1 = new StateMachine("Early Return Auto");
+                    var a = sm1.addState(cmd("a"));
+                    var b = sm1.addState(cmd("b"));
+                    var c = sm1.addState(cmd("c"));
             
                     a.switchTo(() -> {
                         switch (number) {
@@ -236,55 +235,6 @@ class MakeStateMachineGraphsTaskTest {
     }
 
     @Test
-    void sdf() throws IOException {
-        String content = """
-            package frc.robot;
-            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
-            
-            public class Robot {
-                @MakeStateMachineGraph
-                public StateMachine doubleSM() {
-                    StateMachine sm1 = new StateMachine("Early Return Auto");
-                    State a = sm1.addState(cmd("a"));
-                    State b = sm1.addState(cmd("b"));
-                    State c = sm1.addState(cmd("c"));
-            
-                    a.switchTo(() -> {
-                        switch (number) {
-                            case 0, 1:
-                                return b;
-                        }
-                        if (conditionC) {
-                            return c;
-                        } else {
-                            System.out.println("No Return Here!");
-                        }
-                        return a;
-                    }).whenComplete();
-                    return sm1;
-                }
-            }
-            """;
-        Files.writeString(javaRoot.resolve("Robot.java"), content);
-
-        taskProvider.get().run();
-
-        String mermaidContent = Files.readString(outputDir.resolve("Early Return Auto.mermaid"));
-        String expected = """
-        ---
-        state_definition_order: [a, b, c]
-        ---
-        stateDiagram-v2
-            direction LR
-        
-            a --> a : when complete && (!(number == 0 || number == 1) && !conditionC)
-            a --> b : when complete && (number == 0 || number == 1)
-            a --> c : when complete && (!(number == 0 || number == 1) && conditionC)
-        """;
-        assertEquals(expected.strip(), mermaidContent.strip());
-    }
-
-    @Test
     void testUnnamedVariables() throws IOException {
         String content = """
             package frc.robot;
@@ -295,7 +245,7 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine unnamedAuto() {
-                    StateMachine sm = new StateMachine("Unnamed Auto");
+                    var sm = new StateMachine("Unnamed Auto");
                     var s1 = sm.addState(cmd("S1"));
                     var s2 = sm.addState(cmd("S2"));
           
@@ -336,8 +286,8 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine doubleSM() {
-                    StateMachine sm1 = new StateMachine("SM1");
-                    StateMachine sm2 = new StateMachine("SM2");
+                    var sm1 = new StateMachine("SM1");
+                    var sm2 = new StateMachine("SM2");
                     return sm1;
                 }
             }
@@ -356,8 +306,8 @@ class MakeStateMachineGraphsTaskTest {
             public class Robot {
                 @MakeStateMachineGraph
                 public StateMachine doubleSM() {
-                    StateMachine sm1 = new StateMachine("SM1");
-                    State state1 = sm1.addState(cmd("state1"));
+                    var sm1 = new StateMachine("SM1");
+                    var state1 = sm1.addState(cmd("state1"));
                     Supplier<StateMachine.State> derived = () -> state1;
                     return sm1;
                 }
@@ -370,5 +320,83 @@ class MakeStateMachineGraphsTaskTest {
         Files.writeString(javaRoot.resolve("Robot.java"), content);
 
         assertThrows(RuntimeException.class, () -> taskProvider.get().run());
+    }
+
+    @Test
+    void testCustomStateMachineType() throws IOException {
+        String content = """
+            package frc.robot;
+           
+            import org.wpilib.command3.Command;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+  
+            public class Robot {
+                @MakeStateMachineGraph(stateMachineType = "CustomStateMachine")
+                public CustomStateMachine customAuto() {
+                    var sm = new CustomStateMachine("Custom Auto");
+                    var state1 = sm.addState(cmd("State1"));
+                    var state2 = sm.addState(cmd("State2"));
+          
+                    sm.setInitialState(state1);
+          
+                    state1.switchTo(state2).when(() -> true);
+                    state2.exitStateMachine().whenComplete();
+          
+                    return sm;
+                }
+           
+                private Command cmd(String name) {
+                    return Command.noRequirements(coro -> while(true) coro.yield()).named(name);
+                }
+            }
+           """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        taskProvider.get().run();
+
+        Path mermaidFile = outputDir.resolve("Custom Auto.mermaid");
+        assertTrue(Files.exists(mermaidFile), "Mermaid file should be generated");
+        
+        String mermaidContent = Files.readString(mermaidFile);
+        String expected = """
+        ---
+        state_definition_order: [state1, state2]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            state1 --> state2 : instant
+            state2 --> Exit_State_Machine : when complete
+        
+            classDef initialState color: #00FF00
+            class state1 initialState
+        """;
+        assertEquals(expected.strip(), mermaidContent.strip());
+    }
+
+    @Test
+    void stateSupplierInCustomStateMachineThrows() throws IOException {
+        String content = """
+            package frc.robot;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+            
+            public class Robot {
+                @MakeStateMachineGraph(stateMachineType = "CustomStateMachine")
+                public CustomStateMachine doubleSM() {
+                    var sm1 = new CustomStateMachine("SM1");
+                    var state1 = sm1.addState(cmd("state1"));
+                    Supplier<CustomStateMachine.State> derived = () -> state1;
+                    return sm1;
+                }
+            
+                private Command cmd(String name) {
+                    return Command.noRequirements(coro -> while(true) coro.yield()).named(name);
+                }
+            }
+            """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        var ex = assertThrows(RuntimeException.class, () -> taskProvider.get().run());
+        assertTrue(ex.getMessage().contains("Supplier<CustomStateMachine.State>"), "Error message should mention Supplier<CustomStateMachine.State>");
     }
 }
