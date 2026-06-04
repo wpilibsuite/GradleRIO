@@ -66,7 +66,7 @@ class ExpressionAnalyzer {
 
             var stmt = entry.getStatements().get(0);
             if (stmt.isBlockStmt()) {
-                throw new RuntimeException("Yield Statements within switch blocks are not supported for @MakeStateMachineGraph.");
+                ErrorLogger.throwError("Yield Statements within switch blocks are not supported for @MakeStateMachineGraph.", stmt);
             }
             var expression = stmt.asExpressionStmt().getExpression();
             var condition = Utils.joinWithAnd(pathCondition, matchCondition);

@@ -64,6 +64,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             .filter(path -> path.toString().endsWith(".java"))
             .forEach(path -> {
                 try {
+                    ErrorLogger.setFilePath(path.toString().replace(javaRoot, ""));
                     extractFromFile(parser, path.toFile(), graphs);
                 } catch (IOException e) {
                     System.err.println("Failed to parse: " + path + " — " + e.getMessage());
@@ -95,8 +96,9 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             .matcher(content)
             .replaceAll(res -> "unused_var_" + UUID.randomUUID().toString().substring(0, 8));
 
-        var cu = parser.parse(content).getResult().orElseThrow();
-        cu.findAll(MethodDeclaration.class).forEach(method -> {
+        var cu = parser.parse(content).getResult();
+        if (cu.isEmpty()) return;
+        cu.get().findAll(MethodDeclaration.class).forEach(method -> {
             var annotationOpt = method.getAnnotationByName("MakeStateMachineGraph");
             if (annotationOpt.isEmpty()) return;
             var extractedType = "StateMachine";
@@ -117,19 +119,19 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
             final var stateMachineType = extractedType;
 
             if (!method.getTypeAsString().equals(stateMachineType)) {
-                throw new RuntimeException("Method " + method.getNameAsString() + " is annotated with @MakeStateMachineGraph, but it does not return " + stateMachineType);
+                ErrorLogger.throwError("Method " + method.getNameAsString() + " is annotated with @MakeStateMachineGraph, but it does not return " + stateMachineType, method);
             }
 
             var variableDefs = method.findAll(VariableDeclarationExpr.class);
             var stateSupplierTypes = List.of("Supplier<" + stateMachineType + ".State>", "Supplier<State>");
-            boolean hasStateSupplierVar = variableDefs.stream()
+            variableDefs.stream()
                 .filter(dec -> dec.getVariables().size() == 1)
-                .anyMatch(dec -> stateSupplierTypes.contains(dec.getVariable(0).getTypeAsString()));
-            if (hasStateSupplierVar) {
-                throw new RuntimeException(
-                    "Methods annotated with @MakeStateMachineGraph cannot contain variables of type Supplier<" + stateMachineType + ".State>."
-                );
-            }
+                .filter(dec -> stateSupplierTypes.contains(dec.getVariable(0).getTypeAsString()))
+                .findFirst()
+                .ifPresent(illegalSupplierVar -> ErrorLogger.throwError(
+                    "Methods annotated with @MakeStateMachineGraph cannot contain variables of type Supplier<State>.",
+                    illegalSupplierVar
+                ));
             var stateMachineDefs = variableDefs
                 .stream()
                 .filter(v -> {
@@ -142,30 +144,31 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 })
                 .toList();
             if (stateMachineDefs.isEmpty()) {
-                throw new RuntimeException("No " + stateMachineType + " declaration found in " + method.getNameAsString());
+                ErrorLogger.throwError("No " + stateMachineType + " declaration found in " + method.getNameAsString(), method);
             } else if (stateMachineDefs.size() > 1) {
-                throw new RuntimeException(
+                ErrorLogger.throwError(
                     "Multiple " + stateMachineType + " declarations found in " + method.getNameAsString()
-                    + ". Currently, the @MakeStateMachineGraph annotation doesn't support multiple state machine declarations in the same method."
+                    + ". Currently, the @MakeStateMachineGraph annotation doesn't support multiple state machine declarations in the same method.",
+                    stateMachineDefs.get(1)
                 );
             }
 
             var stateMachineDef = stateMachineDefs.getFirst().getVariable(0).getInitializer().orElseThrow();
             var rawGraphName = stateMachineDef.asObjectCreationExpr().getArgument(0);
             if (!rawGraphName.isStringLiteralExpr()) {
-                throw new RuntimeException(
+                ErrorLogger.throwError(
                     "The graph generator requires the name " +
                     "of the state machine in '" + method.getNameAsString() +
-                    "' to be a simple string literal (e.g. new " + stateMachineType + "(\"My Auto\"))."
+                    "' to be a simple string literal (e.g. new " + stateMachineType + "(\"My Auto\")).",
+                    stateMachineDef
                 );
             }
             var graphName = rawGraphName.toString().substring(1, rawGraphName.toString().length() - 1);
             if (graphs.containsKey(graphName)) {
-                throw new RuntimeException("2 state machines are named '" + graphName + "'");
+                ErrorLogger.throwError("There is already a state machine named '" + graphName + "'", stateMachineDef);
             }
             var graph = new StateMachineGraph();
             graphs.put(graphName, graph);
-
             variableDefs.stream()
                 .filter(v -> {
                     var initializer = v.getVariable(0).getInitializer();
@@ -177,7 +180,7 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
 
             method.findAll(MethodCallExpr.class).forEach(call -> {
                 if (call.getNameAsString().equals("setInitialState")) {
-                    graph.initialState = call.getArguments().getFirst().orElseThrow().toString();
+                    call.getArguments().getFirst().ifPresent(state -> graph.initialState = state.toString());
                     return;
                 }
 
@@ -196,7 +199,8 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 if (isWhenComplete) {
                     transitionCond = "when complete";
                 } else {
-                    var expr = transitionCondExpr.orElseThrow().toString();
+                    if (transitionCondExpr.isEmpty()) return;
+                    var expr = transitionCondExpr.get().toString();
                     expr = expr.replace("() -> ", "");
                     expr = expr.replace(".getAsBoolean()", "");
                     transitionCond = isWhen ? expr : Utils.joinWithAnd("when complete", expr);
@@ -206,8 +210,10 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 var toStateExpr = toStateCall.getArguments().getFirst();
                 var toState = toStateExpr.map(Expression::toString).orElse("Exit_State_Machine");
                 boolean toStateIsLambda = toStateExpr.isPresent() && toStateExpr.get().isLambdaExpr();
+
+                if (toStateCall.getScope().isEmpty()) return;
                 if (List.of("switchTo", "exitStateMachine").contains(toStateCall.getNameAsString())) {
-                    var fromState = toStateCall.getScope().orElseThrow().toString();
+                    var fromState = toStateCall.getScope().get().toString();
                     if (toStateIsLambda) {
                         graph.transitions.addAll(
                             transitionsFromLambdaExpr(toStateExpr.get(), fromState, transitionCond)
@@ -218,10 +224,10 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 } else if (List.of("to", "toExitStateMachine").contains(toStateCall.getNameAsString())) {
                     // If it's just a regular "to", there must be a switchFromAny before it.
                     var argList = toStateCall.getScope()
-                            .filter(s -> s instanceof MethodCallExpr)
-                            .map(s -> ((MethodCallExpr) s))
-                            .filter(s -> s.getNameAsString().equals("switchFromAny"))
-                            .map(MethodCallExpr::getArguments);
+                        .filter(s -> s instanceof MethodCallExpr)
+                        .map(s -> ((MethodCallExpr) s))
+                        .filter(s -> s.getNameAsString().equals("switchFromAny"))
+                        .map(MethodCallExpr::getArguments);
                     if (argList.isEmpty()) return;
                     for (var fromState: argList.get()) {
                         if (toStateIsLambda) {

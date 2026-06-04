@@ -45,8 +45,9 @@ class CodeBlockAnalyzer {
             }
             fallThroughConditions.addAll(currentPaths);
         } else if (stmt.isReturnStmt()) {
-            var returnExpr = stmt.asReturnStmt().getExpression().orElseThrow();
-            ExpressionAnalyzer.analyze(returnExpr, pathCondition, returnsMap);
+            var returnExpr = stmt.asReturnStmt().getExpression();
+            if (returnExpr.isEmpty()) return List.of();
+            ExpressionAnalyzer.analyze(returnExpr.get(), pathCondition, returnsMap);
         } else if (stmt.isIfStmt()) {
             var ifStmt = stmt.asIfStmt();
             var conditionStr = ifStmt.getCondition().toString();

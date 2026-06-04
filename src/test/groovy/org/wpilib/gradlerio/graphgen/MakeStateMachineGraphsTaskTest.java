@@ -398,6 +398,8 @@ class MakeStateMachineGraphsTaskTest {
 
         var ex = assertThrows(RuntimeException.class, () -> taskProvider.get().run());
         assertTrue(ex.getMessage().contains("Supplier<CustomStateMachine.State>"), "Error message should mention Supplier<CustomStateMachine.State>");
+        assertTrue(ex.getMessage().contains("Robot.java"), "Error message should contain file name");
+        assertTrue(ex.getMessage().contains("Line 9:"), "Error message should contain line number 9");
     }
 
     @Test
