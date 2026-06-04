@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * A gradle task that generates state machine names
+ * A gradle task that generates diagrams of state machines written in Commands V3.
  */
 @DisableCachingByDefault
 public abstract class MakeStateMachineGraphsTask extends DefaultTask {

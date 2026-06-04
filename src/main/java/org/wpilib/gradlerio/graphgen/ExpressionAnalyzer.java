@@ -10,6 +10,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 class ExpressionAnalyzer {
+    /**
+     * Analyzes an inline expression for returned state machine states,
+     * and the conditions needed for the state to be returned.
+     * @param expr The expression to analyze
+     * @return A map of state names to the conditions needed for that state to be returned
+     */
     static Map<String, String> analyze(Expression expr) {
         var rawReturns = new HashMap<String, List<String>>();
         ExpressionAnalyzer.analyze(expr, "true", rawReturns);
@@ -20,6 +26,7 @@ class ExpressionAnalyzer {
             ));
     }
 
+    // A mutable variant of analyze() used internally by CodeBlockAnalyzer.
     static void analyze(
         Expression expr,
         String pathCondition,
@@ -62,13 +69,12 @@ class ExpressionAnalyzer {
                 throw new RuntimeException("Yield Statements within switch blocks are not supported for @MakeStateMachineGraph.");
             }
             var expression = stmt.asExpressionStmt().getExpression();
-            if (expression.isConditionalExpr()) {
-                analyze(expression.asConditionalExpr(), Utils.joinWithAnd(pathCondition, matchCondition), returnsMap);
-            } else if (expression.isSwitchExpr()) {
-                handleSwitch(expression.asSwitchExpr(), Utils.joinWithAnd(pathCondition, matchCondition), returnsMap);
+            var condition = Utils.joinWithAnd(pathCondition, matchCondition);
+            if (expression.isConditionalExpr() || expression.isSwitchExpr()) {
+                analyze(expression, condition, returnsMap);
             } else {
                 var varName = expression.toString().trim();
-                returnsMap.computeIfAbsent(varName, k -> new ArrayList<>()).add(pathCondition);
+                returnsMap.computeIfAbsent(varName, k -> new ArrayList<>()).add(condition);
             }
         }
     }

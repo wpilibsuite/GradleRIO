@@ -8,6 +8,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class CodeBlockAnalyzer {
+    /**
+     * Analyzes a code block for returned state machine states,
+     * and the conditions needed for the state to be returned.
+     * @param block The code block to analyze
+     * @return A map of state names to the conditions needed for that state to be returned
+     */
     static Map<String, String> analyze(BlockStmt block) {
         var rawReturns = new HashMap<String, List<String>>();
         analyzeStatement(block, "true", rawReturns);

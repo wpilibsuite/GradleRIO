@@ -399,4 +399,162 @@ class MakeStateMachineGraphsTaskTest {
         var ex = assertThrows(RuntimeException.class, () -> taskProvider.get().run());
         assertTrue(ex.getMessage().contains("Supplier<CustomStateMachine.State>"), "Error message should mention Supplier<CustomStateMachine.State>");
     }
+
+    @Test
+    void testInlineLogicStatementsInLambda() throws IOException {
+        String content = """
+            package frc.robot;
+           
+            import org.wpilib.command3.Command;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+  
+            public class Robot {
+                @MakeStateMachineGraph
+                public StateMachine inlineConditional() {
+                    var sm = new StateMachine("Inline Conditional");
+                    var start = sm.addState(cmd("Start"));
+                    var stateA = sm.addState(cmd("StateA"));
+                    var stateB = sm.addState(cmd("StateB"));
+          
+                    start.switchTo(() -> condition ? stateA : stateB).when(() -> check());
+          
+                    return sm;
+                }
+
+                @MakeStateMachineGraph
+                public StateMachine inlineSwitch() {
+                    var sm = new StateMachine("Inline Switch");
+                    var start = sm.addState(cmd("Start"));
+                    var state1 = sm.addState(cmd("State1"));
+                    var state2 = sm.addState(cmd("State2"));
+          
+                    start.switchTo(() -> switch (value) {
+                        case 0 -> state1;
+                        default -> state2;
+                    }).whenComplete();
+          
+                    return sm;
+                }
+           
+                private Command cmd(String name) {
+                    return Command.noRequirements(coro -> while(true) coro.yield()).named(name);
+                }
+            }
+           """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        taskProvider.get().run();
+
+        Path condMermaid = outputDir.resolve("Inline Conditional.mermaid");
+        assertTrue(Files.exists(condMermaid), "Conditional mermaid file should be generated");
+        String condContent = Files.readString(condMermaid);
+        String expectedCond = """
+        ---
+        state_definition_order: [start, stateA, stateB]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            start --> stateB : check() && !condition
+            start --> stateA : check() && condition
+        """;
+        assertEquals(expectedCond.strip(), condContent.strip());
+
+        Path switchMermaid = outputDir.resolve("Inline Switch.mermaid");
+        assertTrue(Files.exists(switchMermaid), "Switch mermaid file should be generated");
+        String switchContent = Files.readString(switchMermaid);
+        String expectedSwitch = """
+        ---
+        state_definition_order: [start, state1, state2]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            start --> state2 : when complete && value != 0
+            start --> state1 : when complete && value == 0
+        """;
+        assertEquals(expectedSwitch.strip(), switchContent.strip());
+    }
+
+    @Test
+    void testReturnInlineLogicStatementsInLambda() throws IOException {
+        String content = """
+            package frc.robot;
+           
+            import org.wpilib.command3.Command;
+            import org.wpilib.gradlerio.graphgen.MakeStateMachineGraph;
+  
+            public class Robot {
+                @MakeStateMachineGraph
+                public StateMachine inlineConditional() {
+                    var sm = new StateMachine("Inline Conditional");
+                    var start = sm.addState(cmd("Start"));
+                    var stateA = sm.addState(cmd("StateA"));
+                    var stateB = sm.addState(cmd("StateB"));
+          
+                    start.switchTo(() -> {
+                        return condition ? stateA : stateB;
+                    }).when(() -> check());
+          
+                    return sm;
+                }
+
+                @MakeStateMachineGraph
+                public StateMachine inlineSwitch() {
+                    var sm = new StateMachine("Inline Switch");
+                    var start = sm.addState(cmd("Start"));
+                    var state1 = sm.addState(cmd("State1"));
+                    var state2 = sm.addState(cmd("State2"));
+          
+                    start.switchTo(() -> {
+                        if (!condition) return start;
+                        return switch (value) {
+                            case 0 -> state1;
+                            default -> state2;
+                        };
+                    }).whenComplete();
+          
+                    return sm;
+                }
+           
+                private Command cmd(String name) {
+                    return Command.noRequirements(coro -> while(true) coro.yield()).named(name);
+                }
+            }
+           """;
+        Files.writeString(javaRoot.resolve("Robot.java"), content);
+
+        taskProvider.get().run();
+
+        Path condMermaid = outputDir.resolve("Inline Conditional.mermaid");
+        assertTrue(Files.exists(condMermaid), "Conditional mermaid file should be generated");
+        String condContent = Files.readString(condMermaid);
+        String expectedCond = """
+        ---
+        state_definition_order: [start, stateA, stateB]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            start --> stateB : check() && !condition
+            start --> stateA : check() && condition
+        """;
+        assertEquals(expectedCond.strip(), condContent.strip());
+
+        Path switchMermaid = outputDir.resolve("Inline Switch.mermaid");
+        assertTrue(Files.exists(switchMermaid), "Switch mermaid file should be generated");
+        String switchContent = Files.readString(switchMermaid);
+        String expectedSwitch = """
+        ---
+        state_definition_order: [start, state1, state2]
+        ---
+        stateDiagram-v2
+            direction LR
+        
+            start --> start : when complete && !condition
+            start --> state2 : when complete && (condition && value != 0)
+            start --> state1 : when complete && (condition && value == 0)
+        """;
+        assertEquals(expectedSwitch.strip(), switchContent.strip());
+    }
 }
