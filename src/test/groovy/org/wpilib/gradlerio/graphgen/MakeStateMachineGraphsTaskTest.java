@@ -34,7 +34,7 @@ class MakeStateMachineGraphsTaskTest {
         // Use the same path format as default to avoid any normalization issues in the task
         taskProvider.configure(task -> {
             task.getJavaRoot().set(javaRoot.toString());
-            task.getDeployDirectory().set(deployDir.toAbsolutePath().toString());
+            task.getDeployDirectory().set(deployDir.toString());
         });
     }
 
