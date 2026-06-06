@@ -154,7 +154,7 @@ class MakeStateMachineGraphsTaskTest {
                     var left = sm.addState(cmd("Left"));
                     var right = sm.addState(cmd("Right"));
            
-                    start.switchTo(cond -> {
+                    start.switchTo(() -> {
                         if (cond) return left;
                         else return right;
                     }).when(() -> check());
