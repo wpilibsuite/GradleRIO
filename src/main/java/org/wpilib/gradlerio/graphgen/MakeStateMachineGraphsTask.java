@@ -1,4 +1,3 @@
-
 package org.wpilib.gradlerio.graphgen;
 
 import com.github.javaparser.JavaParser;
@@ -7,6 +6,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.google.gson.Gson;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
@@ -15,7 +15,6 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,14 +26,15 @@ import java.util.regex.Pattern;
  */
 @DisableCachingByDefault
 public abstract class MakeStateMachineGraphsTask extends DefaultTask {
-    private record Transition(String fromState, String toState, String transitionCond) {}
+    private record Transition(String origin, String target, String condition) {}
     private static class StateMachineGraph {
-        List<Transition> transitions = new ArrayList<>();
-        String initialState;
-        List<String> stateDefinitionOrder = new ArrayList<>();
+        final List<Transition> transitions = new ArrayList<>();
+        final List<String> stateDefinitionOrder = new ArrayList<>();
+        String initialState = "";
     }
 
     private final Pattern unusedVarPattern = Pattern.compile("(?<=[(,\\s])_(?=[\\s,)->])");
+    private final Gson gson = new Gson();
 
     @Input
     @Optional
@@ -44,15 +44,20 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
     @Optional
     public abstract Property<String> getDeployDirectory();
 
+    @Input
+    @Optional
+    public abstract Property<String> getDiagramGenerationDirectory();
+
     @TaskAction
     public void run() throws IOException {
         extractFromDirectory(
             getJavaRoot().getOrElse("src/main/java/"),
-            getDeployDirectory().getOrElse("src/main/deploy/")
+            getDeployDirectory().getOrElse("src/main/deploy/"),
+            getDiagramGenerationDirectory().getOrElse("stateMachineGraphs/")
         );
     }
 
-    private void extractFromDirectory(String javaRoot, String deployDir) throws IOException {
+    private void extractFromDirectory(String javaRoot, String deployDir, String diagramGenDir) throws IOException {
         var graphs = new LinkedHashMap<String, StateMachineGraph>();
         // Init configuration for javaparser
         var config = new ParserConfiguration();
@@ -71,16 +76,19 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
                 }
             });
 
+        new File(deployDir, "/stateMachineGraphData").mkdirs();
+        new File(diagramGenDir).mkdirs();
         for (var entry: graphs.entrySet()) {
-            var methodName = entry.getKey();
+            var name = entry.getKey();
             var graph = entry.getValue();
-            var file = new File(deployDir, "/stateMachineGraphs/" + methodName + ".mermaid");
-            if (file.getParentFile() != null) {
-                file.getParentFile().mkdirs();
-            }
-            try (var writer = new FileWriter(file)) {
-                writer.write(generateMermaid(graph));
-            }
+            Files.writeString(
+                new File(diagramGenDir, name + ".mermaid").toPath(),
+                generateMermaid(graph)
+            );
+            Files.writeString(
+                new File(deployDir, "/stateMachineGraphData/" + name + ".json").toPath(),
+                gson.toJson(graph)
+            );
         }
     }
 
@@ -272,11 +280,11 @@ public abstract class MakeStateMachineGraphsTask extends DefaultTask {
         sb.append("    direction LR\n\n");
         for (var t : graph.transitions) {
             sb.append("    ")
-                .append(sanitize(t.fromState()))
+                .append(sanitize(t.origin()))
                 .append(" --> ")
-                .append(sanitize(t.toState()))
+                .append(sanitize(t.target()))
                 .append(" : ")
-                .append(sanitizeTransitionCond(t.transitionCond()))
+                .append(sanitizeTransitionCond(t.condition()))
                 .append("\n");
         }
         if (graph.initialState != null) {

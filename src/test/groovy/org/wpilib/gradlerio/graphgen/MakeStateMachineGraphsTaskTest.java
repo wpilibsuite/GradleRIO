@@ -27,14 +27,14 @@ class MakeStateMachineGraphsTaskTest {
         
         javaRoot = tempDir.resolve("src/main/java").toAbsolutePath();
         Files.createDirectories(javaRoot);
-
+        outputDir = tempDir.resolve("stateMachineGraphs").toAbsolutePath();
         var deployDir = tempDir.resolve("src/main/deploy").toAbsolutePath();
-        outputDir = deployDir.resolve("stateMachineGraphs");
 
         // Use the same path format as default to avoid any normalization issues in the task
         taskProvider.configure(task -> {
             task.getJavaRoot().set(javaRoot.toString());
             task.getDeployDirectory().set(deployDir.toString());
+            task.getDiagramGenerationDirectory().set(outputDir.toString());
         });
     }
 
