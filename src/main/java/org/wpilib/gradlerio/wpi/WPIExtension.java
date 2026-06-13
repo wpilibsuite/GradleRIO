@@ -142,18 +142,31 @@ public class WPIExtension {
     }
 
     private static File computeHomeRoot() {
-        File homeRoot = null;
-        if (OperatingSystem.current().isWindows()) {
-            String publicFolder = System.getenv("PUBLIC");
-            if (publicFolder == null) {
-                publicFolder = "C:\\Users\\Public";
+        OperatingSystem currentOperatingSystem = OperatingSystem.current();
+        return computeHomeRoot(currentOperatingSystem.isWindows(), currentOperatingSystem.isMacOsX(),
+                currentOperatingSystem.isLinux(), System.getProperty("user.home"), System.getenv("PUBLIC"),
+                System.getenv("XDG_DATA_HOME"));
+    }
+
+    static File computeHomeRoot(boolean isWindows, boolean isMacOsX, boolean isLinux, String userFolder,
+            String publicFolder, String xdgDataHome) {
+        if (isWindows) {
+            String resolvedPublicFolder = publicFolder;
+            if (resolvedPublicFolder == null) {
+                resolvedPublicFolder = "C:\\Users\\Public";
             }
-            homeRoot = new File(publicFolder, "wpilib");
-        } else {
-            String userFolder = System.getProperty("user.home");
-            homeRoot = new File(userFolder, "wpilib");
+            return new File(resolvedPublicFolder, "wpilib");
         }
-        return homeRoot;
+
+        if (isMacOsX) {
+            return new File(userFolder, ".wpilib");
+        }
+
+        if (isLinux && xdgDataHome != null && !xdgDataHome.isBlank()) {
+            return new File(xdgDataHome, ".wpilib");
+        }
+
+        return new File(userFolder, ".wpilib");
     }
 
     // public Map<String, Tuple> versions() {
