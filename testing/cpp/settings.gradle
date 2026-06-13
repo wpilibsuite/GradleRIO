@@ -13,9 +13,19 @@ pluginManagement {
             }
             def homeRoot = new File(publicFolder, "wpilib")
             wpilibHome = new File(homeRoot, wpilibYear)
+        } else if (OperatingSystem.current().isLinux()) {
+            String xdgDataHome = System.getenv('XDG_DATA_HOME')
+            if (xdgDataHome != null && !xdgDataHome.isBlank()) {
+                def homeRoot = new File(xdgDataHome, ".wpilib")
+                wpilibHome = new File(homeRoot, wpilibYear)
+            } else {
+                def userFolder = System.getProperty("user.home")
+                def homeRoot = new File(userFolder, ".wpilib")
+                wpilibHome = new File(homeRoot, wpilibYear)
+            }
         } else {
             def userFolder = System.getProperty("user.home")
-            def homeRoot = new File(userFolder, "wpilib")
+            def homeRoot = new File(userFolder, ".wpilib")
             wpilibHome = new File(homeRoot, wpilibYear)
         }
         def wpilibHomeMaven = new File(wpilibHome, 'maven')
