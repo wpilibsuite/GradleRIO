@@ -166,6 +166,10 @@ public class WPIExtension {
             return new File(xdgDataHome, ".wpilib");
         }
 
+        if (isLinux) {
+            return new File(new File(userFolder, ".local/share"), ".wpilib");
+        }
+
         return new File(userFolder, ".wpilib");
     }
 
