@@ -20,7 +20,7 @@ pluginManagement {
                 wpilibHome = new File(homeRoot, wpilibYear)
             } else {
                 def userFolder = System.getProperty("user.home")
-                def homeRoot = new File(userFolder, ".wpilib")
+                def homeRoot = new File(new File(userFolder, ".local/share"), ".wpilib")
                 wpilibHome = new File(homeRoot, wpilibYear)
             }
         } else {
