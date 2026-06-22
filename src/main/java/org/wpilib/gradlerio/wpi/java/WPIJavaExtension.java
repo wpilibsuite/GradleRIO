@@ -1,3 +1,4 @@
+
 package org.wpilib.gradlerio.wpi.java;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.process.JavaForkOptions;
 import org.gradle.internal.os.OperatingSystem;
+import org.wpilib.gradlerio.graphgen.MakeStateMachineGraphsTask;
 import org.wpilib.gradlerio.simulation.HalSimPair;
 import org.wpilib.gradlerio.simulation.JavaExternalSimulationTask;
 import org.wpilib.gradlerio.simulation.JavaSimulationTask;
@@ -129,7 +131,6 @@ public class WPIJavaExtension {
         t.jvmArgs(jvmArgs);
 
         t.doFirst(new Action<Task>() {
-
             @Override
             public void execute(Task task) {
                 File ldpath = extract.get().getDestinationDirectory().get().getAsFile();
@@ -281,6 +282,11 @@ public class WPIJavaExtension {
                 }
             });
             t.dependsOn(simTask);
+        });
+
+        project.getTasks().register("generateGraphs", MakeStateMachineGraphsTask.class, task -> {
+            task.setGroup("GradleRIO");
+            task.setDescription("Generates Graphs for state machine-returning methods annotated with @MakeStateMachineGraph.");
         });
     }
 }
