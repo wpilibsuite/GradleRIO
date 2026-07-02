@@ -40,7 +40,6 @@ public class WPIExtension {
     private final NativePlatforms platforms;
 
     private final Project project;
-    private final String toolsClassifier;
     private final String cppToolsClassifier;
 
     private final WPIVendorDepsExtension vendor;
@@ -105,35 +104,10 @@ public class WPIExtension {
 
         maven = factory.newInstance(WPIMavenExtension.class, project);
 
-        String desktop = NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect();
-        String toolsClassifier = "unknown";
-        if (desktop.equals("linuxx86-64")) {
-            toolsClassifier = "linuxx64";
-        } else if (desktop.equals("windowsx86-64")) {
-            toolsClassifier = "winx64";
-        } else if (desktop.equals("windowsarm64")) {
-            toolsClassifier = "winarm64";
-        } else if (desktop.equals("osxx86-64")) {
-            toolsClassifier = "macx64";
-        } else if (desktop.equals("osxarm64")) {
-            toolsClassifier = "macarm64";
-        } else if (desktop.equals("linuxarm64")) {
-            toolsClassifier = "linuxarm64";
-        } else if (desktop.equals("linuxarm32")) {
-            toolsClassifier = "liuxarm32";
-        } else {
-            project.getLogger().warn("Unknown platform. Tools will not work.");
-        }
-
-        if (project.hasProperty("forceToolsClassifier")) {
-            this.toolsClassifier = (String) project.findProperty("forceToolsClassifier");
-        } else {
-            this.toolsClassifier = toolsClassifier;
-        }
         if (project.hasProperty("forceCppToolsClassifier")) {
             this.cppToolsClassifier = (String) project.findProperty("forceCppToolsClassifier");
         } else {
-            this.cppToolsClassifier = desktop;
+            this.cppToolsClassifier = NativePlatforms.desktopOS() + NativePlatforms.desktopArchDirect();
         }
     }
 
@@ -157,32 +131,6 @@ public class WPIExtension {
         }
         return homeRoot;
     }
-
-    // public Map<String, Tuple> versions() {
-    // // Format:
-    // // property: [ PrettyName, Version, RecommendedKey ]
-    // return [
-    // "wpilibVersion" : new Tuple("WPILib", wpilibVersion, "wpilib"),
-    // "opencvVersion" : new Tuple("OpenCV", opencvVersion, "opencv"),
-    // "frcYear " : new Tuple("FRC Year", frcYear, "frcYear"),
-    // "imguiVersion" : new Tuple("ImGUI", imguiVersion, "imgui"),
-    // "wpimathVersion" : new Tuple("WPIMath", wpimathVersion, "wpimath"),
-    // "ejmlVersion" : new Tuple("EJML", ejmlVersion, "ejml"),
-    // "jacksonVersion" : new Tuple("Jackson", jacksonVersion, "jackson"),
-
-    // "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion,
-    // "smartdashboard"),
-    // "shuffleboardVersion" : new Tuple("Shuffleboard", shuffleboardVersion,
-    // "shuffleboard"),
-    // "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion,
-    // "outlineviewer"),
-    // "robotBuilderVersion" : new Tuple("RobotBuilder", robotBuilderVersion,
-    // "robotbuilder"),
-    // "glassVersion" : new Tuple("Glass", glassVersion, "glass"),
-    // "pathWeaverVersion" : new Tuple("PathWeaver", pathWeaverVersion,
-    // "pathweaver"),
-    // ]
-    // }
 
     public static List<String> getValidImageVersions() {
         return validImageVersions;
@@ -220,10 +168,6 @@ public class WPIExtension {
 
     public Project getProject() {
         return project;
-    }
-
-    public String getToolsClassifier() {
-        return toolsClassifier;
     }
 
     public String getCppToolsClassifier() {
