@@ -62,4 +62,12 @@ public class WPINativeDepsExtension {
     void googleTest(NativeBinarySpec binary) {
         useLibrary(binary, "googletest_static");
     }
+
+    void catch2(VariantComponentSpec component) {
+        useLibrary(component, "catch2_static");
+    }
+
+    void catch2(NativeBinarySpec binary) {
+        useLibrary(binary, "catch2_static");
+    }
 }

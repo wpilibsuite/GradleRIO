@@ -14,6 +14,7 @@ import org.wpilib.gradlerio.wpi.WPIExtension;
 import org.wpilib.gradlerio.wpi.WPIVersionsExtension;
 import org.wpilib.nativeutils.NativeUtils;
 import org.wpilib.nativeutils.NativeUtilsExtension;
+import org.wpilib.nativeutils.dependencies.WPIStaticMavenDependency;
 import org.wpilib.nativeutils.vendordeps.WPINativeVendorDepsExtension;
 import org.wpilib.toolchain.NativePlatforms;
 import org.wpilib.toolchain.ToolchainExtension;
@@ -121,6 +122,7 @@ public class WPINativeExtension {
             wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
             wpiDeps.getMrcLibVersion().set(versions.getMrcLibVersion());
         });
+        registerCatch2Dependency(nte, versions);
 
         simulationTaskRelease = project.getTasks().register("simulateNativeRelease", NativeSimulationTask.class);
         simulationTaskDebug = project.getTasks().register("simulateNativeDebug", NativeSimulationTask.class);
@@ -155,5 +157,22 @@ public class WPINativeExtension {
                 NativeExternalSimulationTask.class, t -> {
                     t.getSimulationFile().set(project.getLayout().getBuildDirectory().file("test/debug_native.json"));
                 });
+    }
+
+    private void registerCatch2Dependency(NativeUtilsExtension nte, WPIVersionsExtension versions) {
+        var configs = nte.getNativeDependencyContainer();
+        if (configs.findByName("catch2_static") != null) {
+            return;
+        }
+
+        configs.register("catch2_static", WPIStaticMavenDependency.class, c -> {
+            c.getGroupId().set("org.wpilib.thirdparty.catch2");
+            c.getArtifactId().set("catch2-cpp");
+            c.getHeaderClassifier().set("headers");
+            c.getSourceClassifier().set("sources");
+            c.getExt().set("zip");
+            c.getVersion().set(versions.getWpilibVersion());
+            c.getTargetPlatforms().addAll(nte.getWpi().platforms.allPlatforms);
+        });
     }
 }
