@@ -18,7 +18,7 @@ configurations {
     processstarterDownload
 }
 
-def processstarterToolVersion = "2027.0.0-alpha-6-68-g5a7d7d50e"
+def processstarterToolVersion = "2027.0.0-alpha-6-315-g5e611001c"
 
 dependencies {
     api 'com.google.code.gson:gson:2.13.1'
