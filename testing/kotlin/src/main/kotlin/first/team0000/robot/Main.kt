@@ -17,5 +17,5 @@ import org.wpilib.framework.RobotBase
  * If you change your main robot class, change the parameter type.
  */
 fun main() {
-    RobotBase.startRobot(Robot::class.java)
+    RobotBase.startRobot(::Robot)
 }
