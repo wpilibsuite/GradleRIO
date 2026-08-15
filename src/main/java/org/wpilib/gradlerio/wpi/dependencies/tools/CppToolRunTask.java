@@ -45,8 +45,11 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
     @TaskAction
     public void runTool() {
         boolean isWindows = OperatingSystem.current().isWindows();
+        boolean isMac = OperatingSystem.current().isMacOsX();
         if (isWindows) {
             runToolWindows();
+        } else if (isMac) {
+            runToolMac();
         } else {
             runToolUnix();
         }
@@ -83,6 +86,18 @@ public class CppToolRunTask extends DefaultTask implements SingletonTask {
         operations.exec(spec -> {
             spec.setExecutable(outputFile.getAbsolutePath());
             spec.args(getArgumentPath(toolName.toLowerCase()));
+        });
+    }
+
+    private void runToolMac() {
+        Directory toolsFolder = this.toolsFolder.get();
+        String toolName = this.toolName.get();
+        String toolApp = toolName + ".app";
+        File outputFile = toolsFolder.file(toolApp).getAsFile();
+        String argPath = getArgumentPath(toolName.toLowerCase());
+        operations.exec(spec -> {
+            spec.setExecutable("open");
+            spec.args(outputFile.getAbsolutePath(), "--args", argPath);
         });
     }
 
