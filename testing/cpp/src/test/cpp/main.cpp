@@ -29,5 +29,10 @@ int main(int argc, char** argv) {
   if (!IsCatchListCommand(argc, argv)) {
     HAL_Initialize(500, 0);
   }
-  return Catch::Session().run(argc, argv);
+
+  auto session = Catch::Session();
+
+  session.configData().allowZeroTests = true;
+
+  return session.run(argc, argv);
 }
