@@ -23,7 +23,7 @@ def processstarterToolVersion = "2027.0.0-alpha-6-68-g5a7d7d50e"
 dependencies {
     api 'com.google.code.gson:gson:2.13.1'
 
-    api 'org.wpilib:native-utils:2027.10.0'
+    api 'org.wpilib:native-utils:2027.14.0'
 
     api 'de.undercouch:gradle-download-task:5.6.0'
 
