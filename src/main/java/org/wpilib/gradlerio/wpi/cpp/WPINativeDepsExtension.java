@@ -55,14 +55,6 @@ public class WPINativeDepsExtension {
         useLibrary(binary, "wpilib_static", "vision_static");
     }
 
-    void googleTest(VariantComponentSpec component) {
-        useLibrary(component, "googletest_static");
-    }
-
-    void googleTest(NativeBinarySpec binary) {
-        useLibrary(binary, "googletest_static");
-    }
-
     void catch2(VariantComponentSpec component) {
         useLibrary(component, "catch2_static");
     }
