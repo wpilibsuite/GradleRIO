@@ -94,7 +94,7 @@ public class WPILibNativeArtifact extends DebuggableNativeArtifact {
         builder.append("\" ");
         boolean debug = systemCore.getDebug().get();
         if (debug) {
-            builder.append("gdbserver host:");
+            builder.append("gdbserver :");
             builder.append(getDebugPort());
             builder.append(' ');
         }
