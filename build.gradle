@@ -18,12 +18,12 @@ configurations {
     processstarterDownload
 }
 
-def processstarterToolVersion = "2027.0.0-alpha-6-315-g5e611001c"
+def processstarterToolVersion = "2027.0.0-alpha-6-328-g060429fa5"
 
 dependencies {
     api 'com.google.code.gson:gson:2.13.1'
 
-    api 'org.wpilib:native-utils:2027.14.0'
+    api 'org.wpilib:native-utils:2027.14.1'
 
     api 'de.undercouch:gradle-download-task:5.6.0'
 
