@@ -1,19 +1,30 @@
 
-def versionMap = [
-  wpilibVersion: 'org.wpilib.wpilibj:wpilibj-java:+',
-  outlineViewerVersion: 'org.wpilib.tools:OutlineViewer:+:windowsx86-64@zip',
-  glassVersion: 'org.wpilib.tools:Glass:+:windowsx86-64@zip',
-  sysIdVersion: 'org.wpilib.tools:SysId:+:windowsx86-64@zip',
-  dataLogToolVersion: 'org.wpilib.tools:DataLogTool:+:windowsx86-64@zip',
-  opencvVersion: 'org.wpilib.thirdparty.opencv:opencv-java:+',
-  wpicalToolVersion: 'org.wpilib.tools:wpical:+:windowsx86-64@zip',
-  processstarterToolVersion: 'org.wpilib.tools:processstarter:+:windowsx86-64@zip',
-  mrcLibVersion: 'org.wpilib.mrclib:mrclib-cpp:+:windowsx86-64@zip',
+def wpilibVersionKeys = [
+  'wpilibVersion',
+  'outlineViewerVersion',
+  'glassVersion',
+  'sysIdVersion',
+  'dataLogToolVersion',
+  'wpicalToolVersion',
+  'processstarterToolVersion',
+]
+
+// These dependencies use the versions selected by the corresponding WPILib build,
+// rather than the WPILib build version itself.
+def thirdPartyVersionMap = [
+  opencvVersion: 'opencv',
+  avajeVersion: 'avaje',
+  ejmlVersion: 'ejml',
+  quickbufVersion: 'quickbuf',
+  gsonVersion: 'gson',
+  mrcLibVersion: 'mrclib',
 ]
 
 configurations {
   gradleRioVersions
 }
+
+configurations.gradleRioVersions.resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
 
 // We need some special logic to switch the processstarter tool between development and release repositories
 def currentUseDevelopment = true
@@ -33,9 +44,7 @@ project.repositories.maven { repo ->
 }
 
 dependencies {
-  versionMap.each { key, value ->
-    gradleRioVersions value
-  }
+  gradleRioVersions 'org.wpilib:wpilib-versions:+'
 }
 
 String regex = "String\\s+?placeholder\\s+?=\\s+?[\\\"|\\'].+?[\\\"|\\']"
@@ -68,27 +77,58 @@ tasks.register('UpdateVersions') {
 
     def extFile = file('src/main/java/org/wpilib/gradlerio/wpi/WPIVersionsExtension.java')
     def extText = extFile.text
-    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
-      versionMap.each { key, value ->
-        def id = it.moduleVersion.id
-        if (value.startsWith("${id.group}:${it.name}:+".toString())) {
-          def localRegex = regex.replace('placeholder', key)
-          extText = extText.replaceAll(localRegex, "String ${key} = \"${id.version}\"".toString())
+
+    def versionsArtifacts = configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.findAll {
+      it.moduleVersion.id.group == 'org.wpilib' && it.name == 'wpilib-versions'
+    }
+    if (versionsArtifacts.size() != 1) {
+      throw new GradleException("Expected one org.wpilib:wpilib-versions artifact, found ${versionsArtifacts.size()}")
+    }
+
+    def versionsArtifact = versionsArtifacts.first()
+    def versionCatalogFiles = zipTree(versionsArtifact.file).matching {
+      include 'libs.versions.toml'
+    }.files
+    if (versionCatalogFiles.size() != 1) {
+      throw new GradleException("Expected wpilib-versions to contain one libs.versions.toml, found ${versionCatalogFiles.size()}")
+    }
+
+    def catalogVersions = [:]
+    def inVersionsSection = false
+    versionCatalogFiles.first().eachLine('UTF-8') { line ->
+      def trimmedLine = line.trim()
+      if (trimmedLine.startsWith('[')) {
+        inVersionsSection = trimmedLine == '[versions]'
+      } else if (inVersionsSection && trimmedLine && !trimmedLine.startsWith('#')) {
+        def versionMatcher = trimmedLine =~ /^([A-Za-z0-9_-]+)\s*=\s*(["'])([^"']+)\2\s*(?:#.*)?$/
+        if (versionMatcher.matches()) {
+          catalogVersions[versionMatcher.group(1)] = versionMatcher.group(3)
         }
       }
+    }
+
+    def resolvedVersionMap = wpilibVersionKeys.collectEntries { key ->
+      [(key): versionsArtifact.moduleVersion.id.version]
+    }
+    thirdPartyVersionMap.each { key, catalogKey ->
+      def resolvedVersion = catalogVersions[catalogKey]
+      if (resolvedVersion == null) {
+        throw new GradleException("wpilib-versions is missing the '${catalogKey}' version required for ${key}")
+      }
+      resolvedVersionMap[key] = resolvedVersion
+    }
+
+    resolvedVersionMap.each { key, value ->
+      def localRegex = regex.replace('placeholder', key)
+      extText = extText.replaceAll(localRegex, "String ${key} = \"${value}\"".toString())
     }
     extFile.text = extText
 
     def buildFile = file('build.gradle')
     def buildText = buildFile.text
-    configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
-      versionMap.each { key, value ->
-        def id = it.moduleVersion.id
-        if (value.startsWith("${id.group}:${it.name}:+".toString())) {
-          def localBuildRegex = buildRegex.replace('placeholder', key)
-          buildText = buildText.replaceAll(localBuildRegex, "def ${key} = \"${id.version}\"".toString())
-        }
-      }
+    resolvedVersionMap.each { key, value ->
+      def localBuildRegex = buildRegex.replace('placeholder', key)
+      buildText = buildText.replaceAll(localBuildRegex, "def ${key} = \"${value}\"".toString())
     }
     buildFile.text = buildText
 
@@ -96,7 +136,7 @@ tasks.register('UpdateVersions') {
     def first = true
     configurations.gradleRioVersions.resolvedConfiguration.resolvedArtifacts.each {
       if (it.classifier == "allowedimages") {
-        def f = project.zipTree(it.file)
+        def f = zipTree(it.file)
         f.visit {
           if (it.name == "allowed_images.txt") {
             it.file.eachLine {
