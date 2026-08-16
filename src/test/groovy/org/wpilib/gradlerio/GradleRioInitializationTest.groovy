@@ -39,6 +39,42 @@ plugins {
         result.task(':tasks').outcome == SUCCESS
     }
 
+    def "Cpp Catch2 Test Suite Initializes Correctly"() {
+        given:
+        buildFile << """
+plugins {
+    id 'cpp'
+    id 'google-test-test-suite'
+    id 'org.wpilib.GradleRIO'
+}
+
+model {
+    components {
+        wpilibUserProgram(NativeExecutableSpec) {
+            targetPlatform wpi.platforms.desktop
+        }
+    }
+    testSuites {
+        wpilibUserProgramCatch2Test(GoogleTestTestSuiteSpec) {
+            testing \$.components.wpilibUserProgram
+            wpi.cpp.deps.catch2(it)
+        }
+    }
+}
+"""
+        buildFile2 << ""
+        settingsFile << ""
+        when:
+        def result = GradleRunner.create()
+            .withProjectDir(testProjectDir)
+            .withArguments('tasks', '--stacktrace')
+            .withPluginClasspath()
+            .build()
+
+        then:
+        result.task(':tasks').outcome == SUCCESS
+    }
+
     def "Java Project Initializes Correctly"() {
         given:
         buildFile << """

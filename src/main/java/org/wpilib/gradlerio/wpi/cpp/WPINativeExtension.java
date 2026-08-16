@@ -14,6 +14,7 @@ import org.wpilib.gradlerio.wpi.WPIExtension;
 import org.wpilib.gradlerio.wpi.WPIVersionsExtension;
 import org.wpilib.nativeutils.NativeUtils;
 import org.wpilib.nativeutils.NativeUtilsExtension;
+import org.wpilib.nativeutils.dependencies.WPIStaticMavenDependency;
 import org.wpilib.nativeutils.vendordeps.WPINativeVendorDepsExtension;
 import org.wpilib.toolchain.NativePlatforms;
 import org.wpilib.toolchain.ToolchainExtension;

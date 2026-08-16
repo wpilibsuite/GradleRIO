@@ -5,13 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <string_view>
+
+#include <catch2/catch_session.hpp>
 #include <wpi/hal/HAL.h>
 
-#include "gtest/gtest.h"
+namespace {
+
+bool IsCatchListCommand(int argc, char** argv) {
+  for (int i = 1; i < argc; ++i) {
+    std::string_view arg{argv[i]};
+    if (arg == "--list-tests" || arg == "--list-tags" ||
+        arg == "--list-reporters" || arg == "--list-listeners") {
+      return true;
+    }
+  }
+  return false;
+}
+
+}  // namespace
 
 int main(int argc, char** argv) {
-  HAL_Initialize(500, 0);
-  ::testing::InitGoogleTest(&argc, argv);
-  int ret = RUN_ALL_TESTS();
-  return ret;
+  if (!IsCatchListCommand(argc, argv)) {
+    HAL_Initialize(500, 0);
+  }
+
+  auto session = Catch::Session();
+
+  session.configData().allowZeroTests = true;
+
+  return session.run(argc, argv);
 }
