@@ -6,7 +6,6 @@ def wpilibVersionKeys = [
   'sysIdVersion',
   'dataLogToolVersion',
   'wpicalToolVersion',
-  'processstarterToolVersion',
 ]
 
 // These dependencies use the versions selected by the corresponding WPILib build,

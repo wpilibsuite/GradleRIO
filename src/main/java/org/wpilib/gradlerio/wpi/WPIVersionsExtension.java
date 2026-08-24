@@ -17,7 +17,6 @@ public abstract class WPIVersionsExtension {
     private static final String sysIdVersion = "2027.0.0-alpha-6-364-g18ae9bd4e";
     private static final String dataLogToolVersion = "2027.0.0-alpha-6-364-g18ae9bd4e";
     private static final String wpicalToolVersion = "2027.0.0-alpha-6-364-g18ae9bd4e";
-    private static final String processstarterToolVersion = "2027.0.0-alpha-6-364-g18ae9bd4e";
     private static final String mrcLibVersion = "2027.1.0-alpha-1-112-g3f8f56e";
 
     public abstract Property<String> getWpilibVersion();
@@ -31,7 +30,6 @@ public abstract class WPIVersionsExtension {
     public abstract Property<String> getSysIdVersion();
     public abstract Property<String> getDataLogToolVersion();
     public abstract Property<String> getWpicalToolVersion();
-    public abstract Property<String> getProcessstarterToolVersion();
     public abstract Property<String> getMrcLibVersion();
 
     @Inject
@@ -47,7 +45,6 @@ public abstract class WPIVersionsExtension {
         getSysIdVersion().convention(sysIdVersion);
         getDataLogToolVersion().convention(dataLogToolVersion);
         getWpicalToolVersion().convention(wpicalToolVersion);
-        getProcessstarterToolVersion().convention(processstarterToolVersion);
         getMrcLibVersion().convention(mrcLibVersion);
     }
 

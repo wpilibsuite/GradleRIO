@@ -35,9 +35,6 @@ public class WPIToolsPlugin implements Plugin<Project> {
         cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getWpicalToolVersion(),
                 "org.wpilib.tools:wpical", toolsFolder));
 
-        cppTools.add(new WPICppTool(project, "processstarter", wpi.getVersions().getProcessstarterToolVersion(),
-                "org.wpilib.tools:processstarter", toolsFolder));
-
         project.getTasks().register("InstallAllTools", task -> {
             task.setGroup("GradleRIO");
             task.setDescription("Install All Tools");
