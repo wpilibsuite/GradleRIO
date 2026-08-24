@@ -18,7 +18,7 @@ configurations {
     processstarterDownload
 }
 
-def processstarterToolVersion = "2027.0.0-alpha-6-358-gf90dfe8f4"
+def processstarterToolVersion = "2027.0.0-alpha-6-364-g18ae9bd4e"
 def gsonVersion = "2.13.1"
 
 dependencies {

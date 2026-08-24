@@ -37,9 +37,9 @@ def useDevelopment = project.hasProperty(switchToDevelopment) || (currentUseDeve
 project.repositories.maven { repo ->
     repo.name = "WPI"
     if (useDevelopment) {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/development-2027"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/development"
     } else {
-      repo.url = "https://frcmaven.wpi.edu/artifactory/release-2027"
+      repo.url = "https://frcmaven.wpi.edu/artifactory/release"
     }
 }
 
