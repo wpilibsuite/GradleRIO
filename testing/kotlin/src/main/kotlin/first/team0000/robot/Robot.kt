@@ -1,8 +1,10 @@
 package first.team0000.robot
 
+import org.wpilib.drive.DifferentialDrive
+import org.wpilib.drivers.motor.PWMSparkMax
+import org.wpilib.driverstation.Gamepad
 import org.wpilib.framework.TimedRobot
-import org.wpilib.smartdashboard.SendableChooser
-import org.wpilib.smartdashboard.SmartDashboard
+import org.wpilib.system.Timer
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -12,13 +14,19 @@ import org.wpilib.smartdashboard.SmartDashboard
  * project.
  */
 class Robot : TimedRobot() {
-    private var autoSelected = kDefaultAuto
-    private val chooser = SendableChooser<String>()
+
+    private var leftDrive = PWMSparkMax(0);
+    private var rightDrive = PWMSparkMax(1);
+    private var robotDrive =
+      DifferentialDrive(leftDrive::setThrottle, rightDrive::setThrottle);
+    private var controller = Gamepad(0);
+    private var timer = Timer();
 
     init {
-        chooser.setDefaultOption("Default Auto", kDefaultAuto)
-        chooser.addOption("My Auto", kCustomAuto)
-        SmartDashboard.putData("Auto choices", chooser)
+      // We need to invert one side of the drivetrain so that positive voltages
+      // result in both sides moving forward. Depending on how your robot's
+      // gearbox is constructed, you might have to invert the left side instead.
+      rightDrive.setInverted(true);
     }
 
     /**
@@ -44,32 +52,27 @@ class Robot : TimedRobot() {
      * SendableChooser make sure to add them to the chooser code above as well.
      */
     override fun autonomousInit() {
-        autoSelected = chooser.selected ?: kDefaultAuto
-        // autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto)
-        println("Auto selected: $autoSelected")
+        timer.restart();
     }
 
     /**
      * This function is called periodically during autonomous.
      */
     override fun autonomousPeriodic() {
-        when (autoSelected) {
-            kCustomAuto -> {
-                // Put custom auto code here
-            }
-            kDefaultAuto -> {
-                // Put default auto code here
-            }
-            else -> {
-                // Put default auto code here
-            }
-        }
+      // Drive for 2 seconds
+      if (timer.get() < 2.0) {
+        // Drive forwards half velocity, make sure to turn input squaring off
+        robotDrive.arcadeDrive(0.5, 0.0, false);
+      } else {
+        robotDrive.arcadeDrive(0.0, 0.0, false); // stop robot
+      }
     }
 
     /**
      * This function is called periodically during operator control.
      */
     override fun teleopPeriodic() {
+        robotDrive.arcadeDrive(-controller.getLeftY(), -controller.getRightX());
     }
 
     /**
@@ -78,8 +81,4 @@ class Robot : TimedRobot() {
     override fun utilityPeriodic() {
     }
 
-    private companion object {
-        const val kDefaultAuto = "Default"
-        const val kCustomAuto = "My Auto"
-    }
 }

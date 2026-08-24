@@ -1,89 +1,66 @@
 package first.team0000.robot;
 
+import org.wpilib.drive.DifferentialDrive;
+import org.wpilib.drivers.motor.PWMSparkMax;
+import org.wpilib.driverstation.Gamepad;
 import org.wpilib.framework.TimedRobot;
-import org.wpilib.smartdashboard.SendableChooser;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.system.Timer;
+
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
+ * The methods in this class are called automatically corresponding to each mode, as described in
+ * the TimedRobot documentation. If you change the name of this class or the package after creating
+ * this project, you must also update the manifest file in the resource directory.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final PWMSparkMax leftDrive = new PWMSparkMax(0);
+  private final PWMSparkMax rightDrive = new PWMSparkMax(1);
+  private final DifferentialDrive robotDrive =
+      new DifferentialDrive(leftDrive::setThrottle, rightDrive::setThrottle);
+  private final Gamepad controller = new Gamepad(0);
+  private final Timer timer = new Timer();
 
-  /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
-   */
+  /** Called once at the beginning of the robot program. */
   public Robot() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+    rightDrive.setInverted(true);
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-  }
-
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
-   */
+  /** This function is run once each time the robot enters autonomous mode. */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    timer.restart();
   }
 
-  /**
-   * This function is called periodically during autonomous.
-   */
+  /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
+    // Drive for 2 seconds
+    if (timer.get() < 2.0) {
+      // Drive forwards half velocity, make sure to turn input squaring off
+      robotDrive.arcadeDrive(0.5, 0.0, false);
+    } else {
+      robotDrive.arcadeDrive(0.0, 0.0, false); // stop robot
     }
   }
 
-  /**
-   * This function is called periodically during operator control.
-   */
+  /** This function is called once each time the robot enters teleoperated mode. */
+  @Override
+  public void teleopInit() {}
+
+  /** This function is called periodically during teleoperated mode. */
   @Override
   public void teleopPeriodic() {
+    robotDrive.arcadeDrive(-controller.getLeftY(), -controller.getRightX());
   }
 
-  /**
-   * This function is called periodically during utility mode.
-   */
+  /** This function is called once each time the robot enters utility mode. */
   @Override
-  public void utilityPeriodic() {
-  }
+  public void utilityInit() {}
+
+  /** This function is called periodically during utility mode. */
+  @Override
+  public void utilityPeriodic() {}
 }

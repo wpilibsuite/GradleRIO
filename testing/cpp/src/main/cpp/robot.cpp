@@ -1,72 +1,62 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FIRST teams. The code */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-#include "Robot.h"
+#include "wpi/drive/DifferentialDrive.hpp"
+#include "wpi/drivers/motor/PWMSparkMax.hpp"
+#include "wpi/driverstation/Gamepad.hpp"
+#include "wpi/framework/TimedRobot.hpp"
+#include "wpi/system/Timer.hpp"
 
-#include <iostream>
-
-#include "wpi/smartdashboard/SmartDashboard.hpp"
-
-constexpr bool testBool = false;
-
-Robot::Robot() {
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  wpi::SmartDashboard::PutData("Auto Modes", &m_chooser);
-}
-
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
-void Robot::RobotPeriodic() {}
-
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString line to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional comparisons to the
- * if-else structure below with additional strings. If using the SendableChooser
- * make sure to add them to the chooser code above as well.
- */
-void Robot::AutonomousInit() {
-  m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
-  std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
+class Robot : public wpi::TimedRobot {
+ public:
+  Robot() {
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+    right.SetInverted(true);
+    robotDrive.SetExpiration(100_ms);
+    timer.Start();
   }
-}
 
-void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
+  void AutonomousInit() override { timer.Restart(); }
+
+  void AutonomousPeriodic() override {
+    // Drive for 2 seconds
+    if (timer.Get() < 2_s) {
+      // Drive forwards half velocity, make sure to turn input squaring off
+      robotDrive.ArcadeDrive(0.5, 0.0, false);
+    } else {
+      // Stop robot
+      robotDrive.ArcadeDrive(0.0, 0.0, false);
+    }
   }
-}
 
-void Robot::TeleopInit() {}
+  void TeleopInit() override {}
 
-void Robot::TeleopPeriodic() {}
+  void TeleopPeriodic() override {
+    // Drive with arcade style (use right stick to steer)
+    robotDrive.ArcadeDrive(-controller.GetLeftY(), controller.GetRightX());
+  }
 
-void Robot::UtilityPeriodic() {}
+  void UtilityInit() override {}
+
+  void UtilityPeriodic() override {}
+
+ private:
+  // Robot drive system
+  wpi::PWMSparkMax left{0};
+  wpi::PWMSparkMax right{1};
+  wpi::DifferentialDrive robotDrive{
+      [&](double output) { left.SetThrottle(output); },
+      [&](double output) { right.SetThrottle(output); }};
+
+  wpi::Gamepad controller{0};
+  wpi::Timer timer;
+};
 
 #ifndef RUNNING_WPILIB_TESTS
-int main() { return wpi::StartRobot<Robot>(); }
+int main() {
+  return wpi::StartRobot<Robot>();
+}
 #endif
