@@ -57,6 +57,9 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("org.wpilib.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.datalog", "datalog-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.drivers", "drivers-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.fields", "fields-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.telemetry", "telemetry-java", versions.getWpilibVersion());
+        createJavaDependencies("org.wpilib.tunables", "tunables-java", versions.getWpilibVersion());
 
         createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 

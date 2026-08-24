@@ -18,13 +18,13 @@ configurations {
     processstarterDownload
 }
 
-def processstarterToolVersion = "2027.0.0-alpha-6-336-g92efd74d9"
+def processstarterToolVersion = "2027.0.0-alpha-6-358-gf90dfe8f4"
 def gsonVersion = "2.13.1"
 
 dependencies {
     api "com.google.code.gson:gson:$gsonVersion"
 
-    api 'org.wpilib:native-utils:2027.14.1'
+    api 'org.wpilib:native-utils:2027.14.2'
 
     api 'de.undercouch:gradle-download-task:5.6.0'
 
