@@ -73,8 +73,8 @@ allprojects {
 }
 
 gradlePlugin {
-    website = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
-    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO/tree/2027'
+    website = 'https://github.com/wpilibsuite/GradleRIO'
+    vcsUrl = 'https://github.com/wpilibsuite/GradleRIO'
     plugins {
         gradleRio {
             id = 'org.wpilib.GradleRIO'
