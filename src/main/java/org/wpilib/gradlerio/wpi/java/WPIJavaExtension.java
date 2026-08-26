@@ -191,6 +191,14 @@ public class WPIJavaExtension {
     public void configureTestTasks(Test t) {
         configureExecutableNatives(t);
 
+        List<String> jvmArgs = new ArrayList<>();
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/jdk.internal.vm=ALL-UNNAMED");
+        jvmArgs.add("--add-opens");
+        jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
+        jvmArgs.add("--enable-native-access=ALL-UNNAMED");
+        t.jvmArgs(jvmArgs);
+
         t.testLogging(new Action<TestLogging>() {
             @Override
             public void execute(TestLogging log) {

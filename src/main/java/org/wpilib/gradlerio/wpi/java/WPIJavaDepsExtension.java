@@ -110,6 +110,8 @@ public class WPIJavaDepsExtension {
         valueList.add(createJniDependency("org.wpilib.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.datalog", "datalog-cpp", versions.getWpilibVersion(), debug, platform));
+        valueList.add(createJniDependency("org.wpilib.telemetry", "telemetry-cpp", versions.getWpilibVersion(), debug, platform));
+        valueList.add(createJniDependency("org.wpilib.tunables", "tunables-cpp", versions.getWpilibVersion(), debug, platform));
 
         if (!platform.equals(NativePlatforms.systemcore)) {
             valueList.add(createJniDependency("org.wpilib.mrclib", "mrclib-cpp", versions.getMrcLibVersion(), false, platform)); // Does not have debug in any case
