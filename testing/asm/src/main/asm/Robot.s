@@ -21,7 +21,7 @@
     .ascii "Looping Teleop\000"
 
 .LC4:
-    .ascii "Looping Test\000"
+    .ascii "Looping Utility\000"
 
 .LC5:
     .ascii "Looping Auton\000"
@@ -43,7 +43,7 @@ printCurrentState:
     cmp     r1, #1
     beq     .printCurrentStateTeleop
     cmp     r1, #2
-    beq     .printCurrentStateTest
+    beq     .printCurrentStateUtility
 
     movw    r0, #:lower16:.LC5
     movt    r0, #:upper16:.LC5
@@ -59,7 +59,7 @@ printCurrentState:
     movt    r0, #:upper16:.LC3
     b       puts
 
-.printCurrentStateTest:
+.printCurrentStateUtility:
     movw    r0, #:lower16:.LC4
     movt    r0, #:upper16:.LC4
     b       puts
@@ -75,14 +75,14 @@ getDSMode:
         tst     r3, #2
         bne     .getDSModeAutonomous
         tst     r3, #4
-        bne     .getDSModeTest
+        bne     .getDSModeUtility
         bl      HAL_ObserveUserProgramTeleop
         mov     r0, #1
 .getDSModeEnd:
         add     sp, sp, #8
         pop     {r4, pc}
-.getDSModeTest:
-        bl      HAL_ObserveUserProgramTest
+.getDSModeUtility:
+        bl      HAL_ObserveUserProgramUtility
         mov     r0, #2
         add     sp, sp, #8
         pop     {r4, pc}

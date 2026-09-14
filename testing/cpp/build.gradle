@@ -2,7 +2,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO2027" version "2027.0.0-alpha-2"
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-7"
 }
 
 def projectFolder = project.buildFile.parentFile
@@ -21,18 +21,21 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.frc.getTeamNumber()
-            debug = project.frc.getDebugOrDefault(false)
+            team = project.wpilib.getTeamNumber()
+            // Use the default systemcore host name. This must be called after setting team
+            // as happens on the line above
+            useDefaultSystemcoreHostName()
+            debug = project.wpilib.getDebugOrDefault(false)
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
-                frcCpp(getArtifactTypeClass('FRCNativeArtifact')) {
+                wpilibCpp(getArtifactTypeClass('WPILibNativeArtifact')) {
                 }
 
                 // Static files artifact
-                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                wpilibStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/systemcore/deploy'
                 }
@@ -41,7 +44,7 @@ deploy {
     }
 }
 
-def deployArtifact = deploy.targets.systemcore.artifacts.frcCpp
+def deployArtifact = deploy.targets.systemcore.artifacts.wpilibCpp
 
 // Simulation configuration
 
@@ -57,7 +60,7 @@ wpi.sim.addWebsocketsClient().defaultEnabled = true
 
 model {
     components {
-        frcUserProgram(NativeExecutableSpec) {
+        wpilibUserProgram(NativeExecutableSpec) {
             targetPlatform wpi.platforms.systemcore
             targetPlatform wpi.platforms.desktop
 
@@ -80,8 +83,8 @@ model {
         }
     }
     testSuites {
-        frcUserProgramTest(GoogleTestTestSuiteSpec) {
-            testing $.components.frcUserProgram
+        wpilibUserProgramCatch2Test(GoogleTestTestSuiteSpec) {
+            testing $.components.wpilibUserProgram
 
             sources.cpp {
                 source {
@@ -94,12 +97,7 @@ model {
 
             wpi.cpp.vendor.cpp(it)
             wpi.cpp.deps.wpilib(it)
-            wpi.cpp.deps.googleTest(it)
+            wpi.cpp.deps.catch2(it)
         }
     }
-}
-
-wrapper {
-    gradleVersion = '8.10.2'
-    distributionType = Wrapper.DistributionType.BIN
 }

@@ -1,0 +1,43 @@
+package org.wpilib.gradlerio.wpi.dependencies.tools;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
+import org.gradle.api.provider.Provider;
+import org.wpilib.gradlerio.wpi.WPIExtension;
+
+public class WPIToolsPlugin implements Plugin<Project> {
+
+    @Override
+    public void apply(Project project) {
+        project.getConfigurations().maybeCreate("wpiCppTools");
+
+        WPIExtension wpi = project.getExtensions().getByType(WPIExtension.class);
+        List<WPICppTool> cppTools = new ArrayList<>();
+
+        Provider<Directory> wpilibHome = wpi.getWpilibHome();
+        Provider<Directory> toolsFolder = project.provider(() -> wpilibHome.get().dir("tools"));
+
+        cppTools.add(new WPICppTool(project, "OutlineViewer", wpi.getVersions().getOutlineViewerVersion(),
+                "org.wpilib.tools:OutlineViewer", toolsFolder));
+        cppTools.add(
+                new WPICppTool(project, "Glass", wpi.getVersions().getGlassVersion(), "org.wpilib.tools:Glass",
+                        toolsFolder));
+        cppTools.add(
+                new WPICppTool(project, "SysId", wpi.getVersions().getSysIdVersion(), "org.wpilib.tools:SysId",
+                        toolsFolder));
+        cppTools.add(new WPICppTool(project, "DataLogTool", wpi.getVersions().getDataLogToolVersion(),
+                "org.wpilib.tools:DataLogTool", toolsFolder));
+
+        cppTools.add(new WPICppTool(project, "wpical", wpi.getVersions().getWpicalToolVersion(),
+                "org.wpilib.tools:wpical", toolsFolder));
+
+        project.getTasks().register("InstallAllTools", task -> {
+            task.setGroup("GradleRIO");
+            task.setDescription("Install All Tools");
+        });
+    }
+}

@@ -22,3 +22,7 @@ bin/
 out/
 hs_err_*
 .vscode/
+networktables.json
+simgui-ds.json
+simgui-window.json
+simgui.json
