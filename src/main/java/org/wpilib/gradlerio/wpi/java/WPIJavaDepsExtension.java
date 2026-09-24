@@ -44,6 +44,7 @@ public class WPIJavaDepsExtension {
         this.providers = providers;
         this.versions = versions;
 
+        createJavaDependencies("org.wpilib.allwpilib", "allwpilib-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpilibj", "wpilibj-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpimath", "wpimath-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.ntcore", "ntcore-java", versions.getWpilibVersion());
@@ -65,7 +66,7 @@ public class WPIJavaDepsExtension {
 
         createJavaDependencies("org.wpilib.thirdparty.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("io.avaje", "avaje-jsonb", versions.getAvajeVersion());
-        createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
+        createJavaDependencies("org.ejml", "ejml-java9module", versions.getEjmlVersion());
         createJavaDependencies("us.hebi.quickbuf", "quickbuf-runtime", versions.getQuickbufVersion());
     }
 
