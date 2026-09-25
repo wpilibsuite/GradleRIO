@@ -109,6 +109,7 @@ public class WPIJavaDepsExtension {
         valueList.add(createJniDependency("org.wpilib.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform));
+        valueList.add(createJniDependency("org.wpilib.fields", "fields-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.datalog", "datalog-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.telemetry", "telemetry-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.tunables", "tunables-cpp", versions.getWpilibVersion(), debug, platform));
