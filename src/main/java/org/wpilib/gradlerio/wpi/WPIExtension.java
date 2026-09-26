@@ -94,9 +94,15 @@ public class WPIExtension {
             eclipseClasspath.getFile().whenMerged(cp -> {
                 if (cp instanceof org.gradle.plugins.ide.eclipse.model.Classpath ecp) {
                     List<ClasspathEntry> entries = ecp.getEntries();
-                    // TODO make this grab the build folder dynamically, and include everything else necessary
+                    // TODO make this grab the build folder dynamically
                     SourceFolder src = new SourceFolder("build/generated/sources/annotationProcessor/java/main", null);
                     entries.add(src);
+                    // Annotation processors write resources such as META-INF/services to the class output,
+                    // not the generated sources directory. Without them, ServiceLoader-based libraries
+                    // (e.g. avaje-jsonb) fail when run from VS Code, such as with Simulate Robot Code.
+                    SourceFolder res = new SourceFolder("build/classes/java/main", null);
+                    res.setIncludes(List.of("META-INF/**"));
+                    entries.add(res);
                 }
             });
 
