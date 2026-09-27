@@ -14,8 +14,9 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 /**
- * Configures java compilation tasks to automatically make available every module detected on the classpath. Automatic
- * modules will not be included.
+ * Configures java compilation tasks to automatically make available every module detected on the classpath. JAR files
+ * with an Automatic-Module-Name manifest entry will be included, but JAR files with neither a module-info entry nor a
+ * fallback manifest entry will <i>not</i> be added to the module path.
  */
 public class WPIModulesPlugin implements Plugin<Project> {
   @Override
