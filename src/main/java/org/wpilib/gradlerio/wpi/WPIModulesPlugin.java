@@ -115,7 +115,7 @@ public class WPIModulesPlugin implements Plugin<Project> {
       }
 
       // No explicit module-info and no Automatic-Module-Name manifest entry.
-      // This is therefore not
+      // This is not a modular dependency and will left on the classpath.
       project.getLogger().debug(
           "Did not find any module information in dependency {} - it will be left on the classpath", file);
       return false;
