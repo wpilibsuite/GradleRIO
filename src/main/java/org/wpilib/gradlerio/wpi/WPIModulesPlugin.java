@@ -1,11 +1,13 @@
 package org.wpilib.gradlerio.wpi;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.module.ModuleFinder;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -36,17 +38,14 @@ public class WPIModulesPlugin implements Plugin<Project> {
             compileJava.getClasspath().getFiles().stream()
                 .map(File::toPath)
                 .filter(p -> p.getFileName().toString().endsWith(".jar"))
+                .sorted(Comparator.comparing(Path::toString))
+                .filter(p -> isModuleLike(p, project))
                 .toList();
 
         var moduleFinder =
             ModuleFinder.of(classpathJars.toArray(Path[]::new));
 
-        // Select only explicit modules. Automatic modules may not actually be compatible with the JPMS; notably,
-        // EJML splits packages across multiple JARs, which is not permitted by the module system.
-        var modules = moduleFinder.findAll().stream()
-            .filter(mod -> !mod.descriptor().isAutomatic())
-            .sorted(Comparator.comparing(mod -> mod.descriptor().name()))
-            .toList();
+        var modules = moduleFinder.findAll();
 
         project.getLogger().debug("Adding modules to the compile task `{}`:", compileJava.getName());
         modules.forEach(mod -> {
@@ -67,5 +66,37 @@ public class WPIModulesPlugin implements Plugin<Project> {
         ));
       });
     });
+  }
+
+  private boolean isModuleLike(Path path, Project project) {
+    try (var jarFile = new JarFile(path.toFile())) {
+      var moduleInfoEntry = jarFile.getJarEntry("module-info.class");
+      if (moduleInfoEntry != null) {
+        // This JAR file has explicit module information; add it to the module path.
+        // Note that this automatically handles multi-release JARs, so if a dependency has module info
+        // at META-INF/versions/9/module-info.class instead of in the root, it will still be detected
+        project.getLogger().debug("Found module-info.class in dependency {}", path);
+        return true;
+      }
+
+      // No explicit module information is present.
+      // Fall back to scan for an Automatic-Module-Name manifest entry
+      var manifest = jarFile.getManifest();
+      var automaticName = manifest.getMainAttributes().getValue("Automatic-Module-Name");
+      if (automaticName != null && !automaticName.isEmpty()) {
+        project.getLogger().debug(
+            "Found Automatic-Module-Name manifest entry '{}' in dependency {}",
+            automaticName, path);
+        return true;
+      }
+
+      // No explicit module-info and no Automatic-Module-Name manifest entry.
+      // This is therefore not
+      project.getLogger().debug(
+          "Did not find any module information in dependency {} - it will be left on the classpath", path);
+      return false;
+    } catch (IOException e) {
+      throw new RuntimeException("Unable to examine classpath JAR " + path, e);
+    }
   }
 }
