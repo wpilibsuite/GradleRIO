@@ -40,6 +40,7 @@ public class WPIPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply(WPIToolsPlugin.class);
         project.getPluginManager().apply(WPIDependenciesPlugin.class);
+        project.getPluginManager().apply(WPIModulesPlugin.class);
 
         project.getTasks().register("wpiVersions", task -> {
             task.setGroup("GradleRIO");
