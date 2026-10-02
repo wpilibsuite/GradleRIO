@@ -82,7 +82,7 @@ public class WPIModulesPlugin implements Plugin<Project> {
     });
   }
 
-  private boolean isModuleLike(File file, Project project) {
+  public static boolean isModuleLike(File file, Project project) {
     if (file.isDirectory()) {
       // Loose directories need a module-info.class entry
       return new File(file, "module-info.class").isFile();
