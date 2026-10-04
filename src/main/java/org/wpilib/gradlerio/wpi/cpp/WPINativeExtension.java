@@ -119,7 +119,6 @@ public class WPINativeExtension {
 
         nte.getWpi().configureDependencies(wpiDeps -> {
             wpiDeps.getWpiVersion().set(versions.getWpilibVersion());
-            wpiDeps.getOpencvVersion().set(versions.getOpencvVersion());
             wpiDeps.getMrcLibVersion().set(versions.getMrcLibVersion());
         });
 

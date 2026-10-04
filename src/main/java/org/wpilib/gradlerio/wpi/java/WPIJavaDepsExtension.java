@@ -47,12 +47,9 @@ public class WPIJavaDepsExtension {
         createJavaDependencies("org.wpilib.wpilibj", "wpilibj-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpimath", "wpimath-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.ntcore", "ntcore-java", versions.getWpilibVersion());
-        createJavaDependencies("org.wpilib.cscore", "cscore-java", versions.getWpilibVersion());
-        createJavaDependencies("org.wpilib.cameraserver", "cameraserver-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.hal", "hal-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpinet", "wpinet-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpiutil", "wpiutil-java", versions.getWpilibVersion());
-        createJavaDependencies("org.wpilib.apriltag", "apriltag-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.wpiunits", "wpiunits-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.epilogue", "epilogue-runtime-java", versions.getWpilibVersion());
         createJavaDependencies("org.wpilib.datalog", "datalog-java", versions.getWpilibVersion());
@@ -63,7 +60,6 @@ public class WPIJavaDepsExtension {
 
         createJavaDependencies("org.wpilib", "annotations-java", versions.getWpilibVersion());
 
-        createJavaDependencies("org.wpilib.thirdparty.opencv", "opencv-java", versions.getOpencvVersion());
         createJavaDependencies("io.avaje", "avaje-jsonb", versions.getAvajeVersion());
         createJavaDependencies("org.ejml", "ejml-simple", versions.getEjmlVersion());
         createJavaDependencies("us.hebi.quickbuf", "quickbuf-runtime", versions.getQuickbufVersion());
@@ -104,11 +100,8 @@ public class WPIJavaDepsExtension {
         valueList.add(createJniDependency("org.wpilib.hal", "hal-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.wpimath", "wpimath-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.ntcore", "ntcore-cpp", versions.getWpilibVersion(), debug, platform));
-        valueList.add(createJniDependency("org.wpilib.cscore", "cscore-cpp", versions.getWpilibVersion(), debug, platform));
-        valueList.add(createJniDependency("org.wpilib.thirdparty.opencv", "opencv-cpp", versions.getOpencvVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.wpinet", "wpinet-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.wpiutil", "wpiutil-cpp", versions.getWpilibVersion(), debug, platform));
-        valueList.add(createJniDependency("org.wpilib.apriltag", "apriltag-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.datalog", "datalog-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.telemetry", "telemetry-cpp", versions.getWpilibVersion(), debug, platform));
         valueList.add(createJniDependency("org.wpilib.tunables", "tunables-cpp", versions.getWpilibVersion(), debug, platform));
