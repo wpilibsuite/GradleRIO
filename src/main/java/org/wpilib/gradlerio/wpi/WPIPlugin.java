@@ -71,6 +71,7 @@ public class WPIPlugin implements Plugin<Project> {
         });
 
         project.afterEvaluate(ae -> {
+            registerMavenRepositories(project, wpiExtension);
             addMavenRepositories(project, wpiExtension);
         });
     }
@@ -81,7 +82,10 @@ public class WPIPlugin implements Plugin<Project> {
         }
     }
 
-    void addMavenRepositories(Project project, WPIExtension wpi) {
+    /**
+     * Registers Maven repositories in the WPI Maven extension for sorting.
+     */
+    void registerMavenRepositories(Project project, WPIExtension wpi) {
         boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
 
         for(VendorMavenRepo repo : wpi.getVendor().getVendorRepos()) {
@@ -108,12 +112,22 @@ public class WPIPlugin implements Plugin<Project> {
                 cache.setAllowedGroupIds(vendorCacheIds);
             });
         }
+    }
+
+    /**
+     * Adds all enabled Maven repositories to Gradle's build system.
+     * Repositories are checked in the order they are added in here.
+     */
+    void addMavenRepositories(Project project, WPIExtension wpi) {
+        boolean enableGroupLimits = wpi.getMaven().isEnableRepositoryGroupLimits();
 
         if (wpi.getMaven().isUseLocal()) {
             project.getRepositories().maven(repo -> {
                 repo.setName("WPILocal");
                 repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getWpilibHome().map(x -> x.dir("maven")));
             });
+
+            project.getRepositories().mavenLocal();
         }
 
         if (wpi.getMaven().isUseWpilibMavenLocalDevelopment()) {
@@ -134,8 +148,7 @@ public class WPIPlugin implements Plugin<Project> {
                 .toArray(WPIMavenRepo[]::new);
 
         // If enabled, the development branch should have a higher weight than the
-        // release
-        // branch.
+        // release branch.
         if (wpi.getMaven().isUseDevelopment()) {
             for (WPIMavenRepo mirror : sortedMirrors) {
                 if (mirror.getDevelopment() != null) {
