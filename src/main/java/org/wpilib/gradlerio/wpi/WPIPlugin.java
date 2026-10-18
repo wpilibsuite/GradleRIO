@@ -126,6 +126,8 @@ public class WPIPlugin implements Plugin<Project> {
                 repo.setName("WPILocal");
                 repo.setUrl(project.getExtensions().getByType(WPIExtension.class).getWpilibHome().map(x -> x.dir("maven")));
             });
+
+            project.getRepositories().mavenLocal();
         }
 
         if (wpi.getMaven().isUseWpilibMavenLocalDevelopment()) {
