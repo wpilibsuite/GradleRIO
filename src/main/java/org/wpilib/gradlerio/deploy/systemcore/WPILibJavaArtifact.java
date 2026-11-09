@@ -29,7 +29,7 @@ public class WPILibJavaArtifact extends DebuggableJavaArtifact {
     private final List<String> jvmArgs = new ArrayList<>();
     private final List<String> arguments = new ArrayList<>();
 
-    private final SystemCore systemCore;
+    private final Systemcore systemCore;
 
     private final Property<String> mainClass;
 
@@ -44,7 +44,7 @@ public class WPILibJavaArtifact extends DebuggableJavaArtifact {
     }
 
     @Inject
-    public WPILibJavaArtifact(String name, SystemCore target) {
+    public WPILibJavaArtifact(String name, Systemcore target) {
         super(name, target);
         systemCore = target;
         debugJni = target.getProject().getObjects().property(Boolean.class);

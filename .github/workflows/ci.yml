@@ -53,9 +53,9 @@ jobs:
         name: Maven
         path: ${{ env.MAVEN_LOCAL_REPO }}/
 
-    - name: Setup SystemCore Toolchain
+    - name: Setup Systemcore Toolchain
       if: ${{ (matrix.language == 'cpp') || (matrix.language == 'asm') }}
-      run: ../../gradlew -Dmaven.repo.local="$MAVEN_LOCAL_REPO" installSystemCoreToolchain
+      run: ../../gradlew -Dmaven.repo.local="$MAVEN_LOCAL_REPO" installSystemcoreToolchain
       working-directory: testing/${{ matrix.language }}
     - name: Test ${{ matrix.language }} Build
       run: ../../gradlew -Dmaven.repo.local="$MAVEN_LOCAL_REPO" build

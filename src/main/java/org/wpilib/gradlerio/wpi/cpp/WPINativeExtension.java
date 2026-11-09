@@ -19,7 +19,7 @@ import org.wpilib.nativeutils.vendordeps.WPINativeVendorDepsExtension;
 import org.wpilib.toolchain.NativePlatforms;
 import org.wpilib.toolchain.ToolchainExtension;
 import org.wpilib.toolchain.ToolchainPlugin;
-import org.wpilib.toolchain.systemcore.SystemCoreToolchainPlugin;
+import org.wpilib.toolchain.systemcore.SystemcoreToolchainPlugin;
 
 public class WPINativeExtension {
     private final WPINativeDepsExtension deps;
@@ -94,7 +94,7 @@ public class WPINativeExtension {
     @Inject
     public WPINativeExtension(Project project, WPIExtension wpi, WPIVersionsExtension versions) {
         project.getPluginManager().apply(ToolchainPlugin.class);
-        project.getPluginManager().apply(SystemCoreToolchainPlugin.class);
+        project.getPluginManager().apply(SystemcoreToolchainPlugin.class);
         project.getPluginManager().apply(NativeUtils.class);
         project.getPluginManager().apply(WPINativeCompileRules.class);
 
@@ -102,7 +102,7 @@ public class WPINativeExtension {
         debugSimulation.set(false);
 
         NativeUtilsExtension nte = project.getExtensions().getByType(NativeUtilsExtension.class);
-        nte.withCrossSystemCore();
+        nte.withCrossSystemcore();
         nte.addWpiNativeUtils();
 
         deps = project.getObjects().newInstance(WPINativeDepsExtension.class, nte);
