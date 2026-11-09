@@ -141,7 +141,7 @@ public class WPIExtension {
         }
 
         if (isMacOsX) {
-            return new File(userFolder, ".wpilib");
+            return new File(userFolder, "wpilib");
         }
 
         if (isLinux && xdgDataHome != null && !xdgDataHome.isBlank()

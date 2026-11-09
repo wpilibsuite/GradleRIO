@@ -19,7 +19,7 @@ def gsonVersion = "2.13.1"
 dependencies {
     api "com.google.code.gson:gson:$gsonVersion"
 
-    api 'org.wpilib:native-utils:2027.14.3'
+    api 'org.wpilib:native-utils:2027.15.1'
 
     api 'de.undercouch:gradle-download-task:5.6.0'
 
