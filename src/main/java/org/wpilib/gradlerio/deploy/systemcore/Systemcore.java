@@ -10,7 +10,7 @@ import org.wpilib.gradlerio.deploy.WPILibExtension;
 import org.wpilib.gradlerio.deploy.WPIRemoteTarget;
 import org.wpilib.toolchain.NativePlatforms;
 
-public class SystemCore extends WPIRemoteTarget {
+public class Systemcore extends WPIRemoteTarget {
 
     private int team;
     private String username = "systemcore";
@@ -20,7 +20,7 @@ public class SystemCore extends WPIRemoteTarget {
     private final RobotProgramStartArtifact programStartArtifact;
 
     @Inject
-    public SystemCore(String name, Project project, DeployExtension de, WPILibExtension firstExtension) {
+    public Systemcore(String name, Project project, DeployExtension de, WPILibExtension firstExtension) {
         super(name, project, de, firstExtension);
 
         setDirectory("/home/systemcore");
@@ -110,6 +110,6 @@ public class SystemCore extends WPIRemoteTarget {
 
     @Override
     public String toString() {
-        return "SystemCore[" + getName() + "]";
+        return "Systemcore[" + getName() + "]";
     }
 }

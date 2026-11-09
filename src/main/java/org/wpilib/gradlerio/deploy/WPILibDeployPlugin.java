@@ -18,7 +18,7 @@ import org.wpilib.gradlerio.deploy.systemcore.WPILibNativeArtifact;
 import org.wpilib.gradlerio.deploy.systemcore.RobotCommandArtifact;
 import org.wpilib.gradlerio.deploy.systemcore.RobotProgramKillArtifact;
 import org.wpilib.gradlerio.deploy.systemcore.RobotProgramStartArtifact;
-import org.wpilib.gradlerio.deploy.systemcore.SystemCore;
+import org.wpilib.gradlerio.deploy.systemcore.Systemcore;
 import org.wpilib.deployutils.deploy.NamedObjectFactory;
 
 public class WPILibDeployPlugin implements Plugin<Project> {
@@ -27,7 +27,7 @@ public class WPILibDeployPlugin implements Plugin<Project> {
 
     public static final String LIB_DEPLOY_DIR = "/home/systemcore/wpilib/third-party/lib";
 
-    private void configureSystemCoreTypes(SystemCore target) {
+    private void configureSystemcoreTypes(Systemcore target) {
         ObjectFactory objects = target.getProject().getObjects();
         ExtensiblePolymorphicDomainObjectContainer<DeployLocation> locations = target.getLocations();
         ExtensiblePolymorphicDomainObjectContainer<Artifact> artifacts = target.getArtifacts();
@@ -55,10 +55,10 @@ public class WPILibDeployPlugin implements Plugin<Project> {
 
         WPILibExtension firstExtension = project.getExtensions().create("wpilib", WPILibExtension.class, project, deployExtension);
 
-        // Register the SystemCore target
-        deployExtension.getTargets().registerFactory(SystemCore.class, name -> {
-            SystemCore target = project.getObjects().newInstance(SystemCore.class, name, project, deployExtension, firstExtension);
-            configureSystemCoreTypes(target);
+        // Register the Systemcore target
+        deployExtension.getTargets().registerFactory(Systemcore.class, name -> {
+            Systemcore target = project.getObjects().newInstance(Systemcore.class, name, project, deployExtension, firstExtension);
+            configureSystemcoreTypes(target);
             return target;
         });
     }
