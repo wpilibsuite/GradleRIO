@@ -17,6 +17,7 @@ import org.gradle.plugins.ide.eclipse.EclipsePlugin;
 import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
 import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
 import org.gradle.plugins.ide.eclipse.model.EclipseModel;
+import org.gradle.plugins.ide.eclipse.model.Library;
 import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 import org.wpilib.gradlerio.wpi.cpp.WPINativeExtension;
 import org.wpilib.gradlerio.wpi.java.WPIJavaExtension;
@@ -94,6 +95,19 @@ public class WPIExtension {
             eclipseClasspath.getFile().whenMerged(cp -> {
                 if (cp instanceof org.gradle.plugins.ide.eclipse.model.Classpath ecp) {
                     List<ClasspathEntry> entries = ecp.getEntries();
+
+                    // If the team program doesn't have a module-info file (which we expect for basically every team),
+                    // the Eclipse compiler won't place any modular dependencies on the module path, which breaks
+                    // intellisense when teams use modular imports (eg from example and template projects).
+                    // So we force every modular dependency that's on the Eclipse classpath to be on the module path
+                    entries.forEach(entry -> {
+                        if (entry instanceof org.gradle.plugins.ide.eclipse.model.Library lib) {
+                            if (WPIModulesPlugin.isModuleLike(new File(lib.getPath()), project)) {
+                                lib.getEntryAttributes().put("module", true);
+                            }
+                        }
+                    });
+
                     // TODO make this grab the build folder dynamically
                     SourceFolder src = new SourceFolder("build/generated/sources/annotationProcessor/java/main", null);
                     entries.add(src);

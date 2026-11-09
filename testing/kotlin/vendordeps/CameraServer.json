@@ -10,7 +10,7 @@
     {
       "groupId": "org.wpilib.thirdparty.opencv",
       "artifactId": "opencv-java",
-      "version": "2027-4.13.0-3"
+      "version": "2027-4.13.0-4"
     },
     {
       "groupId": "org.wpilib.cscore",
@@ -27,7 +27,7 @@
     {
       "groupId": "org.wpilib.thirdparty.opencv",
       "artifactId": "opencv-cpp",
-      "version": "2027-4.13.0-3",
+      "version": "2027-4.13.0-4",
       "skipInvalidPlatforms": true,
       "isJar": false,
       "validPlatforms": [
@@ -59,7 +59,7 @@
     {
       "groupId": "org.wpilib.thirdparty.opencv",
       "artifactId": "opencv-cpp",
-      "version": "2027-4.13.0-3",
+      "version": "2027-4.13.0-4",
       "libName": "opencv",
       "headerClassifier": "headers",
       "sourcesClassifier": "sources",

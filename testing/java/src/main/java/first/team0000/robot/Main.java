@@ -7,7 +7,7 @@
 
 package first.team0000.robot;
 
-import org.wpilib.framework.RobotBase;
+import module wpilib;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
