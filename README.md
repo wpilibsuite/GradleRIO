@@ -49,7 +49,7 @@ Windows Users: It is recommended to use Powershell instead of CMD. You can switc
 - `./gradlew build` will build your robot code (and run unit tests if present).
 - `./gradlew deploy` will build and deploy your code.
 
-- `./gradlew installSystemCoreToolchain` will install the C++ Toolchains for your system (required for C++).
+- `./gradlew installSystemcoreToolchain` will install the C++ Toolchains for your system (required for C++).
 
 ### Tools
 

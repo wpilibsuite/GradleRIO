@@ -42,7 +42,7 @@ import org.wpilib.deployutils.log.ETLogger;
 import org.wpilib.deployutils.log.ETLoggerFactory;
 import org.wpilib.gradlerio.caching.WrapperInspector;
 import org.wpilib.gradlerio.deploy.WPILibDeployPlugin;
-import org.wpilib.gradlerio.deploy.systemcore.SystemCore;
+import org.wpilib.gradlerio.deploy.systemcore.Systemcore;
 import org.wpilib.gradlerio.wpi.WPIPlugin;
 
 public abstract class GradleRIOPlugin implements Plugin<Project> {
@@ -240,7 +240,7 @@ public abstract class GradleRIOPlugin implements Plugin<Project> {
                     RemoteTarget target = ((TargetDiscoveryTask) task).getTarget();
                     if (reasons.add(("Target" + target.getName()).hashCode())) {
                         logger.logErrorHead("Missing Target!");
-                        if (target instanceof SystemCore) {
+                        if (target instanceof Systemcore) {
                             logger.logErrorHead("=============================================");
                             logger.logErrorHead("Are you connected to the robot, and is it on?");
                             logger.logErrorHead("=============================================");

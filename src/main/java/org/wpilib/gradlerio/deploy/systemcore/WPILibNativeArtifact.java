@@ -21,7 +21,7 @@ public class WPILibNativeArtifact extends DebuggableNativeArtifact {
 
     private final RobotCommandArtifact robotCommandArtifact;
     private final List<String> arguments = new ArrayList<>();
-    private final SystemCore systemCore;
+    private final Systemcore systemCore;
 
     private final Property<NativeExecutableSpec> componentSpec;
 
@@ -30,7 +30,7 @@ public class WPILibNativeArtifact extends DebuggableNativeArtifact {
     }
 
     @Inject
-    public WPILibNativeArtifact(String name, SystemCore target) {
+    public WPILibNativeArtifact(String name, Systemcore target) {
         super(name, target);
         systemCore = target;
 

@@ -16,7 +16,7 @@ import org.wpilib.deployutils.deploy.context.DeployContext;
 import org.wpilib.deployutils.deploy.sessions.IPSessionController;
 import org.wpilib.toolchain.ToolchainDiscoverer;
 import org.wpilib.toolchain.ToolchainExtension;
-import org.wpilib.toolchain.systemcore.SystemCoreToolchainPlugin;
+import org.wpilib.toolchain.systemcore.SystemcoreToolchainPlugin;
 import org.wpilib.vscode.dependencies.SourceContainingNativeDependencySet;
 
 public class DebuggableNativeArtifact extends NativeExecutableArtifact implements DebuggableArtifact {
@@ -42,7 +42,7 @@ public class DebuggableNativeArtifact extends NativeExecutableArtifact implement
             // TODO get all this from the VS Code plugin without needing to enumerate EVERYTHING
 
             ToolchainDiscoverer toolchain = getTarget().getProject().getExtensions().getByType(ToolchainExtension.class)
-                    .getToolchainDescriptors().getByName(SystemCoreToolchainPlugin.toolchainName).discover();
+                    .getToolchainDescriptors().getByName(SystemcoreToolchainPlugin.toolchainName).discover();
             String gdbpath = toolchain.gdbFile().get().getAbsolutePath();
             String sysroot = toolchain.sysroot().get().getAbsolutePath();
 
