@@ -69,7 +69,7 @@ public class WPIExtension {
 
         project.getPlugins().apply(WPIVendorDepsPlugin.class);
         vendor = project.getExtensions().getByType(WPIVendorDepsExtension.class);
-        vendor.getFixedVersion().set(versions.getWpilibVersion());
+        vendor.getFixedVersions().set(versions.getLibraryVersions());
         vendor.getWpilibYear().set(wpilibYear);
         vendor.getWpilibHome().set(wpilibHome);
 
