@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
 
   /** This function is run once each time the robot enters autonomous mode. */
   @Override
-  public void autonomousInit() {
+  public void autonomousStart() {
     timer.restart();
   }
 
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters teleoperated mode. */
   @Override
-  public void teleopInit() {}
+  public void teleopStart() {}
 
   /** This function is called periodically during teleoperated mode. */
   @Override
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters utility mode. */
   @Override
-  public void utilityInit() {}
+  public void utilityStart() {}
 
   /** This function is called periodically during utility mode. */
   @Override
