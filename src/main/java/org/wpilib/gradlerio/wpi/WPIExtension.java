@@ -60,7 +60,7 @@ public class WPIExtension {
         platforms = new NativePlatforms();
 
         wpilibYear = factory.property(String.class);
-        wpilibYear.convention("2027_alpha7");
+        wpilibYear.convention("2027");
 
         wpilibHome = factory.directoryProperty().fileProvider(project.provider(WPIExtension::computeHomeRoot))
                 .dir(wpilibYear);
